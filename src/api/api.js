@@ -10,7 +10,11 @@ const apiUrl = 'http://git.com/api'
 const getIndexList = (params) => wxRequest(params, `${apiUrl}/index`);
 
 // 获取账单
-const getBills = (params) => wxRequest(params, `${apiUrl}/bills`);
+const Bill = (params, c_id = 0) => {
+  let url = `${apiUrl}/bills`
+  if (c_id != null && c_id != 0) url = `${url}/${c_id}`
+  return wxRequest(params, url)
+}
 
 // 获取新建账单的账户
 const getBillAssets = (params) => wxRequest(params, `${apiUrl}/bills/assets`);
@@ -32,15 +36,16 @@ const AssetIcon = () => wxRequest({}, `${apiUrl}/icons/assets`);
 
 // 个人设置
 const Settings = (params) => wxRequest(params, `${apiUrl}/settings`);
+// 反馈
+const Feedback = (params) => wxRequest(params, `${apiUrl}/settings/feedback`);
 
+// 资产 & 资产设置
 const Wallet = (params, c_id = 0) => {
   let url = `${apiUrl}/wallet`
-  if (c_id != 0) url = `${url}/${c_id}`
+  if (c_id != null && c_id != 0) url = `${url}/${c_id}`
   return wxRequest(params, url)
 }
-
 const WalletParent = (params) => wxRequest(params, `${apiUrl}/wallet/parent`);
-
 const WalletList = (params) => wxRequest(params, `${apiUrl}/wallet/list`);
 
 const Category = (params, c_id = 0) => {
@@ -55,7 +60,7 @@ const CategoryIcon = () => wxRequest({}, `${apiUrl}/icons/categories`);
 
 module.exports = {
   getIndexList,
-  getBills,
+  Bill,
   getBillAssets,
   getBillCategories,
   Chart,
@@ -67,5 +72,6 @@ module.exports = {
   Wallet,
   WalletList,
   WalletParent,
-  CategoryIcon
+  CategoryIcon,
+  Feedback
 }

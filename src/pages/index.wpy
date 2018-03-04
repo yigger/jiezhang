@@ -19,7 +19,7 @@
     </view>
     
     <view class="normal new-bill">
-      <navigator open-type="navigateTo" url="/pages/showBill/showBill">
+      <navigator url="/pages/statement">
         <button>记一笔</button>
       </navigator>
     </view>
@@ -28,7 +28,7 @@
       <view class="time-axis">
         <ul>
           <!--li class="normal time-mark">今天</li-->
-          <li wx:for="{{ list }}" data-index="{{ item.id }}" bindtap="showBill">
+          <li wx:for="{{ list }}" @tap="statement('{{ item.id }}')">
             <view>
               <title>{{ item.childCategory }}</title>
               <money class="pull-right {{ item.type }}">{{ item.money }}</money>
@@ -41,7 +41,7 @@
               </category>
               <time class="pull-right">{{ item.timeStr }}</time>
             </view>
-            <view class="category-icon"><image src="../../public/{{ item.category_icon }}" /></view>
+            <view class="category-month-day">{{ item.month_day }}</view>
           </li>
         </ul>
       </view>
@@ -68,10 +68,9 @@
     }
 
     methods = {
-      showBill (e) {
-        let id = e.currentTarget.dataset.index;
-        wx.navigateTo({
-          url: `/pages/showBill/showBill?id=${id}`
+      statement (id) {
+        wepy.navigateTo({
+          url: `/pages/statement?id=${id}`
         })
       }
     }
@@ -153,20 +152,17 @@
   .new-bill {
     margin:12px;
   }
+
   .new-bill button {
     border-radius: 2px;
     background:rgba(251,75,77,0.9);
     color: white;
-    box-shadow:0px 0px 1px #ccc;
+    box-shadow:2px 3px 8px #ccc;
     text-align:center;
     line-height: 2;
   }
   .new-bill:before {
     content:none !important;
-  }
-
-  .content {
-    border-top: 1px solid #efefef;
   }
 
   /* 时间轴 */
@@ -202,13 +198,15 @@
     width: 30px;
     height: 30px;
   }
-  .time-axis ul li .category-icon {
+  .time-axis ul li .category-month-day {
     position: absolute;
     top: 14px;
     left: -40px;
-    
+    font-size: 10px;
+    color: #999;
     width: 32px;
     height: 32px;
+    line-height: 32px;
     border-radius: 50%;
     text-align: center;
     border: 1px solid #efefef;

@@ -39,7 +39,7 @@
       <text class="fs12">{{ item.header }}</text>
       <view class="column" wx:for="{{ item.list }}" data-id="{{ item.id }}" bindtap="showAsset">
         <view class="icon pull-left">
-          <image src="../../public/{{ item.icon_path }}"></image>
+          <image src="{{ item.icon_path }}"></image>
         </view>
         <view class="money pull-right">{{ item.amount }}</view>
         <view class="title">{{ item.name }}</view>
@@ -47,10 +47,10 @@
     </view>
   </view>
 
-  <view class="add-wallet">
+  <!-- <view class="add-wallet">
     <image src="../../public/images/wallet-add.png"></image>
     <text class="fs16" bindtap="newAsset">添加账户</text>
-  </view>
+  </view> -->
   
 </view>
 </template>
@@ -60,7 +60,6 @@
   import api from "../api/api";
   export default class Wallet extends wepy.page {
 		data = {
-			tab: 'assets',
     	wallets: [],
 			netWorth: 0,
 			totalAssets: 0,
@@ -86,23 +85,6 @@
       this.monthAmount = header.last_month_consumption,
       this.wallets = list
       this.$apply()
-		}
-
-		methods = {
-			changeTab(event) {
-				this.tab = event.currentTarget.dataset.item
-			},
-			newAsset() {
-				wx.navigateTo({
-					url: `/pages/asset/asset`
-				})
-			},
-			showAsset (e) {
-				let id = e.currentTarget.dataset.id;
-				wx.navigateTo({
-					url: `/pages/asset/asset?id=${id}`
-				})
-			}
 		}
   }
 </script>

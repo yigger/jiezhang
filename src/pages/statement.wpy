@@ -18,7 +18,7 @@
       <swiper-item wx:for="{{categories}}">
         <view class="category-flex">
           <view wx:for="{{item}}" data-category-name="{{ item.name }}" data-category-id="{{ item.id }}" bindtap="categoryChange">
-            <view class="image"><image style="background: {{ item.bg_color }};" src="../../public/{{ item.icon }}"></image></view>
+            <view class="image"><image style="background: {{ item.bg_color }};" src="{{ item.icon }}"></image></view>
             <view class="name">{{ item.name }}</view>
           </view>
         </view>
@@ -28,7 +28,7 @@
 
     <view class="item-category">
       <text>账户</text>
-      <picker mode="multiSelector" bindchange="assetChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}" range-key="name">
+      <picker mode="multiSelector" bindchange="assetChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{ multiIndex }}" range="{{ multiArray }}" range-key="name">
         <view class="picker">
           {{ multiArray[1][multiIndex[1]]['name'] }}
         </view>
@@ -58,12 +58,12 @@
     </view>
 
     <view class="item-category">
-      <input class="weui-input remark" value="{{ remark }}" placeholder="备注" bindinput="InputChange" />
+      <input class="weui-input remark" value="{{ statement.description }}" placeholder="备注" bindinput="InputChange" />
     </view>
     
     <view class="save-btn">
-      <view class="bill-btn" bindtap="submitContinue">再记一笔</view>
-      <view class="bill-btn save" bindtap="submit">保存</view>
+      <view class="bill-btn" @tap="submitContinue">再记一笔</view>
+      <view class="bill-btn save" @tap="submit">保存</view>
     </view>
 
     <view class="caculation" wx:if="{{ showCaculation }}">
@@ -101,15 +101,13 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../api/api";
-
+  import api from "../api/api"
+  import tip from '../utils/tip'
   export default class Statement extends wepy.page {
     data = {
       showCaculation: false,
       indicatorDots: true,
       autoplay: false,
-      // 提交方法
-      method: 'POST',
       //分类
       categories: [{id: 1, name: '现金'}],
       expendCategories: [],
@@ -152,7 +150,7 @@
       calcDone: false
     }
 
-    onLoad () {
+    onLoad (options) {
       let myDate = new Date();
       if (this.statement.date != '') {
         myDate = new Date(this.statement.date)
@@ -171,6 +169,8 @@
       if (this.statement.time != '') time = this.statement.time
       this.statement.date = [year, month, day].join('-')
       this.statement.time = time
+      if (options.id != undefined)
+        this.getStatement(options.id)
       this.getCategory()
       this.getAssets()
     }
@@ -183,6 +183,10 @@
           categories = this.expendCategories
         } else {
           categories = this.incomeCategories
+        }
+        if (categories.length > 0) {
+          this.curCategoryName = categories[0][0]['name']
+          this.statement.category_id = categories[0][0]['id']
         }
         this.statement.type = item
         this.categories = categories
@@ -209,7 +213,7 @@
       },
       // 备注更改
       InputChange (e) {
-        this.statement.remark = e.detail.value
+        this.statement.description = e.detail.value
       },
       // 账户栏的列变更
       bindMultiPickerColumnChange (e) {
@@ -217,11 +221,10 @@
         if(e.detail.column === 0) {
           let id = this.assets.parent_assets[value]['id']
           this.multiIndex[0] = value
-          this.multiIndex[1] = this.assets.child_assets[id]
+          this.multiArray[1] = this.assets.child_assets[id]
         } else {
           this.multiIndex[1] = value
         }
-        this.$apply()
       },
       caculatBtn(event) {
         var val = event.target.dataset.num;
@@ -254,20 +257,46 @@
           this.buildInfix(this.op[action], 'add');
         }
 
-        var formula = this.infix.join('');
+        let formula = this.infix.join('');
         formula = (formula.length == 0) ? formula : formula + '='
         if (action === 'eq') formula = ''
         this.formula = formula 
+      },
+      async submit () {
+        let method = 'POST'
+        let cId = null
+        if (this.statement.id != 0) {
+          method = 'PUT'
+          cId = this.statement.id
+        }
+
+        const res = await api.Bill({
+          method: method,
+          query: {
+            statement: this.statement
+          }
+        }, cId);
+
+        if (res.data.status == 200) {
+          console.log(res.data.msg)
+        } else {
+          tip.error(res.data.msg)
+        }
       }
     }
 
-    async getCategory() {
+    async getStatement (id) {
+      const res = await api.Bill({}, id);
+      this.statement = res.data
+
+    }
+
+    async getCategory () {
       const res = await api.getBillCategories()
       const data = res.data
       let categories = this.type == 'income' ? data.income_categories : data.expend_categories
-      let cur_category_id = this.categoryId == '0' ? categories[0][0]['id'] : this.categoryId
       let cur_name = categories[0][0]['name']
-      if (this.categoryId != '0') {
+      if (this.statement.category_id != 0) {
         for (let i = 0;i < categories.length;++i) {
           for(let j = 0;j < categories[i].length; ++j) {
             if (this.categoryId == categories[i][j]['id']) {
@@ -280,8 +309,14 @@
       this.expendCategories = data.expend_categories
       this.incomeCategories = data.income_categories
       this.curCategoryName = cur_name
+      if (categories.length > 0 && this.statement.category_id == 0) {
+        try {
+          this.statement.category_id = categories[0][0]['id']
+        } catch (error) {
+          this.statement.category_id = 0
+        }
+      }
       this.$apply()
-      // "params.category_id": cur_category_id
     }
 
     async getAssets() {
@@ -289,13 +324,17 @@
       const data = res.data
       let arr = []
       let childs = data.child_assets[data.parent_assets[0]['id']]
-      let cur_asset_id = childs[0]['id']
       arr.push(data.parent_assets)
       arr.push(childs)
-
-      this.statement.asset_id = cur_asset_id
       this.assets = data
       this.multiArray = arr
+      if (childs.length > 0 && this.statement.asset_id == 0) {
+        try {
+          this.statement.asset_id = childs[0]['id']
+        } catch (error) {
+          this.statement.asset_id = 0
+        }
+      }
       this.$apply()
     }
 

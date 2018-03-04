@@ -31,7 +31,7 @@
 		
     <view class="asset single" hidden="{{tabActive == 'category'}}">
 			
-      <empty wx:if="{{ singleData.length == 0 }}"></empty>
+      <empty title="这天还没有记账呢~" wx:if="{{ mutipleData.length == 0 }}"></empty>
 
       <view class="day-bills" wx:for="{{ singleData }}">
         <view class="fs12 col999 yearAndMonth">{{ item.year }}</view>
@@ -45,7 +45,7 @@
         </view>
 
         <view class="bill-detail" wx:for="{{ item.list }}" data-st-id="{{ item.id }}" bindtap="showBill">
-          <view class="icon pull-left"><image src="../../public/{{ item.category_icon }}"></image></view>
+          <view class="icon pull-left"><image src="{{ item.category_icon }}"></image></view>
           <view class="information">
             <view class="title overflow-hide">
               <view class="pull-left">{{ item.category }}</view>
@@ -73,7 +73,7 @@
           </view>
           <view class="{{ item.type }} pull-right">{{ item.money }}</view>
           <view class="information">
-            <view class="pull-left icon"><image src="../../public/{{ item.category_icon }}"></image></view>
+            <view class="pull-left icon"><image src="{{ item.category_icon }}"></image></view>
             <view class="pull-left">
               <view>{{ item.category_name }}</view>
               <view class="fs12 col999">{{ item.description }}</view>

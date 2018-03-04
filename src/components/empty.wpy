@@ -8,7 +8,10 @@
 <script>
   import wepy from 'wepy'
   export default class Empty extends wepy.component {
-    
+    props = {
+      title: String,
+      default: ''
+    };
   }
 </script>
 <style lang="less">

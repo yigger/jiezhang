@@ -6,20 +6,18 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
+      
+      "pages/index",
+      "pages/chart",
+      "pages/setting",
       "pages/wallet_list",
       "pages/wallet",
-
-      "pages/setting",
       "pages/category",
       "pages/statement",
-      "pages/index",
-      
-      
-      "pages/chart",
-      
       
       "pages/category_form",
       "pages/wallet_form",
+      "pages/feedback"
     ],
     window: {
       backgroundColor: "#fb4b4d",

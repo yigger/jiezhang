@@ -47,7 +47,7 @@
   </view>
 
   <view class="weui-cells weui-cells_after-title cell-list">
-    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <navigator url="/pages/feedback" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
       <view class="weui-cell__bd">帮助与反馈</view>
     </navigator>
 
@@ -66,40 +66,22 @@
 
 <script>
   import wepy from 'wepy'
-  import qcloud from '../utils/index'
-  import config from '../utils/config'
+  import api from "../api/api";
+  import tip from '../utils/tip'
+
   export default class Setting extends wepy.page {
     data = {
       user: {}
     }
 
-		methods = {
-      waiting() {
-        wx.showToast({
-          title: '敬请期待',
-          icon: "none",
-          duration: 2000
-        })
-      }
-    }
-    
-    async onLoad () {
+    onLoad () {
 			this.getData()
     }
     
-    getData () {
-      let self = this
-      qcloud.request({
-        url: config.api.setting,
-        success: function (response) {
-          self.setData({
-            user: response.data
-          })
-        },
-        fail: function (err) {
-          console.log(err);
-        }
-      });
+    async getData () {
+      const res = await api.Settings()
+      this.user = res.data
+      this.$apply()
     }
   }
 </script>

@@ -152,8 +152,8 @@
     }
 
     async getWallet (id) {
-      const json = await api.Wallet({}, id)
-      this.wallet = json.data
+      const res = await api.Wallet({}, id)
+      this.wallet = res.data
       if (this.wallet.type == 'debt') this.typeIndex = 1
       if (this.wallet.parent_id != 0) {
         this.updateCurrentIndex()
