@@ -30,13 +30,13 @@
           <!--li class="normal time-mark">今天</li-->
           <li wx:for="{{ list }}" @tap="statement('{{ item.id }}')">
             <view>
-              <title>{{ item.childCategory }}</title>
+              <title>{{ item.category }}</title>
               <money class="pull-right {{ item.type }}">{{ item.money }}</money>
             </view>
             <view class="description">{{ item.remark }}</view>
             <view class="order-info overflow-hide">
               <category class="pull-left">
-                <label wx-if="{{ item.category != null }}">{{ item.category }}</label>
+                <!-- <label wx:if="{{ item.category != null }}">{{ item.category }}</label> -->
                 <label>{{ item.asset }}</label>
               </category>
               <time class="pull-right">{{ item.timeStr }}</time>
@@ -215,7 +215,7 @@
   .time-axis ul li:not(.normal) {
     box-shadow:0px 0px 1px #ccc;
     border-radius:2px;
-    padding:12px;
+    padding:0px 12px 10px 12px;
   }
   .time-mark:before {
     margin-left: -25px !important;
@@ -225,7 +225,8 @@
   }
   .time-axis ul li title {
     color:#587284;
-    font-size: 18px;
+    font-size: 15px;
+    display: inline-block;
   }
   .time-axis ul li .description {
     font-size: 14px;

@@ -2,8 +2,8 @@
   <view class="container">
 
     <view class="header">
-      <text data-item="expend" class="{{ statement.type == 'expend' ? 'active' : '' }}" bindtap="changeType">支出</text>
-      <text data-item="income" class="{{ statement.type == 'income' ? 'active' : '' }}" bindtap="changeType">收入</text>
+      <text class="{{ statement.type == 'expend' ? 'active' : '' }}" @tap="changeType('expend')">支出</text>
+      <text class="{{ statement.type == 'income' ? 'active' : '' }}" @tap="changeType('income')">收入</text>
     </view>
 
     <view class="mark-header {{ statement.type }}" bindtap='showCaculation'>
@@ -38,7 +38,7 @@
     <view class="item-category">
       <text>日期</text>
       <view>
-        <picker mode="date" value="{{ statement.date }}" start="2017-01-01" end="2020-01-01" bindchange="dateChange">
+        <picker mode="date" value="{{ statement.date }}" start="2017-01-01" end="{{ dateEndAt }}" bindchange="dateChange">
           <view class="picker">
             {{ statement.date }}
           </view>
@@ -62,7 +62,8 @@
     </view>
     
     <view class="save-btn">
-      <view class="bill-btn" @tap="submitContinue">再记一笔</view>
+      <view class="bill-btn" @tap="submit('true')" wx:if="{{ statement.id == 0 }}">再记一笔</view>
+      <view class="bill-btn" @tap="del" wx:else>删除</view>
       <view class="bill-btn save" @tap="submit">保存</view>
     </view>
 
@@ -128,6 +129,9 @@
         date: "",
         time: ""
       },
+      // 日历 picker 的起始与结束时间
+      dateStartAt: '',
+      dateEndAt: '',
       // 账户
       assets: [],
       multiArray: [[], []],
@@ -169,15 +173,22 @@
       if (this.statement.time != '') time = this.statement.time
       this.statement.date = [year, month, day].join('-')
       this.statement.time = time
-      if (options.id != undefined)
+      this.dateEndAt = `${year}-${month}-${day}`
+      if (options.id != undefined) {
+        this.statement.id = options.id
         this.getStatement(options.id)
-      this.getCategory()
-      this.getAssets()
+      }
+      
+      // 保证获取分类与账户在获取账单之后, 寻找更好的方法？
+      setTimeout(() => {
+        this.getCategory()
+        this.getAssets()
+      }, 300);
+      
     }
 
     methods = {
-      changeType(e) {
-        let item = e.currentTarget.dataset.item
+      changeType(item) {
         let categories = []
         if (item == 'expend') {
           categories = this.expendCategories
@@ -262,7 +273,20 @@
         if (action === 'eq') formula = ''
         this.formula = formula 
       },
-      async submit () {
+      async del () {
+        await tip.confirm('是否删除该记录？')
+        const res = await api.Bill({
+          method: 'DELETE'
+        }, this.statement.id)
+        if (res.data.status == 200) {
+          wepy.navigateBack({
+            delta: 1
+          })
+        } else {
+          tip.error(res.data.msg)
+        }
+      },
+      async submit (redirectTo = false) {
         let method = 'POST'
         let cId = null
         if (this.statement.id != 0) {
@@ -278,28 +302,41 @@
         }, cId);
 
         if (res.data.status == 200) {
-          console.log(res.data.msg)
+          if (redirectTo != 'true') {
+            wepy.navigateBack({
+              delta: 1
+            })
+          } else {
+            wepy.redirectTo({
+              url: '/pages/statement'
+            })
+          }
         } else {
           tip.error(res.data.msg)
         }
       }
     }
-
     async getStatement (id) {
       const res = await api.Bill({}, id);
+      if (res.data.status != undefined && res.data.status != 200) {
+        wepy.navigateBack({
+          delta: 1
+        })
+        tip.error('无效的账单')
+      }
       this.statement = res.data
-
+      this.$apply()
     }
 
     async getCategory () {
       const res = await api.getBillCategories()
       const data = res.data
-      let categories = this.type == 'income' ? data.income_categories : data.expend_categories
+      let categories = this.statement.type == 'income' ? data.income_categories : data.expend_categories
       let cur_name = categories[0][0]['name']
       if (this.statement.category_id != 0) {
         for (let i = 0;i < categories.length;++i) {
           for(let j = 0;j < categories[i].length; ++j) {
-            if (this.categoryId == categories[i][j]['id']) {
+            if (this.statement.category_id == categories[i][j]['id']) {
               cur_name = categories[i][j]['name']
             }
           }
