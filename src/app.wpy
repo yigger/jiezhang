@@ -1,0 +1,190 @@
+<script>
+import wepy from 'wepy'
+import 'wepy-async-function'
+
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      "pages/setting",
+      "pages/category",
+      "pages/statement",
+      "pages/index",
+      "pages/wallet_list",
+      
+      "pages/chart",
+      "pages/wallet",
+      
+      "pages/category_form",
+      "pages/wallet_form",
+    ],
+    window: {
+      backgroundColor: "#fb4b4d",
+      navigationBarBackgroundColor: "#fb4b4d",
+      backgroundTextStyle: "light",
+      navigationBarTitleText: "洁帐",
+      navigationBarTextStyle: "white",
+      enablePullDownRefresh: false
+    },
+    tabBar: {
+      backgroundColor: "#fff",
+      color: "#999",
+      selectedColor: "black",
+      list: [
+        {
+          pagePath: "pages/index",
+          iconPath: "public/images/01.png",
+          selectedIconPath: "public/images/01.png",
+          text: "账单"
+        },
+        {
+          pagePath: "pages/chart",
+          iconPath: "public/images/02.png",
+          selectedIconPath: "public/images/02.png",
+          text: "统计"
+        },
+        {
+          pagePath: "pages/wallet",
+          iconPath: "public/images/03.png",
+          selectedIconPath: "public/images/03.png",
+          text: "资产"
+        },
+        {
+          pagePath: "pages/setting",
+          iconPath: "public/images/04.png",
+          selectedIconPath: "public/images/04.png",
+          text: "我"
+        }
+      ]
+    },
+    networkTimeout: {
+      request: 10000,
+      downloadFile: 10000
+    },
+    debug: true
+  }
+
+  constructor () {
+    super()
+    this.use('requestfix')
+    this.use('promisify');
+  }
+}
+</script>
+<style lang="less">
+@import "public/styles/weui.wxss";
+page {
+  height: 100%;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.theme-color-red {
+  color: #fb4b4d;
+}
+
+.pull-right {
+  float: right;
+}
+
+.pull-left {
+  float: left;
+}
+
+.overflow-hide {
+  overflow: hidden;
+}
+
+.income {
+  color: red;
+}
+
+.expend {
+  color: green;
+}
+
+.center {
+  text-align: center;
+}
+
+.fs8 {
+  font-size: 8px;
+}
+
+.fs10 {
+  font-size: 10px;
+}
+
+.fs12 {
+  font-size: 12px;
+}
+
+.fs14 {
+  font-size: 14px;
+}
+
+.fs16 {
+  font-size: 16px;
+}
+
+.fs18 {
+  font-size: 16px;
+}
+
+.fs20 {
+  font-size: 20px;
+}
+
+.fs22 {
+  font-size: 22px;
+}
+
+.fs24 {
+  font-size: 24rpx;
+}
+
+.fs28 {
+  font-size: 28rpx;
+}
+
+.fs32 {
+  font-size: 32rpx;
+}
+
+.fs36 {
+  font-size: 36rpx;
+}
+
+/* tab */
+
+.chose-tab {
+  text-align: center;
+  width: 100%;
+  margin: auto;
+  padding: 12px 0;
+  font-size: 18px;
+  color: #fb4b4d;
+}
+
+.chose-tab > view {
+  width: 80%;
+  margin: auto;
+  overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid #fb4b4d;
+}
+
+.active-tab {
+  background: #fb4b4d;
+  color: white;
+}
+
+.chose-tab > view > view {
+  width: 50%;
+  text-align: center;
+}
+</style>

@@ -1,0 +1,25 @@
+<template lang="wxml">
+  <view class="empty">
+    <image src="../public/images/empty.png"></image>
+    <view class="title">{{ title }}</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Empty extends wepy.component {
+    
+  }
+</script>
+<style lang="less">
+.empty {
+  text-align: center;
+}
+image {
+  width: 100px;
+  height: 100px;
+}
+.title {
+  color: #999;
+}
+</style>

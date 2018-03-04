@@ -1,0 +1,260 @@
+<template>
+    <view class="container">
+    <view class="grid">
+      <view class="item">
+        <view class="item-name pull-left">
+          <text>账户名</text> </view>
+        <input class="pull-right" value="{{ category.name }}" bindinput="bindKeyName" maxlength="15" placeholder="请输入分类名" />
+      </view>
+
+      <view class="item">
+        <view class="item-name pull-left">
+          <text>图标</text> </view>
+        <image class="icon-image" src="{{ category.icon_path }}"></image>
+      </view>
+
+      <swiper>
+        <swiper-item wx:for="{{ icons }}">
+          <view class="category-flex">
+            <view wx:for="{{item}}" @tap="choseIcon('{{ item }}')">
+              <image src="{{ item }}"></image>
+            </view>
+          </view>
+        </swiper-item>
+      </swiper>
+
+      <view class="item">
+        <view class="item-name pull-left">
+          <text>是否一级分类</text> </view>
+        <switch class="pull-right" checked="{{ isParentLevel }}" bindchange="changeSwitch" />
+      </view>
+
+      <view class="item picker" hidden="{{ isParentLevel }}">
+        <picker range="{{ parentCategories }}" value="{{ curIndex }}" range-key="name" bindchange="changeCategory">
+          <text class="picker-type">所属分类</text>
+          <view class="name">{{ parentCategories[curIndex]['name'] }}</view>
+        </picker>
+      </view>
+    </view>
+
+    <view>
+      <view class="bill-btn save" @tap="submit">保存</view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from "../api/api";
+  import tip from '../utils/tip'
+  export default class CategoryForm extends wepy.page {
+    data = {
+      category: {
+        id: 0,
+        name: '',
+        icon_path: '',
+        type: '',
+        parent_id: 0
+      },
+      icons: [],
+      parentCategories: [],
+      curIndex: 0,
+      isParentLevel: false
+    }
+    
+    methods = {
+      changeSwitch (e) {
+        this.isParentLevel = e.detail.value
+        if (this.isParentLevel) {
+          this.category.parent_id = 0
+        } else {
+          if (this.parentCategories.length > 0)
+            this.category.parent_id = this.parentCategories[this.curIndex]['id']
+        }
+      },
+      changeCategory(e) {
+        let idx = e.detail.value
+        this.curIndex = idx
+        this.category.parent_id = this.parentCategories[idx]['id']
+      },
+      choseIcon (path) {
+        this.category.icon_path = path
+      },
+      bindKeyName (e) {
+        this.category.name = e.detail.value
+      },
+      async submit () {
+        let method = 'POST'
+        let cId = null
+        if (this.category.id != 0) {
+          method = 'PUT'
+          cId = this.category.id
+        }
+
+        const res = await api.Category({
+          method: method,
+          query: { 
+            category: this.category
+          }
+        }, cId);
+
+        if (res.data.status == 200) {
+          wepy.navigateBack({
+            delta: 1
+          })
+        } else {
+          tip.error(res.data.msg)
+        }
+      }
+    }
+
+    onLoad (options) {
+      this.category.type = options.type
+      this.getParentCategories()
+      if (options.id != undefined) {
+        this.getCategory(options.id)
+      }
+      this.getIcons()
+    }
+
+    async getIcons () {
+      const res = await api.CategoryIcon();
+      this.icons = res.data
+      this.$apply()
+    }
+
+    async getCategory(id) {
+      const res = await api.Category({
+        query: {
+          type: this.category.type
+        }
+      }, id);
+      this.category = res.data
+      if (this.category.parent_id != 0) {
+        this.updateCurrentIndex()
+      } else {
+        this.isParentLevel = true
+      }
+      this.$apply()
+    }
+
+    async getParentCategories() {
+      let res = await api.CategoryParent({
+        query: { 
+          type: this.category.type
+        }
+      });
+      this.parentCategories = res.data
+
+      if (this.parentCategories.length > 0 && !this.isParentLevel && this.category.id == 0) {
+        this.category.parent_id = this.parentCategories[0]['id']
+      }
+      this.$apply()
+    }
+
+    updateCurrentIndex () {
+      for (let index in this.parentCategories) {
+        if (this.parentCategories[index]['id'] == this.category.parent_id) {
+          this.curIndex = index
+          return false
+        }
+      }
+    }
+
+  }
+</script>
+<style lang="less">
+.container {
+  font-size:14px;
+}
+.grid {
+  background: #fff;
+  border-bottom: 1px solid #F4F4F4;
+}
+.item {
+  height: 36px;
+  line-height: 36px;
+  padding:6px 16px 6px 12px;
+  border-bottom: 1px solid #F4F4F4;
+}
+.grid .item:last-child {
+  border-bottom: none;
+}
+.item image {
+  width: 25px;
+  height: 25px;
+}
+.item-name {
+  margin-left: 12px;
+}
+.item input {
+  padding-top: 6px;
+  text-align: right;
+}
+
+swiper {
+  height: 90px;
+  border-bottom: 1px solid #F4F4F4;
+}
+.category-flex {
+  overflow:hidden;
+}  
+.category-flex image {
+  width: 30px;
+  height: 30px;
+}
+.category-flex > view {
+  width: 20%;
+  float: left;
+  text-align:center;
+  margin-top: 8px;
+}
+.category-flex .image {
+  height: 30px;
+}
+.category-flex .name {
+  color: #999;
+  font-size: 24rpx;
+  margin-top: 2px;
+}
+.icon-image {
+  margin-top:5px;
+  float:right;
+}
+.picker .name {
+  float: right;
+}
+.picker .picker-type {
+  margin-left:12px;
+}
+
+textarea {
+  height: 90px;
+  padding-left:16px;
+  padding-top:10px;
+}
+.bill-btn {
+  border: 1px solid #fb4b4d;
+  display: block;
+  padding: 4px 0;
+  color: white;
+  text-align: center;
+  font-size: 18px;
+  background: #fb4b4d;
+  margin:12px 8px;
+}
+.delete-btn {
+  border: 1px solid #fb4b4d;
+  padding: 4px 0;
+  color: #fb4b4d;
+  text-align: center;
+  font-size: 18px;
+  margin:12px 8px;
+}
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
+}
+</style>

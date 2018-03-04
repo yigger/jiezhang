@@ -1,0 +1,254 @@
+<template>
+  <view class="container">
+    <view class="grid">
+      <view class="item">
+        <view class="item-name pull-left"> <text>账户名</text> </view>
+        <input class="pull-right" value="{{ wallet.name }}" bindinput="bindKeyName" maxlength="15" placeholder="请输入账户名" />
+      </view>
+
+      <view class="item">
+        <view class="item-name pull-left"> <text>余额</text> </view>
+        <input class="pull-right" value="{{ wallet.amount }}" bindinput="bindKeyAmount" maxlength="10" placeholder="请输入账户余额" />
+      </view>
+      
+
+
+      <view class="item picker">
+        <picker range="{{ parents }}" range-key="name" bindchange="changeType">
+          <text class="picker-type">所属类型</text>
+          <view class="name">{{parents[parentIndex]['name']}}</view>
+        </picker>
+      </view>
+
+      <view class="item picker">
+        <picker range="{{ assetTypes }}" range-key="name" bindchange="changeAssetType">
+          <text class="picker-type">资产类型</text>
+          <view class="name">{{assetTypes[typeIndex]['name']}}</view>
+        </picker>
+      </view>
+
+      <view class="item">
+        <view class="item-name pull-left"> <text>图标</text> </view>
+        <image class="icon-image" src="../../public/{{ wallet.icon_path }}"></image>
+      </view>
+
+      <swiper>
+        <swiper-item wx:for="{{icons}}">
+          <view class="category-flex">
+            <view wx:for="{{item}}" data-path="{{ item.icon }}" bindtap="choseIcon">
+              <image src="../../public/{{ item.icon }}"></image>
+            </view>
+          </view>
+        </swiper-item>
+      </swiper>
+
+      <view>
+        <textarea placeholder-class="place-class" bindinput="bindKeyRemark" value="{{ wallet.remark }}" placeholder="备注" />
+      </view>
+    </view>
+
+    <view>
+      <view class="bill-btn save" bindtap="submit">保存</view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from "../api/api";
+
+  export default class WalletList extends wepy.page {
+    data = {
+      wallet: {
+        id: 0,
+        name: '',
+        amount: 0,
+        parent_id: 0,
+        icon_path: '',
+        remark: '',
+        type: ''
+      },
+      mehotd: '',
+      parents: [],
+      parentIndex: 0,
+      icons: [],
+      assetTypes: [
+        { name: '存款账户', key: 'deposit' },
+        { name: '负债账户', key: 'debt' }
+      ],
+      typeIndex: 0
+    }
+
+    methods = {
+      bindKeyName (e) {
+        this.name = e.detail.value
+      },
+      bindKeyAmount (e) {
+        this.amount = e.detail.value
+      },
+      bindKeyRemark (e) {
+        this.remark = e.detail.value
+      },
+      choseIcon (e) {
+        let path = e.currentTarget.dataset.path
+        this.currentIcon = path
+      },
+      changeType(e) {
+        let value = e.detail.value
+        this.parentIndex = value
+        this.wallet.parent_id = this.assets[value]['id']
+      },
+      changeAssetType (e) {
+        let value = e.detail.value
+        this.typeIndex = value
+        this.wallet.type = this.assetTypes[value]['key']
+      },
+      submit () {
+      //   let url = config.api.assets
+      //   if(this.data.method == 'PUT') {
+      //     url = url + '/' + this.data.assetId
+      //   }
+      //   let params = {
+      //     name: this.data.name, // 账户名
+      //     amount: this.data.amount, // 余额
+      //     parent_id: this.data.assets[this.data.index]['id'], //所属类型
+      //     icon_path: this.data.currentIcon, // 图标路径
+      //     remark: this.data.remark // 备注
+      //   }
+      //   qcloud.request({
+      //     method: this.data.method,
+      //     url: url,
+      //     data: params,
+      //     success: function (response) {
+      //       let data = response.data
+      //       if (data.status == 200) {
+              
+      //       }
+      //     },
+      //     fail: function (err) {
+      //       console.log(err);
+      //     }
+      //   });
+      }
+    }
+
+    onLoad (options) {
+      this.getParent()
+      if (options.id != undefined) {
+        this.getWallet(options.id)
+      }
+      // this.getIcons()
+    }
+
+    async getWallet (id) {
+      const json = await api.Wallet({}, id)
+      this.wallet = json.data
+      if (this.wallet.parent_id != 0) {
+        for (let index in this.parents) {
+          if (this.parents[index]['id'] == this.wallet.parent_id) {
+            this.parentIndex = index
+            break
+          }
+        }
+      }
+      this.$apply()
+    }
+
+    async getParent() {
+      const json = await api.WalletParent()
+      this.parents = json.data
+      this.$apply()
+    }
+
+  }
+</script>
+
+<style>
+/* pages/newasset/newasset.wxss */
+.container {
+  /* background: #F4F4F4; */
+  font-size:14px;
+}
+.grid {
+  background: #fff;
+  border-bottom: 1px solid #F4F4F4;
+}
+.item {
+  height: 36px;
+  line-height: 36px;
+  padding:6px 16px 6px 12px;
+  border-bottom: 1px solid #F4F4F4;
+}
+.grid .item:last-child {
+  border-bottom: none;
+}
+.item image {
+  width: 25px;
+  height: 25px;
+}
+.item-name {
+  margin-left: 12px;
+}
+.item input {
+  padding-top: 6px;
+  text-align: right;
+}
+
+swiper {
+  height: 90px;
+  border-bottom: 1px solid #F4F4F4;
+}
+.category-flex {
+  overflow:hidden;
+}  
+.category-flex image {
+  width: 30px;
+  height: 30px;
+}
+.category-flex > view {
+  width: 20%;
+  float: left;
+  text-align:center;
+  margin-top: 8px;
+}
+.category-flex .image {
+  height: 30px;
+}
+.category-flex .name {
+  color: #999;
+  font-size: 24rpx;
+  margin-top: 2px;
+}
+.icon-image {
+  margin-top:5px;
+  float:right;
+}
+.picker .name {
+  float: right;
+}
+.picker .picker-type {
+  margin-left:12px;
+}
+
+textarea {
+  height: 90px;
+  padding-left:16px;
+  padding-top:10px;
+}
+.bill-btn {
+  border: 1px solid #fb4b4d;
+  display: block;
+  padding: 4px 0;
+  color: white;
+  text-align: center;
+  font-size: 18px;
+  background: #fb4b4d;
+  margin:12px 8px;
+}
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
+}
+</style>

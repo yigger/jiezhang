@@ -1,0 +1,249 @@
+<template>
+  <view class="container">
+    <view class="header">
+      <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
+        <swiper-item>
+          <view class="swiper-item today">
+            <view class="today-pay">今日付款 {{ swiper.pay_num }} 笔，合计</view>
+            <view class="today-total">¥ {{ swiper.today_pay }}</view>
+          </view>
+        </swiper-item>
+        <swiper-item>
+          <view class="swiper-item">
+            <view class="today-pay">预算剩余</view>
+            <view class="today-total">¥ {{ swiper.budget }}</view>
+            <canvas class="budget" canvas-id="canvasArc"></canvas>
+          </view>
+        </swiper-item>
+      </swiper>
+    </view>
+    
+    <view class="normal new-bill">
+      <navigator open-type="navigateTo" url="/pages/showBill/showBill">
+        <button>记一笔</button>
+      </navigator>
+    </view>
+
+    <view class="content">
+      <view class="time-axis">
+        <ul>
+          <!--li class="normal time-mark">今天</li-->
+          <li wx:for="{{ list }}" data-index="{{ item.id }}" bindtap="showBill">
+            <view>
+              <title>{{ item.childCategory }}</title>
+              <money class="pull-right {{ item.type }}">{{ item.money }}</money>
+            </view>
+            <view class="description">{{ item.remark }}</view>
+            <view class="order-info overflow-hide">
+              <category class="pull-left">
+                <label wx-if="{{ item.category != null }}">{{ item.category }}</label>
+                <label>{{ item.asset }}</label>
+              </category>
+              <time class="pull-right">{{ item.timeStr }}</time>
+            </view>
+            <view class="category-icon"><image src="../../public/{{ item.category_icon }}" /></view>
+          </li>
+        </ul>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from "../api/api";
+  export default class Index extends wepy.page {
+    data = {
+      indicatorDots: true,
+      autoplay: false,
+      duration: 600,
+      list: [],
+      curPage: 1,
+      swiper: {
+        today_pay: 0,
+        pay_num: 0,
+        budget: 0,
+      },
+      preventRepeatReuqest: false
+    }
+
+    methods = {
+      showBill (e) {
+        let id = e.currentTarget.dataset.index;
+        wx.navigateTo({
+          url: `/pages/showBill/showBill?id=${id}`
+        })
+      }
+    }
+
+    onLoad () {
+      this.getList()
+    }
+
+    onReachBottom () {
+      if (this.preventRepeatReuqest) return true
+      this.preventRepeatReuqest = true;
+      this.curPage ++
+      this.getList()
+      this.preventRepeatReuqest = false
+    }
+
+    async getList() {
+      const res = await api.getIndexList({
+        query: {
+          page: this.curPage
+        }
+      })
+      const data = res.data
+      this.list = [...this.list, ...data.statements]
+      this.swiper = data.swiper
+      this.$apply()
+    }
+  }
+</script>
+<style lang="less">
+  swiper {
+    height:180px;
+  }
+  .header {
+    background: #fb4b4d;
+    background-size: cover;
+    color: white;
+  }
+  .swiper-item {
+    padding: 50px 0;
+    text-align: center;
+    position: relative;
+    width:100%;
+    margin:0 auto;
+  }
+  .today {
+    background-size: cover;
+    background-position:5px -85px;
+  }
+  .today-pay {
+    font-size: 12px;
+  }
+  .today-total {
+    font-weight: 600;
+  }
+  .cur-month-progress {
+    padding: 0 20px;
+  }
+  .new-record-btn {
+    margin-bottom:8px;
+    position:relative;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    padding-left:14px;
+    padding-right:14px;
+    box-sizing:border-box;
+    font-size:18px;
+    text-align:center;
+    text-decoration:none;
+    line-height:2;
+    border-radius:3px;
+    -webkit-tap-highlight-color:transparent;
+    overflow:hidden;
+    color:white;
+    background-color:#48C4FE;
+  }
+
+  .new-bill {
+    margin:12px;
+  }
+  .new-bill button {
+    border-radius: 2px;
+    background:rgba(251,75,77,0.9);
+    color: white;
+    box-shadow:0px 0px 1px #ccc;
+    text-align:center;
+    line-height: 2;
+  }
+  .new-bill:before {
+    content:none !important;
+  }
+
+  .content {
+    border-top: 1px solid #efefef;
+  }
+
+  /* 时间轴 */
+  .time-mark {
+    font-size: 18px;
+    color: #bfa073;
+    font-weight: bold;
+  }
+
+  .time-axis {
+    position: relative;
+    padding:16px 12px;
+  }
+
+  .time-axis ul:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background:#efefef;
+    left: 30px;
+    margin-left: -10px;
+  }
+  .time-axis ul li {
+    position: relative;
+    margin-left:33px;
+    margin-bottom:12px;
+    /*overflow: hidden;*/
+    display:block;
+  }
+  .time-axis ul li image {
+    width: 30px;
+    height: 30px;
+  }
+  .time-axis ul li .category-icon {
+    position: absolute;
+    top: 14px;
+    left: -40px;
+    
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    text-align: center;
+    border: 1px solid #efefef;
+    background: white;
+  }
+  .time-axis ul li:not(.normal) {
+    box-shadow:0px 0px 1px #ccc;
+    border-radius:2px;
+    padding:12px;
+  }
+  .time-mark:before {
+    margin-left: -25px !important;
+  }
+  .time-axis ul li > view {
+    margin-bottom: 2px;
+  }
+  .time-axis ul li title {
+    color:#587284;
+    font-size: 18px;
+  }
+  .time-axis ul li .description {
+    font-size: 14px;
+    color: #6a6a6a;
+  }
+  .time-axis ul li category {
+    font-size:12px;
+  }
+  .time-axis ul li category label {
+    padding: 3px 5px;
+    background-color: #EFEFEF;
+    color: #6a6a6a;
+    margin-right: 8rpx;
+  }
+  .time-axis ul li time {
+    font-size:12px;
+    color: #9B9B9B;
+  }
+</style>

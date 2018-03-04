@@ -1,0 +1,142 @@
+<template>
+<view class="container">
+  <view class="header overflow-hide">
+    <image class="pull-left" src="{{ user.avatar_url }}" />
+    <view class="pull-left user-info">
+      <view>{{ user.name }}</view>
+      <view>个人信息> </view>
+    </view>
+    <view class="pull-right remark-day">已坚持记账 {{ user.persist }} 天</view>
+  </view>
+
+  <view class="weui-cells weui-cells_after-title cell-list">
+    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__bd">预算设置</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access">{{ user.budget }}</view>
+    </navigator>
+
+    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active" bindtap="waiting">
+      <view class="weui-cell__bd">主题设置</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+    </navigator>
+
+    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active" bindtap="waiting">
+      <view class="weui-cell__bd">消费分析</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+    </navigator>
+
+    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__bd">图表浏览</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+    </navigator>
+
+    <navigator url="/pages/wallet_list" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__bd">资产类型管理</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+    </navigator>
+
+    <navigator url="/pages/category?type=expend" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__bd">支出分类管理</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+    </navigator>
+
+    <navigator url="/pages/category?type=income" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__bd">收入分类管理</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+    </navigator>
+  </view>
+
+  <view class="weui-cells weui-cells_after-title cell-list">
+    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__bd">帮助与反馈</view>
+    </navigator>
+
+    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__bd">分享小程序</view>
+    </navigator>
+
+    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__bd">关于理记通</view>
+      <view class="weui-cell__ft">v1.0</view>
+    </navigator>
+  </view>
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import qcloud from '../utils/index'
+  import config from '../utils/config'
+  export default class Setting extends wepy.page {
+    data = {
+      user: {}
+    }
+
+		methods = {
+      waiting() {
+        wx.showToast({
+          title: '敬请期待',
+          icon: "none",
+          duration: 2000
+        })
+      }
+    }
+    
+    async onLoad () {
+			this.getData()
+    }
+    
+    getData () {
+      let self = this
+      qcloud.request({
+        url: config.api.setting,
+        success: function (response) {
+          self.setData({
+            user: response.data
+          })
+        },
+        fail: function (err) {
+          console.log(err);
+        }
+      });
+    }
+  }
+</script>
+<style lang="less">
+page {
+  height: 100%;
+  background: #F4F4F4;
+}
+.header {
+  padding:12px;
+  background: white;
+}
+.header image {
+  width: 50px; 
+  height: 50px; 
+  display: block;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+.user-info {
+  font-size: 14px;
+}
+.remark-day {
+  line-height:45px;
+  font-size: 14px;
+  color: #999;
+}
+.cell-list {
+  margin-bottom: 12px;
+}
+.cell-list:last-child {
+  margin: 0;
+}
+.weui-cells {
+  font-size:15px;
+}
+.weui-cell {
+  padding:15px !important;
+}
+</style>

@@ -1,0 +1,234 @@
+<template>
+<view class="container">
+  <view class="wallet-header">
+    <view class="assets">
+      <view>
+        <view style='font-size: 28px'>{{ netWorth }}</view>
+        <view style='font-size: 14px'>净资产</view>
+      </view>
+
+      <view class="right">
+        <view class="fs14">
+          <text>总资产</text>
+          <text>{{ totalAssets }}</text>
+        </view>
+        <view class="fs14">
+          <text>总负债</text>
+          <text>{{ totalDebt }}</text>
+        </view>
+      </view>
+    </view>
+    <view class="yesterday-amount">
+      <view>
+        <text>昨日结余：</text>
+        <text>{{ yesterdayAmount }}</text>
+      </view>
+      <view>
+        <text>近七日日均消费：</text>
+        <text>{{ seventAmount }}</text>
+      </view>
+      <view>
+        <text>近一月日均消费：</text>
+        <text>{{ monthAmount }}</text>
+      </view>
+    </view>
+  </view>
+
+  <view id="all-assets">
+    <view class="asset" wx:for="{{ wallets }}">
+      <text class="fs12">{{ item.header }}</text>
+      <view class="column" wx:for="{{ item.list }}" data-id="{{ item.id }}" bindtap="showAsset">
+        <view class="icon pull-left">
+          <image src="../../public/{{ item.icon_path }}"></image>
+        </view>
+        <view class="money pull-right">{{ item.amount }}</view>
+        <view class="title">{{ item.name }}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="add-wallet">
+    <image src="../../public/images/wallet-add.png"></image>
+    <text class="fs16" bindtap="newAsset">添加账户</text>
+  </view>
+  
+</view>
+</template>
+
+<script>
+	import wepy from 'wepy'
+  import api from "../api/api";
+  export default class Wallet extends wepy.page {
+		data = {
+			tab: 'assets',
+    	wallets: [],
+			netWorth: 0,
+			totalAssets: 0,
+			totalDebt: 0,
+			yesterdayAmount: 0,
+			seventAmount: 0,
+			monthAmount: 0
+		}
+		onLoad () {
+			this.getAssets()
+		}
+
+		async getAssets() {
+      const res = await api.Wallet();
+      let data = res.data
+      let list = data.list
+      let header = data.header
+      this.netWorth = header.net_worth,
+      this.totalAssets = header.total_asset,
+      this.totalDebt = header.total_liability,
+      this.yesterdayAmount = header.yesterday_balance,
+      this.seventAmount = header.sevent_day_consumption,
+      this.monthAmount = header.last_month_consumption,
+      this.wallets = list
+      this.$apply()
+		}
+
+		methods = {
+			changeTab(event) {
+				this.tab = event.currentTarget.dataset.item
+			},
+			newAsset() {
+				wx.navigateTo({
+					url: `/pages/asset/asset`
+				})
+			},
+			showAsset (e) {
+				let id = e.currentTarget.dataset.id;
+				wx.navigateTo({
+					url: `/pages/asset/asset?id=${id}`
+				})
+			}
+		}
+  }
+</script>
+<style lang="less">
+.wallet-header {
+  height: 180px;
+  position: relative;
+  background: linear-gradient(rgba(251, 75, 77, 1), rgba(241, 75, 77, 0.8)); /* 标准的语法 */
+  box-shadow: 0 0 10px #ccc;
+}
+
+.wallet-header .assets {
+  height: 120px;
+}
+
+.wallet-header .assets > view {
+  float: left;
+  width: 50%;
+  color: white;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.wallet-header .assets > view:last-child {
+  margin-top: 50px;
+}
+
+.assets .right > view {
+  float: left;
+  margin-left: 32px;
+}
+
+.assets .right > view > text {
+  margin-right: 14px;
+}
+
+.yesterday-amount {
+  color: white;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* 昨日结余等字体右对齐 */
+
+/* .yesterday-amount > view > text:first-child {
+  width: 110px;
+  display: inline-block;
+  text-align: right;
+} */
+
+#all-assets {
+  background: #f2f2f2;
+}
+
+#all-assets .asset {
+  background: #fff;
+  padding: 0 12px;
+  margin-bottom: 12px;
+  box-shadow: 0px 0px 1px #ccc;
+}
+
+#all-assets .asset:last-child {
+  margin-bottom: 0;
+}
+
+#all-assets .asset > text {
+  color: #333;
+}
+
+.column:before, .column:after {
+  display: table;
+  content: " ";
+}
+
+.column:after {
+  clear: both;
+}
+
+#all-assets .column {
+  padding: 6px 0;
+}
+
+#all-assets .column .icon {
+  width: 30px;
+  height: 30px;
+}
+
+#all-assets .asset image {
+  width: 30px;
+  height: 30px;
+}
+
+#all-assets .column .title {
+  margin-left: 30px;
+  margin-right: 90px;
+  padding-left: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #efefef;
+  font-size: 16px;
+}
+
+#all-assets .column:last-child .title, #all-assets .column:last-child .money {
+  border: none;
+}
+
+#all-assets .column .money {
+  width: 90px;
+  padding-bottom: 8px;
+  padding-right: 4px;
+  border-bottom: 1px solid #efefef;
+  font-size: 16px;
+  text-align: right;
+  height: 100%;
+  color: #999;
+}
+.add-wallet {
+  display:flex;
+  justify-content:center;
+  padding:4px 0;
+  color: #999;
+  margin: 4px 0;
+}
+.add-wallet image {
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  margin-right: 4px;
+}
+</style>
