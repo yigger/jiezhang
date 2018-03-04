@@ -22,7 +22,12 @@ const getBillCategories = (params) => wxRequest(params, `${apiUrl}/bills/categor
 const Chart = (params) => wxRequest(params, `${apiUrl}/chart`);
 
 // 资产管理
-const Assets = (params) => wxRequest(params, `${apiUrl}/assets`);
+const Asset = (params, c_id = 0) => {
+  let url = `${apiUrl}/assets`
+  if (c_id != null && c_id != 0) url = `${url}/${c_id}`
+  return wxRequest(params, url)
+}
+
 const AssetIcon = () => wxRequest({}, `${apiUrl}/icons/assets`);
 
 // 个人设置
@@ -54,7 +59,7 @@ module.exports = {
   getBillAssets,
   getBillCategories,
   Chart,
-  Assets,
+  Asset,
   AssetIcon,
   Settings,
   Category,

@@ -10,10 +10,14 @@
         <view class="item-name pull-left"> <text>余额</text> </view>
         <input class="pull-right" value="{{ wallet.amount }}" bindinput="bindKeyAmount" maxlength="10" placeholder="请输入账户余额" />
       </view>
-      
 
+      <view class="item">
+        <view class="item-name pull-left">
+          <text>是否一级分类</text> </view>
+        <switch class="pull-right" checked="{{ isParentLevel }}" bindchange="changeSwitch" />
+      </view>
 
-      <view class="item picker">
+      <view class="item picker" hidden="{{ isParentLevel }}">
         <picker range="{{ parents }}" range-key="name" bindchange="changeType">
           <text class="picker-type">所属类型</text>
           <view class="name">{{parents[parentIndex]['name']}}</view>
@@ -29,14 +33,14 @@
 
       <view class="item">
         <view class="item-name pull-left"> <text>图标</text> </view>
-        <image class="icon-image" src="../../public/{{ wallet.icon_path }}"></image>
+        <image class="icon-image" src="{{ wallet.icon_path }}"></image>
       </view>
 
       <swiper>
         <swiper-item wx:for="{{icons}}">
           <view class="category-flex">
-            <view wx:for="{{item}}" data-path="{{ item.icon }}" bindtap="choseIcon">
-              <image src="../../public/{{ item.icon }}"></image>
+            <view wx:for="{{item}}" @tap="choseIcon('{{ item }}')">
+              <image src="{{ item }}"></image>
             </view>
           </view>
         </swiper-item>
@@ -48,7 +52,7 @@
     </view>
 
     <view>
-      <view class="bill-btn save" bindtap="submit">保存</view>
+      <view class="bill-btn save" @tap="submit">保存</view>
     </view>
   </view>
 </template>
@@ -56,7 +60,7 @@
 <script>
   import wepy from 'wepy'
   import api from "../api/api";
-
+  import tip from '../utils/tip'
   export default class WalletList extends wepy.page {
     data = {
       wallet: {
@@ -76,80 +80,85 @@
         { name: '存款账户', key: 'deposit' },
         { name: '负债账户', key: 'debt' }
       ],
-      typeIndex: 0
+      typeIndex: 0,
+      isParentLevel: false
     }
 
     methods = {
       bindKeyName (e) {
-        this.name = e.detail.value
+        this.wallet.name = e.detail.value
       },
       bindKeyAmount (e) {
-        this.amount = e.detail.value
+        this.wallet.amount = e.detail.value
       },
       bindKeyRemark (e) {
-        this.remark = e.detail.value
+        this.wallet.remark = e.detail.value
       },
-      choseIcon (e) {
-        let path = e.currentTarget.dataset.path
-        this.currentIcon = path
+      choseIcon (file_path) {
+        this.wallet.icon_path = file_path
       },
       changeType(e) {
         let value = e.detail.value
         this.parentIndex = value
-        this.wallet.parent_id = this.assets[value]['id']
+        this.wallet.parent_id = this.parents[value]['id']
+      },
+      changeSwitch (e) {
+        this.isParentLevel = e.detail.value
+        if (this.isParentLevel) {
+          this.wallet.parent_id = 0
+        } else {
+          if (this.parents.length > 0)
+            this.wallet.parent_id = this.parents[this.parentIndex]['id']
+        }
       },
       changeAssetType (e) {
         let value = e.detail.value
         this.typeIndex = value
         this.wallet.type = this.assetTypes[value]['key']
       },
-      submit () {
-      //   let url = config.api.assets
-      //   if(this.data.method == 'PUT') {
-      //     url = url + '/' + this.data.assetId
-      //   }
-      //   let params = {
-      //     name: this.data.name, // 账户名
-      //     amount: this.data.amount, // 余额
-      //     parent_id: this.data.assets[this.data.index]['id'], //所属类型
-      //     icon_path: this.data.currentIcon, // 图标路径
-      //     remark: this.data.remark // 备注
-      //   }
-      //   qcloud.request({
-      //     method: this.data.method,
-      //     url: url,
-      //     data: params,
-      //     success: function (response) {
-      //       let data = response.data
-      //       if (data.status == 200) {
-              
-      //       }
-      //     },
-      //     fail: function (err) {
-      //       console.log(err);
-      //     }
-      //   });
+      async submit () {
+        let method = 'POST'
+        let cId = null
+        if (this.wallet.id != 0) {
+          method = 'PUT'
+          cId = this.wallet.id
+        }
+
+        const res = await api.Asset({
+          method: method,
+          query: {
+            wallet: this.wallet
+          }
+        }, cId);
+
+        if (res.data.status == 200) {
+          wepy.navigateBack({
+            delta: 1
+          })
+        } else {
+          tip.error(res.data.msg)
+        }
       }
     }
 
     onLoad (options) {
+      this.wallet.type = this.assetTypes[this.typeIndex]['key']
+
       this.getParent()
       if (options.id != undefined) {
         this.getWallet(options.id)
       }
-      // this.getIcons()
+      this.getIcons()
     }
 
     async getWallet (id) {
       const json = await api.Wallet({}, id)
       this.wallet = json.data
+      if (this.wallet.type == 'debt') this.typeIndex = 1
       if (this.wallet.parent_id != 0) {
-        for (let index in this.parents) {
-          if (this.parents[index]['id'] == this.wallet.parent_id) {
-            this.parentIndex = index
-            break
-          }
-        }
+        this.updateCurrentIndex()
+      } else {
+        this.isParentLevel = true
       }
       this.$apply()
     }
@@ -157,9 +166,26 @@
     async getParent() {
       const json = await api.WalletParent()
       this.parents = json.data
+      if (this.parents.length > 0 && !this.isParentLevel && this.wallet.id == 0) {
+        this.wallet.parent_id = this.parents[0]['id']
+      }
       this.$apply()
     }
 
+    async getIcons () {
+      const res = await api.AssetIcon()
+      this.icons = res.data
+      this.$apply()
+    }
+
+    updateCurrentIndex () {
+      for (let index in this.parents) {
+        if (this.parents[index]['id'] == this.wallet.parent_id) {
+          this.parentIndex = index
+          return false
+        }
+      }
+    }
   }
 </script>
 

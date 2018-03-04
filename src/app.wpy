@@ -6,14 +6,17 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
+      "pages/wallet_list",
+      "pages/wallet",
+
       "pages/setting",
       "pages/category",
       "pages/statement",
       "pages/index",
-      "pages/wallet_list",
+      
       
       "pages/chart",
-      "pages/wallet",
+      
       
       "pages/category_form",
       "pages/wallet_form",

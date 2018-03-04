@@ -16,10 +16,12 @@
       </view>
     </view>
 
-    <view class="add-wallet" @tap.stop="add">
-      <image src="../../public/images/wallet-add.png"></image>
-      <text class="fs16" bindtap="newAsset">添加资产类型</text>
-    </view>
+    <navigator url="/pages/wallet_form">
+      <view class="add-wallet">
+        <image src="../../public/images/wallet-add.png"></image>
+        <text class="fs16" bindtap="newAsset">添加资产类型</text>
+      </view>
+    </navigator>
   </view>
 </template>
 
@@ -46,8 +48,12 @@
     onLoad () {
       this.getList()
     }
-    
-    async getList(options) {
+
+    onShow () {
+      this.getList()
+    }
+
+    async getList() {
       const json = await api.WalletList();
       this.wallets = json.data
       this.$apply()
