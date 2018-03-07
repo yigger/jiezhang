@@ -92,7 +92,7 @@
 .wallet-header {
   height: 180px;
   position: relative;
-  background: linear-gradient(rgba(251, 75, 77, 1), rgba(241, 75, 77, 0.8)); /* 标准的语法 */
+  background: linear-gradient(rgba(251, 75, 77, 1), rgba(241, 75, 77, 0.9)); /* 标准的语法 */
   box-shadow: 0 0 10px #ccc;
 }
 

@@ -1,7 +1,16 @@
 <template>
   <view class="container">
     <view class="header">
-      <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
+      <!-- <view></view> -->
+      <view class="bottom">
+        <view class="fs14">现金</view>
+        <view class="fs21">5220.72</view>
+        <view class="overflow-hide">
+          <view class="pull-left fs16">总资产 5223.77</view>
+          <view class="pull-right fs16">本月可用 3333.88</view>
+        </view>
+      </view>
+      <!-- <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
         <swiper-item>
           <view class="swiper-item today">
             <view class="today-pay">今日付款 {{ swiper.pay_num }} 笔，合计</view>
@@ -15,7 +24,7 @@
             <canvas class="budget" canvas-id="canvasArc"></canvas>
           </view>
         </swiper-item>
-      </swiper>
+      </swiper> -->
     </view>
     
     <view class="normal new-bill">
@@ -101,13 +110,18 @@
   }
 </script>
 <style lang="less">
-  swiper {
-    height:180px;
-  }
   .header {
+    position: relative;
+    width: 100%;
     background: #fb4b4d;
-    background-size: cover;
     color: white;
+    height:180px;
+    .bottom {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      left:0;
+    }
   }
   .swiper-item {
     padding: 50px 0;

@@ -1,10 +1,10 @@
 <template>
   <view class="container">
-    <text class="title">此产品由个人独立开发，所以或多或少会存在程序的错误以及部分不合理的功能，您可在此写下对此产品的想法或者建议，之后我会根据您的建议进行反复思考与改进，感谢您的支持与配合</text>
+    <text class="title zan-c-gray-darker">此产品由个人独立开发，所以或多或少会存在程序的错误以及部分不合理的功能，您可在此写下对此产品的想法或者建议，之后我会根据您的建议进行反复思考与改进，感谢您的支持与配合</text>
     <view class="section">
       <textarea placeholder="请输入反馈信息"  bindinput="bindKeyRemark" value="{{ content }}" auto-focus maxlength="-1" />
     </view>
-    <view class="bill-btn save" @tap="submit">保存</view>
+    <button class="zan-btn zan-btn--danger" @tap="submit">提交</button>
   </view>
 </template>
 
@@ -46,13 +46,14 @@
 </script>
 <style lang="less">
 page {
-  height: 100%;
   background: #F4F4F4;
+}
+.zan-btn {
+  margin:8px;
 }
 .title {
   font-size: 16px;
   color: #999;
-  margin: 12px 4px;
 }
 textarea {
   width: 100%;

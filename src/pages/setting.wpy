@@ -9,56 +9,60 @@
     <view class="pull-right remark-day">已坚持记账 {{ user.persist }} 天</view>
   </view>
 
-  <view class="weui-cells weui-cells_after-title cell-list">
-    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-      <view class="weui-cell__bd">预算设置</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access">{{ user.budget }}</view>
-    </navigator>
+  <view class="zan-panel">
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">预算设置</view>
+      <view class="zan-cell__ft">{{ user.budget }}</view>
+    </view>
 
-    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active" bindtap="waiting">
-      <view class="weui-cell__bd">主题设置</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-    </navigator>
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">主题设置</view>
+      <view class="zan-cell__ft"></view>
+    </view>
 
-    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active" bindtap="waiting">
-      <view class="weui-cell__bd">消费分析</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-    </navigator>
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">消费分析</view>
+      <view class="zan-cell__ft"></view>
+    </view>
 
-    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-      <view class="weui-cell__bd">图表浏览</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-    </navigator>
-
-    <navigator url="/pages/wallet_list" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-      <view class="weui-cell__bd">资产类型管理</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-    </navigator>
-
-    <navigator url="/pages/category?type=expend" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-      <view class="weui-cell__bd">支出分类管理</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-    </navigator>
-
-    <navigator url="/pages/category?type=income" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-      <view class="weui-cell__bd">收入分类管理</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-    </navigator>
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">图表浏览</view>
+      <view class="zan-cell__ft"></view>
+    </view>
   </view>
 
-  <view class="weui-cells weui-cells_after-title cell-list">
-    <navigator url="/pages/feedback" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-      <view class="weui-cell__bd">帮助与反馈</view>
-    </navigator>
+  <view class="zan-panel">
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/wallet_list')">
+      <view class="zan-cell__bd">资产类型管理</view>
+      <view class="zan-cell__ft"></view>
+    </view>
 
-    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-      <view class="weui-cell__bd">分享小程序</view>
-    </navigator>
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/category?type=expend')">
+      <view class="zan-cell__bd">支出分类管理</view>
+      <view class="zan-cell__ft"></view>
+    </view>
 
-    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-      <view class="weui-cell__bd">关于理记通</view>
-      <view class="weui-cell__ft">v1.0</view>
-    </navigator>
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/category?type=income')">
+      <view class="zan-cell__bd">收入分类管理</view>
+      <view class="zan-cell__ft"></view>
+    </view>
+  </view>
+
+  <view class="zan-panel">
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/feedback')">
+      <view class="zan-cell__bd">帮助与反馈</view>
+      <view class="zan-cell__ft"></view>
+    </view>
+
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">分享小程序</view>
+      <view class="zan-cell__ft"></view>
+    </view>
+
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">关于理记通</view>
+      <view class="zan-cell__ft">V1.0</view>
+    </view>
   </view>
 
 </view>
@@ -78,6 +82,14 @@
 			this.getData()
     }
     
+    methods = {
+      redirect (url) {
+        wepy.navigateTo({
+          url: url
+        })
+      }
+    }
+
     async getData () {
       const res = await api.Settings()
       this.user = res.data

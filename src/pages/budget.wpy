@@ -1,0 +1,67 @@
+<template>
+  <view class="container">
+    <view>您可设置多笔预算，系统将根据您选择的时候来计算您的预算账户以及信息</view>
+    
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from "../api/api";
+
+  export default class Category extends wepy.page {
+    data = {
+      
+    }
+
+    methods = {
+      
+    }
+
+    onLoad (options) {
+      
+    }
+    
+  }
+</script>
+
+<style>
+.category {
+  position: relative;
+  display: flex;
+  border-bottom: 1px solid #efefef;
+  align-items:center;
+}
+.parent-category {
+  padding:6px 0 6px 12px;
+}
+.child-category {
+  padding:6px 0 6px 36px;
+}
+image {
+  width: 30px;
+  height: 30px;
+}
+.image {
+  width: 30px;
+  height: 30px;
+  margin-right: 4px;
+}
+.category-name {
+  font-size: 16px;
+}
+
+.add-wallet {
+  display:flex;
+  justify-content:center;
+  padding:4px 0;
+  color: #999;
+  margin: 4px 0;
+}
+.add-wallet image {
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  margin-right: 4px;
+}
+</style>

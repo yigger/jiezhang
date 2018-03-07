@@ -6,9 +6,11 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      "pages/chart",
-      "pages/index",
       "pages/setting",
+      "pages/index",
+      "pages/chart",
+      
+      
       "pages/wallet_list",
       "pages/wallet",
       "pages/category",
@@ -72,15 +74,9 @@ export default class extends wepy.app {
 }
 </script>
 <style lang="less">
-@import "public/styles/weui.wxss";
+@import "/public/styles/dist/index.wxss";
 page {
   height: 100%;
-}
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box;
 }
 
 .theme-color-red {
@@ -107,84 +103,16 @@ page {
   color: green;
 }
 
-.center {
-  text-align: center;
-}
-
-.fs8 {
-  font-size: 8px;
-}
-
-.fs10 {
-  font-size: 10px;
-}
-
 .fs12 {
-  font-size: 12px;
-}
-
-.fs14 {
-  font-size: 14px;
-}
-
-.fs16 {
-  font-size: 16px;
-}
-
-.fs18 {
-  font-size: 16px;
-}
-
-.fs20 {
-  font-size: 20px;
-}
-
-.fs22 {
-  font-size: 22px;
-}
-
-.fs24 {
   font-size: 24rpx;
 }
 
-.fs28 {
+.fs14 {
   font-size: 28rpx;
 }
 
-.fs32 {
+.fs16 {
   font-size: 32rpx;
 }
 
-.fs36 {
-  font-size: 36rpx;
-}
-
-/* tab */
-
-.chose-tab {
-  text-align: center;
-  width: 100%;
-  margin: auto;
-  padding: 12px 0;
-  font-size: 18px;
-  color: #fb4b4d;
-}
-
-.chose-tab > view {
-  width: 80%;
-  margin: auto;
-  overflow: hidden;
-  border-radius: 5px;
-  border: 1px solid #fb4b4d;
-}
-
-.active-tab {
-  background: #fb4b4d;
-  color: white;
-}
-
-.chose-tab > view > view {
-  width: 50%;
-  text-align: center;
-}
 </style>

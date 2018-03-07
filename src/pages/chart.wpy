@@ -4,7 +4,7 @@
     <view class="calendar box box-tb">
 
     <picker mode="date" value="{{curYearMonth}}" bindchange="bindDateChange">
-      <view class="cur-month fs18"> {{ curYearMonth }} </view>
+      <view class="cur-month fs16"> {{ curYearMonth }} </view>
     </picker>
 
       <view class="weeks box box-lr box-pack-center box-align-center">
@@ -69,7 +69,7 @@
         <view class="single" wx:for="{{ mutiple.list }}" bindtap="showStatement('{{ item.id }}')" hidden="{{ mutiple.hidden }}">
           <view class="pull-left col999 date-time">
             <view class="fs14">{{ item.day }}</view>
-            <view class="fs10">{{ item.year }}</view>
+            <view class="fs12">{{ item.year }}</view>
           </view>
           <view class="{{ item.type }} pull-right">{{ item.money }}</view>
           <view class="information">
@@ -292,10 +292,6 @@
   display: block;
 }
 
-.chose-tab {
-  font-size: 16px !important;
-  box-shadow: 0px 1px 0px #f3f3f3 !important;
-}
 
 .assets {
   padding: 6px 0px;
