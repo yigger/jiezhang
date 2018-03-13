@@ -1,0 +1,64 @@
+<template>
+  <view class="container">
+    <view class="zan-panel">
+      <view class="zan-cell">
+        <view class="zan-cell__bd">ID</view>
+        <view class="zan-cell__ft">8548989</view>
+      </view>
+    </view>
+    
+    <view class="zan-panel">
+     
+      <view class="zan-cell">
+        <view class="zan-cell__bd">头像</view>
+        <view class="zan-cell__ft"><image class="my-avatar" src="../../public/images/mine.jpg"></image></view>
+      </view>
+
+      <view class="zan-cell">
+        <view class="zan-cell__bd">昵称</view>
+        <view class="zan-cell__ft">xiaoyoung</view>
+      </view>
+
+      <view class="zan-cell">
+        <view class="zan-cell__bd">邮箱</view>
+        <view class="zan-cell__ft">21738331@qq.com</view>
+      </view>
+
+      <view class="zan-cell">
+        <view class="zan-cell__bd">手机号码</view>
+        <view class="zan-cell__ft">18025049049</view>
+      </view>
+
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from "../api/api";
+
+  export default class UserInfo extends wepy.page {
+    data = {
+      
+    }
+
+    methods = {
+      
+    }
+
+    onLoad () {
+      
+    }
+    
+  }
+</script>
+
+<style lang="less">
+  page {
+    background: #f2f2f2;
+  }
+  .my-avatar {
+    width: 50px;
+    height: 50px;
+  }
+</style>

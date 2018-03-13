@@ -1,30 +1,22 @@
 <template>
   <view class="container">
     <view class="header">
-      <!-- <view></view> -->
-      <view class="bottom">
-        <view class="fs14">现金</view>
-        <view class="fs21">5220.72</view>
+      <image class="bg" src="../public/images/dawn-sun-mountain-landscape-65865.jpeg"></image>
+      <view class="notification">
+        <image src="../public/images/notification.png"></image>
+      </view>
+      <view class="level-2">
+        <view class="fs14">
+          <text>今日支出</text>
+          <text class="pay-num"> 3 </text>
+          <text>笔，共</text>
+        </view>
+        <view class="fs21 today-expend">5220.72</view>
         <view class="overflow-hide">
-          <view class="pull-left fs16">总资产 5223.77</view>
-          <view class="pull-right fs16">本月可用 3333.88</view>
+          <view class="pull-left fs16">本月支出 5223.77</view>
+          <view class="pull-right fs16">预算剩余 3333.88</view>
         </view>
       </view>
-      <!-- <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
-        <swiper-item>
-          <view class="swiper-item today">
-            <view class="today-pay">今日付款 {{ swiper.pay_num }} 笔，合计</view>
-            <view class="today-total">¥ {{ swiper.today_pay }}</view>
-          </view>
-        </swiper-item>
-        <swiper-item>
-          <view class="swiper-item">
-            <view class="today-pay">预算剩余</view>
-            <view class="today-total">¥ {{ swiper.budget }}</view>
-            <canvas class="budget" canvas-id="canvasArc"></canvas>
-          </view>
-        </swiper-item>
-      </swiper> -->
     </view>
     
     <view class="normal new-bill">
@@ -85,7 +77,7 @@
     }
 
     onLoad () {
-      this.getList()
+      // this.getList()
     }
 
     onReachBottom () {
@@ -112,23 +104,46 @@
 <style lang="less">
   .header {
     position: relative;
-    width: 100%;
-    background: #fb4b4d;
     color: white;
-    height:180px;
-    .bottom {
+    height: 230px;
+    .bg {
       position: absolute;
-      bottom: 0;
       width: 100%;
-      left:0;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
     }
-  }
-  .swiper-item {
-    padding: 50px 0;
-    text-align: center;
-    position: relative;
-    width:100%;
-    margin:0 auto;
+    .level-2 {
+      position: absolute;
+      bottom: 12px;
+      width: 100%;
+      .today-expend {
+        font-size:32px;
+        margin-bottom: 8px;
+      }
+      > view {
+        padding: 0 8px;
+      }
+    }
+    .pay-num {
+      background: rgb(32,86,174);
+      margin: 0 2px;
+    }
+    .notification {
+      position: absolute;
+      top:21px;
+      right:21px;
+      width: 30px;
+      height: 30px;
+      background: black;
+      border-radius: 50%;
+      padding: 4px;
+      image {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
   .today {
     background-size: cover;

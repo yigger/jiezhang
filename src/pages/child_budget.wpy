@@ -1,27 +1,26 @@
 <template>
   <view class="container">
-    <view class="header">
 
-      <view class="level-1">
-        <view class="budget-amount fs32">49999.00</view>
-        <view class="fs12">支出总预算</view>
-      </view>
+    <view class="parent">
+      <view class="budget-info">
+        <view class="left"><image src="../public/images/01.png"></image></view>
+        <view class="right">
+          <view class="title">
+            <text class="fs16 pull-left">伙食酒水</text>
+            <text class="balance pull-right fs14">余额 1,123.00</text>
+          </view>
+          <!-- 进度条 -->
+          <view class="progress">
+            <view class="orange"></view>
+            <view class="gray"></view>
+          </view>
 
-      <view class="level-2">
-        <view>
-          <text>15689.88</text>
-          <view class="fs12">已用</view>
+          <view class="fs12 budget-amount">支出预算 1,600.00</view>
         </view>
-
-        <view>
-          <text>15689.88</text>
-          <view class="fs12">可用</view>
-        </view>
       </view>
-
     </view>
 
-    <view class="center">
+    <view class="child">
       <view class="budget-info">
         <view class="left"><image src="../public/images/01.png"></image></view>
         <view class="right">
@@ -89,7 +88,6 @@
           <view class="fs12 budget-amount">支出预算 1,600.00</view>
         </view>
       </view>
-
     </view>
 
   </view>
@@ -99,7 +97,7 @@
   import wepy from 'wepy'
   import api from "../api/api";
 
-  export default class Budget extends wepy.page {
+  export default class ChildBudget extends wepy.page {
     data = {
       
     }
@@ -116,33 +114,19 @@
 </script>
 
 <style lang="less">
-  page {
-    background: #f2f2f2;
-  }
   .container {
     height: 100%;
-  }
-  .header {
-    height: 125px;
-    position: relative;
-    background: linear-gradient(rgba(251, 75, 77, 1), rgba(241, 75, 77, 0.9)); /* 标准的语法 */
-    box-shadow: 0 0 10px #ccc;
-    color: white;
-    padding:0 12px;
-    .level-2 {
-      margin-top:16px;
+    .parent {
+      background: #f2f2f2;
+      border-bottom: 1px solid #ccc;
+      .left {
+        background: #f2f2f2 !important;
+      }
     }
-    .level-2 > view {
-      width: 50%;
-      text-align: left;
-      display: inline-block;
+    .child .budget-info .right {
+      border-bottom: 1px solid #f2f2f2;
     }
-  }
-  .center {
-    background: white;
-    // margin-top:8px;
-    height: 100%;
-    .budget-info {
+    .parent .budget-info, .child .budget-info {
       // padding: 4px 12px;
       padding:4px 12px 4px 6px;
       .left {
@@ -159,7 +143,6 @@
       .right {
         margin-left: 46px;
         padding-bottom: 8px;
-        border-bottom: 1px solid #f2f2f2;
         
         .title {
           overflow: hidden;

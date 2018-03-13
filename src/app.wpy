@@ -6,8 +6,15 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      "pages/setting",
+      "pages/user_info",
+      "pages/child_budget",
+      "pages/budget",
+      
       "pages/index",
+      
+      
+      "pages/setting",
+      
       "pages/chart",
       
       
@@ -113,6 +120,10 @@ page {
 
 .fs16 {
   font-size: 32rpx;
+}
+
+.fs32 {
+  font-size: 32px;
 }
 
 </style>
