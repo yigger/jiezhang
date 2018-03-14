@@ -14,8 +14,8 @@
         </view>
         <view class="fs21 today-expend">{{ header.today_pay }}</view>
         <view class="overflow-hide">
-          <view class="pull-left fs16">本月支出 {{ header.month_pay }}</view>
-          <view class="pull-right fs16">预算剩余 {{ header.budget }}</view>
+          <view class="pull-left fs14">本月支出 {{ header.month_pay }}</view>
+          <navigator url="/pages/budget"><view class="pull-right fs14">预算剩余 {{ header.budget }}</view></navigator>
         </view>
       </view>
     </view>
@@ -32,10 +32,10 @@
           <!--li class="normal time-mark">今天</li-->
           <li wx:for="{{ list }}" @tap="statement('{{ item.id }}')">
             <view>
-              <title>{{ item.category }}</title>
-              <money class="pull-right {{ item.type }}">{{ item.money }}</money>
+              <text class="title fs16">{{ item.category }}</text>
+              <text class="pull-right money {{ item.type }}">{{ item.money }}</text>
             </view>
-            <view class="description">{{ item.remark }}</view>
+            <view class="description">{{ item.remark || '　' }}</view>
             <view class="order-info overflow-hide">
               <category class="pull-left">
                 <!-- <label wx:if="{{ item.category != null }}">{{ item.category }}</label> -->
@@ -253,9 +253,8 @@
   .time-axis ul li > view {
     margin-bottom: 2px;
   }
-  .time-axis ul li title {
+  .time-axis ul li .title {
     color:#587284;
-    font-size: 15px;
     display: inline-block;
   }
   .time-axis ul li .description {
