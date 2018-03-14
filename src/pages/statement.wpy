@@ -6,11 +6,10 @@
       <text class="{{ statement.type == 'income' ? 'active' : '' }}" @tap="changeType('income')">收入</text>
     </view>
 
-    <view class="mark-header {{ statement.type }}" bindtap='showCaculation'>
+    <view class="mark-header {{ statement.type }}" @tap='showCaculate'>
       <view class="icon-name">{{ curCategoryName }}</view>
       <view class="amount pull-right">
-        <view>{{ statement.amount }}</view>
-        <view> {{ formula }}</view>
+        <view class="fs21">{{ statement.amount }}</view>
       </view>
     </view>
 
@@ -67,43 +66,17 @@
       <view class="bill-btn save" @tap="submit">保存</view>
     </view>
 
-    <view class="caculation" wx:if="{{ showCaculation }}">
-      <!-- <view class="close" bindtap='hideCaculation'><image src="../../public/images/down.png"></image></view> -->
-      <view class="btnGroup">
-        <view class="item" data-num="7" bindtap="caculatBtn">7</view>
-        <view class="item" data-num="8" bindtap="caculatBtn">8</view>
-        <view class="item" data-num="9" bindtap="caculatBtn">9</view>
-        <view class="item" data-num="minus" bindtap="caculatBtn">-</view>
-      </view>
-      <view class="btnGroup">
-        <view class="item" data-num="4" bindtap="caculatBtn">4</view>
-        <view class="item" data-num="5" bindtap="caculatBtn">5</view>
-        <view class="item" data-num="6" bindtap="caculatBtn">6</view>
-        <view class="item" data-num="plus" bindtap="caculatBtn">+</view>
-      </view>
-      <view class="btnGroup">
-        <view class="item" data-num="1" bindtap="caculatBtn">1</view>
-        <view class="item" data-num="2" bindtap="caculatBtn">2</view>
-        <view class="item" data-num="3" bindtap="caculatBtn">3</view>
-        <view class="item" data-num="eq" bindtap="caculatBtn">=</view>
-      </view>
-      <view class="btnGroup">
-        <!-- <view class="item" data-num=".">.</view> -->
-        <view class="item" data-num="cls" bindtap="caculatBtn">C</view> 
-        <view class="item" data-num="0" bindtap="caculatBtn">0</view>
-        <view class="item" data-num="del" bindtap="caculatBtn">
-          <image class="caculate-back" data-num="del" bindtap="caculatBtn" src="../../public/images/caculate-back.png"></image>
-        </view>
-        <view class="item" bindtap="caculatok">OK</view>
-      </view>
-    </view>
+    <caculate @invokeCaculation.user="invokeCaculation" hidden="{{ !showCaculation }}"></caculate>
   </view>
+  
 </template>
 
 <script>
   import wepy from 'wepy'
   import api from "../api/api"
   import tip from '../utils/tip'
+  import Caculate from '../components/caculate'
+
   export default class Statement extends wepy.page {
     data = {
       showCaculation: false,
@@ -132,27 +105,17 @@
       // 日历 picker 的起始与结束时间
       dateStartAt: '',
       dateEndAt: '',
+
       // 账户
       assets: [],
       multiArray: [[], []],
       multiIndex: [0, 0],
-      defaultAsset: 0,
-
-      //计算器相关
-      formula: '',
-      op: {
-        'plus': '+',
-        'minus': '-',
-        'mul': '*',
-        'div': '/'
-      },
-      opArr: ['+', '-', '*', '/'],
-      infix: [],
-      suffix: [],
-      result: [],
-      lastVal: 0,
-      calcDone: false
+      defaultAsset: 0
     }
+
+    components = {
+      caculate: Caculate
+    };
 
     onLoad (options) {
       let myDate = new Date();
@@ -237,41 +200,13 @@
           this.multiIndex[1] = value
         }
       },
-      caculatBtn(event) {
-        var val = event.target.dataset.num;
-        var action = val;
-        if (!isNaN(parseInt(val, 10))) {
-          this.buildInfix(parseInt(val, 10), 'add');
-          this.calculate();
-          // 操作：清除、删除、计算等于
-        } else if (['cls', 'del', 'eq'].indexOf(val) !== -1) {
-          if (this.infix.length == 0) {
-            this.resetData();
-            return;
-          }
-          // 清空
-          if (action === 'cls' || (action === 'del' && this.calcDone)) {
-            this.resetData();
-          } else if (action === 'del') {
-            // 重新构建中缀表达式
-            this.buildInfix('', 'del');
-            this.calculate();
-          }
-          // 等于
-          else if (action === 'eq') {
-            this.calculate('eq');
-          }
-        } else if (this.isOp(this.op[action])) {
-          if (!this.infix.length && (this.op[action] === '*' || this.op[action] === '/')) {
-            return;
-          }
-          this.buildInfix(this.op[action], 'add');
-        }
-
-        let formula = this.infix.join('');
-        formula = (formula.length == 0) ? formula : formula + '='
-        if (action === 'eq') formula = ''
-        this.formula = formula 
+      showCaculate() {
+        this.showCaculation = true
+      },
+      invokeCaculation(amount) {
+        console.log(amount)
+        this.statement.amount = amount
+        this.showCaculation = false
       },
       async del () {
         await tip.confirm('是否删除该记录？')
@@ -316,6 +251,7 @@
         }
       }
     }
+
     async getStatement (id) {
       const res = await api.Bill({}, id);
       if (res.data.status != undefined && res.data.status != 200) {
@@ -373,157 +309,6 @@
         }
       }
       this.$apply()
-    }
-
-    // 计算器的方法
-    resetData () {
-      this.infix          = []
-      this.suffix         = []
-      this.result         = []
-      this.lastVal        = 0
-      this.curDot         = false
-      this.statement.amount      = '0.00'
-    }
-
-    isOp (op) {
-      return op && this.opArr.indexOf(op) !== -1;
-    }
-
-    // 判断运算符优先级
-    priorHigher (a, b) {
-      return (a === '+' || a === '-') && (b === '*' || b === '/');
-    }
-
-    opCalc (b, op, a) {
-      return op === '+'
-        ? a + b
-        : op === '-'
-          ? a - b
-          : op === '*'
-            ? a * b
-            : op === '/'
-              ? a / b
-              : 0;
-    }
-
-    // 构建中缀表达式
-    buildInfix (val, type) {
-      var newVal;
-      // 标志着计算已经完成
-      if (this.calcDone) {
-        this.calcDone = false;
-        if (!this.isOp(val)) {
-          this.resetData();
-        } else {
-          var re = this.result[0];
-          this.resetData();
-          this.infix.push(re);
-        }
-      }
-
-      if (type === 'del') {
-        newVal = this.infix.pop();
-        newVal = Math.floor(newVal / 10);
-        if (newVal) {
-          this.infix.push(newVal);
-        }
-        if (this.infix.length - 1 >= 0) {
-          this.lastVal = this.infix[this.infix.length - 1];
-        } else {
-          this.lastVal = 0;
-        }
-      } else if (type === 'add') {
-        // 两个连续的运算符
-        if (this.isOp(val) && this.isOp(this.lastVal)) {
-          newVal = this.infix.pop();
-          this.infix.push(val);
-          return this.infix;
-        } else if (!this.isOp(val) && !this.isOp(this.lastVal)) {
-          newVal = this.lastVal * 10 + val;
-          this.infix.pop();
-          this.lastVal = newVal
-          this.infix.push(newVal);
-          return this.infix;
-        }
-        this.lastVal = val;
-        this.infix.push(val);
-        return this.infix;
-      }
-    }
-
-    calculate (type) {
-      if (this.infix.length % 2 == 0 && this.infix.length != 1) {
-        return
-      }
-      this.infix2Suffix()
-      this.calcSuffix()
-      if (this.statement.amount) {
-        if (type === 'eq') {
-          this.calcDone = true
-          this.lastVal = this.statement.amount
-        }
-      }
-    }
-
-    calcSuffix () {
-      this.result = [];
-      for (var i = 0; i < this.suffix.length; i++) {
-        if (!this.isOp(this.suffix[i])) {
-          this.result.push(this.suffix[i])
-        } else {
-          this.result.push(this.opCalc(this.result.pop(), this.suffix[i], this.result.pop()))
-        }
-      }
-      this.statement.amount = this.result.length == 0 ? '0.00' : `${this.result[0]}.00`
-    }
-
-    // 中缀表达式转后缀
-    infix2Suffix () {
-      let temp = []
-      this.suffix = []
-      for (var i = 0; i < this.infix.length; i++) {
-        if (!this.isOp(this.infix[i])) {
-          this.suffix.push(this.infix[i])
-        }
-        else {
-          if (!temp.length) {
-            temp.push(this.infix[i])
-          } else {
-            var opTop = temp[temp.length - 1]
-            // 循环判断运算符优先级，将运算符较高的压入后缀表达式
-            if (!this.priorHigher(opTop, this.infix[i])) {
-              while (temp.length && !this.priorHigher(opTop, this.infix[i])) {
-                this.suffix.push(temp.pop())
-                opTop = temp[temp.length - 1]
-              }
-            }
-            // 将当前运算符也压入后缀表达式
-            temp.push(this.infix[i])
-          }
-        }
-      }
-      // 将剩余运算符号压入
-      while (temp.length) {
-        this.suffix.push(temp.pop())
-      }
-    }
-
-    caculatok() {
-      this.infix          = []
-      this.suffix         = []
-      this.result         = []
-      this.lastVal        = 0
-      this.formula        = ''
-      this.curDot         = false
-      this.showCaculation = false
-    }
-
-    showCaculation() {
-      this.showCaculation = true
-    }
-
-    hideCaculation() {
-      this.showCaculation = false
     }
 
   }
@@ -590,17 +375,9 @@ swiper {
   height: 100%;
 }
 
-.mark-header .amount > view:first-child {
-  height: 67%;
+.mark-header .amount > view {
   text-align: right;
-  line-height: 45px;
-  font-size: 18px;
-}
-
-.mark-header .amount > view:last-child {
-  height: 50%;
-  text-align: right;
-  font-size: 10px;
+  line-height: 50px;
 }
 
 .item-category {
