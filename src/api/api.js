@@ -34,10 +34,7 @@ const Asset = (params, c_id = 0) => {
 
 const AssetIcon = () => wxRequest({}, `${apiUrl}/icons/assets`);
 
-// 个人设置
-const Settings = (params) => wxRequest(params, `${apiUrl}/settings`);
-// 反馈
-const Feedback = (params) => wxRequest(params, `${apiUrl}/settings/feedback`);
+
 
 // 资产 & 资产设置
 const Wallet = (params, c_id = 0) => {
@@ -55,8 +52,23 @@ const Category = (params, c_id = 0) => {
 }
 
 const CategoryParent = (params) => wxRequest(params, `${apiUrl}/category/parent`);
-
 const CategoryIcon = () => wxRequest({}, `${apiUrl}/icons/categories`);
+
+// 个人设置
+const Settings = (params) => wxRequest(params, `${apiUrl}/settings`);
+// 反馈
+const Feedback = (params) => wxRequest(params, `${apiUrl}/settings/feedback`);
+// 个人信息
+const User = (params, c_id = 0) => {
+  let url = `${apiUrl}/users`
+  if (c_id != null && c_id != 0) url = `${url}/${c_id}`
+  return wxRequest(params, url)
+}
+
+// 预算管理界面
+const Budget = () => wxRequest({}, `${apiUrl}/budgets`);
+const BudgetParent = () => wxRequest({}, `${apiUrl}/budgets/parent`);
+const BudgetDetail = (id) => wxRequest({}, `${apiUrl}/budgets/${id}`);
 
 module.exports = {
   getIndexList,
@@ -73,5 +85,9 @@ module.exports = {
   WalletList,
   WalletParent,
   CategoryIcon,
-  Feedback
+  Feedback,
+  User,
+  Budget,
+  BudgetParent,
+  BudgetDetail
 }

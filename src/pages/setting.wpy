@@ -1,6 +1,6 @@
 <template>
 <view class="container">
-  <view class="header overflow-hide">
+  <view class="header overflow-hide" @tap="redirect('/pages/user_info')">
     <image class="pull-left" src="{{ user.avatar_url }}" />
     <view class="pull-left user-info">
       <view>{{ user.name }}</view>
@@ -10,7 +10,7 @@
   </view>
 
   <view class="zan-panel">
-    <view class="zan-cell zan-cell--access">
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/budget')">
       <view class="zan-cell__bd">预算设置</view>
       <view class="zan-cell__ft">{{ user.budget }}</view>
     </view>
@@ -78,7 +78,7 @@
       user: {}
     }
 
-    onLoad () {
+    onShow () {
 			this.getData()
     }
     

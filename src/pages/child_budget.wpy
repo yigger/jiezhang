@@ -3,11 +3,11 @@
 
     <view class="parent">
       <view class="budget-info">
-        <view class="left"><image src="../public/images/01.png"></image></view>
+        <view class="left"><image src="{{ budget.icon_path }}"></image></view>
         <view class="right">
           <view class="title">
-            <text class="fs16 pull-left">伙食酒水</text>
-            <text class="balance pull-right fs14">余额 1,123.00</text>
+            <text class="fs16 pull-left">{{ budget.name }}</text>
+            <text class="balance pull-right fs14">余额 {{ budget.left }}</text>
           </view>
           <!-- 进度条 -->
           <view class="progress">
@@ -15,81 +15,32 @@
             <view class="gray"></view>
           </view>
 
-          <view class="fs12 budget-amount">支出预算 1,600.00</view>
+          <view class="fs12 budget-amount">支出预算 {{ budget.amount }}</view>
         </view>
       </view>
     </view>
 
     <view class="child">
-      <view class="budget-info">
+
+      <view class="budget-info" wx:for="{{ budget.childs }}">
         <view class="left"><image src="../public/images/01.png"></image></view>
         <view class="right">
           <view class="title">
-            <text class="fs16 pull-left">伙食酒水</text>
-            <text class="balance pull-right fs14">余额 1,123.00</text>
+            <text class="fs16 pull-left">{{ item.name }}</text>
+            <text class="balance pull-right fs14">余额 {{ item.left }}</text>
           </view>
+          
           <!-- 进度条 -->
           <view class="progress">
             <view class="orange"></view>
             <view class="gray"></view>
           </view>
 
-          <view class="fs12 budget-amount">支出预算 1,600.00</view>
+          <view class="fs12 budget-amount">支出预算 {{ item.amount }}</view>
         </view>
       </view>
 
-      <view class="budget-info">
-        <view class="left"><image src="../public/images/01.png"></image></view>
-        <view class="right">
-          <view class="title">
-            <text class="fs16 pull-left">伙食酒水</text>
-            <text class="balance pull-right fs14">余额 1,123.00</text>
-          </view>
-          <!-- 进度条 -->
-          <view class="progress">
-            <view class="orange"></view>
-            <view class="gray"></view>
-          </view>
-
-          <view class="fs12 budget-amount">支出预算 1,600.00</view>
-        </view>
-      </view>
-
-      <view class="budget-info">
-        <view class="left"><image src="../public/images/01.png"></image></view>
-        <view class="right">
-          <view class="title">
-            <text class="fs16 pull-left">伙食酒水</text>
-            <text class="balance pull-right fs14">余额 1,123.00</text>
-          </view>
-          <!-- 进度条 -->
-          <view class="progress">
-            <view class="orange"></view>
-            <view class="gray"></view>
-          </view>
-
-          <view class="fs12 budget-amount">支出预算 1,600.00</view>
-        </view>
-      </view>
-
-      <view class="budget-info">
-        <view class="left"><image src="../public/images/01.png"></image></view>
-        <view class="right">
-          <view class="title">
-            <text class="fs16 pull-left">伙食酒水</text>
-            <text class="balance pull-right fs14">余额 1,123.00</text>
-          </view>
-          <!-- 进度条 -->
-          <view class="progress">
-            <view class="orange"></view>
-            <view class="gray"></view>
-          </view>
-
-          <view class="fs12 budget-amount">支出预算 1,600.00</view>
-        </view>
-      </view>
     </view>
-
   </view>
 </template>
 
@@ -99,17 +50,27 @@
 
   export default class ChildBudget extends wepy.page {
     data = {
-      
+      budget: {}
     }
 
     methods = {
       
     }
 
-    onLoad () {
-      
+    onLoad (options) {
+      let id = options.id
+      this.getData(id)
     }
-    
+
+    async getData(id) {
+      const res = await api.BudgetDetail(id)
+      this.budget = res.data
+      this.$apply()
+    }
+
+    async update() {
+
+    }
   }
 </script>
 

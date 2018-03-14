@@ -5,16 +5,17 @@
       <view class="notification">
         <image src="../public/images/notification.png"></image>
       </view>
+
       <view class="level-2">
         <view class="fs14">
           <text>今日支出</text>
-          <text class="pay-num"> 3 </text>
+          <text class="pay-num"> {{ header.pay_num }} </text>
           <text>笔，共</text>
         </view>
-        <view class="fs21 today-expend">5220.72</view>
+        <view class="fs21 today-expend">{{ header.today_pay }}</view>
         <view class="overflow-hide">
-          <view class="pull-left fs16">本月支出 5223.77</view>
-          <view class="pull-right fs16">预算剩余 3333.88</view>
+          <view class="pull-left fs16">本月支出 {{ header.month_pay }}</view>
+          <view class="pull-right fs16">预算剩余 {{ header.budget }}</view>
         </view>
       </view>
     </view>
@@ -60,7 +61,7 @@
       duration: 600,
       list: [],
       curPage: 1,
-      swiper: {
+      header: {
         today_pay: 0,
         pay_num: 0,
         budget: 0,
@@ -76,8 +77,8 @@
       }
     }
 
-    onLoad () {
-      // this.getList()
+    onShow () {
+      this.getList()
     }
 
     onReachBottom () {
@@ -96,7 +97,7 @@
       })
       const data = res.data
       this.list = [...this.list, ...data.statements]
-      this.swiper = data.swiper
+      this.header = data.header
       this.$apply()
     }
   }

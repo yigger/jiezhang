@@ -3,18 +3,18 @@
     <view class="header">
 
       <view class="level-1">
-        <view class="budget-amount fs32">49999.00</view>
+        <view class="budget-amount fs32">{{ header.amount }}</view>
         <view class="fs12">支出总预算</view>
       </view>
 
       <view class="level-2">
         <view>
-          <text>15689.88</text>
+          <text>{{ header.used }}</text>
           <view class="fs12">已用</view>
         </view>
 
         <view>
-          <text>15689.88</text>
+          <text>{{ header.left }}</text>
           <view class="fs12">可用</view>
         </view>
       </view>
@@ -22,12 +22,12 @@
     </view>
 
     <view class="center">
-      <view class="budget-info">
-        <view class="left"><image src="../public/images/01.png"></image></view>
+      <view class="budget-info" wx:for="{{ list }}" @tap="redirect('{{ item.id }}')">
+        <view class="left"><image src="{{ item.icon_path }}"></image></view>
         <view class="right">
           <view class="title">
-            <text class="fs16 pull-left">伙食酒水</text>
-            <text class="balance pull-right fs14">余额 1,123.00</text>
+            <text class="fs16 pull-left">{{ item.name }}</text>
+            <text class="balance pull-right fs14">余额 {{ item.left }}</text>
           </view>
           <!-- 进度条 -->
           <view class="progress">
@@ -35,61 +35,9 @@
             <view class="gray"></view>
           </view>
 
-          <view class="fs12 budget-amount">支出预算 1,600.00</view>
+          <view class="fs12 budget-amount">支出预算 {{ item.amount }}</view>
         </view>
       </view>
-
-      <view class="budget-info">
-        <view class="left"><image src="../public/images/01.png"></image></view>
-        <view class="right">
-          <view class="title">
-            <text class="fs16 pull-left">伙食酒水</text>
-            <text class="balance pull-right fs14">余额 1,123.00</text>
-          </view>
-          <!-- 进度条 -->
-          <view class="progress">
-            <view class="orange"></view>
-            <view class="gray"></view>
-          </view>
-
-          <view class="fs12 budget-amount">支出预算 1,600.00</view>
-        </view>
-      </view>
-
-      <view class="budget-info">
-        <view class="left"><image src="../public/images/01.png"></image></view>
-        <view class="right">
-          <view class="title">
-            <text class="fs16 pull-left">伙食酒水</text>
-            <text class="balance pull-right fs14">余额 1,123.00</text>
-          </view>
-          <!-- 进度条 -->
-          <view class="progress">
-            <view class="orange"></view>
-            <view class="gray"></view>
-          </view>
-
-          <view class="fs12 budget-amount">支出预算 1,600.00</view>
-        </view>
-      </view>
-
-      <view class="budget-info">
-        <view class="left"><image src="../public/images/01.png"></image></view>
-        <view class="right">
-          <view class="title">
-            <text class="fs16 pull-left">伙食酒水</text>
-            <text class="balance pull-right fs14">余额 1,123.00</text>
-          </view>
-          <!-- 进度条 -->
-          <view class="progress">
-            <view class="orange"></view>
-            <view class="gray"></view>
-          </view>
-
-          <view class="fs12 budget-amount">支出预算 1,600.00</view>
-        </view>
-      </view>
-
     </view>
 
   </view>
@@ -101,17 +49,34 @@
 
   export default class Budget extends wepy.page {
     data = {
-      
+      header: {},
+      list: []
     }
 
     methods = {
-      
+      redirect (id) {
+        wepy.redirectTo({
+          url: '/pages/child_budget?id='+id
+        })
+      }
     }
 
     onLoad () {
-      
+      this.getHeaderData()
+      this.getParentBudget()
     }
-    
+
+    async getHeaderData() {
+      const res = await api.Budget()
+      this.header = res.data
+      this.$apply()
+    }
+
+    async getParentBudget() {
+      const res = await api.BudgetParent()
+      this.list = res.data
+      this.$apply()
+    }
   }
 </script>
 

@@ -3,30 +3,34 @@
     <view class="zan-panel">
       <view class="zan-cell">
         <view class="zan-cell__bd">ID</view>
-        <view class="zan-cell__ft">8548989</view>
+        <view class="zan-cell__ft">{{ user.id }}</view>
       </view>
     </view>
-    
     <view class="zan-panel">
-     
       <view class="zan-cell">
         <view class="zan-cell__bd">头像</view>
-        <view class="zan-cell__ft"><image class="my-avatar" src="../../public/images/mine.jpg"></image></view>
+        <view class="zan-cell__ft"><image class="my-avatar" src="{{ user.avatar_url }}"></image></view>
       </view>
-
+      
       <view class="zan-cell">
         <view class="zan-cell__bd">昵称</view>
-        <view class="zan-cell__ft">xiaoyoung</view>
+        <view class="zan-cell__ft">
+          <input type="text" value="{{ user.nickname }}" bindinput="_nicknameChange"/>
+        </view>
       </view>
 
       <view class="zan-cell">
         <view class="zan-cell__bd">邮箱</view>
-        <view class="zan-cell__ft">21738331@qq.com</view>
+        <view class="zan-cell__ft">
+          <input type="text" value="{{ user.email }}" bindinput="_emailChange"/>
+        </view>
       </view>
 
       <view class="zan-cell">
         <view class="zan-cell__bd">手机号码</view>
-        <view class="zan-cell__ft">18025049049</view>
+        <view class="zan-cell__ft">
+          <input type="text" value="{{ user.phone }}" bindinput="_phoneChange" />
+        </view>
       </view>
 
     </view>
@@ -36,23 +40,47 @@
 <script>
   import wepy from 'wepy'
   import api from "../api/api";
-
   export default class UserInfo extends wepy.page {
     data = {
-      
+      user: {}
     }
 
     methods = {
-      
+      _nicknameChange (e) {
+        this.user.nickname = e.detail.value
+      },
+      _emailChange (e) {
+        this.user.email = e.detail.value
+      },
+      _phoneChange (e) {
+        this.user.phone = e.detail.value
+      }
     }
 
-    onLoad () {
-      
+    onUnload () {
+      this.updateUser()
+    }
+
+    onShow () {
+      this.getUser()
     }
     
+    async getUser () {
+      const res = await api.User()
+      this.user = res.data
+      this.$apply()
+    }
+
+    async updateUser () {
+      const res = await api.User({
+        method: 'PUT',
+        query: {
+          user: this.user
+        }
+      }, 1)
+    }
   }
 </script>
-
 <style lang="less">
   page {
     background: #f2f2f2;
