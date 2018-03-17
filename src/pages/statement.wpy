@@ -213,6 +213,7 @@
           method: 'DELETE'
         }, this.statement.id)
         if (res.data.status == 200) {
+          this.updatePrevPage(this.statement.id, 'DELETE')
           wepy.navigateBack({
             delta: 1
           })
@@ -245,9 +246,20 @@
               url: '/pages/statement'
             })
           }
+          // 保存成功后更新上个页面的数据
+          this.updatePrevPage(res.data.msg.id, method)
         } else {
           tip.error(res.data.msg)
         }
+      }
+    }
+
+    updatePrevPage(id, method) {
+      const pages = getCurrentPages()
+      const prevPage = pages[pages.length - 2]
+      const path = prevPage.route
+      if (path == 'pages/index') {
+        prevPage.updateStatement(id, method.toLowerCase())
       }
     }
 
@@ -314,6 +326,8 @@
 <style>
 swiper {
   height:290rpx;
+  background:#f8f8f8;
+  border-bottom:1px solid #ccc;
 }
 .header {
   background: #fb4b4d;

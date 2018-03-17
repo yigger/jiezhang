@@ -8,6 +8,8 @@ const apiUrl = 'http://git.com/api'
 
 // 获取首页数据
 const getIndexList = (params) => wxRequest(params, `${apiUrl}/index`);
+const getIndexHeader = (params) => wxRequest(params, `${apiUrl}/header`);
+const getIndexBill = (params) => wxRequest(params, `${apiUrl}/bill`);
 
 // 获取账单
 const Bill = (params, c_id = 0) => {
@@ -73,6 +75,8 @@ const BudgetUpdate = (params) => wxRequest(params, `${apiUrl}/budgets/0`);
 
 module.exports = {
   getIndexList,
+  getIndexHeader,
+  getIndexBill,
   Bill,
   getBillAssets,
   getBillCategories,

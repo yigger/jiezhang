@@ -90,11 +90,34 @@
     }
 
     onLoad () {
+      this.getHeader()
       this.getList()
     }
 
     onShow () {
       if (this.$parent.globalData.indexList) this.getList()
+    }
+
+    // 此函数用于 statement.wpy 里更新后调用
+    updateStatement (id, type) {
+      // 此处应使用二分查找
+      if (type == 'update' || type == 'delete') {
+        let index = 0
+        for(let item of this.list) {
+          if (item.id == id) {
+            if(type == 'delete') {
+              this.list.splice(index, 1)
+            } else {
+              this.getStatementById(item, id)
+            }
+            break
+          }
+          index += 1
+        }
+      } else {
+        this.addStatementById(id)
+      }
+      this.getHeader()
     }
 
     onReachBottom () {
@@ -105,6 +128,12 @@
       this.preventRepeatReuqest = false
     }
 
+    async getHeader () {
+      const res = await api.getIndexHeader()
+      this.header = res.data
+      this.$apply()
+    }
+
     async getList() {
       const res = await api.getIndexList({
         query: {
@@ -112,10 +141,27 @@
         }
       })
       const data = res.data
-      this.list = [...this.list, ...data.statements]
-      this.header = data.header
+      this.list = [...this.list, ...data]
       this.$apply()
     }
+
+    async getStatementById(obj, id) {
+      const res = await api.getIndexBill({
+        query: { id: id }
+      })
+      Object.assign(obj, res.data)
+      this.$apply()
+    }
+
+    async addStatementById(id) {
+      const res = await api.getIndexBill({
+        query: { id: id }
+      })
+
+      this.list = [res.data].concat(this.list)
+      this.$apply()
+    }
+
   }
 </script>
 <style lang="less">
