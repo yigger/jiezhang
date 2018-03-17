@@ -1,6 +1,7 @@
 import {
   wxRequest
 } from '../utils/wxRequest';
+import wepy from 'wepy';
 
 let env = "-test" //-dev 或者 -test
 const apiUrl = 'http://git.com/api'
@@ -35,8 +36,6 @@ const Asset = (params, c_id = 0) => {
 }
 
 const AssetIcon = () => wxRequest({}, `${apiUrl}/icons/assets`);
-
-
 
 // 资产 & 资产设置
 const Wallet = (params, c_id = 0) => {

@@ -56,6 +56,9 @@
   import wepy from 'wepy'
   import api from "../api/api"
   import Empty from '../components/empty'
+  import {
+    wxLogin
+  } from '../utils/wxRequest';
   export default class Index extends wepy.page {
     data = {
       indicatorDots: true,
@@ -92,10 +95,6 @@
     onLoad () {
       this.getHeader()
       this.getList()
-    }
-
-    onShow () {
-      if (this.$parent.globalData.indexList) this.getList()
     }
 
     // 此函数用于 statement.wpy 里更新后调用
