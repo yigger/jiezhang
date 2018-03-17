@@ -27,18 +27,16 @@
     </view>
 
     <view class="content">
-      <view class="time-axis">
+      <view class="time-axis" wx:if="{{ !showEmpty }}">
         <ul>
-          <!--li class="normal time-mark">今天</li-->
           <li wx:for="{{ list }}" @tap="statement('{{ item.id }}')">
-            <view>
+            <view class="st-title">
               <text class="title fs16">{{ item.category }}</text>
               <text class="pull-right money {{ item.type }}">{{ item.money }}</text>
             </view>
             <view class="description">{{ item.remark || '　' }}</view>
             <view class="order-info overflow-hide">
               <category class="pull-left">
-                <!-- <label wx:if="{{ item.category != null }}">{{ item.category }}</label> -->
                 <label>{{ item.asset }}</label>
               </category>
               <time class="pull-right">{{ item.timeStr }}</time>
@@ -47,13 +45,17 @@
           </li>
         </ul>
       </view>
+      <view wx:else>
+        <empty title="快来记录第一笔帐吧~"></empty>
+      </view>
     </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
-  import api from "../api/api";
+  import api from "../api/api"
+  import Empty from '../components/empty'
   export default class Index extends wepy.page {
     data = {
       indicatorDots: true,
@@ -69,6 +71,10 @@
       preventRepeatReuqest: false
     }
 
+    components = {
+			empty: Empty
+		}
+
     methods = {
       statement (id) {
         wepy.navigateTo({
@@ -77,8 +83,18 @@
       }
     }
 
-    onShow () {
+    computed = {
+      showEmpty () {
+        return this.list.lengt <= 0
+      }
+    }
+
+    onLoad () {
       this.getList()
+    }
+
+    onShow () {
+      if (this.$parent.globalData.indexList) this.getList()
     }
 
     onReachBottom () {
@@ -273,5 +289,8 @@
   .time-axis ul li time {
     font-size:12px;
     color: #9B9B9B;
+  }
+  .st-title {
+    padding-top:4px;
   }
 </style>

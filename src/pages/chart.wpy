@@ -89,9 +89,9 @@
 
 <script>
 	import wepy from 'wepy'
-  import api from "../api/api";
+  import api from "../api/api"
   import tip from '../utils/tip'
-	import Empty from '../components/empty';
+	import Empty from '../components/empty'
 	const NowDate = new Date()
   export default class Chart extends wepy.page {
 		data = {

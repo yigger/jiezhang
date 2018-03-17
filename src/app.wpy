@@ -6,14 +6,15 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      "pages/index",
-      "pages/statement",
       "pages/setting",
-      "pages/user_info",
-      "pages/child_budget",
+      "pages/index",
+      "pages/chart",
       "pages/budget",
       
-      "pages/chart",
+      "pages/statement",
+      
+      "pages/user_info",
+      "pages/child_budget",
       "pages/wallet_list",
       "pages/wallet",
       "pages/category",
@@ -72,6 +73,10 @@ export default class extends wepy.app {
     super()
     this.use('requestfix')
     this.use('promisify');
+  }
+
+  globalData = {
+    indexList: false
   }
 }
 </script>

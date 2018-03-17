@@ -2,17 +2,17 @@
   <view class="container">
 
     <view class="parent">
-      <view class="budget-info">
+      <view class="budget-info" @tap="showCaculate('{{ budget.id }}')">
         <view class="left"><image src="{{ budget.icon_path }}"></image></view>
         <view class="right">
           <view class="title">
             <text class="fs16 pull-left">{{ budget.name }}</text>
-            <text class="balance pull-right fs14">余额 {{ budget.left }}</text>
+            <text class="balance pull-right fs14">可用余额 {{ budget.surplus }}</text>
           </view>
           <!-- 进度条 -->
           <view class="progress">
-            <view class="orange"></view>
-            <view class="gray"></view>
+            <view class="orange" style="width: {{ budget.use_percent }}%;"></view>
+            <view class="gray" style="width: {{ budget.surplus_percent }}%;"></view>
           </view>
 
           <view class="fs12 budget-amount">支出预算 {{ budget.amount }}</view>
@@ -21,25 +21,24 @@
     </view>
 
     <view class="child">
-
-      <view class="budget-info" wx:for="{{ budget.childs }}">
-        <view class="left"><image src="../public/images/01.png"></image></view>
+      <view class="budget-info" wx:for="{{ childs }}" @tap="showCaculate('{{ item.id }}')">
+        <view class="left"><image src="{{ item.icon_path }}"></image></view>
         <view class="right">
           <view class="title">
             <text class="fs16 pull-left">{{ item.name }}</text>
-            <text class="balance pull-right fs14">余额 {{ item.left }}</text>
+            <text class="balance pull-right fs14">可用余额 {{ item.surplus }}</text>
           </view>
           
-          <!-- 进度条 -->
+         <!-- 进度条 -->
           <view class="progress">
-            <view class="orange"></view>
-            <view class="gray"></view>
+            <view class="orange" style="width: {{ item.use_percent }}%;"></view>
+            <view class="gray" style="width: {{ item.surplus_percent }}%;"></view>
           </view>
 
           <view class="fs12 budget-amount">支出预算 {{ item.amount }}</view>
         </view>
       </view>
-
+      <caculate @invokeCaculation.user="invokeCaculation" hidden="{{ !showCaculation }}"></caculate>
     </view>
   </view>
 </template>
@@ -47,29 +46,58 @@
 <script>
   import wepy from 'wepy'
   import api from "../api/api";
+  import Caculate from '../components/caculate'
 
   export default class ChildBudget extends wepy.page {
     data = {
-      budget: {}
+      showCaculation: false,
+      budget: {},
+      childs: [],
+      parentId: 0,
+      curCategoryId: 0
+    }
+
+    components = {
+      caculate: Caculate
     }
 
     methods = {
-      
+      invokeCaculation (amount) {
+        this.showCaculation = false
+        this.updateBudget(amount)
+      },
+      showCaculate(id) {
+        this.curCategoryId = id
+        this.showCaculation = true
+      }
     }
 
     onLoad (options) {
       let id = options.id
+      this.parentId = id
       this.getData(id)
     }
 
     async getData(id) {
+      id = id || this.parentId
       const res = await api.BudgetDetail(id)
-      this.budget = res.data
+      this.budget = res.data.root
+      this.childs = res.data.childs
       this.$apply()
     }
 
-    async update() {
-
+    async updateBudget (amount) {
+      const res = await api.BudgetUpdate({
+        method: "PUT",
+        query: {
+          type: 'category',
+          category_id: this.curCategoryId,
+          amount: amount
+        }
+      })
+      if (res.data.status == 200) {
+        this.getData()
+      }
     }
   }
 </script>
@@ -78,7 +106,7 @@
   .container {
     height: 100%;
     .parent {
-      background: #f2f2f2;
+      background:#f8f8f8;
       border-bottom: 1px solid #ccc;
       .left {
         background: #f2f2f2 !important;

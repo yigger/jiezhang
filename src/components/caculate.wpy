@@ -1,5 +1,5 @@
 <template lang="wxml">
-  <view class="container">
+  <view>
     <view class="caculation">
       <view class="screen">
         <view class="fs21">{{ amount }}</view>

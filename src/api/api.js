@@ -69,6 +69,7 @@ const User = (params, c_id = 0) => {
 const Budget = () => wxRequest({}, `${apiUrl}/budgets`);
 const BudgetParent = () => wxRequest({}, `${apiUrl}/budgets/parent`);
 const BudgetDetail = (id) => wxRequest({}, `${apiUrl}/budgets/${id}`);
+const BudgetUpdate = (params) => wxRequest(params, `${apiUrl}/budgets/0`);
 
 module.exports = {
   getIndexList,
@@ -89,5 +90,6 @@ module.exports = {
   User,
   Budget,
   BudgetParent,
-  BudgetDetail
+  BudgetDetail,
+  BudgetUpdate
 }

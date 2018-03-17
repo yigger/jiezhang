@@ -1,7 +1,7 @@
 <template lang="wxml">
   <view class="empty">
     <image src="../public/images/empty.png"></image>
-    <view class="title">{{ title }}</view>
+    <view class="title fs14">{{ title }}</view>
   </view>
 </template>
 

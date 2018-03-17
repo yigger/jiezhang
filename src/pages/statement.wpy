@@ -204,7 +204,6 @@
         this.showCaculation = true
       },
       invokeCaculation(amount) {
-        console.log(amount)
         this.statement.amount = amount
         this.showCaculation = false
       },
@@ -310,7 +309,6 @@
       }
       this.$apply()
     }
-
   }
 </script>
 <style>
