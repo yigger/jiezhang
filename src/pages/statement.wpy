@@ -17,7 +17,7 @@
       <swiper-item wx:for="{{categories}}">
         <view class="category-flex">
           <view wx:for="{{item}}" data-category-name="{{ item.name }}" data-category-id="{{ item.id }}" bindtap="categoryChange">
-            <view class="image"><image style="background: {{ item.bg_color }};" src="{{ item.icon }}"></image></view>
+            <view class="image"><image style="background: {{ item.bg_color }};" src="{{ host }}{{ item.icon }}"></image></view>
             <view class="name">{{ item.name }}</view>
           </view>
         </view>
@@ -76,8 +76,10 @@
   import api from "../api/api"
   import tip from '../utils/tip'
   import Caculate from '../components/caculate'
+  import HostMixin from '../mixins/host'
 
   export default class Statement extends wepy.page {
+    mixins = [ HostMixin ];
     data = {
       showCaculation: false,
       indicatorDots: true,

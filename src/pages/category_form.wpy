@@ -10,14 +10,14 @@
       <view class="item">
         <view class="item-name pull-left">
           <text>图标</text> </view>
-        <image class="icon-image" src="{{ category.icon_path }}"></image>
+        <image class="icon-image" src="{{ host }}{{ category.icon_path }}"></image>
       </view>
 
       <swiper>
         <swiper-item wx:for="{{ icons }}">
           <view class="category-flex">
             <view wx:for="{{item}}" @tap="choseIcon('{{ item }}')">
-              <image src="{{ item }}"></image>
+              <image src="{{ host }}{{ item }}"></image>
             </view>
           </view>
         </swiper-item>
@@ -47,7 +47,9 @@
   import wepy from 'wepy'
   import api from "../api/api";
   import tip from '../utils/tip'
+  import HostMixin from '../mixins/host'
   export default class CategoryForm extends wepy.page {
+    mixins = [ HostMixin ];
     data = {
       category: {
         id: 0,

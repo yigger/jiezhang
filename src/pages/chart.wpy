@@ -45,7 +45,7 @@
         </view>
 
         <view class="bill-detail" wx:for="{{ item.list }}" bindtap="showStatement('{{ item.id }}')">
-          <view class="icon pull-left"><image src="{{ item.category_icon }}"></image></view>
+          <view class="icon pull-left"><image class="ljt-icon" src="{{ host }}{{ item.category_icon }}"></image></view>
           <view class="information">
             <view class="title overflow-hide">
               <view class="pull-left">{{ item.category }}</view>
@@ -73,7 +73,7 @@
           </view>
           <view class="{{ item.type }} pull-right">{{ item.money }}</view>
           <view class="information">
-            <view class="pull-left icon"><image src="{{ item.category_icon }}"></image></view>
+            <view class="pull-left icon"><image class="ljt-icon" src="{{ host }}{{ item.category_icon }}"></image></view>
             <view class="pull-left">
               <view>{{ item.category_name }}</view>
               <view class="fs12 col999">{{ item.description }}</view>
@@ -91,7 +91,7 @@
 	import wepy from 'wepy'
   import api from "../api/api"
   import tip from '../utils/tip'
-	import Empty from '../components/empty'
+  import Empty from '../components/empty'
 	const NowDate = new Date()
   export default class Chart extends wepy.page {
 		data = {
@@ -111,10 +111,12 @@
 			empytGrids: [],
 			curYearMonth: this.getNowFormatDate('.'),
 			weeks_ch: ['日', '一', '二', '三', '四', '五', '六']
-		}
+    };
+
 		components = {
 			empty: Empty
-		};
+    };
+    
 		methods = {
 			handleCalendar(e) {
 				const handle = e.currentTarget.dataset.handle;
@@ -265,7 +267,10 @@
 					today = `0${today}`
 				}
 				return `${month}-${today}`
-			}
+      },
+      host () {
+        return api.host
+      }
 		}
   }
 </script>

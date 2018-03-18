@@ -3,9 +3,9 @@ import {
 } from '../utils/wxRequest';
 import wepy from 'wepy';
 
-let env = "-test" //-dev 或者 -test
-const apiUrl = 'http://git.com/api'
-// const apiUrl = 'https://xiaoyounger.com/api'
+const host = 'http://git.com'
+// const host = 'https://xiaoyounger.com'
+const apiUrl = host + '/api'
 
 // 获取首页数据
 const getIndexList = (params) => wxRequest(params, `${apiUrl}/index`);
@@ -73,6 +73,7 @@ const BudgetDetail = (id) => wxRequest({}, `${apiUrl}/budgets/${id}`);
 const BudgetUpdate = (params) => wxRequest(params, `${apiUrl}/budgets/0`);
 
 module.exports = {
+  host: host,
   getIndexList,
   getIndexHeader,
   getIndexBill,

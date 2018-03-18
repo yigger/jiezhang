@@ -39,7 +39,7 @@
       <text class="fs12">{{ item.header }}</text>
       <view class="column" wx:for="{{ item.list }}" data-id="{{ item.id }}" bindtap="showAsset">
         <view class="icon pull-left">
-          <image src="{{ item.icon_path }}"></image>
+          <image class="ljt-icon" src="{{host}}{{ item.icon_path }}"></image>
         </view>
         <view class="money pull-right">{{ item.amount }}</view>
         <view class="title">{{ item.name }}</view>
@@ -47,18 +47,16 @@
     </view>
   </view>
 
-  <!-- <view class="add-wallet">
-    <image src="../../public/images/wallet-add.png"></image>
-    <text class="fs16" bindtap="newAsset">添加账户</text>
-  </view> -->
-  
 </view>
 </template>
 
 <script>
 	import wepy from 'wepy'
   import api from "../api/api";
+  import HostMixin from '../mixins/host'
   export default class Wallet extends wepy.page {
+    mixins = [ HostMixin ];
+
 		data = {
     	wallets: [],
 			netWorth: 0,
@@ -67,11 +65,12 @@
 			yesterdayAmount: 0,
 			seventAmount: 0,
 			monthAmount: 0
-		}
+    }
+    
 		onLoad () {
 			this.getAssets()
 		}
-
+    
 		async getAssets() {
       const res = await api.Wallet();
       let data = res.data
@@ -164,17 +163,12 @@
 }
 
 #all-assets .column {
-  padding: 6px 0;
+  padding: 4px 0;
 }
 
 #all-assets .column .icon {
-  width: 30px;
-  height: 30px;
-}
-
-#all-assets .asset image {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
 }
 
 #all-assets .column .title {

@@ -5,15 +5,17 @@ export default class extends wepy.app {
   config = {
     pages: [
       "pages/index",
+      "pages/category",
+      "pages/wallet",
+      "pages/wallet_list",
+      
       "pages/statement",
       "pages/setting",
       "pages/chart",
       "pages/budget",
       "pages/user_info",
       "pages/child_budget",
-      "pages/wallet_list",
-      "pages/wallet",
-      "pages/category",
+      
       "pages/category_form",
       "pages/wallet_form",
       "pages/feedback"
@@ -28,7 +30,7 @@ export default class extends wepy.app {
     },
     tabBar: {
       backgroundColor: "#fff",
-      color: "#999",
+      color: "#999",  
       selectedColor: "black",
       list: [
         {
@@ -117,4 +119,8 @@ page {
   font-size: 32px;
 }
 
+.ljt-icon {
+  width: 25px;
+  height: 25px;
+}
 </style>
