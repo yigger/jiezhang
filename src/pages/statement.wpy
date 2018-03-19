@@ -6,9 +6,9 @@
       <text class="{{ statement.type == 'income' ? 'active' : '' }}" @tap="changeType('income')">收入</text>
     </view>
 
-    <view class="mark-header {{ statement.type }}" @tap='showCaculate'>
-      <view class="icon-name">{{ curCategoryName }}</view>
-      <view class="amount pull-right">
+    <view class="mark-header" @tap='showCaculate'>
+      <view class="icon-name pull-left fs18">{{ curCategoryName }}</view>
+      <view class="amount pull-right fs18">
         <view class="fs21">{{ statement.amount }}</view>
       </view>
     </view>
@@ -325,9 +325,10 @@
     }
   }
 </script>
-<style>
+<style lang="less">
 swiper {
-  height:290rpx;
+  // height:290rpx;
+  height: 500rpx;
   background:#f8f8f8;
   border-bottom:1px solid #ccc;
 }
@@ -360,38 +361,20 @@ swiper {
   font-size: 12px;
 }
 
-.mark-header {
-  padding: 0px 15px;
-  height: 50px;
-  overflow: hidden;
-}
-.mark-header.expend, .header.expend{
+/* .mark-header.expend, .header.expend{
   background: linear-gradient(to right,rgba(9,187,7, 1), rgba(9,187,7, 0.7));
 }
 .mark-header.income, .header.income{
   background: linear-gradient(to right,rgba(251,75,77, 1), rgba(251,75,77, 0.7));
-}
-.mark-header .icon-name {
-  display: inline-block;
-  vertical-align: middle;
-  font-size: 14px;
-  color: #fff;
-  font-weight: bold;
-  line-height: 50px;
-}
-
-.mark-header .amount {
-  font-size: 14px;
-  color: #fff;
-  display: block;
-  font-weight: bold;
-  float: right;
-  height: 100%;
-}
-
-.mark-header .amount > view {
-  text-align: right;
-  line-height: 50px;
+} */
+.mark-header  {
+   padding: 10px 16px;
+   overflow: hidden;
+   border-bottom:1px solid #ccc;
+  .icon-name, .amount {
+    font-weight: bold;
+    text-align: right;
+  }
 }
 
 .item-category {
@@ -484,10 +467,9 @@ swiper {
   font-size:14px;
 }
 .save-btn {
-  position: absolute;
-  bottom:70rpx;
   width: 100%;
   text-align: center;
+  margin:12px 0;
 }
 
 .save-btn > .bill-btn {
