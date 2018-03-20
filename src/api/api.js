@@ -35,6 +35,12 @@ const Asset = (params, c_id = 0) => {
   return wxRequest(params, url)
 }
 
+// 资产详情
+const AssetDetailInformation = (params) => wxRequest(params, `${apiUrl}/wallet/information`);
+const AssetDetailList = (params) => wxRequest(params, `${apiUrl}/wallet/detail`);
+const AssetSurplus = (params) => wxRequest(params, `${apiUrl}/wallet/surplus`);
+
+// 资产图标
 const AssetIcon = () => wxRequest({}, `${apiUrl}/icons/assets`);
 
 // 资产 & 资产设置
@@ -95,5 +101,8 @@ module.exports = {
   Budget,
   BudgetParent,
   BudgetDetail,
-  BudgetUpdate
+  BudgetUpdate,
+  AssetDetailInformation,
+  AssetDetailList,
+  AssetSurplus
 }

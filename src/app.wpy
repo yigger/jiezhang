@@ -4,11 +4,13 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      "pages/asset_detail",
       "pages/index",
+      "pages/wallet",
+      "pages/asset_detail",
+      
       "pages/statement",
       "pages/category",
-      "pages/wallet",
+      
       "pages/wallet_list",
       "pages/setting",
       "pages/chart",
@@ -116,6 +118,12 @@ page {
 
 .fs18 {
   font-size: 36rpx;
+}
+.fs21 {
+  font-size: 21px;
+}
+.fs24 {
+  font-size: 24px;
 }
 .fs32 {
   font-size: 32px;

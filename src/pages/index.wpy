@@ -60,6 +60,10 @@
     wxLogin
   } from '../utils/wxRequest';
   export default class Index extends wepy.page {
+    config = {
+      enablePullDownRefresh: true
+    }
+
     data = {
       indicatorDots: true,
       autoplay: false,
@@ -92,15 +96,25 @@
       }
     }
 
-    onLoad () {
+    onPullDownRefresh () {
+      this.curPage = 1
+      this.list = []
+      this.getList()
+    }
+
+    onShow () {
       this.getHeader()
+    }
+
+    onLoad () {
       this.getList()
     }
 
     // 此函数用于 statement.wpy 里更新后调用
     updateStatement (id, type) {
       // 此处应使用二分查找
-      if (type == 'update' || type == 'delete') {
+      console.log(type)
+      if (type == 'put' || type == 'delete') {
         let index = 0
         for(let item of this.list) {
           if (item.id == id) {

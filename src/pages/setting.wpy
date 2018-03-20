@@ -15,7 +15,7 @@
       <view class="zan-cell__ft">{{ user.budget }}</view>
     </view>
 
-    <view class="zan-cell zan-cell--access">
+    <!-- <view class="zan-cell zan-cell--access">
       <view class="zan-cell__bd">主题设置</view>
       <view class="zan-cell__ft"></view>
     </view>
@@ -28,7 +28,7 @@
     <view class="zan-cell zan-cell--access">
       <view class="zan-cell__bd">图表浏览</view>
       <view class="zan-cell__ft"></view>
-    </view>
+    </view> -->
   </view>
 
   <view class="zan-panel">
@@ -54,10 +54,10 @@
       <view class="zan-cell__ft"></view>
     </view>
 
-    <view class="zan-cell zan-cell--access">
+    <!-- <view class="zan-cell zan-cell--access">
       <view class="zan-cell__bd">分享小程序</view>
       <view class="zan-cell__ft"></view>
-    </view>
+    </view> -->
 
     <view class="zan-cell zan-cell--access">
       <view class="zan-cell__bd">关于理记通</view>

@@ -37,7 +37,7 @@
   <view id="all-assets">
     <view class="asset" wx:for="{{ wallets }}">
       <text class="fs12">{{ item.header }}</text>
-      <view class="column" wx:for="{{ item.list }}" data-id="{{ item.id }}" bindtap="showAsset">
+      <view class="column" wx:for="{{ item.list }}" bindtap="showAsset('{{ item.id }}')">
         <view class="icon pull-left">
           <image class="ljt-icon" src="{{host}}{{ item.icon_path }}"></image>
         </view>
@@ -66,8 +66,14 @@
 			seventAmount: 0,
 			monthAmount: 0
     }
-    
-		onLoad () {
+
+    methods = {
+      showAsset (id) {
+        wx.navigateTo({ url: `/pages/asset_detail?id=${id}` })
+      }
+    }
+
+		onShow () {
 			this.getAssets()
 		}
     

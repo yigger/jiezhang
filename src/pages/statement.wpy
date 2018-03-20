@@ -9,11 +9,11 @@
     <view class="mark-header" @tap='showCaculate'>
       <view class="icon-name pull-left fs18">{{ curCategoryName }}</view>
       <view class="amount pull-right fs18">
-        <view class="fs21">{{ statement.amount }}</view>
+        <view class="fs21 {{ statement.type }}">{{ statement.amount }}</view>
       </view>
     </view>
 
-    <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}">
+    <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" style="height: {{ curCategoryHeight }}px;">
       <swiper-item wx:for="{{categories}}">
         <view class="category-flex">
           <view wx:for="{{item}}" data-category-name="{{ item.name }}" data-category-id="{{ item.id }}" bindtap="categoryChange">
@@ -85,9 +85,10 @@
       indicatorDots: true,
       autoplay: false,
       //分类
-      categories: [{id: 1, name: '现金'}],
+      categories: [],
       expendCategories: [],
       incomeCategories: [],
+      curCategoryHeight: '470',
       // 当前选中分类
       curCategoryName: '',
       // 账单数据
@@ -145,10 +146,10 @@
       }
       
       // 保证获取分类与账户在获取账单之后, 寻找更好的方法？
-      setTimeout(() => {
+      // setTimeout(() => {
         this.getCategory()
         this.getAssets()
-      }, 300);
+      // }, 300);
       
     }
 
@@ -163,6 +164,7 @@
         if (categories.length > 0) {
           this.curCategoryName = categories[0][0]['name']
           this.statement.category_id = categories[0][0]['id']
+          this.curCategoryHeight = (categories[0].length * 1 / 20) * 250 + 10
         }
         this.statement.type = item
         this.categories = categories
@@ -295,6 +297,9 @@
       this.expendCategories = data.expend_categories
       this.incomeCategories = data.income_categories
       this.curCategoryName = cur_name
+      if (categories.length > 0) {
+        this.curCategoryHeight = (categories[0].length * 1 / 5) * 60 + 10
+      }
       if (categories.length > 0 && this.statement.category_id == 0) {
         try {
           this.statement.category_id = categories[0][0]['id']
@@ -328,7 +333,7 @@
 <style lang="less">
 swiper {
   // height:290rpx;
-  height: 500rpx;
+  // height: 500rpx;
   background:#f8f8f8;
   border-bottom:1px solid #ccc;
 }

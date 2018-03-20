@@ -55,7 +55,7 @@
 
   export default class Budget extends wepy.page {
     data = {
-      showCaculation: true,
+      showCaculation: false,
       header: {},
       list: []
     }

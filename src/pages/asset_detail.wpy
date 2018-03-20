@@ -1,72 +1,54 @@
 <template>
 <view class="container">
-  <view class="wallet-header">
-    <view class="assets">
-      <view>
-        <view style='font-size: 28px'>{{ netWorth }}</view>
-        <view style='font-size: 14px'>总支出</view>
+  <view id="wallet-header">
+    <view class="surplus">
+      <view class="surplus-amount fs24" @tap="showCaculate">
+        <text>{{ header.surplus }}</text>
+        <image class="edit-icon" src="../public/images/edit.png"></image>
       </view>
-
-      <view class="right">
-        <view class="fs14">
-          <text>总收入</text>
-          <text>{{ totalAssets }}</text>
-        </view>
-        <view class="fs14">
-          <text>结余</text>
-          <text>{{ totalDebt }}</text>
-        </view>
-      </view>
+      <view class="fs12">余额</view>
     </view>
-    <view class="yesterday-amount">
+    <view class="bottom">
       <view>
-        <text>昨日结余：</text>
-        <text>{{ yesterdayAmount }}</text>
+        <view class="fs24">{{ header.income }}</view>
+        <view class="fs12">收入</view>
       </view>
       <view>
-        <text>近七日日均消费：</text>
-        <text>{{ seventAmount }}</text>
-      </view>
-      <view>
-        <text>近一月日均消费：</text>
-        <text>{{ monthAmount }}</text>
+        <view class="fs24">{{ header.expend }}</view>
+        <view class="fs12">支出</view>
       </view>
     </view>
   </view>
 
   <view id="all-assets">
-    <view class="asset category" bindtap="showHidden">
+    <view class="asset category" wx:for="{{ list }}" wx:for-item="pst" bindtap="showHidden('{{ index }}')">
       <view class="detail">
         <view class="title">
-          <view class="pull-left">3月</view>
-          <view class="pull-right">5312.12</view>
-        </view>
-
-        <view class="single">
-          <view class="pull-left col999 date-time">
-            <view class="fs14">17</view>
-            <view class="fs12">周日</view>
+          <view class="pull-left time align-column">
+            <view class="fs14">{{ pst.month }}月</view>
+            <view class="fs12 description">{{ pst.year }}</view>
           </view>
-          <view class="pull-right fs18 money">8000</view>
-          <view class="information">
-            <view class="pull-left icon"><image src="http://git.com/images/category/029-jeans.png"></image></view>
-            <view class="pull-left title">
-              <view class="fs14">树果果果</view>
-              <view class="fs12 description">描述</view>
-            </view>
+          <view class="pull-left align-column income-and-expend">
+            <view class="fs12 income">收入 {{ pst.income_amount }}</view>
+            <view class="fs12 expend">支出 {{ pst.expend_amount }}</view>
+          </view>
+          <view class="pull-right align-column left-money">
+            <view class="fs12">结余</view>
+            <view class="fs18">{{ pst.surplus }}</view>
           </view>
         </view>
 
-        <view class="single">
+        <view class="single" wx:for="{{ pst.childs }}" hidden="{{ pst.hidden }}" @tap="showStatement('{{ item.id }}')">
           <view class="pull-left col999 date-time">
-            <view class="fs14">17</view>
-            <view class="fs12">周日</view>
+            <view class="fs14">{{ item.day }}</view>
+            <view class="fs12">{{ item.week }}</view>
           </view>
-          <view class="pull-right fs18 money">8000</view>
+          <view class="pull-right fs16 money {{ item.type }}">{{ item.amount }}</view>
           <view class="information">
-            <view class="pull-left icon"><image src="http://git.com/images/category/029-jeans.png"></image></view>
+            <view class="pull-left icon"><image src="{{ host }}{{ item.icon_path }}"></image></view>
             <view class="pull-left title">
-              <view class="fs14">树果果果</view>
+              <view class="fs14">{{ item.name }}</view>
+              <view class="fs12 description" wx:if="{{ item.description != null }}">{{ item.description }}</view>
             </view>
           </view>
         </view>
@@ -74,7 +56,7 @@
       </view>
     </view>
   </view>
-
+  <caculate @invokeCaculation.user="invokeCaculation" hidden="{{ !showCaculation }}"></caculate>
 </view>
 </template>
 
@@ -82,53 +64,126 @@
 	import wepy from 'wepy'
   import api from "../api/api";
   import HostMixin from '../mixins/host'
+  import Caculate from '../components/caculate'
   export default class AssetDetail extends wepy.page {
     mixins = [ HostMixin ];
 
-		data = {
+    config = {
+      enablePullDownRefresh: true
+    }
 
+    components = {
+      caculate: Caculate
+    }
+
+		data = {
+      asset_id: 0,
+      header: {
+        income: '0.00',
+        expend: '0.00',
+        surplus: '0.00'
+      },
+      list: [], 
+      already_load: false,
+      showCaculation: false 
     }
     
-		
+    methods = {
+      showHidden(idx) {
+        let value = !this.list[idx].hidden
+        this.list[idx]['hidden'] = value
+			},
+      showStatement (id) {
+        wx.navigateTo({ url: `/pages/statement?id=${id}` })
+      },
+      showCaculate() {
+        this.showCaculation = true
+      },
+      invokeCaculation (amount) {
+        this.showCaculation = false
+        this.updateSurplus(amount)
+      }
+    }
+
+    onLoad (options) {
+      this.asset_id = options.id
+      this.already_load = true
+      this.information()
+      this.statements()
+      
+    }
+
+    onShow () {
+      if (this.already_load) {
+        this.information()
+        this.statements()
+      }
+    }
+
+    onPullDownRefresh () {
+      this.information()
+      this.statements()
+    }
+
+    async information () {
+       const res = await api.AssetDetailInformation({
+        query: {
+          asset_id: this.asset_id
+        }
+      })
+      this.header = res.data
+      this.$apply()
+    }
+
+    async statements () {
+       const res = await api.AssetDetailList({
+        showLoading: true,
+        query: {
+          asset_id: this.asset_id
+        }
+      })
+      this.list = res.data
+      this.$apply()
+    }
+		async updateSurplus (amount) {
+      const res = await api.AssetSurplus({
+        method: "PUT",
+        query: {
+          asset_id: this.asset_id,
+          amount: amount
+        }
+      })
+
+      if (res.data.status == 200) {
+        this.information()
+      } else {
+        tip.error(res.data.msg)
+      }
+    }
   }
 </script>
 <style lang="less">
-.wallet-header {
-  height: 180px;
+#wallet-header {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  height: 120px;
   position: relative;
   background: linear-gradient(rgba(251, 75, 77, 1), rgba(241, 75, 77, 0.9)); /* 标准的语法 */
   box-shadow: 0 0 10px #ccc;
-}
-
-.wallet-header .assets {
-  height: 120px;
-}
-
-.wallet-header .assets > view {
-  float: left;
-  width: 50%;
   color: white;
-  text-align: center;
-  margin-top: 40px;
-}
-
-.wallet-header .assets > view:last-child {
-  margin-top: 50px;
-}
-
-.assets .right > view {
-  float: left;
-  margin-left: 32px;
-}
-
-.assets .right > view > text {
-  margin-right: 14px;
-}
-
-.yesterday-amount {
-  color: white;
-  font-size: 12px;
-  text-align: center;
+  padding:0 8px;
+  .bottom {
+    & > view {
+      width: 50%;
+      float: left;
+    }
+  }
+  .edit-icon {
+    width: 25px;
+    height: 25px;
+    margin-left: 8px;
+  }
 }
 
 #all-assets {
@@ -139,8 +194,24 @@
     .detail > .title {
       overflow-y: hidden;
       background: rgba(248, 248, 248, 0.5);
-      padding: 12px;
+      padding:8px 12px;
       border-bottom: 1px solid #efefef;
+      > .time {
+        text-align: center;
+      }
+      .align-column {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column;
+        height: 35px;
+      }
+      .income-and-expend {
+        margin-left: 8px;
+      }
+      .left-money {
+        color: #999;
+        text-align: right;
+      }
     }
     .single {
       padding: 6px 12px 6px 0;

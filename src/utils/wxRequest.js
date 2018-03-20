@@ -6,9 +6,12 @@ const LoginUrl = 'http://git.com/api/login'
 const SESSION_KEY = 'weapp_login_session'
 
 const wxRequest = async(params = {}, url) => {
-	// tip.loading();
 	let data = params.query || {};
 	let res = null
+
+	if (params.showLoading) {
+		tip.loading();
+	}
 
 	if (SessionLogin.get() == null) {
 		return await wxLogin(() => doRequest(params, url))
@@ -23,7 +26,9 @@ const wxRequest = async(params = {}, url) => {
 		}
 	}
 
-	// tip.loaded();
+	if (params.showLoading) {
+		tip.loaded();
+	}
 	return res;
 };
 
