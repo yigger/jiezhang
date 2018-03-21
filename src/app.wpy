@@ -4,7 +4,9 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      "pages/index",
+       "pages/index",
+      "pages/wallet_form",
+     
       "pages/wallet",
       "pages/asset_detail",
       
@@ -18,7 +20,7 @@ export default class extends wepy.app {
       "pages/user_info",
       "pages/child_budget",
       "pages/category_form",
-      "pages/wallet_form",
+      
       "pages/feedback"
     ],
     window: {
@@ -76,10 +78,6 @@ export default class extends wepy.app {
 </script>
 <style lang="less">
 @import "/public/styles/dist/index.wxss";
-page {
-  height: 100%;
-}
-
 .theme-color-red {
   color: #fb4b4d;
 }

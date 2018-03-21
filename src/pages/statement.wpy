@@ -164,7 +164,7 @@
         if (categories.length > 0) {
           this.curCategoryName = categories[0][0]['name']
           this.statement.category_id = categories[0][0]['id']
-          this.curCategoryHeight = (categories[0].length * 1 / 20) * 250 + 10
+          this.curCategoryHeight = Math.ceil(categories[0].length * 1 / 5) * 65
         }
         this.statement.type = item
         this.categories = categories
@@ -298,7 +298,7 @@
       this.incomeCategories = data.income_categories
       this.curCategoryName = cur_name
       if (categories.length > 0) {
-        this.curCategoryHeight = (categories[0].length * 1 / 5) * 60 + 10
+        this.curCategoryHeight = Math.ceil(categories[0].length * 1 / 5) * 65
       }
       if (categories.length > 0 && this.statement.category_id == 0) {
         try {

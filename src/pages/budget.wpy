@@ -25,21 +25,23 @@
     </view>
 
     <view class="center">
-      <view class="budget-info" wx:for="{{ list }}" @tap="redirect('{{ item.id }}')">
-        <view class="left"><image src="{{ item.icon_path }}"></image></view>
-        <view class="right">
-          <view class="title">
-            <text class="fs16 pull-left">{{ item.name }}</text>
-            <text class="balance pull-right fs14">可用余额 {{ item.surplus }}</text>
-          </view>
-          <!-- 进度条 -->
-          <view class="progress">
-            <view class="orange" style="width: {{ item.use_percent }}%;"></view>
-            <view class="gray" style="width: {{ item.surplus_percent }}%;"></view>
-          </view>
+      <view class="budget-info" wx:for="{{ list }}" >
+        <navigator url="/pages/child_budget?id={{ item.id }}">
+          <view class="left"><image src="{{ item.icon_path }}"></image></view>
+          <view class="right">
+            <view class="title">
+              <text class="fs16 pull-left">{{ item.name }}</text>
+              <text class="balance pull-right fs14">可用余额 {{ item.surplus }}</text>
+            </view>
+            <!-- 进度条 -->
+            <view class="progress">
+              <view class="orange" style="width: {{ item.use_percent }}%;"></view>
+              <view class="gray" style="width: {{ item.surplus_percent }}%;"></view>
+            </view>
 
-          <view class="fs12 budget-amount">支出预算 {{ item.amount }}</view>
-        </view>
+            <view class="fs12 budget-amount">支出预算 {{ item.amount }}</view>
+          </view>
+        </navigator>
       </view>
     </view>
 

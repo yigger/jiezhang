@@ -131,13 +131,14 @@
           }
         }, cId);
 
-        if (res.data.status == 200) {
+        if (res.statusCode == 200 && res.data.status == 200) {
           wepy.navigateBack({
             delta: 1
           })
         } else {
           tip.error(res.data.msg)
         }
+        console.log(res)
       }
     }
 
