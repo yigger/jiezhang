@@ -228,6 +228,23 @@
       async submit (redirectTo = false) {
         let method = 'POST'
         let cId = null
+
+        if (this.statement.amount == 0) {
+          tip.error('金额不能为 0')
+          return false
+        }
+
+        if (this.statement.asset_id == 0) {
+          tip.error('账户未选择')
+          return false
+        }
+
+        if (this.statement.category_id == 0) {
+          tip.error('分类未选择')
+          return false
+        }
+
+
         if (this.statement.id != 0) {
           method = 'PUT'
           cId = this.statement.id

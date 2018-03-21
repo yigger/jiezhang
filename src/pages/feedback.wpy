@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <text class="title zan-c-gray-darker">此产品由个人独立开发，所以或多或少会存在程序的错误以及部分不合理的功能，您可在此写下对此产品的想法或者建议，之后我会根据您的建议进行反复思考与改进，感谢您的支持与配合</text>
+    <text class="title zan-c-gray-darker">此产品由个人独立开发，所以或多或少会存在程序的错误以及部分不合理的功能，您可在此写下对此产品的想法或建议，采纳后会进行相应的调整，感谢您的支持与配合</text>
     <view class="section">
       <textarea placeholder="请输入反馈信息"  bindinput="bindKeyRemark" value="{{ content }}" auto-focus maxlength="-1" />
     </view>

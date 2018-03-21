@@ -138,7 +138,6 @@
         } else {
           tip.error(res.data.msg)
         }
-        console.log(res)
       }
     }
 
