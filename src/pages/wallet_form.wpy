@@ -51,9 +51,15 @@
       </view>
     </view>
 
-    <view>
+    <view class="save-btn" wx:if="{{ wallet.id != 0 }}">
+      <view class="bill-btn" @tap="del">删除</view>
       <view class="bill-btn save" @tap="submit">保存</view>
     </view>
+    
+    <view wx:else>
+      <view class="bill-btn-single" @tap="submit">保存</view>
+    </view>
+
   </view>
 </template>
 
@@ -115,6 +121,19 @@
         let value = e.detail.value
         this.typeIndex = value
         this.wallet.type = this.assetTypes[value]['key']
+      },
+      async del () {
+        await tip.confirm('是否删除该记录？')
+        const res = await api.Asset({
+          method: 'DELETE'
+        }, this.wallet.id)
+        if (res.data.status == 200) {
+          wepy.navigateBack({
+            delta: 1
+          })
+        } else {
+          tip.error(res.data.msg)
+        }
       },
       async submit () {
         let method = 'POST'
@@ -267,7 +286,7 @@ textarea {
   padding-left:16px;
   padding-top:10px;
 }
-.bill-btn {
+.bill-btn-single {
   border: 1px solid #fb4b4d;
   display: block;
   padding: 4px 0;
@@ -282,5 +301,27 @@ textarea {
 }
 .pull-right {
   float: right;
+}
+.save-btn {
+  width: 100%;
+  text-align: center;
+  margin:12px 0;
+}
+
+.save-btn > .bill-btn {
+  margin: 0 4%;
+}
+.bill-btn {
+  border: 1px solid #fb4b4d;
+  display: inline-block;
+  padding: 4px 0;
+  width: 40%;
+  color: #fb4b4d;
+  text-align: center;
+  font-size: 18px;
+}
+.save {
+  background: #fb4b4d;
+  color: white !important;
 }
 </style>
