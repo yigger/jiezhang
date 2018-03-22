@@ -20,7 +20,7 @@
     </view>
   </view>
 
-  <view id="all-assets">
+  <view id="all-assets" wx:if="{{ !showEmpty }}">
     <view class="asset category" wx:for="{{ list }}" wx:for-item="pst" bindtap="showHidden('{{ index }}')">
       <view class="detail">
         <view class="title">
@@ -56,6 +56,11 @@
       </view>
     </view>
   </view>
+
+  <view wx:else>
+    <empty title="暂无数据哦~"></empty>
+  </view>
+
   <caculate @invokeCaculation.user="invokeCaculation" hidden="{{ !showCaculation }}"></caculate>
 </view>
 </template>
@@ -64,13 +69,16 @@
 	import wepy from 'wepy'
   import api from "../api/api";
   import Caculate from '../components/caculate'
+  import Empty from '../components/empty'
+
   export default class AssetDetail extends wepy.page {
     config = {
       enablePullDownRefresh: true
     }
 
     components = {
-      caculate: Caculate
+      caculate: Caculate,
+      empty: Empty
     }
 
 		data = {
@@ -142,6 +150,7 @@
       this.list = res.data
       this.$apply()
     }
+
 		async updateSurplus (amount) {
       const res = await api.AssetSurplus({
         method: "PUT",
@@ -157,6 +166,13 @@
         tip.error(res.data.msg)
       }
     }
+
+    computed = {
+      showEmpty () {
+        return this.list.length <= 0
+      }
+    }
+
   }
 </script>
 <style lang="less">

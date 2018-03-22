@@ -92,7 +92,8 @@
           method = 'PUT'
           cId = this.category.id
         }
-
+        
+        console.log(this.category)
         const res = await api.Category({
           method: method,
           query: { 
@@ -101,9 +102,9 @@
         }, cId);
 
         if (res.data.status == 200) {
-          wepy.navigateBack({
-            delta: 1
-          })
+          // wepy.navigateBack({
+          //   delta: 1
+          // })
         } else {
           tip.error(res.data.msg)
         }

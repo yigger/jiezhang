@@ -26,8 +26,8 @@
       </navigator>
     </view>
 
-    <view class="content">
-      <view class="time-axis" wx:if="{{ !showEmpty }}">
+    <view class="content" wx:if="{{ !showEmpty }}">
+      <view class="time-axis">
         <ul>
           <li wx:for="{{ list }}" @tap="statement('{{ item.id }}')">
             <view class="st-title">
@@ -45,9 +45,10 @@
           </li>
         </ul>
       </view>
-      <view wx:else>
-        <empty title="快来记录第一笔帐吧~"></empty>
-      </view>
+    </view>
+
+    <view wx:else>
+      <empty title="快来记录第一笔帐吧~"></empty>
     </view>
   </view>
 </template>
@@ -92,7 +93,7 @@
 
     computed = {
       showEmpty () {
-        return this.list.lengt <= 0
+        return this.list.length <= 0
       }
     }
 
