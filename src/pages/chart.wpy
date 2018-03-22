@@ -29,30 +29,24 @@
       </view>
     </view>
 		
+    <empty title="这天还没有记账呢~" hidden="{{ singleData.length > 0 }}"></empty>
+
     <view class="asset single" hidden="{{tabActive == 'category'}}">
-			
-      <empty title="这天还没有记账呢~" hidden="{{ singleData.length > 0 }}"></empty>
-
-      <view class="day-bills" hidden="{{ singleData.length == 0 }}" wx:for="{{ singleData }}">
-        <view class="fs12 col999 yearAndMonth">{{ item.year }}</view>
-        <view class="secondary-title">
-          <view class="dayAndWeek">
-            <view>{{ item.day }}</view>
-            <view class='fs12 col999' style='padding: 0 2px'>/</view>
-            <view class="fs12 col999">{{ item.detail_day }}</view>
+      <!-- 单条 -->
+      <view  wx:for="{{ singleData }}" wx:for-item="pst" hidden="{{ singleData.length == 0 }}">
+        <view class="tiaomu" wx:for="{{ pst.list }}" bindtap="showStatement('{{ item.id }}')">
+          <view class="pull-left col999 date-time">
+            <view class="fs14">{{ item.day }}</view>
+            <view class="fs12">{{ item.detail_day }}</view>
           </view>
-          <view class="pull-right balance col999">结余： {{ item.balance }}</view>
-        </view>
-
-        <view class="bill-detail" wx:for="{{ item.list }}" bindtap="showStatement('{{ item.id }}')">
-          <view class="icon pull-left"><image class="ljt-icon" src="{{ host }}{{ item.category_icon }}"></image></view>
+          <view class="pull-right fs16 money {{ item.type }}">{{ item.amount }}</view>
           <view class="information">
-            <view class="title overflow-hide">
-              <view class="pull-left">{{ item.category }}</view>
-              <view class="pull-right {{ item.type }}">{{ item.money }}</view>
+            <view class="pull-left icon"><image src="{{ host }}{{ item.category_icon }}"></image></view>
+            <view class="pull-left title">
+              <view class="fs14">{{ item.category }}</view>
+              <view class="fs12 description" wx:if="{{ item.description != null }}">{{ item.description }}</view>
+              <view class="col999 fs12">{{ item.time }} · {{ item.wallet }}</view>
             </view>
-            <view class="col999 fs14" wx:if="{{ item.remark != '' }}">{{ item.remark }}</view>
-            <view class="col999 fs12">{{ item.time }} · {{ item.wallet }}</view>
           </view>
         </view>
       </view>
@@ -66,21 +60,22 @@
           <view class="pull-right {{ mutiple.type }}">{{ mutiple.total }}</view>
         </view>
 
-        <view class="single" wx:for="{{ mutiple.list }}" bindtap="showStatement('{{ item.id }}')" hidden="{{ mutiple.hidden }}">
+        <view class="mutiple tiaomu" wx:for="{{ mutiple.list }}" bindtap="showStatement('{{ item.id }}')" hidden="{{ mutiple.hidden }}">
           <view class="pull-left col999 date-time">
             <view class="fs14">{{ item.day }}</view>
             <view class="fs12">{{ item.year }}</view>
           </view>
-          <view class="{{ item.type }} pull-right">{{ item.money }}</view>
+          <view class="pull-right fs16 money {{ item.type }}">{{ item.amount }}</view>
           <view class="information">
-            <view class="pull-left icon"><image class="ljt-icon" src="{{ host }}{{ item.category_icon }}"></image></view>
-            <view class="pull-left">
-              <view>{{ item.category_name }}</view>
-              <view class="fs12 col999">{{ item.description }}</view>
+            <view class="pull-left icon"><image src="{{ host }}{{ item.category_icon }}"></image></view>
+            <view class="pull-left title">
+              <view class="fs14">{{ item.category_name }}</view>
+              <view class="fs12 description" wx:if="{{ item.description != null }}">{{ item.description }}</view>
+              <view class="col999 fs12">{{ item.time }} · {{ item.wallet }}</view>
             </view>
           </view>
-          
         </view>
+        
       </view>
     </view>
   </view>
@@ -202,8 +197,14 @@
 					date: `${this.cur_year}-${this.cur_month}-${this.cur_today}`
 				}
 			});
-			this.singleData = res.data.single,
-			this.mutipleData = res.data.mutiple
+      if (res.data.status == 200) {
+        this.singleData = res.data.single
+			  this.mutipleData = res.data.mutiple
+      } else {
+        this.singleData = []
+			  this.mutipleData = []
+      }
+			
 			this.$apply()
 		}
 
@@ -304,10 +305,6 @@
   background: white;
 }
 
-.assets .asset.single {
-  padding: 0 12px;
-}
-
 .assets .category-icon {
   margin-right: 6px;
 }
@@ -402,10 +399,51 @@
 .bill-detail .information .title {
   font-size: 18px;
 }
+.mutiple.tiaomu {
+  padding-left: 12px;
+}
+.tiaomu {
+  padding: 6px 12px 6px 0;
+  overflow: hidden;
+  border-bottom: 1px solid #efefef;
+  .money {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    height: 35px;
+  }
+  .date-time {
+    width: 42px;
+    text-align: center;
+  }
+
+  .information {
+    overflow: hidden;
+    margin-left: 42px;
+    .title {
+      display: flex;
+      justify-content: space-around;
+      flex-direction: column;
+      height: 35px;
+    }
+    .description {
+      color: #999;
+    }
+    .icon {
+      width: 35px;
+      height: 35px;
+      margin: 0 8px;
+      image {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
 
 /* 分类样式  */
 
-.category .detail .title {
+.category .detail > .title {
   overflow-y: hidden;
   background: rgba(248, 248, 248, 0.5);
   padding: 12px;
