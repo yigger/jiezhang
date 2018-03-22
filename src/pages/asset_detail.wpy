@@ -45,7 +45,7 @@
           </view>
           <view class="pull-right fs16 money {{ item.type }}">{{ item.amount }}</view>
           <view class="information">
-            <view class="pull-left icon"><image src="{{ host }}{{ item.icon_path }}"></image></view>
+            <view class="pull-left icon"><image src="{{ item.icon_path }}"></image></view>
             <view class="pull-left title">
               <view class="fs14">{{ item.name }}</view>
               <view class="fs12 description" wx:if="{{ item.description != null }}">{{ item.description }}</view>
@@ -63,11 +63,8 @@
 <script>
 	import wepy from 'wepy'
   import api from "../api/api";
-  import HostMixin from '../mixins/host'
   import Caculate from '../components/caculate'
   export default class AssetDetail extends wepy.page {
-    mixins = [ HostMixin ];
-
     config = {
       enablePullDownRefresh: true
     }
