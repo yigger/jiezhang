@@ -14,15 +14,19 @@ const wxRequest = async(params = {}, url) => {
 	}
 
 	if (SessionLogin.get() == null) {
-		return await wxLogin(() => doRequest(params, url))
+		const loginResult = await wxLogin().then(async () => {
+			return await doRequest(params, url);
+		})
+		return loginResult
 	} else {
 		// Session存在的话直接请求接口
 		res = await doRequest(params, url)
-
 		// Session 过期了，清除本地 Session 后重新请求
 		if (res.data.status == 301) {
 			SessionLogin.clear()
-			res = await wxLogin(() => doRequest(params, url))
+			res = await wxLogin().then(async () => {
+				return await doRequest(params, url);
+			})
 		}
 	}
 
@@ -43,33 +47,53 @@ const doRequest = async (params = {}, url) => {
 	return res
 }
 
-const wxLogin = async (callback = null) => {
+const wxLogin = async () => {
 	let wxLogin = await wepy.login();
-	let wxLoginResult = await wepy.getUserInfo();
+	await wepy.getUserInfo().then(async (wxLoginResult) => {
+		// 1. 取得 wxLoginResult
+		let code = wxLogin.code;
+		let encryptedData = wxLoginResult.encryptedData;
+		let iv = wxLoginResult.iv;
+		let header = {};
 
-	// 1. 取得 wxLoginResult
-	let code = wxLogin.code;
-	let encryptedData = wxLoginResult.encryptedData;
-	let iv = wxLoginResult.iv;
-	let header = {};
+		// 2. 构造请求头，包含 code、encryptedData 和 iv
+		header['X-WX-Code'] = code;
+		header['X-WX-Encrypted-Data'] = encryptedData;
+		header['X-WX-IV'] = iv;
 
-	// 2. 构造请求头，包含 code、encryptedData 和 iv
-	header['X-WX-Code'] = code;
-	header['X-WX-Encrypted-Data'] = encryptedData;
-	header['X-WX-IV'] = iv;
+		// 3. 请求服务端，获取会话信息
+		const loginResult = await wepy.request({
+			url: LoginUrl,
+			method: 'POST',
+			header: header
+		});
 
-	// 3. 请求服务端，获取会话信息
-	const loginResult = await wepy.request({
-		url: LoginUrl,
-		method: 'POST',
-		header: header
+		// 4. 存储用户在服务端的 session 值，以便下次使用
+		SessionLogin.set(loginResult.data.session);
+	}, (error) => {
+		wx.getSetting({
+			success(res) {
+				if (!res.authSetting['scope.userInfo']) {
+					wx.showModal({
+						title: '提示',
+						content: '必须授权登录之后才能继续操作，是否重新授权登录？',
+						showCancel: true,
+						success (res) {
+							wx.openSetting({
+								success (res) {
+									
+								}
+							})
+						},
+						fail (res) {
+							
+						}
+					});
+				}
+			}
+		})
 	});
-
-	// 4. 存储用户在服务端的 session 值，以便下次使用
-	SessionLogin.set(loginResult.data.session);
-	if (callback != null) {
-		return await callback()
-	}
+	
 }
 
 const SessionLogin = {

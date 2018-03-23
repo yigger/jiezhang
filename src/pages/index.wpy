@@ -57,9 +57,6 @@
   import wepy from 'wepy'
   import api from "../api/api"
   import Empty from '../components/empty'
-  import {
-    wxLogin
-  } from '../utils/wxRequest';
   export default class Index extends wepy.page {
     config = {
       enablePullDownRefresh: true
@@ -76,6 +73,7 @@
         pay_num: 0,
         budget: 0,
       },
+      stopRequest: false,
       preventRepeatReuqest: false
     }
 
@@ -98,9 +96,11 @@
     }
 
     onPullDownRefresh () {
+      wx.stopPullDownRefresh()
       this.curPage = 1
       this.list = []
-      this.getList()
+      this.stopRequest = false
+      this.getList({showLoading: true})
     }
 
     onShow () {
@@ -114,7 +114,6 @@
     // 此函数用于 statement.wpy 里更新后调用
     updateStatement (id, type) {
       // 此处应使用二分查找
-      console.log(type)
       if (type == 'put' || type == 'delete') {
         let index = 0
         for(let item of this.list) {
@@ -148,13 +147,18 @@
       this.$apply()
     }
 
-    async getList() {
+    async getList(options = {}) {
+      if(this.stopRequest) return false
       const res = await api.getIndexList({
+        showLoading: options.showLoading,
         query: {
           page: this.curPage
         }
       })
       const data = res.data
+      if(data.status == 405) {
+        this.stopRequest = true
+      }
       this.list = [...this.list, ...data]
       this.$apply()
     }
