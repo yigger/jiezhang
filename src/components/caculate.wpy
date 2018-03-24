@@ -22,12 +22,11 @@
       <view class="item" data-num="1" @tap="caculatBtn">1</view>
       <view class="item" data-num="2" @tap="caculatBtn">2</view>
       <view class="item" data-num="3" @tap="caculatBtn">3</view>
-      <view class="item" @tap="caculateResult">=</view>
+      <view class="item" @tap="calculate">=</view>
     </view>
 
     <view class="btnGroup">
-      <!-- <view class="item" data-num=".">.</view> -->
-      <view class="item" @tap="clear">C</view> 
+      <view class="item" @tap="resetData">C</view> 
       <view class="item" data-num="0" @tap="caculatBtn">0</view>
       <view class="item backspace" @tap="backspace">
         <image class="caculate-back" src="../public/images/caculate-back.png"></image>
@@ -57,9 +56,7 @@ export default class Caculate extends wepy.component {
       opArr: ['+', '-'],
       infix: [],
       suffix: [],
-      result: [],
-      lastVal: 0,
-      calcDone: false
+      lastVal: 0
     };
 
     methods = {
@@ -73,56 +70,51 @@ export default class Caculate extends wepy.component {
           this.buildOpInfix(this.op[value]);
         }
       },
-      clear () {
-        this.resetData()
-      },
       backspace () {
-        if (this.calcDone) {
-          // 删除一位数，而不是全部清除
-
+        let result = parseInt(this.amount, 10).toString()
+        let newResult = result.split('')
+        if (newResult.length == 1) {
+          this.resetData()
+          return 
         } else {
-          this.buildInfix('', 'del')
-          this.calculate()
+          let money = result.substr(0, result.length - 1)
+          this.lastVal = money
+          this.infix = [parseInt(money, 10)]
         }
-      },
-      caculateResult () {
-        this.calculate('eq')
+        this.calculate()
       },
       caculatok() {
-        this.infix          = []
-        this.suffix         = []
-        this.result         = []
-        this.lastVal        = 0
-        this.formula        = ''
+        this.resetData(false)
         this.showCaculation = false
         this.$emit('invokeCaculation', this.amount)
       }
     };
 
     // 计算器的方法
-    resetData () {
+    resetData (resetAmount = true) {
       this.infix = []
       this.suffix = []
-      this.result = []
       this.lastVal = 0
-      this.amount = '0.00'
+      this.formula = ''
+      if (resetAmount) this.amount = '0.00'
     }
 
     isOp (op) {
       return op && this.opArr.indexOf(op) !== -1;
     }
 
-    // 判断运算符优先级
     priorHigher (a, b) {
       return (a === '+' || a === '-') && (b === '*' || b === '/');
     }
 
     opCalc (b, op, a) {
+      a = parseInt(a, 10)
+      b = parseInt(b, 10)
       switch(op) {
         case '+':
           return a + b;
         case '-':
-          return a - b;
+          return Math.max(0, (a - b));
         default:
           return 0;
       }
@@ -140,40 +132,14 @@ export default class Caculate extends wepy.component {
 
     // +、- 的中缀构建
     buildOpInfix (op) {
+      if(this.infix.length == 0) {
+        this.infix.push(parseInt(this.amount, 10))
+      }
       if (this.isOp(this.lastVal)) {
         this.infix.pop()
       }
       this.lastVal = op
       this.infix.push(op)
-    }
-
-    // 构建中缀表达式
-    buildInfix (val, type) {
-      let newVal;
-      // 标志着计算已经完成
-      if (this.calcDone) {
-        this.calcDone = false;
-        if (!this.isOp(val)) {
-          this.resetData();
-        } else {
-          var re = this.result[0];
-          this.resetData();
-          this.infix.push(re);
-        }
-      }
-
-      if (type === 'del') {
-        newVal = this.infix.pop();
-        newVal = Math.floor(newVal / 10);
-        if (newVal) {
-          this.infix.push(newVal);
-        }
-        if (this.infix.length - 1 >= 0) {
-          this.lastVal = this.infix[this.infix.length - 1];
-        } else {
-          this.lastVal = 0;
-        }
-      }
     }
 
     calculate (type) {
@@ -182,31 +148,26 @@ export default class Caculate extends wepy.component {
       }
       this.infix2Suffix()
       this.calcSuffix()
-      if (this.amount) {
-        if (type === 'eq') {
-          this.calcDone = true
-          this.lastVal = this.amount
-        }
-      }
     }
 
+    // 计算后缀表达式
     calcSuffix () {
-      this.result = [];
+      let result = [];
       for (var i = 0; i < this.suffix.length; i++) {
         if (!this.isOp(this.suffix[i])) {
-          this.result.push(this.suffix[i])
+          result.push(this.suffix[i])
         } else {
-          this.result.push(this.opCalc(this.result.pop(), this.suffix[i], this.result.pop()))
+          result.push(this.opCalc(result.pop(), this.suffix[i], result.pop()))
         }
       }
-      this.amount = this.result.length == 0 ? '0.00' : `${this.result[0]}.00`
+      this.amount = result.length == 0 ? '0.00' : `${result[0]}.00`
     }
 
     // 中缀表达式转后缀
     infix2Suffix () {
       let temp = []
       this.suffix = []
-      for (var i = 0; i < this.infix.length; i++) {
+      for (let i = 0; i < this.infix.length; i++) {
         if (!this.isOp(this.infix[i])) {
           this.suffix.push(this.infix[i])
         }
@@ -214,8 +175,7 @@ export default class Caculate extends wepy.component {
           if (!temp.length) {
             temp.push(this.infix[i])
           } else {
-            var opTop = temp[temp.length - 1]
-            // 循环判断运算符优先级，将运算符较高的压入后缀表达式
+            let opTop = temp[temp.length - 1]
             if (!this.priorHigher(opTop, this.infix[i])) {
               while (temp.length && !this.priorHigher(opTop, this.infix[i])) {
                 this.suffix.push(temp.pop())
