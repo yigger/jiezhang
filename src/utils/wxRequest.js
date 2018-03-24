@@ -3,6 +3,7 @@ import tip from './tip'
 
 const LoginUrl = 'http://git.com/api/login'
 // const LoginUrl = 'https://xiaoyounger.com/api/login'
+// const LoginUrl = 'https://yiiiblog.com/api/login'
 const SESSION_KEY = 'weapp_login_session'
 
 const wxRequest = async(params = {}, url) => {
@@ -19,10 +20,9 @@ const wxRequest = async(params = {}, url) => {
 		})
 		return loginResult
 	} else {
-		// Session存在的话直接请求接口
 		res = await doRequest(params, url)
-		// Session 过期了，清除本地 Session 后重新请求
 		if (res.data.status == 301) {
+			// Session 过期了，清除本地 Session 后重新请求
 			SessionLogin.clear()
 			res = await wxLogin().then(async () => {
 				return await doRequest(params, url);

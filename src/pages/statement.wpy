@@ -421,58 +421,6 @@ swiper {
   padding-top: 8px;
 }
 
-/* caculation */
-
-.caculation {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 666;
-}
-
-.caculation .close {
-  width: 35px;
-  position: absolute;
-  right: 0;
-  top: -26px;
-  text-align: center;
-  background: #efefef;
-  border: 1px solid #ccc;
-  height: 25px;
-}
-
-.caculation .close image {
-  width: 20px;
-  height: 25px;
-  display: inline-block;
-}
-
-.caculation .btnGroup {
-  display: flex;
-  flex-direction: row;
-  border-top: 1px solid #323546;
-}
-
-.caculation .btnGroup > .item {
-  text-align: center;
-  width: 25%;
-  padding: 14px 0;
-  background: #3e4052;
-  border-left: 1px solid #323546;
-  color: white;
-}
-
-.caculate-back {
-  width: 25px;
-  height: 25px;
-  margin-top: 5px;
-}
-
-.caculation .btnGroup > .item:first-child {
-  border-left: none;
-}
-
 /* Picker */
 
 .picker-view {

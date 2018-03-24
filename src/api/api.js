@@ -5,6 +5,7 @@ import wepy from 'wepy';
 
 const host = 'http://git.com'
 // const host = 'https://xiaoyounger.com'
+// const host = 'https://yiiiblog.com'
 const apiUrl = host + '/api'
 
 // 获取首页数据

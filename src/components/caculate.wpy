@@ -3,7 +3,7 @@
     <view class="caculation">
       <view class="screen">
         <view class="fs21">{{ amount }}</view>
-        <view class="fs12">{{ formula }}</view>
+        <view class="fs12" wx:if="{{ showFormula }}">{{ formula }}</view>
       </view>
       <view class="btnGroup">
         <view class="item" data-num="7" @tap="caculatBtn">7</view>
@@ -30,8 +30,8 @@
         <!-- <view class="item" data-num=".">.</view> -->
         <view class="item" data-num="cls" @tap="caculatBtn">C</view> 
         <view class="item" data-num="0" @tap="caculatBtn">0</view>
-        <view class="item" data-num="del" @tap="caculatBtn">
-          <image class="caculate-back" data-num="del" @tap="caculatBtn" src="../../public/images/caculate-back.png"></image>
+        <view class="item backspace" data-num="del" @tap="caculatBtn">
+          <image class="caculate-back" data-num="del" @tap="caculatBtn" src="../public/images/caculate-back.png"></image>
         </view>
         <view class="item" @tap="caculatok">OK</view>
       </view>
@@ -42,6 +42,13 @@
 <script>
 import wepy from 'wepy';
 export default class Caculate extends wepy.component {
+    props = {
+      showFormula: {
+        type: Boolean,
+        default: false
+      }
+    }
+
     data = {
       formula: '',
       amount: 0,
@@ -294,12 +301,20 @@ export default class Caculate extends wepy.component {
   }
 
   .caculate-back {
-    width: 25px;
-    height: 25px;
-    margin-top: 5px;
+    width: 30px;
+    height: 30px;
+    position:absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin:auto;
   }
 
   .caculation .btnGroup > .item:first-child {
     border-left: none;
+  }
+  .backspace {
+    position: relative;
   }
 </style>
