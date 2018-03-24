@@ -4,7 +4,7 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      
+      "pages/statement",
        "pages/index",
       "pages/chart",
       
@@ -13,7 +13,7 @@ export default class extends wepy.app {
       "pages/wallet",
       "pages/asset_detail",
       
-      "pages/statement",
+      
       "pages/category",
       
       "pages/wallet_list",

@@ -1,40 +1,38 @@
 <template lang="wxml">
-  <view>
-    <view class="caculation">
-      <view class="screen">
-        <view class="fs21">{{ amount }}</view>
-        <view class="fs12" wx:if="{{ showFormula }}">{{ formula }}</view>
-      </view>
-      <view class="btnGroup">
-        <view class="item" data-num="7" @tap="caculatBtn">7</view>
-        <view class="item" data-num="8" @tap="caculatBtn">8</view>
-        <view class="item" data-num="9" @tap="caculatBtn">9</view>
-        <view class="item" data-num="minus" @tap="caculatBtn">-</view>
-      </view>
+  <view class="caculation">
+    <view class="screen">
+      <view class="fs21">{{ amount }}</view>
+      <view class="fs12" wx:if="{{ showFormula }}">{{ formula }}</view>
+    </view>
+    <view class="btnGroup">
+      <view class="item" data-num="7" @tap="caculatBtn">7</view>
+      <view class="item" data-num="8" @tap="caculatBtn">8</view>
+      <view class="item" data-num="9" @tap="caculatBtn">9</view>
+      <view class="item" data-num="minus" @tap="caculatBtn">-</view>
+    </view>
 
-      <view class="btnGroup">
-        <view class="item" data-num="4" @tap="caculatBtn">4</view>
-        <view class="item" data-num="5" @tap="caculatBtn">5</view>
-        <view class="item" data-num="6" @tap="caculatBtn">6</view>
-        <view class="item" data-num="plus" @tap="caculatBtn">+</view>
-      </view>
+    <view class="btnGroup">
+      <view class="item" data-num="4" @tap="caculatBtn">4</view>
+      <view class="item" data-num="5" @tap="caculatBtn">5</view>
+      <view class="item" data-num="6" @tap="caculatBtn">6</view>
+      <view class="item" data-num="plus" @tap="caculatBtn">+</view>
+    </view>
 
-      <view class="btnGroup">
-        <view class="item" data-num="1" @tap="caculatBtn">1</view>
-        <view class="item" data-num="2" @tap="caculatBtn">2</view>
-        <view class="item" data-num="3" @tap="caculatBtn">3</view>
-        <view class="item" data-num="eq" @tap="caculatBtn">=</view>
-      </view>
+    <view class="btnGroup">
+      <view class="item" data-num="1" @tap="caculatBtn">1</view>
+      <view class="item" data-num="2" @tap="caculatBtn">2</view>
+      <view class="item" data-num="3" @tap="caculatBtn">3</view>
+      <view class="item" @tap="caculateResult">=</view>
+    </view>
 
-      <view class="btnGroup">
-        <!-- <view class="item" data-num=".">.</view> -->
-        <view class="item" data-num="cls" @tap="caculatBtn">C</view> 
-        <view class="item" data-num="0" @tap="caculatBtn">0</view>
-        <view class="item backspace" data-num="del" @tap="caculatBtn">
-          <image class="caculate-back" data-num="del" @tap="caculatBtn" src="../public/images/caculate-back.png"></image>
-        </view>
-        <view class="item" @tap="caculatok">OK</view>
+    <view class="btnGroup">
+      <!-- <view class="item" data-num=".">.</view> -->
+      <view class="item" @tap="clear">C</view> 
+      <view class="item" data-num="0" @tap="caculatBtn">0</view>
+      <view class="item backspace" @tap="backspace">
+        <image class="caculate-back" src="../public/images/caculate-back.png"></image>
       </view>
+      <view class="item" @tap="caculatok">OK</view>
     </view>
   </view>
 </template>
@@ -45,7 +43,7 @@ export default class Caculate extends wepy.component {
     props = {
       showFormula: {
         type: Boolean,
-        default: false
+        default: true
       }
     }
 
@@ -55,10 +53,8 @@ export default class Caculate extends wepy.component {
       op: {
         'plus': '+',
         'minus': '-',
-        'mul': '*',
-        'div': '/'
       },
-      opArr: ['+', '-', '*', '/'],
+      opArr: ['+', '-'],
       infix: [],
       suffix: [],
       result: [],
@@ -68,38 +64,29 @@ export default class Caculate extends wepy.component {
 
     methods = {
       caculatBtn(event) {
-        var val = event.target.dataset.num;
-        var action = val;
-        if (!isNaN(parseInt(val, 10))) {
-          this.buildInfix(parseInt(val, 10), 'add');
-          this.calculate();
-          // 操作：清除、删除、计算等于
-        } else if (['cls', 'del', 'eq'].indexOf(val) !== -1) {
-          if (this.infix.length == 0) {
-            this.resetData();
-            return;
-          }
-          // 清空
-          if (action === 'cls' || (action === 'del' && this.calcDone)) {
-            this.resetData();
-          } else if (action === 'del') {
-            // 重新构建中缀表达式
-            this.buildInfix('', 'del');
-            this.calculate();
-          } else if (action === 'eq') {
-            this.calculate('eq');
-          }
-        } else if (this.isOp(this.op[action])) {
-          if (!this.infix.length && (this.op[action] === '*' || this.op[action] === '/')) {
-            return;
-          }
-          this.buildInfix(this.op[action], 'add');
+        let value = event.target.dataset.num;
+        let number = parseInt(value, 10)
+        if (!isNaN(number)) {
+          this.buildNumberInfix(number)
+          this.calculate()
+        } else {
+          this.buildOpInfix(this.op[value]);
         }
+      },
+      clear () {
+        this.resetData()
+      },
+      backspace () {
+        if (this.calcDone) {
+          // 删除一位数，而不是全部清除
 
-        let formula = this.infix.join('');
-        formula = (formula.length == 0) ? formula : formula + '='
-        if (action === 'eq') formula = ''
-        this.formula = formula 
+        } else {
+          this.buildInfix('', 'del')
+          this.calculate()
+        }
+      },
+      caculateResult () {
+        this.calculate('eq')
       },
       caculatok() {
         this.infix          = []
@@ -107,7 +94,6 @@ export default class Caculate extends wepy.component {
         this.result         = []
         this.lastVal        = 0
         this.formula        = ''
-        this.curDot         = false
         this.showCaculation = false
         this.$emit('invokeCaculation', this.amount)
       }
@@ -119,7 +105,6 @@ export default class Caculate extends wepy.component {
       this.suffix = []
       this.result = []
       this.lastVal = 0
-      this.curDot = false
       this.amount = '0.00'
     }
 
@@ -138,18 +123,33 @@ export default class Caculate extends wepy.component {
           return a + b;
         case '-':
           return a - b;
-        case '*':
-          return a * b;
-        case '/':
-          return a / b;
         default:
           return 0;
       }
     }
 
+    // 1 ~ 9 的中缀构建
+    buildNumberInfix (val) {
+      if(!this.isOp(this.lastVal)) {
+        val = this.lastVal * 10 + val
+        this.infix.pop()
+      }
+      this.lastVal = val
+      this.infix.push(val)
+    }
+
+    // +、- 的中缀构建
+    buildOpInfix (op) {
+      if (this.isOp(this.lastVal)) {
+        this.infix.pop()
+      }
+      this.lastVal = op
+      this.infix.push(op)
+    }
+
     // 构建中缀表达式
     buildInfix (val, type) {
-      var newVal;
+      let newVal;
       // 标志着计算已经完成
       if (this.calcDone) {
         this.calcDone = false;
@@ -173,22 +173,6 @@ export default class Caculate extends wepy.component {
         } else {
           this.lastVal = 0;
         }
-      } else if (type === 'add') {
-        // 两个连续的运算符
-        if (this.isOp(val) && this.isOp(this.lastVal)) {
-          newVal = this.infix.pop();
-          this.infix.push(val);
-          return this.infix;
-        } else if (!this.isOp(val) && !this.isOp(this.lastVal)) {
-          newVal = this.lastVal * 10 + val;
-          this.infix.pop();
-          this.lastVal = newVal
-          this.infix.push(newVal);
-          return this.infix;
-        }
-        this.lastVal = val;
-        this.infix.push(val);
-        return this.infix;
       }
     }
 
