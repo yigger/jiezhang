@@ -119,9 +119,9 @@
         }, cId);
 
         if (res.data.status == 200) {
-          // wepy.navigateBack({
-          //   delta: 1
-          // })
+          wepy.navigateBack({
+            delta: 1
+          })
         } else {
           tip.error(res.data.msg)
         }
