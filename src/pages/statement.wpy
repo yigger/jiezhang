@@ -78,6 +78,10 @@
   import Caculate from '../components/caculate'
 
   export default class Statement extends wepy.page {
+    config = {
+      navigationBarTitleText: '记一笔'
+    }
+
     data = {
       showCaculation: false,
       indicatorDots: true,

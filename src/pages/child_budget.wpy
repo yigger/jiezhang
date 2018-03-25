@@ -49,6 +49,10 @@
   import Caculate from '../components/caculate'
 
   export default class ChildBudget extends wepy.page {
+    config = {
+      navigationBarTitleText: '预算设置'
+    }
+
     data = {
       showCaculation: false,
       budget: {},

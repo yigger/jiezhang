@@ -32,6 +32,10 @@
   export default class WalletList extends wepy.page {
     mixins = [ HostMixin ];
 
+    config = {
+      navigationBarTitleText: '资产列表'
+    }
+
     data = {
       wallets: []
     }

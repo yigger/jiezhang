@@ -4,8 +4,10 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
+      
+      "pages/index",
       "pages/statement",
-       "pages/index",
+       
       "pages/chart",
       
       "pages/wallet_form",
@@ -24,7 +26,8 @@ export default class extends wepy.app {
       "pages/child_budget",
       "pages/category_form",
       
-      "pages/feedback"
+      "pages/feedback",
+      "pages/message"
     ],
     window: {
       backgroundColor: "#fb4b4d",

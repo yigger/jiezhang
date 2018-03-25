@@ -2,9 +2,9 @@
   <view class="container">
     <view class="header">
       <image class="bg" src="../public/images/dawn-sun-mountain-landscape-65865.jpeg"></image>
-      <view class="notification">
+      <!-- <view class="notification">
         <image src="../public/images/notification.png"></image>
-      </view>
+      </view> -->
 
       <view class="level-2">
         <view class="fs14">
@@ -41,7 +41,8 @@
               </category>
               <time class="pull-right">{{ item.timeStr }}</time>
             </view>
-            <view class="category-month-day">{{ item.month_day }}</view>
+            <view class="category-month-day" wx:if="{{ item['month_day'] !== todayMonthDay }}">{{ item.month_day }}</view>
+            <view class="category-month-day current-day" wx:else>今天</view>
           </li>
         </ul>
       </view>
@@ -59,6 +60,7 @@
   import Empty from '../components/empty'
   export default class Index extends wepy.page {
     config = {
+      navigationBarTitleText: '首页',
       enablePullDownRefresh: true
     }
 
@@ -92,6 +94,14 @@
     computed = {
       showEmpty () {
         return this.list.length <= 0
+      },
+      todayMonthDay () {
+        const NowDate = new Date()
+        let month = NowDate.getMonth() + 1
+        let day = NowDate.getDate()
+        if (month < 10) month = "0" + month
+        if (day < 10) day = "0" + day
+        return  month + "-" + day
       }
     }
 
@@ -356,5 +366,9 @@
   }
   .st-title {
     padding-top:4px;
+  }
+  .current-day {
+    background: cadetblue !important;
+    color: white !important;
   }
 </style>

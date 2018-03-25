@@ -66,6 +66,7 @@
     }
 
     config = {
+      navigationBarTitleText: '预算设置',
       enablePullDownRefresh: true
     }
 
@@ -90,6 +91,7 @@
     }
 
     onPullDownRefresh () {
+      wx.stopPullDownRefresh()
       this.getHeaderData()
       this.getParentBudget()
     }

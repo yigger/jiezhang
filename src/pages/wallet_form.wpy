@@ -68,6 +68,10 @@
   import api from "../api/api"
   import tip from '../utils/tip'
   export default class WalletList extends wepy.page {
+    config = {
+      navigationBarTitleText: '资产设置'
+    }
+
     data = {
       wallet: {
         id: 0,

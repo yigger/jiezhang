@@ -74,6 +74,10 @@
   import tip from '../utils/tip'
 
   export default class Setting extends wepy.page {
+    config = {
+      navigationBarTitleText: '个人设置'
+    }
+
     data = {
       user: {}
     }

@@ -89,6 +89,10 @@
   import Empty from '../components/empty'
 	const NowDate = new Date()
   export default class Chart extends wepy.page {
+    config = {
+      navigationBarTitleText: '收支统计'
+    }
+
 		data = {
 			hasEmptyGrid: false,
 			today: NowDate.getDate(),

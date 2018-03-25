@@ -1,0 +1,72 @@
+<template>
+  <view class="container">
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from "../api/api"
+  import tip from '../utils/tip'
+
+  export default class Message extends wepy.page {
+    config = {
+      navigationBarTitleText: '消息中心'
+    }
+
+    data = {
+      user: {}
+    }
+
+    onShow () {
+			
+    }
+    
+    methods = {
+      redirect (url) {
+        wepy.navigateTo({
+          url: url
+        })
+      }
+    }
+
+    async getData () {
+      const res = await api.Settings()
+      this.user = res.data
+      this.$apply()
+    }
+  }
+</script>
+<style lang="less">
+.header {
+  padding:12px;
+  background: white;
+}
+.header image {
+  width: 50px; 
+  height: 50px; 
+  display: block;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+.user-info {
+  font-size: 14px;
+}
+.remark-day {
+  line-height:45px;
+  font-size: 14px;
+  color: #999;
+}
+.cell-list {
+  margin-bottom: 12px;
+}
+.cell-list:last-child {
+  margin: 0;
+}
+.weui-cells {
+  font-size:15px;
+}
+.weui-cell {
+  padding:15px !important;
+}
+</style>

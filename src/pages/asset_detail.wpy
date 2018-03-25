@@ -73,6 +73,7 @@
 
   export default class AssetDetail extends wepy.page {
     config = {
+      navigationBarTitleText: '资产详情',
       enablePullDownRefresh: true
     }
 
@@ -126,6 +127,7 @@
     }
 
     onPullDownRefresh () {
+      wx.stopPullDownRefresh()
       this.information()
       this.statements()
     }
