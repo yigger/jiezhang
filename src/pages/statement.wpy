@@ -7,29 +7,26 @@
     </view>
 
     <view class="mark-header" @tap='showCaculate'>
-      <view class="icon-name pull-left fs18">{{ curCategoryName }}</view>
+      <view class="icon-name pull-left fs18">{{ curCategory.name }}</view>
       <view class="amount pull-right fs18">
         <view class="fs21 {{ statement.type }}">{{ statement.amount }}</view>
       </view>
     </view>
 
-    <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" style="height: {{ curCategoryHeight }}px;">
-      <swiper-item wx:for="{{categories}}">
-        <view class="category-flex">
-          <view wx:for="{{item}}" data-category-name="{{ item.name }}" data-category-id="{{ item.id }}" bindtap="categoryChange">
-            <view class="image"><image style="background: {{ item.bg_color }};" src="{{ item.icon }}"></image></view>
-            <view class="name">{{ item.name }}</view>
-          </view>
+    <view class="item-category">
+      <text>分类</text>
+      <picker mode="multiSelector" bindchange="categoryChange" bindcolumnchange="bindCategoryColumnChange" value="{{ categoryIndex }}" range="{{ categoryArray }}" range-key="name">
+        <view class="picker">
+          {{ categoryArray[0][categoryIndex[0]]['name'] }} > {{ categoryArray[1][categoryIndex[1]]['name'] }}
         </view>
-      </swiper-item>
-      
-    </swiper>
+      </picker>
+    </view>
 
     <view class="item-category">
       <text>账户</text>
-      <picker mode="multiSelector" bindchange="assetChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{ multiIndex }}" range="{{ multiArray }}" range-key="name">
+      <picker mode="multiSelector" bindchange="assetChange" bindcolumnchange="bindAssetColumnChange" value="{{ assetIndex }}" range="{{ assetArray }}" range-key="name">
         <view class="picker">
-          {{ multiArray[1][multiIndex[1]]['name'] }}
+          {{ assetArray[0][assetIndex[0]]['name'] }} > {{ assetArray[1][assetIndex[1]]['name'] }}
         </view>
       </picker>
     </view>
@@ -91,8 +88,10 @@
       expendCategories: [],
       incomeCategories: [],
       curCategoryHeight: '470',
+      categoryArray: [[], []],
+      categoryIndex: [0, 0],
       // 当前选中分类
-      curCategoryName: '',
+      curCategory: {},
       // 账单数据
       statement: {
         id: 0,
@@ -113,8 +112,8 @@
 
       // 账户
       assets: [],
-      multiArray: [[], []],
-      multiIndex: [0, 0],
+      assetArray: [[], []],
+      assetIndex: [0, 0],
       defaultAsset: 0
     }
 
@@ -144,18 +143,15 @@
       this.dateEndAt = `${year}-${month}-${day}`
       if (options.id != undefined) {
         this.statement.id = options.id
-        this.getStatement(options.id)
+        this.getStatement(options.id) 
       }
       
-      // 保证获取分类与账户在获取账单之后, 寻找更好的方法？
-      // setTimeout(() => {
-        this.getCategory()
-        this.getAssets()
-      // }, 300);
-      
+      this.getCategory()
+      this.getAssets()
     }
 
     methods = {
+      // tab 切换
       changeType(item) {
         let categories = []
         if (item == 'expend') {
@@ -163,25 +159,33 @@
         } else {
           categories = this.incomeCategories
         }
-        if (categories.length > 0) {
-          this.curCategoryName = categories[0][0]['name']
-          this.statement.category_id = categories[0][0]['id']
-          this.curCategoryHeight = Math.ceil(categories[0].length * 1 / 5) * 65
+        if (categories['parent_assets'].length > 0) {
+          let parentCategory = categories['parent_assets']
+          this.curCategory = categories['child_assets'][parentCategory[0]['id']][0]
+          this.statement.category_id = this.curCategory.id
+
+          let arr = []
+          let childs = categories.child_assets[categories.parent_assets[0]['id']]
+          arr.push(categories.parent_assets)
+          arr.push(childs)
+          this.categoryArray = arr
         }
         this.statement.type = item
         this.categories = categories
-      },
-      categoryChange (e) {
-        let categoroyId = e.currentTarget.dataset.categoryId
-        let name = e.currentTarget.dataset.categoryName
-        this.statement.category_id = categoroyId
-        this.curCategoryName = name
       },
       assetChange(e) {
         let child_idx = e.detail.value[1]
         let parent_id = e.detail.value[0]
         parent_id = this.assets['parent_assets'][parent_id]['id']
         this.statement.asset_id = this.assets['child_assets'][parent_id][child_idx]['id']
+      },
+      categoryChange (e) {
+        let child_idx = e.detail.value[1]
+        let parent_id = e.detail.value[0]
+        parent_id = this.categories['parent_assets'][parent_id]['id']
+        let choseChild = this.categories['child_assets'][parent_id][child_idx]
+        this.curCategory = choseChild
+        this.statement.category_id = choseChild['id']
       },
       // 日期改变
       dateChange(e) {
@@ -196,14 +200,25 @@
         this.statement.description = e.detail.value
       },
       // 账户栏的列变更
-      bindMultiPickerColumnChange (e) {
+      bindAssetColumnChange (e) {
         let value = e.detail.value
         if(e.detail.column === 0) {
           let id = this.assets.parent_assets[value]['id']
-          this.multiIndex[0] = value
-          this.multiArray[1] = this.assets.child_assets[id]
+          this.assetIndex[0] = value
+          this.assetArray[1] = this.assets.child_assets[id]
         } else {
-          this.multiIndex[1] = value
+          this.assetIndex[1] = value
+        }
+      },
+      // 分类栏的列变更
+      bindCategoryColumnChange (e) {
+        let value = e.detail.value
+        if(e.detail.column === 0) {
+          let id = this.categories.parent_assets[value]['id']
+          this.categoryIndex[0] = value
+          this.categoryArray[1] = this.categories.child_assets[id]
+        } else {
+          this.categoryIndex[1] = value
         }
       },
       showCaculate() {
@@ -230,7 +245,8 @@
       async submit (redirectTo = false) {
         let method = 'POST'
         let cId = null
-
+        console.log(this.statement)
+        return false
         if (this.statement.amount == 0) {
           tip.error('金额不能为 0')
           return false
@@ -245,7 +261,6 @@
           tip.error('分类未选择')
           return false
         }
-
 
         if (this.statement.id != 0) {
           method = 'PUT'
@@ -302,26 +317,32 @@
       const res = await api.getBillCategories()
       const data = res.data
       let categories = this.statement.type == 'income' ? data.income_categories : data.expend_categories
-      let cur_name = categories[0][0]['name']
-      if (this.statement.category_id != 0) {
-        for (let i = 0;i < categories.length;++i) {
-          for(let j = 0;j < categories[i].length; ++j) {
-            if (this.statement.category_id == categories[i][j]['id']) {
-              cur_name = categories[i][j]['name']
-            }
-          }
-        }
-      }
       this.categories = categories
       this.expendCategories = data.expend_categories
       this.incomeCategories = data.income_categories
-      this.curCategoryName = cur_name
-      if (categories.length > 0) {
-        this.curCategoryHeight = Math.ceil(categories[0].length * 1 / 5) * 65
-      }
-      if (categories.length > 0 && this.statement.category_id == 0) {
+      
+      let arr = []
+      let childs = categories.child_assets[categories.parent_assets[0]['id']]
+      arr.push(categories.parent_assets)
+      arr.push(childs)
+      this.categoryArray = arr
+
+      if (this.statement.category_id != 0) {
+        let parents = categories.parent_assets
+        let cchilds = categories.child_assets
+        for (let i = 0, length = parents.length;i < length;++i) {
+          for(let j = 0, clength = cchilds[parents[i]['id']].length;j < clength; ++j) {
+            let child = cchilds[parents[i]['id']][j]
+            if(child.id == this.statement.category_id) {
+              this.curCategory = child
+              return false
+            }
+          }
+        }
+      } else if (childs.length > 0 && this.statement.category_id == 0) {
         try {
-          this.statement.category_id = categories[0][0]['id']
+          this.curCategory = childs[0]
+          this.statement.category_id = childs[0]['id']
         } catch (error) {
           this.statement.category_id = 0
         }
@@ -337,7 +358,7 @@
       arr.push(data.parent_assets)
       arr.push(childs)
       this.assets = data
-      this.multiArray = arr
+      this.assetArray = arr
       if (childs.length > 0 && this.statement.asset_id == 0) {
         try {
           this.statement.asset_id = childs[0]['id']
@@ -351,8 +372,6 @@
 </script>
 <style lang="less">
 swiper {
-  // height:290rpx;
-  // height: 500rpx;
   background:#f8f8f8;
   border-bottom:1px solid #ccc;
 }
@@ -385,12 +404,6 @@ swiper {
   font-size: 12px;
 }
 
-/* .mark-header.expend, .header.expend{
-  background: linear-gradient(to right,rgba(9,187,7, 1), rgba(9,187,7, 0.7));
-}
-.mark-header.income, .header.income{
-  background: linear-gradient(to right,rgba(251,75,77, 1), rgba(251,75,77, 0.7));
-} */
 .mark-header  {
    padding: 10px 16px;
    overflow: hidden;
