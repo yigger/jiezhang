@@ -107,22 +107,20 @@
 
     onPullDownRefresh () {
       wx.stopPullDownRefresh()
+      this.getHeader()
       this.curPage = 1
       this.list = []
       this.stopRequest = false
       this.getList({showLoading: true})
     }
 
-    onShow () {
-      console.log("------------ get header - 1 ------------")
-      this.getHeader()
-    }
+    // onShow () {
+    //   this.getHeader()
+    // }
 
-    onLoad () {
-      console.log("------------ get header - 2 ------------")
-      this.getHeader()
-      console.log("------------ get list -----------")
-      this.getList()
+    async onLoad () {
+      await this.getHeader()
+      await this.getList()
     }
 
     // 此函数用于 statement.wpy 里更新后调用
@@ -157,7 +155,6 @@
 
     async getHeader () {
       const res = await api.getIndexHeader()
-      console.log("------------ Header Result ------------")
       this.header = res.data
       this.$apply()
     }
@@ -170,7 +167,6 @@
           page: this.curPage
         }
       })
-      console.log("------------ List Result ------------")
       const data = res.data
       if(data.status == 405) {
         this.stopRequest = true

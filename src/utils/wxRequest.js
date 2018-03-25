@@ -2,15 +2,13 @@ import wepy from 'wepy'
 import tip from './tip'
 
 // const LoginUrl = 'http://git.com/api/login'
-// const LoginUrl = 'https://xiaoyounger.com/api/login'
 const LoginUrl = 'https://yiiiblog.com/api/login'
-const SESSION_KEY = 'weapp_login_session'
 
+const SESSION_KEY = 'weapp_login_session'
 const wxRequest = async(params = {}, url) => {
 	let data = params.query || {};
 	let res = null
-
-	wepy.setStorageSync('_isLogin', false)
+	// console.log("进来WxRequest" + url)
 
 	if (params.showLoading) {
 		tip.loading();
@@ -18,9 +16,9 @@ const wxRequest = async(params = {}, url) => {
 
 	if (SessionLogin.get() == null) {
 		const loginResult = await wxLogin()
-		console.log("登录成功-1")
+		// console.log("登录成功-1")
 		const requestResult = await doRequest(params, url)
-		console.log("请求成功-1")
+		// console.log("请求成功-1")
 		return requestResult
 	} else {
 		res = await doRequest(params, url)
@@ -28,16 +26,15 @@ const wxRequest = async(params = {}, url) => {
 			// Session 过期了，清除本地 Session 后重新请求
 			SessionLogin.clear()
 			const loginResult = await wxLogin()
-			console.log("登录成功-2")
-			const requestResult = await doRequest(params, url)
-			console.log("请求成功-2")
+			// console.log("登录成功-2")
+			res = await doRequest(params, url)
 		}
 	}
 
 	if (params.showLoading) {
 		tip.loaded();
 	}
-	console.log("Request 结束")
+	// console.log("Request 结束")
 	return res;
 };
 
@@ -69,13 +66,13 @@ const wxLogin = async () => {
 		let status = await wepy.showModal({
 			title: '登录提示',
 			content: `必须授权登录之后才能继续操作，是否重新授权登录？`,
-			cancelText: '好的',
-			cancelColor: '#3CC51F',
-			confirmText: '不了',
-			confirmColor: '#666666'
+			cancelText: '不了',
+			cancelColor: '#666666',
+			confirmText: '好的',
+			confirmColor: '#3CC51F'
 		})
 
-		if (status.cancel) {
+		if (status.confirm) {
 			let res = await wepy.openSetting()
 			if (res && res.authSetting['scope.userInfo']) {
 				try {

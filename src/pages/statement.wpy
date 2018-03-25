@@ -124,7 +124,7 @@
       caculate: Caculate
     };
 
-    onLoad (options) {
+    async onLoad (options) {
       let myDate = new Date();
       if (this.statement.date != '') {
         myDate = new Date(this.statement.date)
@@ -146,11 +146,11 @@
       this.dateEndAt = `${year}-${month}-${day}`
       if (options.id != undefined) {
         this.statement.id = options.id
-        this.getStatement(options.id) 
+        await this.getStatement(options.id) 
       }
       
-      this.getCategory()
-      this.getAssets()
+      await this.getCategory()
+      await this.getAssets()
     }
 
     methods = {
@@ -304,7 +304,7 @@
     }
 
     async getStatement (id) {
-      const res = await api.Bill({}, id);
+      const res = await api.Bill({showLoading: true}, id);
       if (res.data.status != undefined && res.data.status != 200) {
         wepy.navigateBack({
           delta: 1
@@ -316,7 +316,7 @@
     }
 
     async getCategory () {
-      const res = await api.getBillCategories()
+      const res = await api.getBillCategories({showLoading: true})
       const data = res.data
       let categories = this.statement.type == 'income' ? data.income_categories : data.expend_categories
       this.categories = categories
@@ -324,6 +324,27 @@
       this.incomeCategories = data.income_categories
       
       let arr = []
+      if (categories.parent_assets.length == 0) {
+        // 无分类，提示无分类然后退回上一页
+        const status = await wepy.showModal({
+          title: '提示',
+          content: '需要设置分类才可继续操作',
+          cancelText: '返回',
+          cancelColor: '#666666',
+          confirmText: '前往设置',
+          confirmColor: '#3CC51F'
+        })
+        if (status.confirm) {
+          // 跳转至设置
+          wx.navigateTo({ url: `/pages/category` })
+        } else {
+          // 返回上一页
+          wepy.navigateBack({
+            delta: 1
+          })
+        }
+        return false
+      }
       let childs = categories.child_assets[categories.parent_assets[0]['id']]
       arr.push(categories.parent_assets)
       arr.push(childs)
@@ -356,6 +377,29 @@
       const res = await api.getBillAssets()
       const data = res.data
       let arr = []
+
+      if (data.parent_assets.length == 0) {
+        // 无分类，提示无分类然后退回上一页
+        const status = await wepy.showModal({
+          title: '提示',
+          content: '需要设置分类才可继续操作',
+          cancelText: '返回',
+          cancelColor: '#666666',
+          confirmText: '前往设置',
+          confirmColor: '#3CC51F'
+        })
+        if (status.confirm) {
+          // 跳转至设置
+          wx.navigateTo({ url: `/pages/wallet_list` })
+        } else {
+          // 返回上一页
+          wepy.navigateBack({
+            delta: 1
+          })
+        }
+        return false
+      }
+
       let childs = data.child_assets[data.parent_assets[0]['id']]
       arr.push(data.parent_assets)
       arr.push(childs)

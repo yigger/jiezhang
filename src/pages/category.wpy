@@ -17,7 +17,7 @@
 
     <navigator url="/pages/category_form?type={{ type }}">
       <view class="add-wallet">
-        <image src="../../public/images/wallet-add.png"></image>
+        <image src="../public/images/wallet-add.png"></image>
         <text class="fs16" bindtap="newAsset">添加分类</text>
       </view>
     </navigator>

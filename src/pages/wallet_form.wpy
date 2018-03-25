@@ -33,7 +33,7 @@
 
       <view class="item">
         <view class="item-name pull-left"> <text>图标</text> </view>
-        <image class="icon-image" src="{{ wallet.icon_path }}"></image>
+        <image class="icon-image" src="{{ host }}{{ wallet.icon_path }}"></image>
       </view>
 
       <swiper>
@@ -67,11 +67,12 @@
   import wepy from 'wepy'
   import api from "../api/api"
   import tip from '../utils/tip'
+  import HostMixin from '../mixins/host'
   export default class WalletList extends wepy.page {
     config = {
       navigationBarTitleText: '资产设置'
     }
-
+    mixins = [ HostMixin ];
     data = {
       wallet: {
         id: 0,

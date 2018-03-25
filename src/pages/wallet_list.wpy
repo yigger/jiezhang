@@ -10,7 +10,7 @@
       
       <view class="category child-category" wx:for="{{ item.childs }}" wx:for-item="child" data-id="{{ child.id }}" bindtap="edit">
         <view class="image">
-          <image class='ljt-icon' src="{{host}}{{ child.icon_path }}"></image>
+          <image class='ljt-icon' src="{{ child.icon_path }}"></image>
         </view>
         <text class="category-name">{{ child.name }}</text>
       </view>
@@ -18,7 +18,7 @@
 
     <navigator url="/pages/wallet_form">
       <view class="add-wallet">
-        <image src="../../public/images/wallet-add.png"></image>
+        <image src="../public/images/wallet-add.png"></image>
         <text class="fs16" bindtap="newAsset">添加资产类型</text>
       </view>
     </navigator>

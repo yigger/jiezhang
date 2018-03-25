@@ -4,10 +4,9 @@ import {
 import wepy from 'wepy';
 
 // const host = 'http://git.com'
-// const host = 'https://xiaoyounger.com'
 const host = 'https://yiiiblog.com'
-const apiUrl = host + '/api'
 
+const apiUrl = host + '/api'
 // 获取首页数据
 const getIndexList = (params) => wxRequest(params, `${apiUrl}/index`);
 const getIndexHeader = (params) => wxRequest(params, `${apiUrl}/header`);
