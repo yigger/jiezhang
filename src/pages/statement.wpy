@@ -7,8 +7,11 @@
     </view>
 
     <view class="mark-header" @tap='showCaculate'>
-      <view class="icon-name pull-left fs18">{{ curCategory.name }}</view>
-      <view class="amount pull-right fs18">
+      <view class="icon-name {{ statement.type }} fs16">
+        <!-- <view><image src="{{ curCategory.icon_path }}" class="ljt-icon"></image></view> -->
+        <view>{{ curCategory.name }}</view>
+      </view>
+      <view class="amount fs18">
         <view class="fs21 {{ statement.type }}">{{ statement.amount }}</view>
       </view>
     </view>
@@ -245,8 +248,7 @@
       async submit (redirectTo = false) {
         let method = 'POST'
         let cId = null
-        console.log(this.statement)
-        return false
+        
         if (this.statement.amount == 0) {
           tip.error('金额不能为 0')
           return false
@@ -405,10 +407,17 @@ swiper {
 }
 
 .mark-header  {
-   padding: 10px 16px;
-   overflow: hidden;
-   border-bottom:1px solid #ccc;
+  padding: 10px 16px;
+  overflow: hidden;
+  border-bottom:1px solid #ccc;
   .icon-name, .amount {
+    display: inline-block;
+    width: 50%;
+  }
+  .icon-name > view {
+    display: inline-block;
+  }
+  .amount {
     font-weight: bold;
     text-align: right;
   }

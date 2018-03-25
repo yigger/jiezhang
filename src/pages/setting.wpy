@@ -61,7 +61,7 @@
 
     <view class="zan-cell zan-cell--access">
       <view class="zan-cell__bd">关于理记通</view>
-      <view class="zan-cell__ft">V1.0</view>
+      <view>V1.0</view>
     </view>
   </view>
 

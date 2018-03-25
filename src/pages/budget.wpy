@@ -85,7 +85,7 @@
       }
     }
 
-    onLoad () {
+    onShow () {
       this.getHeaderData()
       this.getParentBudget()
     }

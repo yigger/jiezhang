@@ -3,8 +3,8 @@
   <view id="wallet-header">
     <view class="surplus">
       <view class="surplus-amount fs24" @tap="showCaculate">
-        <text>{{ header.surplus }}</text>
-        <image class="edit-icon" src="../public/images/edit.png"></image>
+        <text class="pull-left">{{ header.surplus }}</text>
+        <image class="edit-icon pull-left" src="../public/images/edit.png"></image>
       </view>
       <view class="fs12">余额</view>
     </view>
@@ -198,6 +198,12 @@
     width: 25px;
     height: 25px;
     margin-left: 8px;
+  }
+  .surplus-amount {
+    overflow: hidden;
+    image {
+      margin-top:4px;
+    }
   }
 }
 

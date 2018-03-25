@@ -65,7 +65,7 @@
             <view class="fs14">{{ item.day }}</view>
             <view class="fs12">{{ item.year }}</view>
           </view>
-          <view class="pull-right fs16 money {{ item.type }}">{{ item.amount }}</view>
+          <view class="pull-right fs16 money {{ item.type }}">{{ item.format_amount }}</view>
           <view class="information">
             <view class="pull-left icon"><image src="{{ item.category_icon }}"></image></view>
             <view class="pull-left title">
