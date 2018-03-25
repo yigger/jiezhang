@@ -128,7 +128,7 @@
         this.wallet.type = this.assetTypes[value]['key']
       },
       async del () {
-        await tip.confirm('是否删除该记录？')
+        await tip.confirm('删除后，所属该分类的账单也将一并删除！', {}, '警告')
         const res = await api.Asset({
           method: 'DELETE'
         }, this.wallet.id)
