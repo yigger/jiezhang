@@ -114,10 +114,14 @@
     }
 
     onShow () {
+      console.log("------------ get header - 1 ------------")
       this.getHeader()
     }
 
     onLoad () {
+      console.log("------------ get header - 2 ------------")
+      this.getHeader()
+      console.log("------------ get list -----------")
       this.getList()
     }
 
@@ -153,6 +157,7 @@
 
     async getHeader () {
       const res = await api.getIndexHeader()
+      console.log("------------ Header Result ------------")
       this.header = res.data
       this.$apply()
     }
@@ -165,6 +170,7 @@
           page: this.curPage
         }
       })
+      console.log("------------ List Result ------------")
       const data = res.data
       if(data.status == 405) {
         this.stopRequest = true
