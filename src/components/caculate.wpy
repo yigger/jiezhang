@@ -199,66 +199,60 @@ export default class Caculate extends wepy.component {
 
 <style lang="less">
   .caculation {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 666;
-    .screen {
-      padding: 6px 10px;
-      color: white;
-      text-align: right;
-      background: rgba(62,64,82,0.9);
-    }
-  }
+	position:fixed;
+	bottom:0;
+	left:0;
+	width:100%;
+	z-index:666;
+	.screen {
+	padding:12rpx 20rpx;
+	color:white;
+	text-align:right;
+	background:rgba(62,64,82,0.9);
+}
+}.caculation .close {
+	width:70rpx;
+	position:absolute;
+	right:0;
+	top:-52rpx;
+	text-align:center;
+	background:#efefef;
+	border:2rpx solid #ccc;
+	height:50rpx;
+}
+.caculation .close image {
+	width:40rpx;
+	height:50rpx;
+	display:inline-block;
+}
+.caculation .btnGroup {
+	display:flex;
+	flex-direction:row;
+	border-top:2rpx solid #323546;
+}
+.caculation .btnGroup > .item {
+	text-align:center;
+	width:25%;
+	padding:28rpx 0;
+	background:#3e4052;
+	border-left:2rpx solid #323546;
+	color:white;
+}
+.caculate-back {
+	width:60rpx;
+	height:60rpx;
+	position:absolute;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+	margin:auto;
+}
+.caculation .btnGroup > .item:first-child {
+	border-left:none;
+}
+.backspace {
+	position:relative;
+}
 
-  .caculation .close {
-    width: 35px;
-    position: absolute;
-    right: 0;
-    top: -26px;
-    text-align: center;
-    background: #efefef;
-    border: 1px solid #ccc;
-    height: 25px;
-  }
-
-  .caculation .close image {
-    width: 20px;
-    height: 25px;
-    display: inline-block;
-  }
-
-  .caculation .btnGroup {
-    display: flex;
-    flex-direction: row;
-    border-top: 1px solid #323546;
-  }
-
-  .caculation .btnGroup > .item {
-    text-align: center;
-    width: 25%;
-    padding: 14px 0;
-    background: #3e4052;
-    border-left: 1px solid #323546;
-    color: white;
-  }
-
-  .caculate-back {
-    width: 30px;
-    height: 30px;
-    position:absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin:auto;
-  }
-
-  .caculation .btnGroup > .item:first-child {
-    border-left: none;
-  }
-  .backspace {
-    position: relative;
-  }
 </style>

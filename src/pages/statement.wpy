@@ -61,9 +61,13 @@
     </view>
     
     <view class="save-btn">
-      <view class="bill-btn" @tap="submit('true')" wx:if="{{ statement.id == 0 }}">再记一笔</view>
-      <view class="bill-btn" @tap="del" wx:else>删除</view>
-      <view class="bill-btn save" @tap="submit">保存</view>
+      <!-- <view class="bill-btn" @tap="submit('true')" wx:if="{{ statement.id == 0 }}">再记一笔</view>
+      <view class="bill-btn" @tap="del" wx:else>删除</view> -->
+      <!-- <view class="bill-btn save" @tap="submit">保存</view> -->
+    </view>
+
+    <view class="zan-btns">
+      <button class="zan-btn zan-btn--danger" @tap="submit">保存</button>
     </view>
 
     <caculate @invokeCaculation.user="invokeCaculation" hidden="{{ !showCaculation }}"></caculate>
@@ -418,142 +422,127 @@
 </script>
 <style lang="less">
 swiper {
-  background:#f8f8f8;
-  border-bottom:1px solid #ccc;
+	background:#f8f8f8;
+	border-bottom:2rpx solid #ccc;
 }
 .header {
-  background: #fb4b4d;
-  border-bottom: #fb4b4d;
-  text-align: center;
-  color: #fff;
-  font-size: 16px;
-  padding: 4px 0;
+	background:#fb4b4d;
+	border-bottom:#fb4b4d;
+	text-align:center;
+	color:#fff;
+	font-size:32rpx;
+	padding:8rpx 0;
 }
-
 .header .save {
-  float: right;
-  padding: 0;
-  padding-right: 2px;
-  position: absolute;
-  right: 10px;
+	float:right;
+	padding:0;
+	padding-right:4rpx;
+	position:absolute;
+	right:20rpx;
 }
-
 .header text {
-  padding: 4px 16px;
+	padding:8rpx 32rpx;
 }
-
 .header text.active {
-  border-bottom: 2px solid #fff;
+	border-bottom:4rpx solid #fff;
 }
-
 .item-category text {
-  font-size: 12px;
+	font-size:24rpx;
 }
-
-.mark-header  {
-  padding: 10px 16px;
-  overflow: hidden;
-  border-bottom:1px solid #ccc;
-  .icon-name, .amount {
-    display: inline-block;
-    width: 50%;
-  }
-  .icon-name > view {
-    display: inline-block;
-  }
-  .amount {
-    font-weight: bold;
-    text-align: right;
-  }
+.mark-header {
+	padding:20rpx 32rpx;
+	overflow:hidden;
+	border-bottom:2rpx solid #ccc;
+	.icon-name,.amount {
+	display:inline-block;
+	width:50%;
 }
-
-.item-category {
-  padding: 0 16px 8px 16px;
-  border-bottom: 1px solid #ccc;
+.icon-name > view {
+	display:inline-block;
 }
-
+.amount {
+	font-weight:bold;
+	text-align:right;
+}
+}.item-category {
+	padding:0 32rpx 16rpx 32rpx;
+	border-bottom:2rpx solid #ccc;
+}
 .item-category:last-child {
-  padding-top: 8px;
+	padding-top:16rpx;
 }
-
 .item-category > text {
-  font-size: 12px;
+	font-size:24rpx;
 }
-
 .item-category > view {
-  font-size: 14px;
+	font-size:28rpx;
 }
-
 .item-category .remark {
-  min-height: 2em;
-  height: 2em;
-  font-size: 16px;
-  padding-top: 8px;
+	min-height:2em;
+	height:2em;
+	font-size:32rpx;
+	padding-top:16rpx;
 }
-
 /* Picker */
 
 .picker-view {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 300px;
-  z-index: 999;
+	position:fixed;
+	left:0;
+	bottom:0;
+	width:100%;
+	height:600rpx;
+	z-index:999;
 }
 .picker {
-  font-size:14px;
+	font-size:28rpx;
 }
 .save-btn {
-  width: 100%;
-  text-align: center;
-  margin:12px 0;
+	width:100%;
+	text-align:center;
+	margin:24rpx 0;
 }
-
 .save-btn > .bill-btn {
-  margin: 0 4%;
+	margin:0 4%;
 }
-
 .save {
-  background: #fb4b4d;
-  color: white !important;
+	background:#fb4b4d;
+	color:white !important;
 }
-
 .bill-btn {
-  border: 1px solid #fb4b4d;
-  display: inline-block;
-  padding: 4px 0;
-  width: 40%;
-  color: #fb4b4d;
-  text-align: center;
-  font-size: 18px;
+	border:2rpx solid #fb4b4d;
+	display:inline-block;
+	padding:8rpx 0;
+	width:40%;
+	color:#fb4b4d;
+	text-align:center;
+	font-size:36rpx;
 }
-
 .category-flex {
-  overflow:hidden;
-}  
+	overflow:hidden;
+}
 .category-flex image {
-  width: 30px;
-  height: 30px;
+	width:60rpx;
+	height:60rpx;
 }
 .category-flex > view {
-  width: 20%;
-  float: left;
-  text-align:center;
-  margin-top: 8px;
+	width:20%;
+	float:left;
+	text-align:center;
+	margin-top:16rpx;
 }
 .category-flex .image {
-  height: 30px;
+	height:60rpx;
 }
 .category-flex .name {
-  color: #999;
-  font-size: 24rpx;
-  margin-top: 2px;
+	color:#999;
+	font-size:24rpx;
+	margin-top:4rpx;
 }
 .item-category > text {
-  color: #999;
+	color:#999;
 }
 .cur-asset {
-  font-size: 14px;
+	font-size:28rpx;
 }
+
 </style>

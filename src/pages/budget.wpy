@@ -125,86 +125,79 @@
 </script>
 
 <style lang="less">
-  page {
-    background: #f2f2f2;
-  }
-  .container {
-    height: 100%;
-  }
-  
-  .header {
-    height: 125px;
-    position: relative;
-    background: linear-gradient(rgba(251, 75, 77, 1), rgba(241, 75, 77, 0.9)); /* 标准的语法 */
-    box-shadow: 0 0 10px #ccc;
-    color: white;
-    padding:0 12px;
-    .edit-icon {
-      width: 25px;
-      height: 25px;
-      margin-left: 8px;
-    }
-    .level-2 {
-      margin-top:16px;
-    }
-    .level-2 > view {
-      width: 50%;
-      text-align: left;
-      display: inline-block;
-    }
-  }
-  .center {
-    background: white;
-    // margin-top:8px;
-    height: 100%;
-    .budget-info {
-      // padding: 4px 12px;
-      padding:4px 12px 4px 6px;
-      .left {
-        float: left;
-        text-align:center;
-        display: flex;
-        justify-content:center;
-        margin-top: 5px;
-        image {
-          width: 40px;
-          height: 40px;
-        }
-      }
-      .right {
-        margin-left: 46px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #f2f2f2;
-        
-        .title {
-          overflow: hidden;
-          position: relative;
-          .balance {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            color: #999;
-          }
-        }
-        .budget-amount {
-          color: #999;
-        }
-      }
-    }
-    .progress {
-      margin:6px 0;
-      overflow:hidden;
-      > view {
-        float: left;
-        width: 50%;
-        height: 4px;
-      }
-      .orange{
-        background: orange;
-      }
-      .gray{
-        background: #f2f2f2;
-      }
-    }
-  }
+page {
+	background:#f2f2f2;
+}
+.container {
+	height:100%;
+}
+.header {
+	height:250rpx;
+	position:relative;
+	background:linear-gradient(rgba(251,75,77,1),rgba(241,75,77,0.9));
+	/* 标准的语法 */
+    box-shadow:0 0 20rpx #ccc;
+	color:white;
+	padding:0 24rpx;
+	.edit-icon {
+	width:50rpx;
+	height:50rpx;
+	margin-left:16rpx;
+}
+.level-2 {
+	margin-top:32rpx;
+}
+.level-2 > view {
+	width:50%;
+	text-align:left;
+	display:inline-block;
+}
+}.center {
+	background:white;
+	// margin-top:16rpx;
+	height:100%;
+	.budget-info {
+	// padding:8rpx 24rpx;
+	padding:8rpx 24rpx 8rpx 12rpx;
+	.left {
+	float:left;
+	text-align:center;
+	display:flex;
+	justify-content:center;
+	margin-top:10rpx;
+	image {
+	width:80rpx;
+	height:80rpx;
+}
+}.right {
+	margin-left:92rpx;
+	padding-bottom:16rpx;
+	border-bottom:2rpx solid #f2f2f2;
+	.title {
+	overflow:hidden;
+	position:relative;
+	.balance {
+	position:absolute;
+	right:0;
+	bottom:0;
+	color:#999;
+}
+}.budget-amount {
+	color:#999;
+}
+}}.progress {
+	margin:12rpx 0;
+	overflow:hidden;
+	> view {
+	float:left;
+	width:50%;
+	height:8rpx;
+}
+.orange {
+	background:orange;
+}
+.gray {
+	background:#f2f2f2;
+}
+}}
 </style>

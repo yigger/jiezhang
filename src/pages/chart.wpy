@@ -278,286 +278,236 @@
 </script>
 <style lang="less">
 .container {
-  background: #f2f2f2;
+	background:#f2f2f2;
 }
-
 .header {
-  background: white;
-  margin-bottom: 8px;
-  box-shadow: 0 0 5px #ccc;
-  padding-bottom: 6px;
+	background:white;
+	margin-bottom:16rpx;
+	box-shadow:0 0 10rpx #ccc;
+	padding-bottom:12rpx;
 }
-
 .income-expend {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  font-size: 10px;
+	position:absolute;
+	bottom:0;
+	right:0;
+	font-size:20rpx;
 }
-
 .income-expend > text {
-  display: block;
+	display:block;
 }
-
-
 .assets {
-  padding: 6px 0px;
-  font-size: 14px;
-  background: white;
+	padding:12rpx 0rpx;
+	font-size:28rpx;
+	background:white;
 }
-
 .assets .category-icon {
-  margin-right: 6px;
+	margin-right:12rpx;
 }
-
 .section {
-  padding: 8px 12px;
-  border-bottom: 1px solid #efefef;
-  position: relative;
+	padding:16rpx 24rpx;
+	border-bottom:2rpx solid #efefef;
+	position:relative;
 }
-
 .select-tab {
-  position: absolute;
-  top: 2px;
-  right: 8px;
-  border: 1px solid #999;
-  border-radius: 4px;
+	position:absolute;
+	top:4rpx;
+	right:16rpx;
+	border:2rpx solid #999;
+	border-radius:8rpx;
 }
-
 .select-tab > view:first-child {
-  border-right: 1px solid #999;
+	border-right:2rpx solid #999;
 }
-
 .select-tab > view {
-  float: left;
-  color: #999;
-  padding: 2px 6px;
+	float:left;
+	color:#999;
+	padding:4rpx 12rpx;
 }
-
 .select-tab > .active {
-  background: #999;
-  color: white;
+	background:#999;
+	color:white;
 }
-
 .col999 {
-  color: #999;
+	color:#999;
 }
-
 /*  条目样式  */
 
 .secondary-title {
-  margin-top: -6px;
+	margin-top:-12rpx;
 }
-
 .dayAndWeek {
-  display: inline-block;
+	display:inline-block;
 }
-
 .dayAndWeek > view {
-  display: inline-block;
+	display:inline-block;
 }
-
 .dayAndWeek > view:first-child {
-  font-size: 16px;
-  font-weight: bold;
+	font-size:32rpx;
+	font-weight:bold;
 }
-
 .secondary-title .balance {
-  font-size: 12px;
-  padding-top: 4px;
+	font-size:24rpx;
+	padding-top:8rpx;
 }
-
 .day-bills {
-  border-bottom: 1px solid #f4f4f4;
+	border-bottom:2rpx solid #f4f4f4;
 }
-
 .day-bills > view:last-child .information {
-  border: none;
+	border:none;
 }
-
 .day-bills .yearAndMonth {
-  margin-top: 2px;
+	margin-top:4rpx;
 }
-
 .bill-detail {
-  margin-top: 2px;
-  margin-bottom: 12px;
+	margin-top:4rpx;
+	margin-bottom:24rpx;
 }
-
-.bill-detail .icon, .bill-detail image {
-  width: 40px;
-  height: 40px;
-  /* border-radius: 50%; */
-  margin-top: 2px;
+.bill-detail .icon,.bill-detail image {
+	width:80rpx;
+	height:80rpx;
+	/* border-radius:50%;
+	*/
+  margin-top:4rpx;
 }
-
 .bill-detail .information {
-  margin-left: 50px;
-  border-bottom: 1px solid #f4f4f4;
-  padding-bottom: 6px;
+	margin-left:100rpx;
+	border-bottom:2rpx solid #f4f4f4;
+	padding-bottom:12rpx;
 }
-
 .bill-detail .information .title {
-  font-size: 18px;
+	font-size:36rpx;
 }
 .mutiple.tiaomu {
-  padding-left: 12px;
+	padding-left:24rpx;
 }
 .tiaomu {
-  padding: 6px 12px 6px 0;
-  overflow: hidden;
-  border-bottom: 1px solid #efefef;
-  .money {
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
-    height: 35px;
-  }
-  .date-time {
-    width: 42px;
-    text-align: center;
-  }
-
-  .information {
-    overflow: hidden;
-    margin-left: 42px;
-    .title {
-      display: flex;
-      justify-content: space-around;
-      flex-direction: column;
-      height: 35px;
-    }
-    .description {
-      color: #999;
-    }
-    .icon {
-      width: 35px;
-      height: 35px;
-      margin: 0 8px;
-      image {
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
+	padding:12rpx 24rpx 12rpx 0;
+	overflow:hidden;
+	border-bottom:2rpx solid #efefef;
+	.money {
+	display:flex;
+	justify-content:space-around;
+	flex-direction:column;
+	height:70rpx;
 }
-
-/* 分类样式  */
+.date-time {
+	width:84rpx;
+	text-align:center;
+}
+.information {
+	overflow:hidden;
+	margin-left:84rpx;
+	.title {
+	display:flex;
+	justify-content:space-around;
+	flex-direction:column;
+	height:70rpx;
+}
+.description {
+	color:#999;
+}
+.icon {
+	width:70rpx;
+	height:70rpx;
+	margin:0 16rpx;
+	image {
+	width:100%;
+	height:100%;
+}
+}}}/* 分类样式  */
 
 .category .detail > .title {
-  overflow-y: hidden;
-  background: rgba(248, 248, 248, 0.5);
-  padding: 12px;
-  border-bottom: 1px solid #efefef;
+	overflow-y:hidden;
+	background:rgba(248,248,248,0.5);
+	padding:24rpx;
+	border-bottom:2rpx solid #efefef;
 }
-
 .category .single {
-  padding: 8px 12px;
-  overflow: hidden;
-  border-bottom: 1px solid #efefef;
+	padding:16rpx 24rpx;
+	overflow:hidden;
+	border-bottom:2rpx solid #efefef;
 }
-
 .category .single .date-time {
-  width: 42px;
-  text-align: center;
+	width:84rpx;
+	text-align:center;
 }
-
 .category .single .information {
-  overflow: hidden;
-  margin-left: 42px;
+	overflow:hidden;
+	margin-left:84rpx;
 }
-
 .category .single .information image {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+	width:80rpx;
+	height:80rpx;
+	border-radius:50%;
 }
-
 .category .single .information .icon {
-  width: 40px;
-  height: 40px;
-  margin: 0 8px;
+	width:80rpx;
+	height:80rpx;
+	margin:0 16rpx;
 }
-
 /* ****************  日历样式 ************* */
 
 .box {
-  display: flex;
+	display:flex;
 }
-
 .box-lr {
-  flex-direction: row;
+	flex-direction:row;
 }
-
 .box-rl {
-  flex-direction: row-reverse;
+	flex-direction:row-reverse;
 }
-
 .box-tb {
-  flex-direction: column;
+	flex-direction:column;
 }
-
 .selected-bg {
-  background: #ccc;
+	background:#ccc;
 }
-
 .box-pack-center {
-  justify-content: center;
+	justify-content:center;
 }
-
 .box-align-center {
-  align-items: center;
+	align-items:center;
 }
-
 .box-wrap {
-  flex-wrap: wrap;
+	flex-wrap:wrap;
 }
-
 .flex {
-  flex-grow: 1;
+	flex-grow:1;
 }
-
 .cur-month {
-  padding: 8px 12px;
+	padding:16rpx 24rpx;
 }
-
 .weeks {
-  color: #999;
-  border-bottom: 1px solid #f3f3f3;
-  padding: 4px 0;
+	color:#999;
+	border-bottom:2rpx solid #f3f3f3;
+	padding:8rpx 0;
 }
-
 .week {
-  text-align: center;
+	text-align:center;
 }
-
 .days {
-  height: 350rpx;
+	height:350rpx;
 }
-
 .grid {
-  width: 107.1428571429rpx;
+	width:107.1428571429rpx;
 }
-
 .day {
-  width: 60rpx;
-  height: 60rpx;
-  color: black;
-  font-size: 32rpx;
-  font-weight: 400;
+	width:60rpx;
+	height:60rpx;
+	color:black;
+	font-size:32rpx;
+	font-weight:400;
 }
-
 .border-radius {
-  border-radius: 50%;
-  position: relative;
-  left: 0;
-  top: 0;
-  color: #fff;
+	border-radius:50%;
+	position:relative;
+	left:0;
+	top:0;
+	color:#fff;
 }
-
 .today {
-  background: #46c4f4;
-  box-shadow: 0 0 5px #ccc;
+	background:#46c4f4;
+	box-shadow:0 0 10rpx #ccc;
 }
 
 </style>

@@ -103,38 +103,39 @@
 </script>
 <style lang="less">
 page {
-  height: 100%;
-  background: #F4F4F4;
+	height:100%;
+	background:#F4F4F4;
 }
 .header {
-  padding:12px;
-  background: white;
+	padding:24rpx;
+	background:white;
 }
 .header image {
-  width: 50px; 
-  height: 50px; 
-  display: block;
-  margin-right: 8px;
-  border-radius: 50%;
+	width:100rpx;
+	height:100rpx;
+	display:block;
+	margin-right:16rpx;
+	border-radius:50%;
 }
 .user-info {
-  font-size: 14px;
+	font-size:28rpx;
 }
 .remark-day {
-  line-height:45px;
-  font-size: 14px;
-  color: #999;
+	line-height:90rpx;
+	font-size:28rpx;
+	color:#999;
 }
 .cell-list {
-  margin-bottom: 12px;
+	margin-bottom:24rpx;
 }
 .cell-list:last-child {
-  margin: 0;
+	margin:0;
 }
 .weui-cells {
-  font-size:15px;
+	font-size:30rpx;
 }
 .weui-cell {
-  padding:15px !important;
+	padding:30rpx !important;
 }
+
 </style>

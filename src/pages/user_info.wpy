@@ -90,7 +90,8 @@
     background: #f2f2f2;
   }
   .my-avatar {
-    width: 50px;
-    height: 50px;
+    width:100rpx;
+    height:100rpx;
   }
+
 </style>

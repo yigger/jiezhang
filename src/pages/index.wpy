@@ -20,9 +20,9 @@
       </view>
     </view>
     
-    <view class="normal new-bill">
+    <view class="zan-btns">
       <navigator url="/pages/statement">
-        <button>记一笔</button>
+        <button class="zan-btn zan-btn--danger btn-shadow">记一笔</button>
       </navigator>
     </view>
 
@@ -196,181 +196,175 @@
 </script>
 <style lang="less">
   .header {
-    position: relative;
-    color: white;
-    height: 230px;
-    .bg {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
-    .level-2 {
-      position: absolute;
-      bottom: 12px;
-      width: 100%;
-      .today-expend {
-        font-size:32px;
-        margin-bottom: 8px;
-      }
-      > view {
-        padding: 0 8px;
-      }
-    }
-    .pay-num {
-      background: rgb(32,86,174);
-      margin: 0 2px;
-    }
-    .notification {
-      position: absolute;
-      top:21px;
-      right:21px;
-      width: 30px;
-      height: 30px;
-      background: black;
-      border-radius: 50%;
-      padding: 4px;
-      image {
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
-  .today {
-    background-size: cover;
-    background-position:5px -85px;
-  }
-  .today-pay {
-    font-size: 12px;
-  }
-  .today-total {
-    font-weight: 600;
-  }
-  .cur-month-progress {
-    padding: 0 20px;
-  }
-  .new-record-btn {
-    margin-bottom:8px;
-    position:relative;
-    display:block;
-    margin-left:auto;
-    margin-right:auto;
-    padding-left:14px;
-    padding-right:14px;
-    box-sizing:border-box;
-    font-size:18px;
-    text-align:center;
-    text-decoration:none;
-    line-height:2;
-    border-radius:3px;
-    -webkit-tap-highlight-color:transparent;
-    overflow:hidden;
-    color:white;
-    background-color:#48C4FE;
-  }
-
-  .new-bill {
-    margin:12px;
-  }
-
-  .new-bill button {
-    border-radius: 2px;
-    background:rgba(251,75,77,0.9);
-    color: white;
-    box-shadow:2px 3px 8px #ccc;
-    text-align:center;
-    line-height: 2;
-  }
-  .new-bill:before {
-    content:none !important;
-  }
-
-  /* 时间轴 */
+	position:relative;
+	color:white;
+	height:460rpx;
+	.bg {
+	position:absolute;
+	width:100%;
+	height:100%;
+	top:0;
+	left:0;
+	z-index:-1;
+}
+.level-2 {
+	position:absolute;
+	bottom:24rpx;
+	width:100%;
+	.today-expend {
+	font-size:64rpx;
+	margin-bottom:16rpx;
+}
+> view {
+	padding:0 16rpx;
+}
+}.pay-num {
+	background:rgb(32,86,174);
+	margin:0 4rpx;
+}
+.notification {
+	position:absolute;
+	top:42rpx;
+	right:42rpx;
+	width:60rpx;
+	height:60rpx;
+	background:black;
+	border-radius:50%;
+	padding:8rpx;
+	image {
+	width:100%;
+	height:100%;
+}
+}}.today {
+	background-size:cover;
+	background-position:10rpx -170rpx;
+}
+.today-pay {
+	font-size:24rpx;
+}
+.today-total {
+	font-weight:600;
+}
+.cur-month-progress {
+	padding:0 40rpx;
+}
+.new-record-btn {
+	margin-bottom:16rpx;
+	position:relative;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+	padding-left:28rpx;
+	padding-right:28rpx;
+	box-sizing:border-box;
+	font-size:36rpx;
+	text-align:center;
+	text-decoration:none;
+	line-height:2;
+	border-radius:6rpx;
+	-webkit-tap-highlight-color:transparent;
+	overflow:hidden;
+	color:white;
+	background-color:#48C4FE;
+}
+.new-bill {
+	margin:24rpx;
+}
+.new-bill button {
+	border-radius:4rpx;
+	background:rgba(251,75,77,0.9);
+	color:white;
+	box-shadow:4rpx 6rpx 16rpx #ccc;
+	text-align:center;
+	line-height:2;
+}
+.new-bill:before {
+	content:none !important;
+}
+/* 时间轴 */
   .time-mark {
-    font-size: 18px;
-    color: #bfa073;
-    font-weight: bold;
-  }
-
-  .time-axis {
-    position: relative;
-    padding:16px 12px;
-  }
-
-  .time-axis ul:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background:#efefef;
-    left: 30px;
-    margin-left: -10px;
-  }
-  .time-axis ul li {
-    position: relative;
-    margin-left:33px;
-    margin-bottom:12px;
-    /*overflow: hidden;*/
+	font-size:36rpx;
+	color:#bfa073;
+	font-weight:bold;
+}
+.time-axis {
+	position:relative;
+	padding:32rpx 24rpx;
+}
+.time-axis ul:before {
+	content:'';
+	position:absolute;
+	top:0;
+	bottom:0;
+	width:4rpx;
+	background:#efefef;
+	left:60rpx;
+	margin-left:-20rpx;
+}
+.time-axis ul li {
+	position:relative;
+	margin-left:66rpx;
+	margin-bottom:24rpx;
+	/*overflow:hidden;
+	*/
     display:block;
-  }
-  .time-axis ul li image {
-    width: 30px;
-    height: 30px;
-  }
-  .time-axis ul li .category-month-day {
-    position: absolute;
-    top: 14px;
-    left: -40px;
-    font-size: 10px;
-    color: #999;
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
-    border-radius: 50%;
-    text-align: center;
-    border: 1px solid #efefef;
-    background: white;
-  }
-  .time-axis ul li:not(.normal) {
-    box-shadow:0px 0px 1px #ccc;
-    border-radius:2px;
-    padding:0px 12px 10px 12px;
-  }
-  .time-mark:before {
-    margin-left: -25px !important;
-  }
-  .time-axis ul li > view {
-    margin-bottom: 2px;
-  }
-  .time-axis ul li .title {
-    color:#587284;
-    display: inline-block;
-  }
-  .time-axis ul li .description {
-    font-size: 14px;
-    color: #6a6a6a;
-  }
-  .time-axis ul li category {
-    font-size:12px;
-  }
-  .time-axis ul li category label {
-    padding: 3px 5px;
-    background-color: #EFEFEF;
-    color: #6a6a6a;
-    margin-right: 8rpx;
-  }
-  .time-axis ul li time {
-    font-size:12px;
-    color: #9B9B9B;
-  }
-  .st-title {
-    padding-top:4px;
-  }
-  .current-day {
-    background: cadetblue !important;
-    color: white !important;
-  }
+}
+.time-axis ul li image {
+	width:60rpx;
+	height:60rpx;
+}
+.time-axis ul li .category-month-day {
+	position:absolute;
+	top:28rpx;
+	left:-80rpx;
+	font-size:20rpx;
+	color:#999;
+	width:64rpx;
+	height:64rpx;
+	line-height:64rpx;
+	border-radius:50%;
+	text-align:center;
+	border:2rpx solid #efefef;
+	background:white;
+}
+.time-axis ul li:not(.normal) {
+	box-shadow:0rpx 0rpx 2rpx #ccc;
+	border-radius:4rpx;
+	padding:0rpx 24rpx 20rpx 24rpx;
+}
+.time-mark:before {
+	margin-left:-50rpx !important;
+}
+.time-axis ul li > view {
+	margin-bottom:4rpx;
+}
+.time-axis ul li .title {
+	color:#587284;
+	display:inline-block;
+}
+.time-axis ul li .description {
+	font-size:28rpx;
+	color:#6a6a6a;
+}
+.time-axis ul li category {
+	font-size:24rpx;
+}
+.time-axis ul li category label {
+	padding:6rpx 10rpx;
+	background-color:#EFEFEF;
+	color:#6a6a6a;
+	margin-right:8rpx;
+}
+.time-axis ul li time {
+	font-size:24rpx;
+	color:#9B9B9B;
+}
+.st-title {
+	padding-top:8rpx;
+}
+.current-day {
+	background:cadetblue !important;
+	color:white !important;
+}
+
 </style>

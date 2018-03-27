@@ -72,41 +72,41 @@
 
 <style>
 .category {
-  position: relative;
-  display: flex;
-  border-bottom: 1px solid #efefef;
-  align-items:center;
+	position:relative;
+	display:flex;
+	border-bottom:2rpx solid #efefef;
+	align-items:center;
 }
 .parent-category {
-  padding:6px 0 6px 12px;
+	padding:12rpx 0 12rpx 24rpx;
 }
 .child-category {
-  padding:6px 0 6px 36px;
+	padding:12rpx 0 12rpx 72rpx;
 }
 image {
-  width: 30px;
-  height: 30px;
+	width:60rpx;
+	height:60rpx;
 }
 .image {
-  width: 30px;
-  height: 30px;
-  margin-right: 4px;
+	width:60rpx;
+	height:60rpx;
+	margin-right:8rpx;
 }
 .category-name {
-  font-size: 16px;
+	font-size:32rpx;
 }
-
 .add-wallet {
-  display:flex;
-  justify-content:center;
-  padding:4px 0;
-  color: #999;
-  margin: 4px 0;
+	display:flex;
+	justify-content:center;
+	padding:8rpx 0;
+	color:#999;
+	margin:8rpx 0;
 }
 .add-wallet image {
-  width: 25px;
-  height: 25px;
-  display: inline-block;
-  margin-right: 4px;
+	width:50rpx;
+	height:50rpx;
+	display:inline-block;
+	margin-right:8rpx;
 }
+
 </style>
