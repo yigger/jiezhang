@@ -1,0 +1,98 @@
+@themColor: #fb4b4d;
+@fontColor: #999;
+
+#wallet-header {
+  display:flex;
+  justify-content:space-around;
+  flex-direction:column;
+  height:240rpx;
+  position:relative;
+  background:linear-gradient(rgba(251,75,77,1),rgba(241,75,77,0.9));
+  box-shadow:0 0 20rpx #ccc;
+  color:white;
+  padding:0 16rpx;
+  .bottom {
+    & > view {
+      width:50%;
+      float:left;
+    }
+  }.edit-icon {
+    width:50rpx;
+    height:50rpx;
+    margin-left:16rpx;
+  }
+  .surplus-amount {
+    overflow:hidden;
+      image {
+      margin-top:8rpx;
+    } 
+  }
+}
+
+#all-assets {
+  .col999 {
+    color: @fontColor;
+  }
+  .category {
+    .detail > .title {
+      overflow-y:hidden;
+      background:rgba(248,248,248,0.5);
+      padding:16rpx 24rpx;
+      border-bottom:2rpx solid #efefef;
+      > .time {
+        text-align:center;
+      }
+      .align-column {
+        display:flex;
+        justify-content:space-around;
+        flex-direction:column;
+        height:70rpx;
+      }
+      .income-and-expend {
+        margin-left:16rpx;
+      }
+      .left-money {
+        color:#999;
+        text-align:right;
+      }
+    }
+    .single {
+      padding:12rpx 24rpx 12rpx 0;
+      overflow:hidden;
+      border-bottom:2rpx solid #efefef;
+      .money {
+        display:flex;
+        justify-content:space-around;
+        flex-direction:column;
+        height:70rpx;
+      }
+      .date-time {
+        width:84rpx;
+        text-align:center;
+      }
+      .information {
+        overflow:hidden;
+        margin-left:84rpx;
+        .title {
+          display:flex;
+          justify-content:space-around;
+          flex-direction:column;
+          height:70rpx;
+        }
+        .description {
+          color:#999;
+        }
+        .icon {
+          width:70rpx;
+          height:70rpx;
+          margin:0 16rpx;
+          image {
+            width:100%;
+            height:100%;
+          }
+        }
+      }
+    }
+  }
+}
+

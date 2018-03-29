@@ -4,27 +4,20 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
+      "pages/wallet",
       "pages/index",
       "pages/statement",
-      
       "pages/chart",
-      
       "pages/wallet_form",
-     
-      "pages/wallet",
+      
       "pages/asset_detail",
-      
-      
       "pages/category",
-      
       "pages/wallet_list",
       "pages/setting",
-      
       "pages/budget",
       "pages/user_info",
       "pages/child_budget",
       "pages/category_form",
-      
       "pages/feedback",
       "pages/message"
     ],
@@ -83,57 +76,6 @@ export default class extends wepy.app {
 </script>
 <style lang="less">
 @import "/public/styles/dist/index.wxss";
-.theme-color-red {
-	color:#fb4b4d;
-}
-.zan-btn {
-  line-height:40px;
-  height:40px;
-}
-.zan-btn--danger {
-  background: #fb4b4d;
-}
-.btn-shadow {
-  box-shadow:5px 8px 8px #ccc;
-}
-.pull-right {
-	float:right;
-}
-.pull-left {
-	float:left;
-}
-.overflow-hide {
-	overflow:hidden;
-}
-.income {
-	color:red;
-}
-.expend {
-	color:green;
-}
-.fs12 {
-	font-size:24rpx;
-}
-.fs14 {
-	font-size:28rpx;
-}
-.fs16 {
-	font-size:32rpx;
-}
-.fs18 {
-	font-size:36rpx;
-}
-.fs21 {
-	font-size:42rpx;
-}
-.fs24 {
-	font-size:48rpx;
-}
-.fs32 {
-	font-size:64rpx;
-}
-.ljt-icon {
-	width:50rpx;
-	height:50rpx;
-}
+@import "/public/styles/common.less";
+@import "/public/styles/app.less";
 </style>

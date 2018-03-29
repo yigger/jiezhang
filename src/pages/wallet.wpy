@@ -1,5 +1,5 @@
 <template>
-<view class="container">
+<view class="container" id="wallet">
   <view class="wallet-header">
     <view class="assets">
       <view>
@@ -95,109 +95,101 @@
   }
 </script>
 <style lang="less">
+// Tab 资产界面
 .wallet-header {
-	height:360rpx;
-	position:relative;
-	background:linear-gradient(rgba(251,75,77,1),rgba(241,75,77,0.9));
-	/* 标准的语法 */
+  height:360rpx;
+  position:relative;
+  background:linear-gradient(rgba(251,75,77,1),rgba(241,75,77,0.9));
   box-shadow:0 0 20rpx #ccc;
 }
 .wallet-header .assets {
-	height:240rpx;
+  height:240rpx;
 }
 .wallet-header .assets > view {
-	float:left;
-	width:50%;
-	color:white;
-	text-align:center;
-	margin-top:80rpx;
+  float:left;
+  width:50%;
+  color:white;
+  text-align:center;
+  margin-top:80rpx;
 }
 .wallet-header .assets > view:last-child {
-	margin-top:100rpx;
+  margin-top:100rpx;
 }
 .assets .right > view {
-	float:left;
-	margin-left:64rpx;
+  float:left;
+  margin-left:64rpx;
 }
 .assets .right > view > text {
-	margin-right:28rpx;
+  margin-right:28rpx;
 }
 .yesterday-amount {
-	color:white;
-	font-size:24rpx;
-	text-align:center;
+  color:white;
+  font-size:24rpx;
+  text-align:center;
 }
-/* 昨日结余等字体右对齐 */
-
-/* .yesterday-amount > view > text:first-child {
-	width:220rpx;
-	display:inline-block;
-	text-align:right;
-}
-*/
 
 #all-assets {
-	background:#f2f2f2;
+  background:#f2f2f2;
 }
 #all-assets .asset {
-	background:#fff;
-	padding:0 24rpx;
-	margin-bottom:24rpx;
-	box-shadow:0rpx 0rpx 2rpx #ccc;
+  background:#fff;
+  padding:0 24rpx;
+  margin-bottom:24rpx;
+  box-shadow:0rpx 0rpx 2rpx #ccc;
 }
-#all-assets .asset:last-child {
+#all-assets > .asset:last-child {
 	margin-bottom:0;
 }
+#all-assets > .asset .column:last-child {
+	border: none;
+}
 #all-assets .asset > text {
-	color:#333;
+  color:#333;
 }
 .column:before,.column:after {
-	display:table;
-	content:" ";
+  display:table;
+  content:" ";
 }
 .column:after {
-	clear:both;
+  clear:both;
 }
 #all-assets .column {
+	height: 80rpx;
 	padding:8rpx 0;
+	line-height: 80rpx;
+	border-bottom:1px solid #efefef;
 }
 #all-assets .column .icon {
-	width:50rpx;
+  width:50rpx;
 	height:50rpx;
+	line-height:108rpx;
 }
 #all-assets .column .title {
-	margin-left:60rpx;
-	margin-right:180rpx;
-	padding-left:16rpx;
-	padding-bottom:16rpx;
-	border-bottom:2rpx solid #efefef;
-	font-size:32rpx;
+  margin-left:60rpx;
+  margin-right:180rpx;
+  padding-left:16rpx;
+  padding-bottom:16rpx;
+  font-size:34rpx;
 }
 #all-assets .column:last-child .title,#all-assets .column:last-child .money {
-	border:none;
+  border:none;
 }
 #all-assets .column .money {
-	width:180rpx;
-	padding-bottom:16rpx;
-	padding-right:8rpx;
-	border-bottom:2rpx solid #efefef;
-	font-size:32rpx;
-	text-align:right;
-	height:100%;
-	color:#999;
+  font-size:34rpx;
+  text-align:right;
+  color:#999;
 }
 .add-wallet {
-	display:flex;
-	justify-content:center;
-	padding:8rpx 0;
-	color:#999;
-	margin:8rpx 0;
+  display:flex;
+  justify-content:center;
+  padding:8rpx 0;
+  color:#999;
+  margin:8rpx 0;
 }
 .add-wallet image {
-	width:50rpx;
-	height:50rpx;
-	display:inline-block;
-	margin-right:8rpx;
+  width:50rpx;
+  height:50rpx;
+  display:inline-block;
+  margin-right:8rpx;
 }
-
 </style>
