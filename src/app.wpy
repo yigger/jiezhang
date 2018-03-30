@@ -4,9 +4,14 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
+      "pages/new_statement",
+      "pages/chose_asset",
+      "pages/chose_category",
+      
+      "pages/statement",
       "pages/wallet",
       "pages/index",
-      "pages/statement",
+      
       "pages/chart",
       "pages/wallet_form",
       
@@ -25,7 +30,7 @@ export default class extends wepy.app {
       backgroundColor: "#fb4b4d",
       navigationBarBackgroundColor: "#fb4b4d",
       backgroundTextStyle: "light",
-      navigationBarTitleText: "洁帐",
+      navigationBarTitleText: "洁账",
       navigationBarTextStyle: "white",
       enablePullDownRefresh: false
     },

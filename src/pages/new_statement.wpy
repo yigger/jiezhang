@@ -1,0 +1,84 @@
+<template>
+  <form bindsubmit="formSubmit" bindreset="formReset">
+    <view class="container">
+      <view class="column money">
+        <text>金额</text>
+        <input class="pull-right money-input expend" type="digit" value="0"/>
+      </view>
+
+      <navigator class="column zan-cell--access" url="/pages/chose_category">
+        <text>分类</text>
+        <text class="pull-right">请选择分类</text>
+      </navigator>
+
+      <navigator class="column zan-cell--access" url="/pages/chose_asset">
+        <!-- 默认选中最常用的 -->
+        <text>账户</text>
+        <text class="pull-right">请选择账户</text>
+      </navigator>
+
+      <view class="column zan-cell--access">
+        <text>日期</text>
+        <picker class="pull-right" mode="date" start="2017-01-01" bindchange="dateChange">
+          <view class="picker">
+            2016-05-08
+          </view>
+        </picker>
+      </view>
+
+      <view class="zan-btns">
+        <button class="zan-btn zan-btn--danger" @tap="submit">保存</button>
+      </view>
+    </view>
+    <category></category>
+  </form>
+</template>
+
+<script>
+	import wepy from 'wepy'
+  import api from "../api/api"
+  export default class NewStatement extends wepy.page {
+    config = {
+      
+    }
+
+		data = {
+      
+    }
+
+    methods = {
+      
+    }
+
+		onShow () {
+
+		}
+  }
+</script>
+<style lang="less">
+  page {
+    background: #efefef;
+  }
+  .container {
+    > .money {
+      height:130rpx !important;
+      line-height: 130rpx !important;
+    }
+    > .column {
+      height: 120rpx;
+      line-height: 120rpx;
+      padding:0 24rpx;
+      border-bottom: 1px solid #efefef;
+      font-size: 32rpx;
+      background: white;
+      > text:last-child {
+        color: #999;
+      }
+    }
+    .money-input {
+      height: 130rpx;
+      font-size: 56rpx;
+      text-align: right;
+    }
+  }
+</style>

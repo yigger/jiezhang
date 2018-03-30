@@ -1,0 +1,61 @@
+<template lang="wxml">
+  <view class="category-component">
+    <view>
+      <view class="header fs14">上次使用</view>
+      <view class="column">
+        <view class="category">
+          <image class='ljt-icon' src="../public/images/01.png"></image>
+          <text class="category-name fs16">现金账户 - 现金</text>
+        </view>
+      </view>
+    </view>
+
+    <view>
+      <view class="header fs14">常用</view>
+      <view class="column">
+        <view class="category">
+          <image class='ljt-icon' src="../public/images/01.png"></image>
+          <text class="category-name fs16">餐饮 - 早午晚餐</text>
+        </view>
+         <view class="category">
+          <image class='ljt-icon' src="../public/images/01.png"></image>
+          <text class="category-name fs16">餐饮 - 早午晚餐</text>
+        </view>
+        <view class="category">
+          <image class='ljt-icon' src="../public/images/01.png"></image>
+          <text class="category-name fs16">餐饮 - 早午晚餐</text>
+        </view>
+      </view>
+    </view>
+
+    <view>
+      <view class="header fs14">餐饮</view>
+      <view class="column">
+        <view class="category">
+          <image class='ljt-icon' src="../public/images/01.png"></image>
+          <text class="category-name fs16">早午晚餐</text>
+        </view>
+        <view class="category">
+          <image class='ljt-icon' src="../public/images/01.png"></image>
+          <text class="category-name fs16">下午茶</text>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class choseAsset extends wepy.page {
+    
+  }
+</script>
+<style lang="less">
+  page {
+    background: #efefef;
+  }
+  .category-component {
+    @import "../public/styles/chose_category.less";
+  }
+</style>
