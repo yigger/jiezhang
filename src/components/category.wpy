@@ -1,0 +1,27 @@
+<template lang="wxml">
+  <view class="column">
+    <view class="category">
+      <image class='ljt-icon' src="{{ iconPath }}"></image>
+      <text class="category-name fs16">{{ title }}</text>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Category extends wepy.component {
+    props = {
+      title: {
+        type: String,
+        default: ''
+      },
+      iconPath: {
+        type: String,
+        default: ''
+      }
+    };
+  }
+</script>
+<style lang="less">
+  @import "../public/styles/chose_category.less";
+</style>

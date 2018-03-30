@@ -1,43 +1,32 @@
 <template lang="wxml">
   <view class="category-component">
-    <view>
+
+    <view wx:if="{{ !showLast }}">
       <view class="header fs14">上次使用</view>
       <view class="column">
         <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">餐饮 - 早午晚餐</text>
+          <image class='ljt-icon' src="{{ last.icon_path }}"></image>
+          <text class="category-name fs16">{{ last.name }}</text>
         </view>
       </view>
     </view>
 
-    <view>
+    <view wx:if="{{ frequent.length > 0 }}">
       <view class="header fs14">常用</view>
-      <view class="column">
+      <view class="column" wx:for="{{ frequent }}">
         <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">餐饮 - 早午晚餐</text>
-        </view>
-         <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">餐饮 - 早午晚餐</text>
-        </view>
-        <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">餐饮 - 早午晚餐</text>
+          <image class='ljt-icon' src="{{ item.icon_path }}"></image>
+          <text class="category-name fs16">{{ item.name }}</text>
         </view>
       </view>
     </view>
 
-    <view>
-      <view class="header fs14">餐饮</view>
-      <view class="column">
+    <view wx:for="{{ list }}">
+      <view class="header fs14">{{ item.name }}</view>
+      <view class="column" wx:for="{{ item.childs }}">
         <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">早午晚餐</text>
-        </view>
-        <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">下午茶</text>
+          <image class='ljt-icon' src="{{ item.icon_path }}"></image>
+          <text class="category-name fs16">{{ item.name }}</text>
         </view>
       </view>
     </view>
@@ -47,8 +36,45 @@
 
 <script>
   import wepy from 'wepy'
+  import api from "../api/api"
   export default class choseCategory extends wepy.page {
-    
+    data = {
+      frequent: [],
+      last: null,
+      list: []
+    }
+
+    async onLoad (options) {
+      if (options.type == 'expend') {
+        await this.getExpendCategory()
+      } else {
+        await this.getIncomeCategory()
+      }
+    }
+
+    async getExpendCategory () {
+      const res = await api.getExpendCategories({showLoading: true})
+      const data = res.data
+      this.frequent = data.frequent
+      this.last = data.last
+      this.list = data.categories
+      this.$apply()
+    }
+
+    async getIncomeCategory () {
+      const res = await api.getIncomeCategories({showLoading: true})
+      const data = res.data
+      this.frequent = data.frequent
+      this.last = data.last
+      this.list = data.categories
+      this.$apply()
+    } 
+
+    computed = {
+      showLast () {
+        return this.last == null
+      }
+    }
   }
 </script>
 <style lang="less">

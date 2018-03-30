@@ -6,7 +6,7 @@
         <input class="pull-right money-input expend" type="digit" value="0"/>
       </view>
 
-      <navigator class="column zan-cell--access" url="/pages/chose_category">
+      <navigator class="column zan-cell--access" url="/pages/chose_category?type={{ type }}">
         <text>分类</text>
         <text class="pull-right">请选择分类</text>
       </navigator>
@@ -17,13 +17,14 @@
         <text class="pull-right">请选择账户</text>
       </navigator>
 
-      <view class="column zan-cell--access">
+      <picker class="column zan-cell--access" mode="date" start="2017-01-01" bindchange="dateChange">
         <text>日期</text>
-        <picker class="pull-right" mode="date" start="2017-01-01" bindchange="dateChange">
-          <view class="picker">
-            2016-05-08
-          </view>
-        </picker>
+        <text class="pull-right">2017-08-08</text>
+      </picker>
+
+      <view class="column">
+        <text>备注</text>
+        <input class="pull-right remark" type="text" placeholder="备注信息" value=""/>
       </view>
 
       <view class="zan-btns">
@@ -43,16 +44,12 @@
     }
 
 		data = {
-      
+      type: 'expend'
     }
 
     methods = {
       
     }
-
-		onShow () {
-
-		}
   }
 </script>
 <style lang="less">
@@ -73,6 +70,11 @@
       background: white;
       > text:last-child {
         color: #999;
+      }
+      .remark {
+        height:120rpx !important;
+        line-height: 120rpx !important;
+        text-align: right;
       }
     }
     .money-input {

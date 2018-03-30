@@ -2,12 +2,7 @@
   <view class="category-component">
     <view>
       <view class="header fs14">上次使用</view>
-      <view class="column">
-        <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">现金账户 - 现金</text>
-        </view>
-      </view>
+      <category :title.sync="title" :iconPath.sync="title"></category>
     </view>
 
     <view>
@@ -47,15 +42,25 @@
 
 <script>
   import wepy from 'wepy'
+  import Category from '../components/category'
   export default class choseAsset extends wepy.page {
+    components = {
+			category: Category
+    };
+
+    data = {
+      title: '餐饮'
+    }
+    
+    onLoad() {
+
+    }
+
     
   }
 </script>
 <style lang="less">
   page {
     background: #efefef;
-  }
-  .category-component {
-    @import "../public/styles/chose_category.less";
   }
 </style>

@@ -3,8 +3,8 @@ import {
 } from '../utils/wxRequest';
 import wepy from 'wepy';
 
-// const host = 'http://git.com'
-const host = 'https://yiiiblog.com'
+const host = 'http://git.com'
+// const host = 'https://yiiiblog.com'
 
 const apiUrl = host + '/api'
 // 获取首页数据
@@ -18,12 +18,9 @@ const Bill = (params, c_id = 0) => {
   if (c_id != null && c_id != 0) url = `${url}/${c_id}`
   return wxRequest(params, url)
 }
-
-// 获取新建账单的账户
 const getBillAssets = (params) => wxRequest(params, `${apiUrl}/bills/assets`);
-
-// 获取新建账单的分类
-const getBillCategories = (params) => wxRequest(params, `${apiUrl}/bills/categories`);
+const getExpendCategories = (params) => wxRequest(params, `${apiUrl}/bills/expend_categories`);
+const getIncomeCategories = (params) => wxRequest(params, `${apiUrl}/bills/income_categories`);
 
 // 图表栏的数据获取
 const Chart = (params) => wxRequest(params, `${apiUrl}/chart`);
@@ -85,7 +82,8 @@ module.exports = {
   getIndexBill,
   Bill,
   getBillAssets,
-  getBillCategories,
+  getExpendCategories,
+  getIncomeCategories,
   Chart,
   Asset,
   AssetIcon,
