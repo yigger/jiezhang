@@ -19,12 +19,12 @@
 <style lang="less">
 .empty {
   text-align: center;
-}
-image {
-  width: 100px;
-  height: 100px;
-}
-.title {
-  color: #999;
+  image {
+    width: 100px;
+    height: 100px;
+  }
+  .title {
+    color: #999;
+  }
 }
 </style>

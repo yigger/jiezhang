@@ -2,6 +2,7 @@ import wepy from 'wepy'
 import tip from './tip'
 
 const LoginUrl = 'http://git.com/api/login'
+// const LoginUrl = 'https://xiaoyounger.com/api/login'
 // const LoginUrl = 'https://yiiiblog.com/api/login'
 
 const SESSION_KEY = 'weapp_login_session'

@@ -1,0 +1,89 @@
+<template lang="wxml">
+  <view class="tiaomu" wx:for="{{ obj.list }}" bindtap="showStatement('{{ obj.id }}')">
+    <view class="pull-left col999 date-time">
+      <view class="fs14">{{ item.day }}</view>
+      <view class="fs12">{{ item.detail_day }}</view>
+    </view>
+    <view class="pull-right fs16 money {{ item.type }}">{{ item.amount }}</view>
+    <view class="information">
+      <view class="pull-left icon"><image src="{{ item.category_icon }}"></image></view>
+      <view class="pull-left title">
+        <view class="fs14">{{ item.category }}</view>
+        <view class="fs12 description" wx:if="{{ item.description != null }}">{{ item.description }}</view>
+        <view class="col999 fs12">{{ item.time }} · {{ item.wallet }}</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class chartColumn extends wepy.component {
+    props = {
+      obj: {
+        type: Array,
+        default: []
+      },
+      hide: {
+        type: Boolean,
+        default: false
+      }
+    };
+
+    methods = {
+      showStatement (id) {
+				wepy.navigateTo({
+          url: `/pages/statement?id=${id}`
+        })
+			}
+    }
+  }
+</script>
+<style lang="less">
+@tmHeight: 120rpx;
+.tiaomu {
+	height: @tmHeight;
+	padding: 0 12rpx;
+	overflow:hidden;
+	border-bottom:2rpx solid #efefef;
+	.money {
+		display:flex;
+		justify-content:center;
+		flex-direction:column;
+		height: @tmHeight;
+	}
+	.date-time {
+		width:84rpx;
+		height: @tmHeight;
+		display:flex;
+		justify-content:center;
+		flex-direction:column;
+		text-align:center;
+	}
+	.information {
+		overflow:hidden;
+		height: @tmHeight;
+		margin-left: 84rpx;
+		.title {
+			display:flex;
+			justify-content:center;
+			flex-direction:column;
+			height:@tmHeight;
+		}
+		.description {
+			color:#999;
+		}
+		.icon {
+			height: @tmHeight;
+			margin:0 16rpx;
+			display:flex;
+			justify-content:center;
+			flex-direction:column;
+			image {
+				width: 70rpx;
+				height: 70rpx;
+			}
+		}
+	}
+}
+</style>
