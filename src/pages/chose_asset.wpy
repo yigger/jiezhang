@@ -1,66 +1,77 @@
 <template lang="wxml">
   <view class="category-component">
-    <view>
+    <view wx:if="{{ !showLast }}">
       <view class="header fs14">上次使用</view>
-      <category :title.sync="title" :iconPath.sync="title"></category>
+      <category :category.sync="last" @choseItem.user="setAsset"></category>
     </view>
 
-    <view>
+    <view wx:if="{{ frequent.length > 0 }}">
       <view class="header fs14">常用</view>
-      <view class="column">
-        <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">餐饮 - 早午晚餐</text>
-        </view>
-         <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">餐饮 - 早午晚餐</text>
-        </view>
-        <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">餐饮 - 早午晚餐</text>
-        </view>
-      </view>
+      <repeat for="{{frequent}}" key="index" index="index" item="child">
+        <category :category.sync="child" @choseItem.user="setAsset"></category>
+      </repeat>
     </view>
 
-    <view>
-      <view class="header fs14">餐饮</view>
-      <view class="column">
-        <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">早午晚餐</text>
-        </view>
-        <view class="category">
-          <image class='ljt-icon' src="../public/images/01.png"></image>
-          <text class="category-name fs16">下午茶</text>
-        </view>
-      </view>
+    <view wx:for="{{ list }}">
+      <view class="header fs14">{{ item.name }}</view>
+      <repeat for="{{item.childs}}" key="index" index="index" item="child">
+        <category :category.sync="child" @choseItem.user="setAsset"></category>
+      </repeat>
     </view>
-
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
+  import api from "../api/api"
   import Category from '../components/category'
   export default class choseAsset extends wepy.page {
+    data = {
+      frequent: [],
+      last: null,
+      list: []
+    }
+
     components = {
 			category: Category
     };
 
-    data = {
-      title: '餐饮'
+    onLoad () {
+      this.getAsset()
     }
     
-    onLoad() {
-
+    methods = {
+      setAsset (asset) {
+        const pages = getCurrentPages()
+        const prevPage = pages[pages.length - 2]
+        prevPage.setAsset(asset)
+        wepy.navigateBack({
+          delta: 1
+        })
+      }
     }
 
-    
+    async getAsset () {
+      const res = await api.getBillAssets({showLoading: true})
+      const data = res.data
+      this.frequent = data.frequent
+      this.last = data.last
+      this.list = data.categories
+      this.$apply()
+    }
+
+    computed = {
+      showLast () {
+        return this.last == null
+      }
+    }
   }
 </script>
 <style lang="less">
   page {
     background: #efefef;
+  }
+  .category-component {
+    @import "../public/styles/chose_category.less";
   }
 </style>

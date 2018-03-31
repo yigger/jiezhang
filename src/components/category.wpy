@@ -1,8 +1,8 @@
 <template lang="wxml">
-  <view class="column">
+  <view class="column" @tap="choseCategory('{{ category }}')">
     <view class="category">
-      <image class='ljt-icon' src="{{ iconPath }}"></image>
-      <text class="category-name fs16">{{ title }}</text>
+      <image class='ljt-icon' src="{{ category.icon_path }}"></image>
+      <text class="category-name fs16">{{ category.name }}</text>
     </view>
   </view>
 </template>
@@ -11,15 +11,17 @@
   import wepy from 'wepy'
   export default class Category extends wepy.component {
     props = {
-      title: {
-        type: String,
-        default: ''
-      },
-      iconPath: {
-        type: String,
-        default: ''
+      category: {
+        type: Object,
+        default: {}
       }
     };
+
+    methods = {
+      choseCategory (category) {
+        this.$emit('choseItem', category)
+      }
+    }
   }
 </script>
 <style lang="less">

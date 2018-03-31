@@ -18,6 +18,7 @@ const Bill = (params, c_id = 0) => {
   if (c_id != null && c_id != 0) url = `${url}/${c_id}`
   return wxRequest(params, url)
 }
+const getBillFrequentUsed = (params) => wxRequest(params, `${apiUrl}/bills/frequent_used`);
 const getBillAssets = (params) => wxRequest(params, `${apiUrl}/bills/assets`);
 const getExpendCategories = (params) => wxRequest(params, `${apiUrl}/bills/expend_categories`);
 const getIncomeCategories = (params) => wxRequest(params, `${apiUrl}/bills/income_categories`);
@@ -81,6 +82,7 @@ module.exports = {
   getIndexHeader,
   getIndexBill,
   Bill,
+  getBillFrequentUsed,
   getBillAssets,
   getExpendCategories,
   getIncomeCategories,

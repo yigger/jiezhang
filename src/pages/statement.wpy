@@ -1,301 +1,159 @@
-<template>
-  <view class="container">
-
-    <view class="header">
-      <text class="{{ statement.type == 'expend' ? 'active' : '' }}" @tap="changeType('expend')">支出</text>
-      <text class="{{ statement.type == 'income' ? 'active' : '' }}" @tap="changeType('income')">收入</text>
-    </view>
-
-    <view class="mark-header" @tap='showCaculate'>
-      <view class="icon-name {{ statement.type }} fs16">
-        <!-- <view><image src="{{ curCategory.icon_path }}" class="ljt-icon"></image></view> -->
-        <view>{{ curCategory.name }}</view>
+<template lang="wxml">
+  <form bindsubmit="formSubmit">
+    <view class="container">
+      <view class="column money">
+        <text>金额</text>
+        <input class="pull-right money-input expend" name="amount" type="digit" value="{{ amount }}"/>
       </view>
-      <view class="amount fs18">
-        <view class="fs21 {{ statement.type }}">{{ statement.amount }}</view>
-      </view>
-    </view>
 
-    <view class="item-category">
-      <text>分类</text>
-      <picker mode="multiSelector" bindchange="categoryChange" bindcolumnchange="bindCategoryColumnChange" value="{{ categoryIndex }}" range="{{ categoryArray }}" range-key="name">
-        <view class="picker">
-          {{ categoryArray[0][categoryIndex[0]]['name'] }} > {{ categoryArray[1][categoryIndex[1]]['name'] }}
-        </view>
+      <navigator class="column zan-cell--access" url="/pages/chose_category?type={{ type }}">
+        <text>分类</text>
+        <text class="pull-right" type="digit">{{ category_name }}</text>
+        <input hidden  name="category_id" value="{{ category_id }}" type="number"/>
+      </navigator>
+
+      <navigator class="column zan-cell--access" url="/pages/chose_asset">
+        <!-- 默认选中最常用的 -->
+        <text>账户</text>
+        <text class="pull-right">{{ asset_name }}</text>
+        <input hidden name="asset_id" value="{{ asset_id }}" type="number"/>
+      </navigator>
+
+      <picker class="column zan-cell--access" mode="date" start="2017-01-01" bindchange="dateChange">
+        <text>日期</text>
+        <text class="pull-right">{{ date }}</text>
+        <input hidden name="time" value="{{ date }}" type="number"/>
       </picker>
-    </view>
 
-    <view class="item-category">
-      <text>账户</text>
-      <picker mode="multiSelector" bindchange="assetChange" bindcolumnchange="bindAssetColumnChange" value="{{ assetIndex }}" range="{{ assetArray }}" range-key="name">
-        <view class="picker">
-          {{ assetArray[0][assetIndex[0]]['name'] }} > {{ assetArray[1][assetIndex[1]]['name'] }}
-        </view>
-      </picker>
-    </view>
-
-    <view class="item-category">
-      <text>日期</text>
-      <view>
-        <picker mode="date" value="{{ statement.date }}" start="2017-01-01" end="{{ dateEndAt }}" bindchange="dateChange">
-          <view class="picker">
-            {{ statement.date }}
-          </view>
-        </picker>
+      <view class="column">
+        <text>备注</text>
+        <input class="pull-right remark" type="text" name="description"  value="{{ description }}" placeholder="备注信息"/>
       </view>
-    </view>
 
-    <view class="item-category">
-      <text>时间</text>
-      <view>
-        <picker mode="time" value="{{ statement.time }}" bindchange="TimeChange">
-          <view class="picker">
-            {{ statement.time }}
-          </view>
-        </picker>
+      <view class="zan-btns">
+        <button class="zan-btn zan-btn--danger" formType="submit" @tap="submit">保存</button>
       </view>
-    </view>
 
-    <view class="item-category">
-      <input class="weui-input remark" value="{{ statement.description }}" placeholder="备注" bindinput="InputChange" />
-    </view>
-    
-    <view class="save-btn">
-      <!-- <view class="bill-btn" @tap="submit('true')" wx:if="{{ statement.id == 0 }}">再记一笔</view>
-      <view class="bill-btn" @tap="del" wx:else>删除</view> -->
-      <!-- <view class="bill-btn save" @tap="submit">保存</view> -->
-    </view>
+      <input hidden type="text" name="type" value="{{ type }}"/>
 
-    <view class="zan-btns">
-      <button class="zan-btn zan-btn--danger" @tap="submit">保存</button>
     </view>
-
-    <caculate @invokeCaculation.user="invokeCaculation" hidden="{{ !showCaculation }}"></caculate>
-  </view>
-  
+    <category></category>
+  </form>
 </template>
 
 <script>
-  import wepy from 'wepy'
+	import wepy from 'wepy'
   import api from "../api/api"
   import tip from '../utils/tip'
-  import Caculate from '../components/caculate'
-
-  export default class Statement extends wepy.page {
+  export default class NewStatement extends wepy.page {
     config = {
       navigationBarTitleText: '记一笔'
     }
 
-    data = {
-      showCaculation: false,
-      indicatorDots: true,
-      autoplay: false,
-      //分类
-      categories: [],
-      expendCategories: [],
-      incomeCategories: [],
-      curCategoryHeight: '470',
-      categoryArray: [[], []],
-      categoryIndex: [0, 0],
-      // 当前选中分类
-      curCategory: {},
-      // 账单数据
-      statement: {
-        id: 0,
-        category_id: 0,
-        asset_id: 0,
-        amount: 0,
-        type: 'expend',
-        description: '',
-        year: 0,
-        month: 0,
-        day: 0,
-        date: "",
-        time: ""
-      },
-      // 日历 picker 的起始与结束时间
-      dateStartAt: '',
-      dateEndAt: '',
-
-      // 账户
-      assets: [],
-      assetArray: [[], []],
-      assetIndex: [0, 0],
-      defaultAsset: 0
+		data = {
+      method: 'POST',
+      statement_id: 0,
+      type: 'expend',
+      amount: 0,
+      category_id: 0,
+      category_name: '请选择分类',
+      asset_id: 0,
+      asset_name: '请选择账户',
+      description: '',
+      date: ''
     }
 
-    components = {
-      caculate: Caculate
-    };
-
-    async onLoad (options) {
-      let myDate = new Date();
-      if (this.statement.date != '') {
-        myDate = new Date(this.statement.date)
-      }
+    onLoad(options) {
+      const myDate = new Date()
       let year = myDate.getFullYear()
       let month = myDate.getMonth() + 1
       let day = myDate.getDate()
-      let hour = myDate.getHours()
-      let min = myDate.getMinutes()
-      if (hour < 10) hour = `0${hour}`
-      if (min < 10) min = `0${min}`
       if (month < 10) month = `0${month}`
       if (day < 10) day = `0${day}`
-
-      let time = [hour, min].join(':')
-      if (this.statement.time != '') time = this.statement.time
-      this.statement.date = [year, month, day].join('-')
-      this.statement.time = time
-      this.dateEndAt = `${year}-${month}-${day}`
+      this.date = [year, month, day].join('-')
       if (options.id != undefined) {
-        this.statement.id = options.id
-        await this.getStatement(options.id) 
+        this.getStatement(options.id)
+      } else {
+        // 获取上次使用的分类和账户
+        this.getLastUsed()
       }
-      
-      await this.getCategory()
-      await this.getAssets()
     }
 
     methods = {
-      // tab 切换
-      changeType(item) {
-        let categories = []
-        if (item == 'expend') {
-          categories = this.expendCategories
-        } else {
-          categories = this.incomeCategories
+      async   formSubmit (e) {
+        let statement = e.detail.value
+        if (statement.amount == 0) {
+          tip.error('金额不能为零')
+          return false
         }
-        if (categories['parent_assets'].length > 0) {
-          let parentCategory = categories['parent_assets']
-          this.curCategory = categories['child_assets'][parentCategory[0]['id']][0]
-          this.statement.category_id = this.curCategory.id
 
-          let arr = []
-          let childs = categories.child_assets[categories.parent_assets[0]['id']]
-          arr.push(categories.parent_assets)
-          arr.push(childs)
-          this.categoryArray = arr
+        if (statement.category_id == 0) {
+          tip.error('未选择分类')
+          return false
         }
-        this.statement.type = item
-        this.categories = categories
-      },
-      assetChange(e) {
-        let child_idx = e.detail.value[1]
-        let parent_id = e.detail.value[0]
-        parent_id = this.assets['parent_assets'][parent_id]['id']
-        this.statement.asset_id = this.assets['child_assets'][parent_id][child_idx]['id']
-      },
-      categoryChange (e) {
-        let child_idx = e.detail.value[1]
-        let parent_id = e.detail.value[0]
-        parent_id = this.categories['parent_assets'][parent_id]['id']
-        let choseChild = this.categories['child_assets'][parent_id][child_idx]
-        this.curCategory = choseChild
-        this.statement.category_id = choseChild['id']
-      },
-      // 日期改变
-      dateChange(e) {
-        this.statement.date = e.detail.value
-      },
-      // 时间改变
-      TimeChange(e) {
-        this.statement.time = e.detail.value
-      },
-      // 备注更改
-      InputChange (e) {
-        this.statement.description = e.detail.value
-      },
-      // 账户栏的列变更
-      bindAssetColumnChange (e) {
-        let value = e.detail.value
-        if(e.detail.column === 0) {
-          let id = this.assets.parent_assets[value]['id']
-          this.assetIndex[0] = value
-          this.assetArray[1] = this.assets.child_assets[id]
-        } else {
-          this.assetIndex[1] = value
+
+        if (statement.asset_id == 0) {
+          tip.error('未选择账户')
+          return false
         }
-      },
-      // 分类栏的列变更
-      bindCategoryColumnChange (e) {
-        let value = e.detail.value
-        if(e.detail.column === 0) {
-          let id = this.categories.parent_assets[value]['id']
-          this.categoryIndex[0] = value
-          this.categoryArray[1] = this.categories.child_assets[id]
-        } else {
-          this.categoryIndex[1] = value
-        }
-      },
-      showCaculate() {
-        this.showCaculation = true
-      },
-      invokeCaculation(amount) {
-        this.statement.amount = amount
-        this.showCaculation = false
-      },
-      async del () {
-        await tip.confirm('是否删除该记录？')
+        
         const res = await api.Bill({
-          method: 'DELETE'
-        }, this.statement.id)
-        if (res.data.status == 200) {
-          this.updatePrevPage(this.statement.id, 'DELETE')
+          method: this.method,
+          query: {
+            statement: statement
+          }
+        }, this.statement_id);
+        const result = res.data
+        if (result.status == 200) {
           wepy.navigateBack({
             delta: 1
           })
+          // 保存成功后更新上个页面的数据
+          this.updatePrevPage(result.msg.id, this.method)
         } else {
-          tip.error(res.data.msg)
+          tip.error(result.msg)
         }
       },
-      async submit (redirectTo = false) {
-        let method = 'POST'
-        let cId = null
-        
-        if (this.statement.amount == 0) {
-          tip.error('金额不能为 0')
-          return false
-        }
-
-        if (this.statement.asset_id == 0) {
-          tip.error('账户未选择')
-          return false
-        }
-
-        if (this.statement.category_id == 0) {
-          tip.error('分类未选择')
-          return false
-        }
-
-        if (this.statement.id != 0) {
-          method = 'PUT'
-          cId = this.statement.id
-        }
-
-        const res = await api.Bill({
-          method: method,
-          query: {
-            statement: this.statement
-          }
-        }, cId);
-
-        if (res.data.status == 200) {
-          if (redirectTo != 'true') {
-            wepy.navigateBack({
-              delta: 1
-            })
-          } else {
-            wepy.redirectTo({
-              url: '/pages/statement'
-            })
-          }
-          // 保存成功后更新上个页面的数据
-          this.updatePrevPage(res.data.msg.id, method)
-        } else {
-          tip.error(res.data.msg)
-        }
+      dateChange(e) {
+        this.date = e.detail.value
       }
+    }
+
+    async getStatement (id) {
+      const res = await api.Bill({showLoading: true}, id);
+      const statement = res.data
+      if (statement.status != undefined && statement.status != 200) {
+        wepy.navigateBack({
+          delta: 1
+        })
+        tip.error('无效的账单')
+      }
+      this.method = 'PUT'
+      this.statement_id = statement.id
+      this.type = statement.type
+      this.amount = statement.amount
+      this.category_id = statement.category_id
+      this.asset_id = statement.asset_id
+      this.description = statement.description
+      this.date = statement.date
+      this.category_name = statement.category_name
+      this.asset_name = statement.asset_name
+      this.$apply()
+    }
+
+    async getLastUsed() {
+      const res = await api.getBillFrequentUsed({
+        showLoading: true,
+        query: {
+          type: this.type
+        }
+      });
+      const result = res.data
+      this.category_id = result.category_id
+      this.asset_id = result.asset_id
+      this.category_name = result.category_name
+      this.asset_name = result.asset_name
+      this.$apply()
     }
 
     updatePrevPage(id, method) {
@@ -307,242 +165,46 @@
       }
     }
 
-    async getStatement (id) {
-      const res = await api.Bill({showLoading: true}, id);
-      if (res.data.status != undefined && res.data.status != 200) {
-        wepy.navigateBack({
-          delta: 1
-        })
-        tip.error('无效的账单')
-      }
-      this.statement = res.data
-      this.$apply()
+    setCategory (category) {
+      this.category_id = category.id
+      this.category_name = category.name
     }
 
-    async getCategory () {
-      const res = await api.getBillCategories({showLoading: true})
-      const data = res.data
-      let categories = this.statement.type == 'income' ? data.income_categories : data.expend_categories
-      this.categories = categories
-      this.expendCategories = data.expend_categories
-      this.incomeCategories = data.income_categories
-      
-      let arr = []
-      if (categories.parent_assets.length == 0) {
-        // 无分类，提示无分类然后退回上一页
-        const status = await wepy.showModal({
-          title: '提示',
-          content: '需要设置分类才可继续操作',
-          cancelText: '返回',
-          cancelColor: '#666666',
-          confirmText: '前往设置',
-          confirmColor: '#3CC51F'
-        })
-        if (status.confirm) {
-          // 跳转至设置
-          wx.navigateTo({ url: `/pages/category` })
-        } else {
-          // 返回上一页
-          wepy.navigateBack({
-            delta: 1
-          })
-        }
-        return false
-      }
-      let childs = categories.child_assets[categories.parent_assets[0]['id']]
-      arr.push(categories.parent_assets)
-      arr.push(childs)
-      this.categoryArray = arr
-
-      if (this.statement.category_id != 0) {
-        let parents = categories.parent_assets
-        let cchilds = categories.child_assets
-        for (let i = 0, length = parents.length;i < length;++i) {
-          for(let j = 0, clength = cchilds[parents[i]['id']].length;j < clength; ++j) {
-            let child = cchilds[parents[i]['id']][j]
-            if(child.id == this.statement.category_id) {
-              this.curCategory = child
-              return false
-            }
-          }
-        }
-      } else if (childs.length > 0 && this.statement.category_id == 0) {
-        try {
-          this.curCategory = childs[0]
-          this.statement.category_id = childs[0]['id']
-        } catch (error) {
-          this.statement.category_id = 0
-        }
-      }
-      this.$apply()
-    }
-
-    async getAssets() {
-      const res = await api.getBillAssets()
-      const data = res.data
-      let arr = []
-
-      if (data.parent_assets.length == 0) {
-        // 无分类，提示无分类然后退回上一页
-        const status = await wepy.showModal({
-          title: '提示',
-          content: '需要设置分类才可继续操作',
-          cancelText: '返回',
-          cancelColor: '#666666',
-          confirmText: '前往设置',
-          confirmColor: '#3CC51F'
-        })
-        if (status.confirm) {
-          // 跳转至设置
-          wx.navigateTo({ url: `/pages/wallet_list` })
-        } else {
-          // 返回上一页
-          wepy.navigateBack({
-            delta: 1
-          })
-        }
-        return false
-      }
-
-      let childs = data.child_assets[data.parent_assets[0]['id']]
-      arr.push(data.parent_assets)
-      arr.push(childs)
-      this.assets = data
-      this.assetArray = arr
-      if (childs.length > 0 && this.statement.asset_id == 0) {
-        try {
-          this.statement.asset_id = childs[0]['id']
-        } catch (error) {
-          this.statement.asset_id = 0
-        }
-      }
-      this.$apply()
+    setAsset (asset) {
+      this.asset_id = asset.id
+      this.asset_name = asset.name
     }
   }
 </script>
 <style lang="less">
-swiper {
-	background:#f8f8f8;
-	border-bottom:2rpx solid #ccc;
-}
-.header {
-	background:#fb4b4d;
-	border-bottom:#fb4b4d;
-	text-align:center;
-	color:#fff;
-	font-size:32rpx;
-	padding:8rpx 0;
-}
-.header .save {
-	float:right;
-	padding:0;
-	padding-right:4rpx;
-	position:absolute;
-	right:20rpx;
-}
-.header text {
-	padding:8rpx 32rpx;
-}
-.header text.active {
-	border-bottom:4rpx solid #fff;
-}
-.item-category text {
-	font-size:24rpx;
-}
-.mark-header {
-	padding:20rpx 32rpx;
-	overflow:hidden;
-	border-bottom:2rpx solid #ccc;
-	.icon-name,.amount {
-	display:inline-block;
-	width:50%;
-}
-.icon-name > view {
-	display:inline-block;
-}
-.amount {
-	font-weight:bold;
-	text-align:right;
-}
-}.item-category {
-	padding:0 32rpx 16rpx 32rpx;
-	border-bottom:2rpx solid #ccc;
-}
-.item-category:last-child {
-	padding-top:16rpx;
-}
-.item-category > text {
-	font-size:24rpx;
-}
-.item-category > view {
-	font-size:28rpx;
-}
-.item-category .remark {
-	min-height:2em;
-	height:2em;
-	font-size:32rpx;
-	padding-top:16rpx;
-}
-/* Picker */
-
-.picker-view {
-	position:fixed;
-	left:0;
-	bottom:0;
-	width:100%;
-	height:600rpx;
-	z-index:999;
-}
-.picker {
-	font-size:28rpx;
-}
-.save-btn {
-	width:100%;
-	text-align:center;
-	margin:24rpx 0;
-}
-.save-btn > .bill-btn {
-	margin:0 4%;
-}
-.save {
-	background:#fb4b4d;
-	color:white !important;
-}
-.bill-btn {
-	border:2rpx solid #fb4b4d;
-	display:inline-block;
-	padding:8rpx 0;
-	width:40%;
-	color:#fb4b4d;
-	text-align:center;
-	font-size:36rpx;
-}
-.category-flex {
-	overflow:hidden;
-}
-.category-flex image {
-	width:60rpx;
-	height:60rpx;
-}
-.category-flex > view {
-	width:20%;
-	float:left;
-	text-align:center;
-	margin-top:16rpx;
-}
-.category-flex .image {
-	height:60rpx;
-}
-.category-flex .name {
-	color:#999;
-	font-size:24rpx;
-	margin-top:4rpx;
-}
-.item-category > text {
-	color:#999;
-}
-.cur-asset {
-	font-size:28rpx;
-}
-
+  page {
+    background: #efefef;
+  }
+  .container {
+    > .money {
+      height:130rpx !important;
+      line-height: 130rpx !important;
+    }
+    > .column {
+      height: 120rpx;
+      line-height: 120rpx;
+      padding:0 24rpx;
+      border-bottom: 1px solid #efefef;
+      font-size: 32rpx;
+      background: white;
+      > text:last-child {
+        color: #999;
+      }
+      .remark {
+        height:120rpx !important;
+        line-height: 120rpx !important;
+        text-align: right;
+      }
+    }
+    .money-input {
+      height: 130rpx;
+      font-size: 56rpx;
+      text-align: right;
+    }
+  }
 </style>
