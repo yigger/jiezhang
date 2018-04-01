@@ -4,6 +4,7 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
+      
       "pages/index",
       
       "pages/chart",
@@ -12,6 +13,7 @@ export default class extends wepy.app {
 
       "pages/setting",
 
+      // 记一笔
       "pages/statements/statement",
       "pages/statements/chose_category",
       "pages/statements/chose_asset",
@@ -30,7 +32,6 @@ export default class extends wepy.app {
       "pages/assets/list",
       "pages/assets/asset_form",
       "pages/assets/asset_detail",
-      
       
       // 消息
       "pages/message/message"
@@ -91,5 +92,8 @@ export default class extends wepy.app {
 <style lang="less">
 @import "/public/styles/dist/index.wxss";
 @import "/public/styles/common.less";
-@import "/public/styles/app.less";
+.divide {
+	background: #F4F5F9;
+	height: 24rpx;
+}
 </style>

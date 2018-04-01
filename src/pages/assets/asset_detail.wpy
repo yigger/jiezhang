@@ -1,58 +1,66 @@
 <template>
-<view class="container theme-01">
+<view class="container">
   <view id="wallet-header">
     <view class="surplus">
       <view class="surplus-amount fs24" @tap="showCaculate">
         <text class="pull-left">{{ header.surplus }}</text>
-        <image class="edit-icon pull-left" src="../public/images/edit.png"></image>
+        <image class="edit-icon pull-left" src="../../public/images/edit.png"></image>
       </view>
-      <view class="fs12">余额</view>
+      <view class="fs16">余额</view>
     </view>
     <view class="bottom">
       <view>
         <view class="fs24">{{ header.income }}</view>
-        <view class="fs12">收入</view>
+        <view class="fs16">收入</view>
       </view>
       <view>
         <view class="fs24">{{ header.expend }}</view>
-        <view class="fs12">支出</view>
+        <view class="fs16">支出</view>
       </view>
     </view>
   </view>
 
+  <view class="filter">
+    <view>
+      <text>时间</text>
+      <view class="down-icon"><image src="../../public/images/real-down.png"></image></view>
+    </view>
+    <view>
+      <text>分类</text>
+      <view class="down-icon"><image src="../../public/images/real-down.png"></image></view>
+    </view>
+    <view>
+      <text>账户</text>
+      <view class="down-icon"><image src="../../public/images/real-down.png"></image></view>
+    </view>
+  </view>
+  
+  <!-- <view class="divide"></view> -->
+
   <view id="all-assets" wx:if="{{ !showEmpty }}">
     <view class="asset category" wx:for="{{ list }}" wx:for-item="pst" bindtap="showHidden('{{ index }}')">
       <view class="detail">
+        <!-- header -->
         <view class="title">
           <view class="pull-left time align-column">
-            <view class="fs14">{{ pst.month }}月</view>
-            <view class="fs12 description">{{ pst.year }}</view>
+            <view class="fs16">{{ pst.month }}月</view>
+            <view class="fs14 description">{{ pst.year }}</view>
           </view>
           <view class="pull-left align-column income-and-expend">
-            <view class="fs12 income">收入 {{ pst.income_amount }}</view>
-            <view class="fs12 expend">支出 {{ pst.expend_amount }}</view>
+            <view class="fs14 income">收入 {{ pst.income_amount }}</view>
+            <view class="fs14 expend">支出 {{ pst.expend_amount }}</view>
           </view>
           <view class="pull-right align-column left-money">
-            <view class="fs12">结余</view>
             <view class="fs18">{{ pst.surplus }}</view>
           </view>
         </view>
 
-        <view class="single" wx:for="{{ pst.childs }}" hidden="{{ pst.hidden }}" @tap="showStatement('{{ item.id }}')">
-          <view class="pull-left col999 date-time">
-            <view class="fs14">{{ item.day }}</view>
-            <view class="fs12">{{ item.week }}</view>
-          </view>
-          <view class="pull-right fs16 money {{ item.type }}">{{ item.amount }}</view>
-          <view class="information">
-            <view class="pull-left icon"><image src="{{ item.icon_path }}"></image></view>
-            <view class="pull-left title">
-              <view class="fs14">{{ item.name }}</view>
-              <view class="fs12 description" wx:if="{{ item.description != null }}">{{ item.description }}</view>
-            </view>
-          </view>
+        <!-- content -->
+        <view class="content" hidden="{{ pst.hidden }}">
+          <repeat for="{{ pst.childs }}" key="index" index="index" item="item">
+            <single :item.sync="item"></single>
+          </repeat>
         </view>
-
       </view>
     </view>
   </view>
@@ -71,16 +79,16 @@
   import tip from '../../utils/tip'
   import Caculate from '../../components/caculate'
   import Empty from '../../components/empty'
-
+  import Single from '../../components/single'
   export default class AssetDetail extends wepy.page {
     config = {
-      navigationBarTitleText: '资产详情',
-      enablePullDownRefresh: true
+      navigationBarTitleText: '消费详情'
     }
 
     components = {
       caculate: Caculate,
-      empty: Empty
+      empty: Empty,
+      single: Single
     }
 
 		data = {
@@ -113,11 +121,11 @@
     }
 
     onLoad (options) {
-      this.asset_id = options.id
+      // this.asset_id = options.id
+      this.asset_id = 34
       this.already_load = true
       this.information()
       this.statements()
-      
     }
 
     onShow () {
@@ -178,3 +186,101 @@
 
   }
 </script>
+<style lang="less">
+@themColor: #fb4b4d;
+@fontColor: #999;
+#wallet-header {
+  position:relative;
+  height:300rpx;
+  background:linear-gradient(rgba(251,75,77,1),rgba(241,75,77,0.9));
+  box-shadow:0 0 20rpx #ccc;
+  color:white;
+  padding:0 16rpx;
+  .surplus {
+    position: absolute;
+    top:40rpx;
+  }
+  .bottom {
+    position: absolute;
+    bottom: 20rpx;
+    width: 100%;
+    & > view {
+      width:50%;
+      float:left;
+    }
+  }
+  .edit-icon {
+    width:50rpx;
+    height:50rpx;
+    margin-left:16rpx;
+  }
+  .surplus-amount {
+    overflow:hidden;
+      image {
+      margin-top:8rpx;
+    } 
+  }
+}
+
+#all-assets {
+  height: 100%;
+  .col999 {
+    color: @fontColor;
+  }
+  .category {
+    .detail > .title {
+      overflow-y:hidden;
+      padding:0 24rpx;
+      height: 120rpx;
+      border-bottom:2rpx solid #efefef;
+      > .time {
+        height: 100%;
+        text-align:center;
+      }
+      .align-column {
+        display:flex;
+        justify-content:center;
+        flex-direction:column;
+        height: 100%;
+      }
+      .income-and-expend {
+        margin-left:16rpx;
+      }
+      .left-money {
+        color:#999;
+        text-align:right;
+      }
+    }
+    .detail > .content {
+      background: #FAFAFC;
+    }
+  }
+}
+
+.filter {
+  height: 100rpx;
+  line-height: 100rpx;
+  background: white;
+  box-shadow: 0 0 3px #ccc;
+  display:flex;
+  > view {
+    flex: 1;
+    text-align: center;
+    font-size: 36rpx;
+    > text {
+      margin-right: 8rpx;
+    }
+  }
+}
+
+.down-icon {
+  height: 100rpx;
+  line-height:  100rpx;
+  display: inline-block;
+  image {
+    width: 40rpx;
+    height: 40rpx;
+    vertical-align: middle;
+  }
+}
+</style>

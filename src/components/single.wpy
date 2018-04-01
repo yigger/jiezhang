@@ -1,35 +1,30 @@
 <template lang="wxml">
-  <view class="tiaomu" wx:for="{{ obj.list }}" @tap="showStatement('{{ obj.id }}')">
+  <!-- 用于 asset_detail 的模板 -->
+  <view class="tiaomu" @tap="showStatement('{{ item.id }}')">
     <view class="pull-left col999 date-time">
       <view class="fs14">{{ item.day }}</view>
-      <view class="fs12">{{ item.detail_day }}</view>
+      <view class="fs12">{{ item.week }}</view>
     </view>
     <view class="pull-right fs16 money {{ item.type }}">{{ item.amount }}</view>
     <view class="information">
-      <view class="pull-left icon"><image src="{{ item.category_icon }}"></image></view>
+      <view class="pull-left icon"><image src="{{ item.icon_path }}"></image></view>
       <view class="pull-left title">
-        <view class="fs14">{{ item.category }}</view>
+        <view class="fs14">{{ item.name }}</view>
         <view class="fs12 description" wx:if="{{ item.description != null }}">{{ item.description }}</view>
-        <view class="col999 fs12">{{ item.time }} · {{ item.wallet }}</view>
       </view>
     </view>
   </view>
 </template>
 
 <script>
-	import wepy from 'wepy'
-  export default class chartColumn extends wepy.component {
+  import wepy from 'wepy'
+  export default class Single extends wepy.component {
     props = {
-      obj: {
-        type: Array,
-        default: []
-      },
-      hide: {
-        type: Boolean,
-        default: false
+      item: {
+        type: Object,
+        default: {}
       }
     };
-
     methods = {
       showStatement (id) {
 				wepy.navigateTo({
@@ -43,7 +38,8 @@
 @tmHeight: 120rpx;
 .tiaomu {
 	height: @tmHeight;
-	padding: 0 12rpx;
+  padding-left: 12rpx;
+  padding-right: 24rpx;
 	overflow:hidden;
 	border-bottom:2rpx solid #efefef;
 	.money {

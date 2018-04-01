@@ -5,7 +5,7 @@
       <view class="level-1">
         <view class="budget-amount fs32" @tap="showCaculate">
           <text>{{ header.amount }}</text>
-          <image class="edit-icon" src="../public/images/edit.png"></image>
+          <image class="edit-icon" src="../../public/images/edit.png"></image>
         </view>
         <view class="fs12">支出总预算</view>
       </view>
