@@ -9,7 +9,7 @@
     <view class="zan-panel">
       <view class="zan-cell">
         <view class="zan-cell__bd">头像</view>
-        <view class="zan-cell__ft"><image class="my-avatar" src="{{ user.avatar_url }}"></image></view>
+        <view class="zan-cell__ft" @tap="uploadImage"><image class="my-avatar" src="{{ user.avatar_url }}"></image></view>
       </view>
       
       <view class="zan-cell">
@@ -30,7 +30,7 @@
         <view class="zan-cell__bd">手机号码</view>
         <view class="zan-cell__ft">
           <input type="text" value="{{ user.phone }}" bindinput="_phoneChange" />
-        </view>
+        </view> 
       </view> -->
 
     </view>
@@ -59,6 +59,19 @@
       },
       _phoneChange (e) {
         this.user.phone = e.detail.value
+      },
+      async uploadImage() {
+        const choseImages = await wepy.chooseImage({
+          count: 1,
+          sizeType: ['original', 'compressed'],
+          sourceType: ['album', 'camera']
+        })
+        const uploadResult = await wepy.uploadFile({
+          url: api.uploadPath,  
+          filePath: choseImages.tempFilePaths[0],
+          name: 'file'
+        })
+        this.getUser()
       }
     }
 

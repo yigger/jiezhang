@@ -105,5 +105,6 @@ module.exports = {
   BudgetUpdate,
   AssetDetailInformation,
   AssetDetailList,
-  AssetSurplus
+  AssetSurplus,
+  uploadPath: `${apiUrl}/upload`
 }
