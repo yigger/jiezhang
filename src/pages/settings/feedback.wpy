@@ -1,10 +1,16 @@
 <template>
   <view class="container">
-    <text class="title zan-c-gray-darker">此产品由个人独立开发，所以或多或少会存在程序的错误以及部分不合理的功能，您可在此写下对此产品的想法或建议，采纳后会进行相应的调整，感谢您的支持与配合</text>
+    <radio-group class="radio-group" bindchange="radioChange">
+      <label class="radio" wx:for="{{items}}">
+        <radio value="{{item.value}}" checked="{{item.checked}}"/>{{item.name}}
+      </label>
+    </radio-group>
+
+    <!-- <text class="title zan-c-gray-darker">此产品由个人独立开发，所以或多或少会存在程序的错误以及部分不合理的功能，您可在此写下对此产品的想法或建议，采纳后会进行相应的调整，感谢您的支持与配合</text> -->
     <view class="section">
-      <textarea placeholder="请输入反馈信息"  bindinput="bindKeyRemark" value="{{ content }}" auto-focus maxlength="-1" />
+      <textarea placeholder="感谢您的建议，我们将不断改进"  bindinput="bindKeyRemark" value="{{ content }}" auto-focus maxlength="-1" />
     </view>
-    <button class="zan-btn zan-btn--danger" @tap="submit">提交</button>
+    <button class="zan-btn zan-btn--danger" style="margin: 18rpx 24rpx" @tap="submit">提交</button>
   </view>
 </template>
 
@@ -19,15 +25,24 @@
     }
 
     data = {
-      content: ''
+      content: '',
+      type: 1,
+      items: [
+        {name: '程序错误', value: '1', checked: 'true'},
+        {name: '功能建议', value: '2'}
+      ]
     }
     
     methods = {
+      radioChange (e) {
+        this.type = e.detail.value
+      },
       async submit () {
         const res = await api.Feedback({
           method: 'POST',
           query: {
-            content: this.content
+            content: this.content,
+            type: this.type
           }
         })
         if (res.data.status == 200) {
@@ -52,8 +67,17 @@
 page {
   background: #F4F4F4;
 }
-.zan-btn {
-  margin:8px;
+.radio-group {
+  margin: 28rpx 0;
+  padding:0 24rpx;
+  > label {
+    width: 50%;
+    text-align: left;
+    display: inline-block;
+  }
+}
+.section {
+  padding: 0 24rpx;
 }
 .title {
   font-size: 16px;
@@ -65,16 +89,5 @@ textarea {
   border: 1px solid #ccc;
   background:white;
   font-size: 14px;
-  padding: 8px;
-}
-.bill-btn {
-  border: 1px solid #fb4b4d;
-  display: block;
-  padding: 4px 0;
-  color: white;
-  text-align: center;
-  font-size: 18px;
-  background: #fb4b4d;
-  margin:12px 8px;
 }
 </style>

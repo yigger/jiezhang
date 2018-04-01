@@ -14,8 +14,8 @@
         </view>
         <image class="icon-image" src="{{ host }}{{ category.icon_path }}"></image>
       </view>
-
-      <swiper>
+      
+      <swiper indicator-dots="{{ true }}">
         <swiper-item wx:for="{{ icons }}">
           <view class="category-flex">
             <view wx:for="{{item}}" @tap="choseIcon('{{ item }}')">
@@ -215,7 +215,7 @@
 	text-align:right;
 }
 swiper {
-	height:180rpx;
+	height:730rpx;
 	border-bottom:2rpx solid #F4F4F4;
 }
 .category-flex {
