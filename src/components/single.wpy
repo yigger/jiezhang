@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import wepy from 'wepy'
+	import wepy from 'wepy'
   export default class Single extends wepy.component {
     props = {
       item: {

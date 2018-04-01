@@ -1,27 +1,23 @@
 <template>
   <view class="container">
     <view class="header">
-
       <view class="level-1">
         <view class="budget-amount fs32" @tap="showCaculate">
           <text>{{ header.amount }}</text>
           <image class="edit-icon" src="../../public/images/edit.png"></image>
         </view>
-        <view class="fs12">支出总预算</view>
+        <view class="fs14">支出总预算</view>
       </view>
-
       <view class="level-2">
         <view>
           <text>{{ header.used }}</text>
-          <view class="fs12">当月已用</view>
+          <view class="fs14">当月已用</view>
         </view>
-
         <view>
           <text>{{ header.surplus }}</text>
-          <view class="fs12">预算剩余</view>
+          <view class="fs14">预算剩余</view>
         </view>
       </view>
-
     </view>
 
     <view class="center">
@@ -132,72 +128,82 @@ page {
 	height:100%;
 }
 .header {
-	height:250rpx;
+	height:300rpx;
 	position:relative;
 	background:linear-gradient(rgba(251,75,77,1),rgba(241,75,77,0.9));
-	/* 标准的语法 */
-    box-shadow:0 0 20rpx #ccc;
-	color:white;
-	padding:0 24rpx;
-	.edit-icon {
-	width:50rpx;
-	height:50rpx;
-	margin-left:16rpx;
+  box-shadow:0 0 20rpx #ccc;
+  color:white;
+  padding:0 24rpx;
+  .edit-icon {
+    width:50rpx;
+    height:50rpx;
+    margin-left:16rpx;
+  }
+  .level-1 {
+    position: absolute;
+    width: 100%;
+    top: 18rpx;
+  }
+  .level-2 {
+    position: absolute;
+    width: 100%;
+    bottom: 12rpx;
+  }
+  .level-2 > view {
+    width:50%;
+    text-align:left;
+    display:inline-block;
+  }
 }
-.level-2 {
-	margin-top:32rpx;
-}
-.level-2 > view {
-	width:50%;
-	text-align:left;
-	display:inline-block;
-}
-}.center {
+.center {
 	background:white;
-	// margin-top:16rpx;
 	height:100%;
 	.budget-info {
-	// padding:8rpx 24rpx;
-	padding:8rpx 24rpx 8rpx 12rpx;
-	.left {
-	float:left;
-	text-align:center;
-	display:flex;
-	justify-content:center;
-	margin-top:10rpx;
-	image {
-	width:80rpx;
-	height:80rpx;
+	  padding:8rpx 24rpx 8rpx 12rpx;
+    .left {
+      float:left;
+      text-align:center;
+      display:flex;
+      justify-content:center;
+      margin-top:10rpx;
+      image {
+        width:70rpx;
+        height:70rpx;
+      }
+    }
+    .right {
+      margin-left:92rpx;
+      padding-bottom:16rpx;
+      border-bottom:2rpx solid #f2f2f2;
+      .title {
+        overflow:hidden;
+        position:relative;
+        .balance {
+          position:absolute;
+          right:0;
+          bottom:0;
+          color:#999;
+        }
+      }
+      .budget-amount {
+        color:#999;
+      }
+    }
+  }
+  .progress {
+    margin:12rpx 0;
+    overflow:hidden;
+    > view {
+      float:left;
+      width:50%;
+      height:8rpx;
+    }
+    .orange {
+      background:orange;
+    }
+    .gray {
+      background:#f2f2f2;
+    }
+  }
 }
-}.right {
-	margin-left:92rpx;
-	padding-bottom:16rpx;
-	border-bottom:2rpx solid #f2f2f2;
-	.title {
-	overflow:hidden;
-	position:relative;
-	.balance {
-	position:absolute;
-	right:0;
-	bottom:0;
-	color:#999;
-}
-}.budget-amount {
-	color:#999;
-}
-}}.progress {
-	margin:12rpx 0;
-	overflow:hidden;
-	> view {
-	float:left;
-	width:50%;
-	height:8rpx;
-}
-.orange {
-	background:orange;
-}
-.gray {
-	background:#f2f2f2;
-}
-}}
 </style>

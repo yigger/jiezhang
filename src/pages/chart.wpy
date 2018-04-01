@@ -288,7 +288,7 @@
 			line-height: @tmHeight;
 			border-bottom: 1px solid #efefef;
 			padding:0 24rpx;
-			background:#f4f4f4;
+			background:#FAFAFC;
 		}
 	}
 }

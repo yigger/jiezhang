@@ -3,13 +3,15 @@
     <view class="grid">
       <view class="item">
         <view class="item-name pull-left">
-          <text>账户名</text> </view>
+          <text>账户名</text>
+        </view>
         <input class="pull-right" value="{{ category.name }}" bindinput="bindKeyName" maxlength="15" placeholder="请输入分类名" />
       </view>
 
       <view class="item">
         <view class="item-name pull-left">
-          <text>图标</text> </view>
+          <text>图标</text>
+        </view>
         <image class="icon-image" src="{{ host }}{{ category.icon_path }}"></image>
       </view>
 
@@ -25,7 +27,8 @@
 
       <view class="item">
         <view class="item-name pull-left">
-          <text>是否一级分类</text> </view>
+          <text>是否一级分类</text>
+        </view>
         <switch class="pull-right" checked="{{ isParentLevel }}" bindchange="changeSwitch" />
       </view>
 

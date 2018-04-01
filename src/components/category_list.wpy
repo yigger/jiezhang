@@ -1,0 +1,51 @@
+<template lang="wxml">
+  <view wx:for="{{ list }}">
+    <view class="category parent-category" data-id="{{ item.id }}" bindtap="edit">
+      <text class="category-name">{{ item.name }}</text>
+    </view>
+    
+    <navigator class="category child-category" wx:for="{{ item.childs }}" wx:for-item="child" url="{{ editUrl }}?id={{ child.id }}" >
+      <view class="image">
+        <image class='ljt-icon' src="{{ child.icon_path }}"></image>
+      </view>
+      <text class="category-name">{{ child.name }}</text>
+    </navigator>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class CategoryList extends wepy.component {
+  props = {
+    list: {
+      type: Array,
+      default: []
+    },
+    editUrl: String
+  };
+}
+</script>
+
+<style lang="less">
+.category {
+	position:relative;
+	display:flex;
+	border-bottom:2rpx solid #efefef;
+	align-items:center;
+}
+.parent-category {
+  padding: 24rpx;
+  background: #FAFAFA;
+}
+.child-category {
+	padding:26rpx 24rpx;
+}
+.image {
+	width:50rpx;
+	height:50rpx;
+	margin-right:8rpx;
+}
+.category-name {
+	font-size:32rpx;
+}
+</style>
