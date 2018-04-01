@@ -65,10 +65,10 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../api/api"
-  import tip from '../utils/tip'
-  import HostMixin from '../mixins/host'
-  export default class WalletList extends wepy.page {
+  import api from "../../api/api"
+  import tip from '../../utils/tip'
+  import HostMixin from '../../mixins/host'
+  export default class AssetList extends wepy.page {
     config = {
       navigationBarTitleText: '资产设置'
     }
@@ -220,10 +220,7 @@
 </script>
 
 <style>
-/* pages/newasset/newasset.wxss */
 .container {
-	/* background:#F4F4F4;
-	*/
   font-size:28rpx;
 }
 .grid {

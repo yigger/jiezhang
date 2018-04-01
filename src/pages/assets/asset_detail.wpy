@@ -67,9 +67,10 @@
 
 <script>
 	import wepy from 'wepy'
-  import api from "../api/api";
-  import Caculate from '../components/caculate'
-  import Empty from '../components/empty'
+  import api from "../../api/api"
+  import tip from '../../utils/tip'
+  import Caculate from '../../components/caculate'
+  import Empty from '../../components/empty'
 
   export default class AssetDetail extends wepy.page {
     config = {
@@ -100,7 +101,7 @@
         this.list[idx]['hidden'] = value
 			},
       showStatement (id) {
-        wx.navigateTo({ url: `/pages/statement?id=${id}` })
+        wx.navigateTo({ url: `/pages/statements/statement?id=${id}` })
       },
       showCaculate() {
         this.showCaculation = true

@@ -50,9 +50,9 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../api/api";
-  import tip from '../utils/tip'
-  import HostMixin from '../mixins/host'
+  import api from "../../api/api"
+  import tip from '../../utils/tip'
+  import HostMixin from '../../mixins/host'
   export default class CategoryForm extends wepy.page {
     mixins = [ HostMixin ];
     data = {

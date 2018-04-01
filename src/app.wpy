@@ -4,23 +4,36 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      "pages/wallet",
-      "pages/chart",
       "pages/index",
-      "pages/chose_category",
-      "pages/chose_asset",
-      "pages/statement",
-      "pages/wallet_form",
-      "pages/asset_detail",
-      "pages/category",
-      "pages/wallet_list",
+      
+      "pages/chart",
+
+      "pages/asset",
+
       "pages/setting",
-      "pages/budget",
-      "pages/user_info",
-      "pages/child_budget",
-      "pages/category_form",
-      "pages/feedback",
-      "pages/message"
+
+      "pages/statements/statement",
+      "pages/statements/chose_category",
+      "pages/statements/chose_asset",
+      
+      // 预算
+      "pages/budgets/budget",
+      "pages/budgets/child_budget",
+
+      // 设置
+      "pages/settings/feedback",
+      "pages/settings/user_info",
+
+      // 编辑账单类型分类/资产分类
+      "pages/categories/list",
+      "pages/categories/category_form",
+      "pages/assets/list",
+      "pages/assets/asset_form",
+      "pages/assets/asset_detail",
+      
+      
+      // 消息
+      "pages/message/message"
     ],
     window: {
       backgroundColor: "#fb4b4d",
@@ -48,7 +61,7 @@ export default class extends wepy.app {
           text: "统计"
         },
         {
-          pagePath: "pages/wallet",
+          pagePath: "pages/asset",
           iconPath: "public/images/03.png",
           selectedIconPath: "public/images/03.png",
           text: "资产"

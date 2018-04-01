@@ -1,6 +1,6 @@
 <template>
 <view class="container">
-  <view class="header overflow-hide" @tap="redirect('/pages/user_info')">
+  <view class="header overflow-hide" @tap="redirect('/pages/settings/user_info')">
     <image class="pull-left" src="{{ user.avatar_url }}" />
     <view class="pull-left user-info">
       <view>{{ user.name }}</view>
@@ -10,7 +10,7 @@
   </view>
 
   <view class="zan-panel">
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/budget')">
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/budgets/budget')">
       <view class="zan-cell__bd">预算设置</view>
       <view class="zan-cell__ft">{{ user.budget }}</view>
     </view>
@@ -32,24 +32,24 @@
   </view>
 
   <view class="zan-panel">
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/wallet_list')">
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/assets/list')">
       <view class="zan-cell__bd">资产类型管理</view>
       <view class="zan-cell__ft"></view>
     </view>
 
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/category?type=expend')">
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/categories/list?type=expend')">
       <view class="zan-cell__bd">支出分类管理</view>
       <view class="zan-cell__ft"></view>
     </view>
 
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/category?type=income')">
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/categories/list?type=income')">
       <view class="zan-cell__bd">收入分类管理</view>
       <view class="zan-cell__ft"></view>
     </view>
   </view>
 
   <view class="zan-panel">
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/feedback')">
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/settings/feedback')">
       <view class="zan-cell__bd">帮助与反馈</view>
       <view class="zan-cell__ft"></view>
     </view>

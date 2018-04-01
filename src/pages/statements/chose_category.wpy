@@ -2,20 +2,20 @@
   <view class="category-component">
     <view wx:if="{{ !showLast }}">
       <view class="header fs14">上次使用</view>
-      <category :category.sync="last" @choseItem.user="setAsset"></category>
+      <category :category.sync="last" @choseItem.user="setCategory"></category>
     </view>
 
     <view wx:if="{{ frequent.length > 0 }}">
       <view class="header fs14">常用</view>
       <repeat for="{{frequent}}" key="index" index="index" item="child">
-        <category :category.sync="child" @choseItem.user="setAsset"></category>
+        <category :category.sync="child" @choseItem.user="setCategory"></category>
       </repeat>
     </view>
 
     <view wx:for="{{ list }}">
       <view class="header fs14">{{ item.name }}</view>
       <repeat for="{{item.childs}}" key="index" index="index" item="child">
-        <category :category.sync="child" @choseItem.user="setAsset"></category>
+        <category :category.sync="child" @choseItem.user="setCategory"></category>
       </repeat>
     </view>
   </view>
@@ -23,9 +23,10 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../api/api"
-  import Category from '../components/category'
-  export default class choseAsset extends wepy.page {
+  import api from "../../api/api"
+  import tip from '../../utils/tip'
+  import Category from '../../components/category'
+  export default class choseCategory extends wepy.page {
     data = {
       frequent: [],
       last: null,
@@ -36,29 +37,42 @@
 			category: Category
     };
 
-    onLoad () {
-      this.getAsset()
+    async onLoad (options) {
+      if (options.type == 'expend') {
+        await this.getExpendCategory()
+      } else {
+        await this.getIncomeCategory()
+      }
     }
     
     methods = {
-      setAsset (asset) {
+      setCategory (category) {
         const pages = getCurrentPages()
         const prevPage = pages[pages.length - 2]
-        prevPage.setAsset(asset)
+        prevPage.setCategory(category)
         wepy.navigateBack({
           delta: 1
         })
       }
     }
 
-    async getAsset () {
-      const res = await api.getBillAssets({showLoading: true})
+    async getExpendCategory () {
+      const res = await api.getExpendCategories({showLoading: true})
       const data = res.data
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories
       this.$apply()
     }
+
+    async getIncomeCategory () {
+      const res = await api.getIncomeCategories({showLoading: true})
+      const data = res.data
+      this.frequent = data.frequent
+      this.last = data.last
+      this.list = data.categories
+      this.$apply()
+    } 
 
     computed = {
       showLast () {
@@ -72,6 +86,6 @@
     background: #efefef;
   }
   .category-component {
-    @import "../public/styles/chose_category.less";
+    @import "../../public/styles/chose_category.less";
   }
 </style>

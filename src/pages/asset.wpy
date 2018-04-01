@@ -70,7 +70,7 @@
 
     methods = {
       showAsset (id) {
-        wx.navigateTo({ url: `/pages/asset_detail?id=${id}` })
+        wx.navigateTo({ url: `/pages/assets/asset_detail?id=${id}` })
       }
     }
 
@@ -155,8 +155,8 @@
   }
 
   .column {
-    height: 120rpx;
-    line-height: 120rpx;
+    height: 110rpx;
+    line-height: 110rpx;
     border-bottom:1px solid #efefef;
     &:last-child {
       .title, .money {
@@ -164,7 +164,7 @@
       }
     }
     .icon {
-      height: 120rpx;
+      height: 110rpx;
       display: flex;
       justify-content: center;
       flex-direction:column;
@@ -173,7 +173,6 @@
       margin-left:60rpx;
       margin-right:180rpx;
       padding-left:16rpx;
-      padding-bottom:16rpx;
       font-size:34rpx;
     }
     .money {

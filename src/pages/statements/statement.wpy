@@ -6,13 +6,13 @@
         <input class="pull-right money-input expend" name="amount" type="digit" value="{{ amount }}"/>
       </view>
 
-      <navigator class="column zan-cell--access" url="/pages/chose_category?type={{ type }}">
+      <navigator class="column zan-cell--access" url="/pages/statements/chose_category?type={{ type }}">
         <text>分类</text>
         <text class="pull-right" type="digit">{{ category_name }}</text>
         <input hidden  name="category_id" value="{{ category_id }}" type="number"/>
       </navigator>
 
-      <navigator class="column zan-cell--access" url="/pages/chose_asset">
+      <navigator class="column zan-cell--access" url="/pages/statements/chose_asset">
         <!-- 默认选中最常用的 -->
         <text>账户</text>
         <text class="pull-right">{{ asset_name }}</text>
@@ -43,8 +43,8 @@
 
 <script>
 	import wepy from 'wepy'
-  import api from "../api/api"
-  import tip from '../utils/tip'
+  import api from "../../api/api"
+  import tip from '../../utils/tip'
   export default class NewStatement extends wepy.page {
     config = {
       navigationBarTitleText: '记一笔'

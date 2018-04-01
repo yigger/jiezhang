@@ -1,24 +1,21 @@
 <template>
   <view class="container">
-    <view wx:for="{{ wallets }}">
+    <view wx:for="{{ assets }}">
       <view class="category parent-category" data-id="{{ item.id }}" bindtap="edit">
-        <!-- <view class="image">
-          <image class='ljt-icon' src="{{host}}{{ item.icon_path }}"></image>
-        </view> -->
         <text class="category-name">{{ item.name }}</text>
       </view>
       
-      <view class="category child-category" wx:for="{{ item.childs }}" wx:for-item="child" data-id="{{ child.id }}" bindtap="edit">
+      <navigator class="category child-category" wx:for="{{ item.childs }}" wx:for-item="child" url="/pages/assets/asset_form?id={{ child.id }}" >
         <view class="image">
           <image class='ljt-icon' src="{{ child.icon_path }}"></image>
         </view>
         <text class="category-name">{{ child.name }}</text>
-      </view>
+      </navigator>
     </view>
 
-    <navigator url="/pages/wallet_form">
+    <navigator url="/pages/assets/asset_form">
       <view class="add-wallet">
-        <image src="../public/images/wallet-add.png"></image>
+        <image src="../../public/images/wallet-add.png"></image>
         <text class="fs16" bindtap="newAsset">添加资产类型</text>
       </view>
     </navigator>
@@ -27,9 +24,10 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../api/api";
-  import HostMixin from '../mixins/host'
-  export default class WalletList extends wepy.page {
+  import api from "../../api/api"
+  import tip from '../../utils/tip'
+  import HostMixin from '../../mixins/host'
+  export default class AssetList extends wepy.page {
     mixins = [ HostMixin ];
 
     config = {
@@ -37,18 +35,7 @@
     }
 
     data = {
-      wallets: []
-    }
-
-    methods = {
-      edit (e) {
-        let id = e.currentTarget.dataset.id
-        let url = `/pages/wallet_form`
-        if (id != undefined) {
-          url += `?id=${id}`
-        }
-        wx.navigateTo({ url: url })
-      }
+      assets: []
     }
 
     onLoad () {
@@ -61,7 +48,7 @@
 
     async getList() {
       const json = await api.WalletList();
-      this.wallets = json.data
+      this.assets = json.data
       this.$apply()
     }
 

@@ -15,13 +15,13 @@
         <view class="fs21 today-expend">{{ header.today_pay }}</view>
         <view class="overflow-hide">
           <view class="pull-left fs14">本月支出 {{ header.month_pay }}</view>
-          <navigator url="/pages/budget"><view class="pull-right fs14">预算剩余 {{ header.budget }}</view></navigator>
+          <navigator url="/pages/budgets/budget"><view class="pull-right fs14">预算剩余 {{ header.budget }}</view></navigator>
         </view>
       </view>
     </view>
     
     <view class="zan-btns">
-      <navigator url="/pages/statement">
+      <navigator url="/pages/statements/statement">
         <button class="zan-btn zan-btn--danger btn-shadow">记一笔</button>
       </navigator>
     </view>
@@ -86,7 +86,7 @@
     methods = {
       statement (id) {
         wepy.navigateTo({
-          url: `/pages/statement?id=${id}`
+          url: `/pages/statements/statement?id=${id}`
         })
       }
     }

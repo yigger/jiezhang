@@ -45,8 +45,9 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../api/api";
-  import Caculate from '../components/caculate'
+  import api from "../../api/api"
+  import tip from '../../utils/tip'
+  import Caculate from '../../components/caculate'
 
   export default class ChildBudget extends wepy.page {
     config = {

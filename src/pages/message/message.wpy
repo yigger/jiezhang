@@ -6,8 +6,8 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../api/api"
-  import tip from '../utils/tip'
+  import api from "../../api/api"
+  import tip from '../../utils/tip'
 
   export default class Message extends wepy.page {
     config = {
