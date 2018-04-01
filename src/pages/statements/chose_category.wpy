@@ -18,6 +18,12 @@
         <category :category.sync="child" @choseItem.user="setCategory"></category>
       </repeat>
     </view>
+    <navigator url="/pages/categories/category_form?type={{ type }}">
+      <view class="add-wallet">
+        <image src="../../public/images/wallet-add.png"></image>
+        <text class="fs16">添加分类</text>
+      </view>
+    </navigator>
   </view>
 </template>
 
@@ -30,7 +36,9 @@
     data = {
       frequent: [],
       last: null,
-      list: []
+      list: [],
+      type: 'expend',
+      already_load: false
     }
 
     components = {
@@ -38,13 +46,17 @@
     };
 
     async onLoad (options) {
-      if (options.type == 'expend') {
-        await this.getExpendCategory()
-      } else {
-        await this.getIncomeCategory()
-      }
+      this.type = options.type
     }
     
+    onShow () {
+      if (this.type == 'expend') {
+        this.getExpendCategory()
+      } else {
+        this.getIncomeCategory()
+      }
+    }
+
     methods = {
       setCategory (category) {
         const pages = getCurrentPages()
@@ -87,5 +99,18 @@
   }
   .category-component {
     @import "../../public/styles/chose_category.less";
+  }
+  .add-wallet {
+    display:flex;
+    justify-content:center;
+    padding:8rpx 0;
+    color:#999;
+    margin:8rpx 0;
+  }
+  .add-wallet image {
+    width:50rpx;
+    height:50rpx;
+    display:inline-block;
+    margin-right:8rpx;
   }
 </style>

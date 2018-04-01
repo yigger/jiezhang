@@ -18,6 +18,14 @@
         <category :category.sync="child" @choseItem.user="setAsset"></category>
       </repeat>
     </view>
+
+    <navigator url="/pages/assets/asset_form">
+      <view class="add-wallet">
+        <image src="../../public/images/wallet-add.png"></image>
+        <text class="fs16" bindtap="newAsset">添加资产类型</text>
+      </view>
+    </navigator>
+
   </view>
 </template>
 
@@ -37,10 +45,10 @@
 			category: Category
     };
 
-    onLoad () {
+    onShow () {
       this.getAsset()
     }
-    
+
     methods = {
       setAsset (asset) {
         const pages = getCurrentPages()
@@ -74,5 +82,18 @@
   }
   .category-component {
     @import "../../public/styles/chose_category.less";
+  }
+  .add-wallet {
+    display:flex;
+    justify-content:center;
+    padding:8rpx 0;
+    color:#999;
+    margin:8rpx 0;
+  }
+  .add-wallet image {
+    width:50rpx;
+    height:50rpx;
+    display:inline-block;
+    margin-right:8rpx;
   }
 </style>

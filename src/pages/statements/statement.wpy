@@ -1,4 +1,8 @@
 <template lang="wxml">
+  <view class="tab">
+    <view class="{{ type == 'expend' ? 'expend-active' : '' }}" @tap="choseTab('expend')">支出</view>
+    <view class="{{ type == 'income' ? 'income-active' : '' }}" @tap="choseTab('income')">收入</view>
+  </view>
   <form bindsubmit="formSubmit">
     <view class="container">
       <view class="column money">
@@ -79,6 +83,12 @@
       }
     }
 
+    computed = {
+      active () {
+        return this.type == 'expend'
+      }
+    }
+
     methods = {
       async   formSubmit (e) {
         let statement = e.detail.value
@@ -116,6 +126,9 @@
       },
       dateChange(e) {
         this.date = e.detail.value
+      },
+      choseTab (type) {
+        this.type = type
       }
     }
 
@@ -178,7 +191,7 @@
 </script>
 <style lang="less">
   page {
-    background: #efefef;
+    background: #fafafa;
   }
   .container {
     > .money {
@@ -205,6 +218,28 @@
       height: 130rpx;
       font-size: 56rpx;
       text-align: right;
+    }
+  }
+  .tab {
+    height: 80rpx;
+    line-height: 80rpx;
+    background: white;
+    border-bottom: 1px solid #efefef;
+    display: flex;
+    > view {
+      flex: 1;
+      text-align: center;
+      &:first-child {
+        border-right: 1px solid #efefef;
+      }
+    }
+    .expend-active {
+      color: green;
+      background: #fafafa;
+    }
+    .income-active {
+      color: red;
+      background: #fafafa;
     }
   }
 </style>
