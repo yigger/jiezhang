@@ -1,5 +1,5 @@
 import wepy from 'wepy';
-import api from "../api/api";
+import api from "../utils/api";
 export default class HostMixin extends wepy.mixin {
 
   computed = {
