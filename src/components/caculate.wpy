@@ -1,37 +1,46 @@
 <template lang="wxml">
-  <view class="caculation">
-    <view class="screen">
+  <view class="caculation" hidden="{{ !showCaculation }}">
+    <view class="screen" wx:if="{{ showScreen }}">
       <view class="fs21">{{ amount }}</view>
       <view class="fs12" wx:if="{{ showFormula }}">{{ formula }}</view>
     </view>
-    <view class="btnGroup">
-      <view class="item" data-num="7" @tap="caculatBtn">7</view>
-      <view class="item" data-num="8" @tap="caculatBtn">8</view>
-      <view class="item" data-num="9" @tap="caculatBtn">9</view>
-      <view class="item" data-num="minus" @tap="caculatBtn">-</view>
+    <view class="hide-caculation" @tap="hideCaculation">
+      <image src="../public/images/down.png"></image>
     </view>
 
-    <view class="btnGroup">
-      <view class="item" data-num="4" @tap="caculatBtn">4</view>
-      <view class="item" data-num="5" @tap="caculatBtn">5</view>
-      <view class="item" data-num="6" @tap="caculatBtn">6</view>
-      <view class="item" data-num="plus" @tap="caculatBtn">+</view>
-    </view>
+    <view class="btn-list">
+      <view class="btn-left">
+        <view class="btnGroup">
+          <view class="caculate-item" data-num="7" @tap="caculatBtn">7</view>
+          <view class="caculate-item" data-num="8" @tap="caculatBtn">8</view>
+          <view class="caculate-item" data-num="9" @tap="caculatBtn">9</view>
+        </view>
 
-    <view class="btnGroup">
-      <view class="item" data-num="1" @tap="caculatBtn">1</view>
-      <view class="item" data-num="2" @tap="caculatBtn">2</view>
-      <view class="item" data-num="3" @tap="caculatBtn">3</view>
-      <view class="item" @tap="calculate">=</view>
-    </view>
+        <view class="btnGroup">
+          <view class="caculate-item" data-num="4" @tap="caculatBtn">4</view>
+          <view class="caculate-item" data-num="5" @tap="caculatBtn">5</view>
+          <view class="caculate-item" data-num="6" @tap="caculatBtn">6</view>
+        </view>
 
-    <view class="btnGroup">
-      <view class="item" @tap="resetData">C</view> 
-      <view class="item" data-num="0" @tap="caculatBtn">0</view>
-      <view class="item backspace" @tap="backspace">
-        <image class="caculate-back" src="../public/images/caculate-back.png"></image>
+        <view class="btnGroup">
+          <view class="caculate-item" data-num="1" @tap="caculatBtn">1</view>
+          <view class="caculate-item" data-num="2" @tap="caculatBtn">2</view>
+          <view class="caculate-item" data-num="3" @tap="caculatBtn">3</view>
+        </view>
+
+        <view class="btnGroup">
+          <view class="caculate-item" @tap="resetData">C</view> 
+          <view class="caculate-item" data-num="0" @tap="caculatBtn">0</view>
+          <view class="caculate-item backspace" @tap="backspace">
+            <image class="caculate-back" src="../public/images/caculate-back.png"></image>
+          </view>
+        </view>
       </view>
-      <view class="item" @tap="caculatok">OK</view>
+      <view class="btn-right">
+        <view class="caculate-item" data-num="minus" @tap="caculatBtn">-</view>
+        <view class="caculate-item" data-num="plus" @tap="caculatBtn">+</view>
+        <view class="caculate-item ok" @tap="caculatok">OK</view>
+      </view>
     </view>
   </view>
 </template>
@@ -40,15 +49,28 @@
 import wepy from 'wepy';
 export default class Caculate extends wepy.component {
     props = {
+      showCaculation: {
+        type: Boolean,
+        default: false,
+        twoWay: true
+      },
       showFormula: {
         type: Boolean,
         default: true
+      },
+      showScreen: {
+        type: Boolean,
+        default: false
+      },
+      amount: {
+        type: String,
+        default: '0',
+        twoWay: true
       }
     }
 
     data = {
       formula: '',
-      amount: 0,
       op: {
         'plus': '+',
         'minus': '-',
@@ -60,6 +82,9 @@ export default class Caculate extends wepy.component {
     };
 
     methods = {
+      hideCaculation () {
+        this.showCaculation = false
+      },
       caculatBtn(event) {
         let value = event.target.dataset.num;
         let number = parseInt(value, 10)
@@ -198,27 +223,30 @@ export default class Caculate extends wepy.component {
 </script>
 
 <style lang="less">
-  .caculation {
-	position:fixed;
-	bottom:0;
-	left:0;
-	width:100%;
-	z-index:666;
-	.screen {
-	padding:12rpx 20rpx;
-	color:white;
-	text-align:right;
-	background:rgba(62,64,82,0.9);
+@itemBg: #F5F5F5;
+@borderBg: #DCDCDC;
+.caculation {
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  z-index:666;
+  .screen {
+    padding:12rpx 20rpx;
+    color:white;
+    text-align:right;
+    background:rgba(62,64,82,0.9);
+  }
 }
-}.caculation .close {
-	width:70rpx;
-	position:absolute;
-	right:0;
-	top:-52rpx;
-	text-align:center;
-	background:#efefef;
-	border:2rpx solid #ccc;
-	height:50rpx;
+.caculation .close {
+  width:70rpx;
+  position:absolute;
+  right:0;
+  top:-52rpx;
+  text-align:center;
+  background:#efefef;
+  border:2rpx solid #ccc;
+  height:50rpx;
 }
 .caculation .close image {
 	width:40rpx;
@@ -228,15 +256,17 @@ export default class Caculate extends wepy.component {
 .caculation .btnGroup {
 	display:flex;
 	flex-direction:row;
-	border-top:2rpx solid #323546;
+	border-top: 2rpx solid @borderBg;
 }
-.caculation .btnGroup > .item {
+.caculate-item {
 	text-align:center;
-	width:25%;
-	padding:28rpx 0;
-	background:#3e4052;
-	border-left:2rpx solid #323546;
-	color:white;
+	flex: 1;
+  height:120rpx;
+  line-height: 120rpx;
+	background:@itemBg;
+	border-left:2rpx solid @borderBg;
+  color:black;
+  font-size: 48rpx;
 }
 .caculate-back {
 	width:60rpx;
@@ -248,11 +278,46 @@ export default class Caculate extends wepy.component {
 	bottom:0;
 	margin:auto;
 }
-.caculation .btnGroup > .item:first-child {
+.caculate-item:first-child {
 	border-left:none;
 }
 .backspace {
 	position:relative;
 }
-
+.hide-caculation {
+  background: @itemBg;
+  height: 70rpx;
+  line-height:90rpx;
+  text-align: center;
+  vertical-align: center;
+  border-top: 1px solid @borderBg;
+  image {
+    width: 70rpx;
+    height: 50rpx;
+  }
+}
+.btn-list {
+  display: flex;
+  .btn-left {
+    width: 75%;
+  }
+  .btn-right {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    > view {
+      width: 100%;
+    }
+    .caculate-item {
+      border-left:2rpx solid #DCDCDC;
+      border-top:2rpx solid #DCDCDC;
+    }
+    .caculate-item.ok {
+      height: 243rpx;
+      line-height: 243rpx;
+      border-top:2rpx solid #DCDCDC;
+    }
+  }
+  
+}
 </style>

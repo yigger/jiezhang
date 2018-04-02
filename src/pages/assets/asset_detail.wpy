@@ -3,7 +3,7 @@
   <view id="wallet-header">
     <view class="surplus">
       <view class="surplus-amount fs24" @tap="showCaculate">
-        <text class="pull-left">{{ header.surplus }}</text>
+        <text class="pull-left">{{ amount }}</text>
         <image class="edit-icon pull-left" src="../../public/images/edit.png"></image>
       </view>
       <view class="fs16">余额</view>
@@ -69,7 +69,7 @@
     <empty title="暂无数据哦~"></empty>
   </view>
 
-  <caculate @invokeCaculation.user="invokeCaculation" hidden="{{ !showCaculation }}"></caculate>
+  <caculate @invokeCaculation.user="invokeCaculation" :amount.sync="amount" :showCaculation.sync="showCaculation"></caculate>
 </view>
 </template>
 
@@ -100,7 +100,8 @@
       },
       list: [], 
       already_load: false,
-      showCaculation: false 
+      showCaculation: true,
+      amount: '0.00'
     }
     
     methods = {
@@ -123,31 +124,23 @@
     onLoad (options) {
       // this.asset_id = options.id
       this.asset_id = 34
-      this.already_load = true
-      this.information()
-      this.statements()
     }
 
     onShow () {
-      if (this.already_load) {
-        this.information()
-        this.statements()
-      }
-    }
-
-    onPullDownRefresh () {
-      wx.stopPullDownRefresh()
       this.information()
       this.statements()
     }
 
     async information () {
        const res = await api.AssetDetailInformation({
+        showLoading: true,
         query: {
           asset_id: this.asset_id
         }
       })
       this.header = res.data
+      this.amount = this.header.surplus
+      console.log(this.amount)
       this.$apply()
     }
 
