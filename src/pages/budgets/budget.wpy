@@ -3,7 +3,7 @@
     <view class="header">
       <view class="level-1">
         <view class="budget-amount fs32" @tap="showCaculate">
-          <text>{{ header.amount }}</text>
+          <text>{{ amount }}</text>
           <image class="edit-icon" src="../../public/images/edit.png"></image>
         </view>
         <view class="fs14">支出总预算</view>
@@ -41,7 +41,7 @@
       </view>
     </view>
 
-    <caculate @invokeCaculation.user="invokeCaculation" hidden="{{ !showCaculation }}"></caculate>
+    <caculate @invokeCaculation.user="invokeCaculation" :amount.sync="amount" :showCaculation.sync="showCaculation"></caculate>
   </view>
 </template>
 
@@ -55,15 +55,15 @@
     data = {
       showCaculation: false,
       header: {},
-      list: []
+      list: [],
+      amount: '0.00'
     }
     components = {
       caculate: Caculate
     }
 
     config = {
-      navigationBarTitleText: '预算设置',
-      enablePullDownRefresh: true
+      navigationBarTitleText: '预算设置'
     }
 
     methods = {
@@ -85,16 +85,11 @@
       this.getHeaderData()
       this.getParentBudget()
     }
-
-    onPullDownRefresh () {
-      wx.stopPullDownRefresh()
-      this.getHeaderData()
-      this.getParentBudget()
-    }
     
     async getHeaderData() {
       const res = await api.Budget()
       this.header = res.data
+      this.amount = this.header.surplus
       this.$apply()
     }
 

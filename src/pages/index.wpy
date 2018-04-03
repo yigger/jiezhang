@@ -34,7 +34,7 @@
               <text class="title fs16">{{ item.category }}</text>
               <text class="pull-right money {{ item.type }}">{{ item.money }}</text>
             </view>
-            <view class="description">{{ item.remark || '　' }}</view>
+            <view class="description">{{ item.description || '　' }}</view>
             <view class="order-info overflow-hide">
               <category class="pull-left">
                 <label>{{ item.asset }}</label>
@@ -176,18 +176,13 @@
     }
 
     async getStatementById(obj, id) {
-      const res = await api.getIndexBill({
-        query: { id: id }
-      })
+      const res = await api.getIndexBill(id)
       Object.assign(obj, res.data)
       this.$apply()
     }
 
     async addStatementById(id) {
-      const res = await api.getIndexBill({
-        query: { id: id }
-      })
-
+      const res = await api.getIndexBill(id)
       this.list = [res.data].concat(this.list)
       this.$apply()
     }

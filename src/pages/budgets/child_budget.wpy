@@ -15,7 +15,7 @@
             <view class="gray" style="width: {{ budget.surplus_percent }}%;"></view>
           </view>
 
-          <view class="fs12 budget-amount">支出预算 {{ budget.amount }}</view>
+          <view class="fs12 budget-amount">支出预算 {{ amount }}</view>
         </view>
       </view>
     </view>
@@ -38,7 +38,8 @@
           <view class="fs12 budget-amount">支出预算 {{ item.amount }}</view>
         </view>
       </view>
-      <caculate @invokeCaculation.user="invokeCaculation" hidden="{{ !showCaculation }}"></caculate>
+      <!-- <caculate @invokeCaculation.user="invokeCaculation" hidden="{{ !showCaculation }}"></caculate> -->
+      <caculate @invokeCaculation.user="invokeCaculation" :amount.sync="amount" :showCaculation.sync="showCaculation"></caculate>
     </view>
   </view>
 </template>
@@ -59,7 +60,8 @@
       budget: {},
       childs: [],
       parentId: 0,
-      curCategoryId: 0
+      curCategoryId: 0,
+      amount: '0.00'
     }
 
     components = {
@@ -87,6 +89,7 @@
       id = id || this.parentId
       const res = await api.BudgetDetail(id)
       this.budget = res.data.root
+      this.amount = this.budget.amount
       this.childs = res.data.childs
       this.$apply()
     }

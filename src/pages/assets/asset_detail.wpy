@@ -100,7 +100,7 @@
       },
       list: [], 
       already_load: false,
-      showCaculation: true,
+      showCaculation: false,
       amount: '0.00'
     }
     
@@ -140,7 +140,6 @@
       })
       this.header = res.data
       this.amount = this.header.surplus
-      console.log(this.amount)
       this.$apply()
     }
 

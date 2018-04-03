@@ -26,7 +26,7 @@
 
     data = {
       categories: [],
-      type: 'expend',
+      type: 'expend'
     }
 
     onLoad (options) {
