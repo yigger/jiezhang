@@ -4,7 +4,7 @@
       <text class="category-name">{{ item.name }}</text>
     </view>
     
-    <navigator class="category child-category" wx:for="{{ item.childs }}" wx:for-item="child" url="{{ editUrl }}?id={{ child.id }}" >
+    <navigator class="category child-category" wx:for="{{ item.childs }}" wx:for-item="child" url="{{ editUrl }}?id={{ child.id }}&type={{ type }}" >
       <view class="image">
         <image class='ljt-icon' src="{{ child.icon_path }}"></image>
       </view>
@@ -21,6 +21,7 @@ export default class CategoryList extends wepy.component {
       type: Array,
       default: []
     },
+    type: String,
     editUrl: String
   };
 }

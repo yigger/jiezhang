@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <List :list.sync="categories" editUrl="/pages/categories/category_form"></List>
+    <List :list.sync="categories" editUrl="/pages/categories/category_form" :type.sync="type"></List>
     <navigator url="/pages/categories/category_form?type={{ type }}">
       <view class="add-wallet">
         <image src="../../public/images/wallet-add.png"></image>

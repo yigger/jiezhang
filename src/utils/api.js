@@ -15,7 +15,7 @@ const getIndexBill = (id) => wxRequest({}, `${apiUrl}/statement/${id}`);
 
 // 获取账单
 const Bill = (params, c_id = 0) => {
-  let url = `${apiUrl}/statement`
+  let url = `${apiUrl}/statements`
   if (c_id != null && c_id != 0) url = `${url}/${c_id}`
   return wxRequest(params, url)
 }

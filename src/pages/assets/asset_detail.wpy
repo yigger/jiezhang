@@ -34,8 +34,6 @@
       <view class="down-icon"><image src="../../public/images/real-down.png"></image></view>
     </view>
   </view>
-  
-  <!-- <view class="divide"></view> -->
 
   <view id="all-assets" wx:if="{{ !showEmpty }}">
     <view class="asset category" wx:for="{{ list }}" wx:for-item="pst" bindtap="showHidden('{{ index }}')">
@@ -122,8 +120,8 @@
     }
 
     onLoad (options) {
-      // this.asset_id = options.id
-      this.asset_id = 34
+      this.asset_id = options.id
+      // this.asset_id = 34
     }
 
     onShow () {
