@@ -61,7 +61,7 @@
 
     <view class="zan-cell zan-cell--access">
       <view class="zan-cell__bd">关于洁账</view>
-      <view>V1.0</view>
+      <view>{{ version }}</view>
     </view>
   </view>
 
@@ -79,7 +79,8 @@
     }
 
     data = {
-      user: {}
+      user: {},
+      version: ''
     }
 
     onShow () {
@@ -96,7 +97,9 @@
 
     async getData () {
       const res = await api.Settings()
-      this.user = res.data
+      const data =  res.data
+      this.user = data.user
+      this.version = data.version
       this.$apply()
     }
   }

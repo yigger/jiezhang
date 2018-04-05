@@ -7,7 +7,7 @@
     <view class="container">
       <view class="column money">
         <text>金额</text>
-        <input class="pull-right money-input expend" name="amount" type="digit" value="{{ amount }}"/>
+        <input class="pull-right money-input {{ type }}" name="amount" type="digit" value="{{ amount }}"/>
       </view>
 
       <navigator class="column zan-cell--access" url="/pages/statements/chose_category?type={{ type }}">
@@ -128,6 +128,10 @@
         this.date = e.detail.value
       },
       choseTab (type) {
+        if (this.type != type) {
+          this.category_id = 0
+          this.category_name = '请选择分类'
+        }
         this.type = type
       }
     }
@@ -236,10 +240,12 @@
     .expend-active {
       color: green;
       background: #fafafa;
+      border-bottom: 1px solid green;
     }
     .income-active {
       color: red;
       background: #fafafa;
+      border-bottom: 1px solid red;
     }
   }
 </style>

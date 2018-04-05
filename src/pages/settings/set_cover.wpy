@@ -1,6 +1,26 @@
 <template>
   <view class="container">
-    
+    <view>
+      <view class="image">
+        <image></image>
+      </view>
+      <view>中国红</view>
+    </view>
+
+    <view>
+      <view class="image">
+        <image></image>
+      </view>
+      <view>金灿灿</view>
+    </view>
+
+    <view>
+      <view class="image">
+        <image></image>
+      </view>
+      <view>典雅黑</view>
+    </view>
+
   </view>
 </template>
 
@@ -34,5 +54,19 @@
   }
 </script>
 <style lang="less">
-
+  .container {
+    text-align: center;
+  }
+  .container > view {
+    display: inline-block;
+    margin-right: 12rpx;
+  }
+  .image {
+    background:red;
+    width:60px;
+    height:60px;
+    image {
+      width: 100%;
+    }
+  }
 </style>

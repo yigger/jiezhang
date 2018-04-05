@@ -63,12 +63,15 @@
       async uploadImage() {
         const choseImages = await wepy.chooseImage({
           count: 1,
-          sizeType: ['original', 'compressed'],
-          sourceType: ['album', 'camera']
+          sizeType: ['compressed'],
+          sourceType: ['album']
         })
         const uploadResult = await wepy.uploadFile({
-          url: api.uploadPath,  
+          url: api.uploadPath,
           filePath: choseImages.tempFilePaths[0],
+          formData: {
+            type: 'user_avatar'
+          },
           name: 'file'
         })
         this.getUser()

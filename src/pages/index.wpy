@@ -1,11 +1,11 @@
 <template>
   <view class="container">
     <view class="header">
-      <image class="bg" src="../public/images/dawn-sun-mountain-landscape-65865.jpeg"></image>
+      <image class="bg" src="{{ header.bg_avatar }}"></image>
       <!-- <view class="notification">
         <image src="../public/images/notification.png"></image>
       </view> -->
-      <navigator class="set-avatar" url="/pages/settings/set_cover">设置封面</navigator>
+      <view class="set-avatar" @tap="setAvatar">设置封面</view>
 
       <view class="level-2">
         <view class="fs14">
@@ -89,6 +89,22 @@
         wepy.navigateTo({
           url: `/pages/statements/statement?id=${id}`
         })
+      },
+      async setAvatar () {
+        const choseImages = await wepy.chooseImage({
+          count: 1,
+          sizeType: ['compressed'],
+          sourceType: ['album']
+        })
+        const uploadResult = await wepy.uploadFile({
+          url: api.uploadPath,
+          filePath: choseImages.tempFilePaths[0],
+          formData: {
+            type: 'bg_avatar'
+          },
+          name: 'file'
+        })
+        this.getHeader()
       }
     }
 
@@ -116,8 +132,12 @@
     }
 
     async onLoad () {
-      // await this.getHeader()
-      // await this.getList()
+      await this.getHeader()
+      await this.getList()
+    }
+
+    onShow () {
+      this.getHeader()
     }
 
     // 此函数用于 statement.wpy 里更新后调用
