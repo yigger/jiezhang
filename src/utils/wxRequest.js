@@ -2,8 +2,8 @@ import wepy from 'wepy'
 import tip from './tip'
 
 // const LoginUrl = 'http://git.com/api/login'
-const LoginUrl = 'https://xiaoyounger.com/api/login'
-// const LoginUrl = 'https://yiiiblog.com/api/login'
+// const LoginUrl = 'https://xiaoyounger.com/api/login'
+const LoginUrl = 'https://yiiiblog.com/api/login'
 
 const SESSION_KEY = 'weapp_login_session'
 const wxRequest = async(params = {}, url) => {
@@ -13,24 +13,24 @@ const wxRequest = async(params = {}, url) => {
 
 	if (params.showLoading) {
 		tip.loading();
+  }
+  
+	if (SessionLogin.get() == null) {
+		const loginResult = await wxLogin()
+		// console.log("登录成功-1")
+		const requestResult = await doRequest(params, url)
+		// console.log("请求成功-1")
+		return requestResult
+	} else {
+		res = await doRequest(params, url)
+		if (res.data.status == 301) {
+			// Session 过期了，清除本地 Session 后重新请求
+			SessionLogin.clear()
+			const loginResult = await wxLogin()
+			// console.log("登录成功-2")
+			res = await doRequest(params, url)
+		}
 	}
-  res = await doRequest(params, url)
-	// if (SessionLogin.get() == null) {
-	// 	const loginResult = await wxLogin()
-	// 	// console.log("登录成功-1")
-	// 	const requestResult = await doRequest(params, url)
-	// 	// console.log("请求成功-1")
-	// 	return requestResult
-	// } else {
-	// 	res = await doRequest(params, url)
-	// 	if (res.data.status == 301) {
-	// 		// Session 过期了，清除本地 Session 后重新请求
-	// 		SessionLogin.clear()
-	// 		const loginResult = await wxLogin()
-	// 		// console.log("登录成功-2")
-	// 		res = await doRequest(params, url)
-	// 	}
-	// }
 
 	if (params.showLoading) {
 		tip.loaded();
