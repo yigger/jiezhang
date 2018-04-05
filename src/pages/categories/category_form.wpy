@@ -115,6 +115,7 @@
         }
         
         const res = await api.Category({
+          showLoading: true,
           method: method,
           query: { 
             category: this.category
@@ -148,6 +149,7 @@
 
     async getCategory(id) {
       const res = await api.Category({
+        showLoading: true,
         query: {
           type: this.category.type
         }

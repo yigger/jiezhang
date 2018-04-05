@@ -1,11 +1,11 @@
 <template>
   <view class="container">
     <List :list.sync="assets" editUrl="/pages/assets/asset_form"></List>
-    <navigator url="/pages/assets/asset_form">
-      <view class="add-wallet">
+    <navigator class="add-wallet" url="/pages/assets/asset_form">
+      <view>
         <image src="../../public/images/wallet-add.png"></image>
-        <text class="fs16" bindtap="newAsset">添加资产类型</text>
       </view>
+      <text class="fs16" bindtap="newAsset">添加资产类型</text>
     </navigator>
   </view>
 </template>
@@ -28,17 +28,13 @@
     data = {
       assets: []
     }
-
-    onLoad () {
-      this.getList()
-    }
-
+    
     onShow () {
       this.getList()
     }
 
     async getList() {
-      const json = await api.WalletList();
+      const json = await api.Asset();
       this.assets = json.data
       this.$apply()
     }
@@ -46,19 +42,22 @@
   }
 </script>
 
-<style>
+<style lang="less">
 .add-wallet {
-	display:flex;
-	justify-content:center;
-	padding:8rpx 0;
+  text-align:center;
 	color:#999;
-	margin:8rpx 0;
+  padding: 24rpx 0;
+  > view {
+    height: 100%;
+    vertical-align: center;
+    display: inline-block
+  }
+  image {
+    width:50rpx;
+    height:50rpx;
+    display:inline-block;
+    margin-right:8rpx;
+    vertical-align:middle;
+  }
 }
-.add-wallet image {
-	width:50rpx;
-	height:50rpx;
-	display:inline-block;
-	margin-right:8rpx;
-}
-
 </style>

@@ -8,7 +8,7 @@
 
       <view class="item">
         <view class="item-name pull-left"> <text>余额</text> </view>
-        <input class="pull-right" value="{{ wallet.amount }}" bindinput="bindKeyAmount" maxlength="10" placeholder="请输入账户余额" />
+        <input class="pull-right" type="number" placeholder="0.00" value="{{ wallet.amount }}" bindinput="bindKeyAmount" maxlength="10" placeholder="请输入账户余额" />
       </view>
 
       <view class="item">
@@ -77,7 +77,7 @@
       wallet: {
         id: 0,
         name: '',
-        amount: 0,
+        amount: '',
         parent_id: 0,
         icon_path: '',
         remark: '',
@@ -148,7 +148,12 @@
           cId = this.wallet.id
         }
 
+        if (this.wallet.amount == '') {
+          this.wallet.amount = 0
+        }
+
         const res = await api.Asset({
+          showLoading: true,
           method: method,
           query: {
             wallet: this.wallet
@@ -182,7 +187,7 @@
     }
 
     async getWallet (id) {
-      const res = await api.Wallet({}, id)
+      const res = await api.Asset({ showLoading: true }, id)
       this.wallet = res.data
       if (this.wallet.type == 'debt') this.typeIndex = 1
       if (this.wallet.parent_id != 0) {
@@ -194,7 +199,7 @@
     }
 
     async getParent() {
-      const json = await api.WalletParent()
+      const json = await api.AssetParent()
       this.parents = json.data
       if (this.parents.length > 0 && !this.isParentLevel && this.wallet.id == 0) {
         this.wallet.parent_id = this.parents[0]['id']

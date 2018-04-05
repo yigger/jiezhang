@@ -87,7 +87,7 @@
     }
     
     async getHeaderData() {
-      const res = await api.Budget()
+      const res = await api.Budget({showLoading: true})
       this.header = res.data
       this.amount = this.header.surplus
       this.$apply()
@@ -142,6 +142,7 @@ page {
   .level-2 {
     position: absolute;
     width: 100%;
+    height: 100rpx;
     bottom: 12rpx;
   }
   .level-2 > view {
@@ -154,6 +155,7 @@ page {
 	background:white;
 	height:100%;
 	.budget-info {
+    height:140rpx;
 	  padding:8rpx 24rpx 8rpx 12rpx;
     .left {
       float:left;

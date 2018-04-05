@@ -1,11 +1,11 @@
 <template>
   <view class="container">
     <List :list.sync="categories" editUrl="/pages/categories/category_form" :type.sync="type"></List>
-    <navigator url="/pages/categories/category_form?type={{ type }}">
-      <view class="add-wallet">
+    <navigator class="add-wallet" url="/pages/categories/category_form?type={{ type }}">
+      <view>
         <image src="../../public/images/wallet-add.png"></image>
-        <text class="fs16">添加分类</text>
       </view>
+      <text class="fs16" bindtap="newAsset">添加分类</text>
     </navigator>
   </view>
 </template>
@@ -51,19 +51,23 @@
   }
 </script>
 
-<style>
+<style lang="less">
 .add-wallet {
-	display:flex;
-	justify-content:center;
-	padding:8rpx 0;
+  text-align:center;
 	color:#999;
-	margin:8rpx 0;
-}
-.add-wallet image {
-	width:50rpx;
-	height:50rpx;
-	display:inline-block;
-	margin-right:8rpx;
+  padding: 24rpx 0;
+  > view {
+    height: 100%;
+    vertical-align: center;
+    display: inline-block
+  }
+  image {
+    width:50rpx;
+    height:50rpx;
+    display:inline-block;
+    margin-right:8rpx;
+    vertical-align:middle;
+  }
 }
 
 </style>

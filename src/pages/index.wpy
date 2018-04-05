@@ -375,7 +375,7 @@
 	padding-top:8rpx;
 }
 .current-day {
-	background:cadetblue !important;
+	background: orange !important;
 	color:white !important;
 }
 .set-avatar {

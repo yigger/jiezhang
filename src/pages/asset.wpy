@@ -36,8 +36,8 @@
 
   <view id="all-assets">
     <view class="asset" wx:for="{{ wallets }}">
-      <text class="fs12">{{ item.header }}</text>
-      <view class="column" wx:for="{{ item.list }}" bindtap="showAsset('{{ item.id }}')">
+      <text class="fs12">{{ item.name }}</text>
+      <view class="column" wx:for="{{ item.childs }}" bindtap="showAsset('{{ item.id }}')">
         <view class="icon pull-left">
           <image class="ljt-icon" src="{{ item.icon_path }}"></image>
         </view>

@@ -87,7 +87,7 @@
 
     async getData(id) {
       id = id || this.parentId
-      const res = await api.BudgetDetail(id)
+      const res = await api.BudgetDetail({showLoading: true}, id)
       this.budget = res.data.root
       this.amount = this.budget.amount
       this.childs = res.data.childs
@@ -124,6 +124,7 @@
     border-bottom:2rpx solid #f2f2f2;
   }
   .parent .budget-info,.child .budget-info {
+    height:120rpx;
     padding:8rpx 24rpx 8rpx 12rpx;
     .left {
       float:left;

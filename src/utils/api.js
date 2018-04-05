@@ -3,8 +3,8 @@ import {
 } from '../utils/wxRequest';
 import wepy from 'wepy';
 
-const host = 'http://git.com'
-// const host = 'https://xiaoyounger.com'
+// const host = 'http://git.com'
+const host = 'https://xiaoyounger.com'
 // const host = 'https://yiiiblog.com'
 
 const apiUrl = host + '/api'
@@ -24,41 +24,38 @@ const getBillAssets = (params) => wxRequest(params, `${apiUrl}/statements/assets
 const getExpendCategories = (params) => wxRequest(params, `${apiUrl}/statements/expend_categories`);
 const getIncomeCategories = (params) => wxRequest(params, `${apiUrl}/statements/income_categories`);
 
-// 图表栏的数据获取
+// tab 统计
 const Chart = (params) => wxRequest(params, `${apiUrl}/chart`);
 
-// 资产管理
+// 资产管理，设置里面的增删改查
 const Asset = (params, c_id = 0) => {
   let url = `${apiUrl}/assets`
   if (c_id != null && c_id != 0) url = `${url}/${c_id}`
   return wxRequest(params, url)
 }
+const AssetParent = (params) => wxRequest(params, `${apiUrl}/assets/parent`);
+const AssetIcon = () => wxRequest({}, `${apiUrl}/icons/assets`);
+
+// 分类管理，设置里面的增删改查
+const Category = (params, c_id = 0) => {
+  let url = `${apiUrl}/categories`
+  if (c_id != null && c_id != 0) url = `${url}/${c_id}`
+  return wxRequest(params, url)
+}
+const CategoryParent = (params) => wxRequest(params, `${apiUrl}/categories/parent`);
+const CategoryIcon = () => wxRequest({}, `${apiUrl}/icons/categories`);
 
 // 资产详情
 const AssetDetailInformation = (params) => wxRequest(params, `${apiUrl}/wallet/information`);
 const AssetDetailList = (params) => wxRequest(params, `${apiUrl}/wallet/detail`);
 const AssetSurplus = (params) => wxRequest(params, `${apiUrl}/wallet/surplus`);
 
-// 资产图标
-const AssetIcon = () => wxRequest({}, `${apiUrl}/icons/assets`);
-
-// 资产 & 资产设置
+// tab 资产总览
 const Wallet = (params, c_id = 0) => {
   let url = `${apiUrl}/wallet`
   if (c_id != null && c_id != 0) url = `${url}/${c_id}`
   return wxRequest(params, url)
 }
-const WalletParent = (params) => wxRequest(params, `${apiUrl}/wallet/parent`);
-const WalletList = (params) => wxRequest(params, `${apiUrl}/wallet/list`);
-
-const Category = (params, c_id = 0) => {
-  let url = `${apiUrl}/categories`
-  if (c_id != null && c_id != 0) url = `${url}/${c_id}`
-  return wxRequest(params, url)
-}
-
-const CategoryParent = (params) => wxRequest(params, `${apiUrl}/categories/parent`);
-const CategoryIcon = () => wxRequest({}, `${apiUrl}/icons/categories`);
 
 // 个人设置
 const Settings = (params) => wxRequest(params, `${apiUrl}/settings`);
@@ -72,9 +69,9 @@ const User = (params, c_id = 0) => {
 }
 
 // 预算管理界面
-const Budget = () => wxRequest({}, `${apiUrl}/budgets`);
-const BudgetParent = () => wxRequest({}, `${apiUrl}/budgets/parent`);
-const BudgetDetail = (id) => wxRequest({}, `${apiUrl}/budgets/${id}`);
+const Budget = (params) => wxRequest(params, `${apiUrl}/budgets`);
+const BudgetParent = (params) => wxRequest(params, `${apiUrl}/budgets/parent`);
+const BudgetDetail = (params, id) => wxRequest(params, `${apiUrl}/budgets/${id}`);
 const BudgetUpdate = (params) => wxRequest(params, `${apiUrl}/budgets/0`);
 
 module.exports = {
@@ -94,9 +91,8 @@ module.exports = {
   Category,
   CategoryParent,
   Wallet,
-  WalletList,
-  WalletParent,
   CategoryIcon,
+  AssetParent,
   Feedback,
   User,
   Budget,

@@ -7,7 +7,7 @@
     <view class="container">
       <view class="column money">
         <text>金额</text>
-        <input class="pull-right money-input {{ type }}" name="amount" type="digit" value="{{ amount }}"/>
+        <input class="pull-right money-input {{ type }}" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
       </view>
 
       <navigator class="column zan-cell--access" url="/pages/statements/chose_category?type={{ type }}">
@@ -58,7 +58,7 @@
       method: 'POST',
       statement_id: 0,
       type: 'expend',
-      amount: 0,
+      amount: '',
       category_id: 0,
       category_name: '请选择分类',
       asset_id: 0,
@@ -92,7 +92,7 @@
     methods = {
       async   formSubmit (e) {
         let statement = e.detail.value
-        if (statement.amount == 0) {
+        if (statement.amount == 0 || statement.amount == '') {
           tip.error('金额不能为零')
           return false
         }
@@ -106,8 +106,11 @@
           tip.error('未选择账户')
           return false
         }
-        
+
+        const localDate = new Date();
+        statement.time = [localDate.getHours(), localDate.getMinutes(), localDate.getSeconds()].join(':')
         const res = await api.Bill({
+          showLoading: true,
           method: this.method,
           query: {
             statement: statement
