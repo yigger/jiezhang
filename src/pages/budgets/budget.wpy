@@ -155,7 +155,7 @@ page {
 	background:white;
 	height:100%;
 	.budget-info {
-    height:140rpx;
+    height:120rpx;
 	  padding:8rpx 24rpx 8rpx 12rpx;
     .left {
       float:left;
