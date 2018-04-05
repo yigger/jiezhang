@@ -1,5 +1,6 @@
 import {
-  wxRequest
+  wxRequest,
+  wxUpload
 } from '../utils/wxRequest';
 import wepy from 'wepy';
 
@@ -74,6 +75,9 @@ const BudgetParent = (params) => wxRequest(params, `${apiUrl}/budgets/parent`);
 const BudgetDetail = (params, id) => wxRequest(params, `${apiUrl}/budgets/${id}`);
 const BudgetUpdate = (params) => wxRequest(params, `${apiUrl}/budgets/0`);
 
+// 文件上传
+const Upload = (params) => wxUpload(params, `${apiUrl}/upload`);
+
 module.exports = {
   host: host,
   getIndexList,
@@ -102,5 +106,5 @@ module.exports = {
   AssetDetailInformation,
   AssetDetailList,
   AssetSurplus,
-  uploadPath: `${apiUrl}/upload`
+  Upload
 }

@@ -120,6 +120,21 @@ const wxLogin = async () => {
 	SessionLogin.set(loginResult.data.session);
 }
 
+const wxUpload = async (params = {}, url) => {
+  if (params.file_path == undefined) {
+    console.log('无效的文件')
+    return false
+  }
+  const uploadResult = await wepy.uploadFile({
+    url: url,
+    header: {'X-WX-Skey': SessionLogin.get()},
+    filePath: params.file_path,
+    formData: params.query,
+    name: 'file'
+  })
+  return uploadResult
+}
+
 const SessionLogin = {
 	get: function () {
 		return wx.getStorageSync(SESSION_KEY) || null;
@@ -135,5 +150,6 @@ const SessionLogin = {
 };
 
 module.exports = {
-	wxRequest
+  wxRequest,
+  wxUpload
 }

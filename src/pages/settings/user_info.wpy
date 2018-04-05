@@ -66,14 +66,13 @@
           sizeType: ['compressed'],
           sourceType: ['album']
         })
-        const uploadResult = await wepy.uploadFile({
-          url: api.uploadPath,
-          filePath: choseImages.tempFilePaths[0],
-          formData: {
-            type: 'user_avatar'
-          },
-          name: 'file'
-        })
+        await api.Upload(
+          {
+            file_path: choseImages.tempFilePaths[0],
+            query: {
+              type: 'user_avatar'
+            }
+          })
         this.getUser()
       }
     }

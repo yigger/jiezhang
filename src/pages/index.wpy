@@ -75,6 +75,7 @@
         today_pay: 0,
         pay_num: 0,
         budget: 0,
+        bg_avatar: '../public/images/default-bg.jpeg'
       },
       stopRequest: false,
       preventRepeatReuqest: false
@@ -96,14 +97,13 @@
           sizeType: ['compressed'],
           sourceType: ['album']
         })
-        const uploadResult = await wepy.uploadFile({
-          url: api.uploadPath,
-          filePath: choseImages.tempFilePaths[0],
-          formData: {
-            type: 'bg_avatar'
-          },
-          name: 'file'
-        })
+        const uploadResult = await api.Upload(
+          {
+            file_path: choseImages.tempFilePaths[0],
+            query: {
+              type: 'bg_avatar'
+            }
+          })
         this.getHeader()
       }
     }
@@ -136,9 +136,9 @@
       await this.getList()
     }
 
-    onShow () {
-      this.getHeader()
-    }
+    // onShow () {
+    //   this.getHeader()
+    // }
 
     // 此函数用于 statement.wpy 里更新后调用
     updateStatement (id, type) {
