@@ -1,9 +1,6 @@
 import wepy from 'wepy'
 import tip from './tip'
-
-// const LoginUrl = 'http://git.com/api/login'
-// const LoginUrl = 'https://xiaoyounger.com/api/login'
-const LoginUrl = 'https://yiiiblog.com/api/login'
+import Host from '../utils/host';
 
 const SESSION_KEY = 'weapp_login_session'
 const wxRequest = async(params = {}, url) => {
@@ -111,7 +108,7 @@ const wxLogin = async () => {
 
 	// 3. 请求服务端，获取会话信息
 	const loginResult = await wepy.request({
-		url: LoginUrl,
+		url: Host.login,
 		method: 'POST',
 		header: header
 	});

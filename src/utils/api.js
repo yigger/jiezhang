@@ -1,14 +1,11 @@
+import Host from '../utils/host';
 import {
   wxRequest,
   wxUpload
 } from '../utils/wxRequest';
 import wepy from 'wepy';
 
-// const host = 'http://git.com'
-// const host = 'https://xiaoyounger.com'
-const host = 'https://yiiiblog.com'
-
-const apiUrl = host + '/api'
+const apiUrl = Host.url
 // 获取首页数据
 const getIndexList = (params) => wxRequest(params, `${apiUrl}/index`);
 const getIndexHeader = (params) => wxRequest(params, `${apiUrl}/header`);
@@ -79,7 +76,7 @@ const BudgetUpdate = (params) => wxRequest(params, `${apiUrl}/budgets/0`);
 const Upload = (params) => wxUpload(params, `${apiUrl}/upload`);
 
 module.exports = {
-  host: host,
+  host: Host.host,
   getIndexList,
   getIndexHeader,
   getIndexBill,
