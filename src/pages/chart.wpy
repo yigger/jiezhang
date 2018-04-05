@@ -3,9 +3,20 @@
   <view class="flex box box-tb box-align-center header" id="calendar">
     <view class="calendar box box-tb">
 
-    <picker mode="date" value="{{curYearMonth}}" bindchange="bindDateChange">
-      <view class="cur-month fs16"> {{ curYearMonth }} </view>
-    </picker>
+      <view class="calendar-header">
+        <view class="selectDate">
+          <picker class="cur-month" mode="date" value="{{curYearMonth}}" bindchange="bindDateChange">
+            {{ curYearMonth }}
+          </picker>
+          <image src="../public/images/down-white.png"></image>
+        </view>
+        <view class="pull-right select-type">
+          <image src="../public/images/filter.png"></image>
+          <picker bindchange="bindFilterChange" value="{{filterIndex}}" range="{{filterArray}}">
+              范围选择
+          </picker>
+        </view>
+      </view>
 
       <view class="weeks box box-lr box-pack-center box-align-center">
         <view class="flex week fs12" wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
@@ -14,7 +25,7 @@
         <view wx:if="{{hasEmptyGrid}}" class="grid white-color box box-align-center box-pack-center" wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
         </view>
         <view class="grid white-color box box-align-center box-pack-center" wx:for="{{days}}" wx:key="{{index}}" data-idx="{{index}}" bindtap="tapDayItem">
-          <view class="day {{item.choosed ? 'border-radius selected-bg' : ''}} {{ cur_today == item.day ? 'border-radius today' : '' }} box box-align-center box-pack-center">{{item.day}}</view>
+          <view class="day {{item.start ? 'border-radius start-bg' : ''}} {{item.end ? 'border-radius end-bg' : ''}} {{item.choosed ? 'border-radius selected-bg' : ''}} {{ today == item.day ? 'border-radius today' : '' }} box box-align-center box-pack-center">{{item.day}}</view>
         </view>
       </view>
     </view>
@@ -79,7 +90,13 @@
 			singleData: [],
 			empytGrids: [],
 			curYearMonth: this.getNowFormatDate('.'),
-			weeks_ch: ['日', '一', '二', '三', '四', '五', '六']
+			weeks_ch: ['日', '一', '二', '三', '四', '五', '六'],
+      // 选择起始与结束日期参数
+      startDate: null,
+      endDate: null,
+      dateParams: [],
+      filterIndex: 0,
+      filterArray: ['按天选择', '按范围选择']
     };
 
 		components = {
@@ -116,16 +133,32 @@
 				this.cur_month = newMonth
 			},
 			tapDayItem(e) {
-				let idx = e.currentTarget.dataset.idx;
-				let days = this.days;
-				if (this.prevSelectedIndex == idx)
-					return;
-				if (this.prevSelectedIndex != -1)
-					days[this.prevSelectedIndex].choosed = false
-				days[idx].choosed = !days[idx].choosed;
+				let idx = e.currentTarget.dataset.idx
+				let days = this.days
+				if (this.prevSelectedIndex == idx) {
+          let endDate = null
+          if (days[idx].start) {
+            endDate =  new Date(Date.parse(this.startDate))
+          } else {
+            endDate =  new Date(Date.parse(this.endDate))
+          }
+          if (endDate != null && this.cur_year == endDate.getFullYear() && 
+                this.cur_month == endDate.getMonth()+1 && 
+                days[idx].day == endDate.getDate()) {
+            this.startDate = `${this.cur_year}-${this.cur_month}-${days[idx].day}`
+            this.dateParams = [this.startDate, this.startDate]
+            this.refreshCalendarTab()
+          }
+          return ;
+        }
+				if (this.prevSelectedIndex != -1) {
+          days[this.prevSelectedIndex].choosed = false
+        }
+				days[idx].choosed = !days[idx].choosed
 				this.prevSelectedIndex = idx
 				this.days = days
 				this.cur_today = days[idx].day
+        if(this.filterIndex == 1) this.setDateQuery()
 				this.getChart()
 			},
 			bindDateChange(e) {
@@ -138,7 +171,21 @@
 				this.calculateEmptyGrids(choose_year, choose_month)
 				this.calculateDays(choose_year, choose_month)
 				this.getChart()
+        this.refreshCalendarTab()
 			},
+      bindFilterChange (e) {
+        let idx = e.detail.value
+        if (idx == 0) {
+          this.startDate = null
+          this.endDate = null
+          this.dateParams = []
+          for(let item of this.days) {
+            item.end = false
+            item.start = false
+          }
+        }
+        this.filterIndex = idx
+      },
 			changeTab(item) {
 				this.tabActive = item
 			},
@@ -161,11 +208,76 @@
 			this.getChart()
 		}
 
+    compareTime (time1, time2) {
+      const d1 = new Date(Date.parse(time1))
+      const d2 = new Date(Date.parse(time2))
+      return d1 > d2
+    }
+
+    setDateQuery () {
+      // 起始与结束日期的选择
+      let year = this.cur_year
+      let month = this.cur_month
+      let day = this.cur_today
+      let date = `${year}-${month}-${day}`
+      if (this.dateParams.length == 0) {
+        this.startDate = date
+        this.dateParams.push(date)
+      } else if (this.dateParams.length == 1) {
+        this.dateParams.push(date)
+        this.endDate = date
+        if (this.compareTime(this.startDate, date)) {
+          this.endDate = this.startDate
+          this.startDate = date
+        }
+      } else {
+        if(this.compareTime(this.startDate, date)) {
+          // 选择的日期在起始日期之前
+          // this.endDate = this.startDate
+          this.startDate = date
+        } else {
+          // 选择的日期在起始日期之后
+          this.endDate = date
+        }
+        this.dateParams = [this.startDate, this.endDate]
+      }
+      this.refreshCalendarTab()
+    }
+
+    refreshCalendarTab () {
+      if (this.dateParams.length == 0) return false
+      for(let item of this.days) {
+        item.end = false
+        item.start = false
+      }
+
+      if (this.startDate != null) {
+        let start = new Date(Date.parse(this.startDate))
+        if(start.getFullYear() == this.cur_year && start.getMonth() + 1 == this.cur_month) {
+          this.days[start.getDate() - 1].start = true
+        }
+      }
+
+      if (this.endDate != null) {
+        let end = new Date(Date.parse(this.endDate))
+        if(end.getFullYear() == this.cur_year && end.getMonth() + 1 == this.cur_month) {
+          this.days[end.getDate() - 1].end = true
+        }
+      }
+    }
+
 		async getChart() {
+      let query = {}
+      if (this.dateParams.length == 0) {
+        query.start_time = `${this.cur_year}-${this.cur_month}-${this.cur_today}`
+      } else if (this.dateParams.length == 1) {
+        query.start_time = this.startDate
+      } else {
+        query.start_time = this.startDate
+        query.end_time = this.endDate
+      }
 			const res = await api.Chart({
-				query: {
-					date: `${this.cur_year}-${this.cur_month}-${this.cur_today}`
-				}
+				query: query
 			});
       if (res.data.status == 200) {
         this.singleData = res.data.single
@@ -227,17 +339,34 @@
 			return new Date(Date.UTC(year, month - 1, 1)).getDay();
 		}
 
+    formatMonthDay (month, day) {
+      if (month < 10) {
+        month = `0${month}`
+      }
+      if (day < 10) {
+        day = `0${day}`
+      }
+      return `${month}-${day}`
+    }
+
 		computed = {
 			monthAndDay() {
-				let month = this.cur_month
-				let today = this.cur_today
-				if (month < 10) {
-					month = `0${month}`
-				}
-				if (today < 10) {
-					today = `0${today}`
-				}
-				return `${month}-${today}`
+        if(this.dateParams.length < 2) {
+          let month = this.cur_month
+          let today = this.cur_today
+          if (this.startDate != null) {
+            let date = new Date(Date.parse(this.startDate));
+            month = date.getMonth() + 1
+            today = date.getDate()
+          }
+          return this.formatMonthDay(month, today)
+        } else {
+          let date1 = new Date(Date.parse(this.startDate))
+          let date2 = new Date(Date.parse(this.endDate))
+          let start = this.formatMonthDay(date1.getMonth()+1, date1.getDate())
+          let end = this.formatMonthDay(date2.getMonth()+1, date2.getDate())
+          return `${start} ~ ${end}`
+        }
       }
 		}
   }
@@ -322,12 +451,43 @@
 	.flex {
 		flex-grow:1;
 	}
-	.cur-month {
-		height: 80rpx;
-		line-height: 80rpx;
-		border-bottom:1px solid #efefef;
-		padding-left: 28rpx;
-	}
+  .calendar-header {
+    height: 80rpx;
+    line-height: 80rpx;
+    border-bottom:1px solid #efefef;
+    padding: 0 28rpx;
+    background:#fb4b4d;
+    color:white;
+    font-size: 40rpx;
+    border-top: 1px solid #f56061;
+    .selectDate {
+      display: inline-block;
+      position: relative;
+      padding-right: 36rpx;
+      image {
+        position:absolute;
+        right:0;
+        top:0;
+        margin-top:26rpx;
+        width:30rpx;
+        height:30rpx;
+      }
+    }
+    .select-type {
+      font-size: 14px;
+      picker {
+        display:inline-block;
+      }
+      image {
+        width: 30rpx;
+        height: 30rpx;
+        float:left;
+        margin-top:24rpx;
+        margin-right: 8rpx;
+      }
+    }
+  }
+	
 	.weeks {
 		height: 60rpx;
 		line-height: 60rpx;
@@ -338,14 +498,14 @@
 		text-align:center;
 	}
 	.days {
-		height:400rpx;
+		height:480rpx;
 	}
 	.grid {
 		width:107.1428571429rpx;
 	}
 	.day {
-		width:60rpx;
-		height:60rpx;
+		width:70rpx;
+		height:70rpx;
 		color:black;
 		font-size:32rpx;
 		font-weight:400;
@@ -358,8 +518,43 @@
 		color:#fff;
 	}
 	.today {
-		background:#46c4f4;
-		box-shadow:0 0 10rpx #ccc;
+		// background:#46c4f4;
+		// box-shadow:0 0 10rpx #ccc;
+    background: #fb4b4d;
 	}
+  .start-bg {
+    background: #FF7F00;
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      right: 0;
+      width: 3px;
+      height: 3px;
+      text-align: center;
+      background: #FF7F00;
+      left: 50%;
+      margin-left: -2px;
+      border-radius: 50%;
+    }
+  }
+  .end-bg {
+    background: #8B8B83;
+     &:after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      right: 0;
+      width: 3px;
+      height: 3px;
+      text-align: center;
+      background: #8B8B83;
+      left: 50%;
+      margin-left: -2px;
+      border-radius: 50%;
+    }
+  }
 }
 </style>

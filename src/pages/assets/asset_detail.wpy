@@ -20,21 +20,6 @@
     </view>
   </view>
 
-  <view class="filter">
-    <view>
-      <text>时间</text>
-      <view class="down-icon"><image src="../../public/images/real-down.png"></image></view>
-    </view>
-    <view>
-      <text>分类</text>
-      <view class="down-icon"><image src="../../public/images/real-down.png"></image></view>
-    </view>
-    <view>
-      <text>账户</text>
-      <view class="down-icon"><image src="../../public/images/real-down.png"></image></view>
-    </view>
-  </view>
-
   <view id="all-assets" wx:if="{{ !showEmpty }}">
     <view class="asset category" wx:for="{{ list }}" wx:for-item="pst" bindtap="showHidden('{{ index }}')">
       <view class="detail">
@@ -78,6 +63,7 @@
   import Caculate from '../../components/caculate'
   import Empty from '../../components/empty'
   import Single from '../../components/single'
+  // import Filter from '../../components/filter'
   export default class AssetDetail extends wepy.page {
     config = {
       navigationBarTitleText: '消费详情'
@@ -87,6 +73,7 @@
       caculate: Caculate,
       empty: Empty,
       single: Single
+      // filter: Filter
     }
 
 		data = {
@@ -244,33 +231,6 @@
     .detail > .content {
       background: #FAFAFC;
     }
-  }
-}
-
-.filter {
-  height: 100rpx;
-  line-height: 100rpx;
-  background: white;
-  box-shadow: 0 0 3px #ccc;
-  display:flex;
-  > view {
-    flex: 1;
-    text-align: center;
-    font-size: 36rpx;
-    > text {
-      margin-right: 8rpx;
-    }
-  }
-}
-
-.down-icon {
-  height: 100rpx;
-  line-height:  100rpx;
-  display: inline-block;
-  image {
-    width: 40rpx;
-    height: 40rpx;
-    vertical-align: middle;
   }
 }
 </style>

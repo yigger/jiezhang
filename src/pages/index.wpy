@@ -5,6 +5,7 @@
       <!-- <view class="notification">
         <image src="../public/images/notification.png"></image>
       </view> -->
+      <navigator class="set-avatar" url="/pages/settings/set_cover">设置封面</navigator>
 
       <view class="level-2">
         <view class="fs14">
@@ -114,13 +115,9 @@
       this.getList({showLoading: true})
     }
 
-    // onShow () {
-    //   this.getHeader()
-    // }
-
     async onLoad () {
-      await this.getHeader()
-      await this.getList()
+      // await this.getHeader()
+      // await this.getList()
     }
 
     // 此函数用于 statement.wpy 里更新后调用
@@ -361,5 +358,17 @@
 	background:cadetblue !important;
 	color:white !important;
 }
-
+.set-avatar {
+  position:absolute;
+  right:8rpx;
+  top:40rpx;
+  width:160rpx;
+  text-align:center;
+  height:60rpx;
+  line-height:64rpx;
+  background:rgba(0, 0, 0, 0.5);
+  font-size:24rpx;
+  border-radius:32rpx;
+  color:#ccc;
+}
 </style>

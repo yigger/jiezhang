@@ -1,0 +1,64 @@
+<template lang="wxml">
+  <view class="filter-container">
+    <view class="filter">
+      <view>
+        <text>时间</text>
+        <view class="down-icon"><image src="../../public/images/real-down.png"></image></view>
+      </view>
+      <view>
+        <text>分类</text>
+        <view class="down-icon"><image src="../../public/images/real-down.png"></image></view>
+      </view>
+      <view>
+        <text>账户</text>
+        <view class="down-icon"><image src="../../public/images/real-down.png"></image></view>
+      </view>
+    </view>
+    <view class="content">
+      <view></view>
+      <view></view>
+    </view>
+  </view>
+</template>
+
+<script>
+  // 先不做，分类筛选
+  import wepy from 'wepy'
+  export default class Filter extends wepy.component {
+    data = {
+      list: [
+        {name: '年', value: '1'},
+        {name: '月', value: '1'},
+        {name: '日', value: '1'}
+      ]
+    }
+  }
+</script>
+<style lang="less">
+@filterHeight: 80rpx;
+.filter {
+  height: @filterHeight;
+  line-height: @filterHeight;
+  background: white;
+  box-shadow: 0 0 6rpx #ccc;
+  display:flex;
+  > view {
+    flex: 1;
+    text-align: center;
+    font-size: 36rpx;
+    > text {
+      margin-right: 8rpx;
+    }
+  }
+  .down-icon {
+    height: @filterHeight;
+    line-height: @filterHeight;
+    display: inline-block;
+    image {
+      width: 30rpx;
+      height: 30rpx;
+      vertical-align: middle;
+    }
+  }
+}
+</style>

@@ -25,7 +25,7 @@ export default class extends wepy.app {
       // 设置
       "pages/settings/feedback",
       "pages/settings/user_info",
-
+      "pages/settings/set_cover",
       // 编辑账单类型分类/资产分类
       "pages/categories/list",
       "pages/categories/category_form",

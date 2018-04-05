@@ -1,0 +1,38 @@
+<template>
+  <view class="container">
+    
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from "../../utils/api"
+  import tip from '../../utils/tip'
+  export default class setCover extends wepy.page {
+    config = {
+      navigationBarTitleText: '设置封面'
+    }
+
+    data = {
+      avatars: []
+    }
+
+    methods = {
+      
+    }
+
+    onLoad () {
+      
+    }
+    
+    async getUser () {
+      const res = await api.User()
+      this.user = res.data
+      this.$apply()
+    }
+
+  }
+</script>
+<style lang="less">
+
+</style>
