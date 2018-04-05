@@ -26,7 +26,7 @@
       <picker class="column zan-cell--access" mode="date" start="2017-01-01" bindchange="dateChange">
         <text>日期</text>
         <text class="pull-right">{{ date }}</text>
-        <input hidden name="time" value="{{ date }}" type="number"/>
+        <input hidden name="date" value="{{ date }}" type="number"/>
       </picker>
 
       <view class="column">
@@ -34,8 +34,13 @@
         <input class="pull-right remark" type="text" name="description"  value="{{ description }}" placeholder="备注信息"/>
       </view>
 
-      <view class="zan-btns">
+      <view class="zan-btns" wx:if="{{ statement_id == 0 }}">
         <button class="zan-btn zan-btn--danger" formType="submit" @tap="submit">保存</button>
+      </view>
+
+      <view class="zan-btns" wx:else>
+        <button class="zan-btn zan-btn--danger" formType="submit" @tap="submit">保存</button>
+        <button class="zan-btn zan-btn--danger zan-btn--plain" @tap="del">删除</button>
       </view>
 
       <input hidden type="text" name="type" value="{{ type }}"/>
@@ -159,6 +164,15 @@
       this.category_name = statement.category_name
       this.asset_name = statement.asset_name
       this.$apply()
+    }
+
+    async del () {
+      await tip.confirm('确定删除该条记录？', {}, '提示')
+      const res = await api.Bill({showLoading: true, method: 'DELETE'}, this.statement_id);
+      this.updatePrevPage(this.statement_id, 'delete')
+      wepy.navigateBack({
+        delta: 1
+      })
     }
 
     async getLastUsed() {

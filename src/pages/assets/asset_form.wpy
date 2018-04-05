@@ -57,7 +57,7 @@
     </view>
     
     <view wx:else>
-      <view class="bill-btn-single" @tap="submit">保存</view>
+      <button class="zan-btn zan-btn--danger" @tap="submit">保存</button>
     </view>
 
   </view>

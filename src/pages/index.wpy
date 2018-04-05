@@ -159,7 +159,6 @@
       } else {
         this.addStatementById(id)
       }
-      this.getHeader()
     }
 
     onReachBottom () {
