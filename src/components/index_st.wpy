@@ -1,0 +1,80 @@
+<template lang="wxml">
+  <view class="statement" @tap="statement('{{ statement.id }}')">
+    <view class="information">
+      <view class="icon">
+        <image src="{{ statement.icon_path }}"></image>
+      </view>
+      <view class="st-title">
+        <view class="title">{{ statement.category }}</view>
+        <view class="description" wx:if="{{statement.description}}">{{ statement.description }}</view>
+        <view class="time">{{ statement.timeStr }} · {{ statement.asset }}</view>
+      </view>
+    </view>
+    <view class="amount {{ statement.type }}">
+      {{ statement.money }}
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class IndexSt extends wepy.component {
+    props = {
+      statement: {
+        type: Object,
+        default: {}
+      }
+    }
+    
+    methods = {
+      statement (id) {
+        wepy.navigateTo({
+          url: `/pages/statements/statement?id=${id}`
+        })
+      }
+    }
+  }
+</script>
+<style lang="less">
+.statement {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin:0 32rpx;
+  border-bottom: 2rpx solid #efefef;
+  padding:16rpx;
+  .information {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  .icon {
+    margin-right: 16rpx;
+    display: flex;
+    align-items: center;
+    image {
+      width: 70rpx;
+      height: 70rpx;
+      border-radius: 50%;
+      border: 1px solid #efefef;
+    }
+  }
+  .st-title {
+    > view {
+      margin-bottom: 4rpx;
+    }
+    .title {
+      font-size: 28rpx;
+    }
+    .description {
+      color: #999;
+      font-size: 24rpx;
+    }
+    .time {
+      color: #999;
+      font-size: 24rpx;
+    }
+  }
+}
+
+</style>

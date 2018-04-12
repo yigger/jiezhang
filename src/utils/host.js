@@ -1,5 +1,5 @@
 // 0 开发环境 1 测试环境 2 生产环境
-const env = 2
+const env = 0
 
 let host = ''
 if (env == 0) {

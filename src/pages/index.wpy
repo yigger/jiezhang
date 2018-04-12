@@ -27,31 +27,21 @@
       </navigator>
     </view>
 
-    <view class="content" wx:if="{{ !showEmpty }}">
-      <view class="time-axis">
-        <ul>
-          <li wx:for="{{ list }}" @tap="statement('{{ item.id }}')">
-            <view class="st-title">
-              <text class="title fs16">{{ item.category }}</text>
-              <text class="pull-right money {{ item.type }}">{{ item.money }}</text>
-            </view>
-            <view class="description">{{ item.description || '　' }}</view>
-            <view class="order-info overflow-hide">
-              <category class="pull-left">
-                <label>{{ item.asset }}</label>
-              </category>
-              <time class="pull-right">{{ item.timeStr }}</time>
-            </view>
-            <view class="category-month-day" wx:if="{{ item['month_day'] !== todayMonthDay }}">{{ item.month_day }}</view>
-            <view class="category-month-day current-day" wx:else>今天</view>
-          </li>
-        </ul>
-      </view>
+    <view class="scope">
+      <view class="today {{ tabActive == 'today' ? 'active' : '' }}" @tap="tabToday">今天</view>
+      <view class="week {{ tabActive == 'week' ? 'active' : '' }}" @tap="tabWeek">本周</view>
+      <view class="month {{ tabActive == 'month' ? 'active' : '' }}" @tap="tabMonth">本月</view>
+      <view class="year {{ tabActive == 'year' ? 'active' : '' }}" @tap="tabYear">本年</view>
     </view>
 
-    <view wx:else>
-      <empty title="快来记录第一笔帐吧~"></empty>
+    <view class="statement-list">
+      <repeat for="{{ list }}" key="index" index="index" item="item">
+        <indexst :statement.sync="item"></indexst>
+      </repeat>
     </view>
+    <!-- <view wx:else>
+      <empty title="快来记录第一笔帐吧~"></empty>
+    </view> -->
   </view>
 </template>
 
@@ -59,6 +49,7 @@
   import wepy from 'wepy'
   import api from "../utils/api"
   import Empty from '../components/empty'
+  import IndexSt from '../components/index_st'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '首页',
@@ -69,6 +60,7 @@
       indicatorDots: true,
       autoplay: false,
       duration: 600,
+      tabActive: 'today',
       list: [],
       curPage: 1,
       header: {
@@ -82,15 +74,11 @@
     }
 
     components = {
-			empty: Empty
+      empty: Empty,
+      indexst: IndexSt
 		}
 
     methods = {
-      statement (id) {
-        wepy.navigateTo({
-          url: `/pages/statements/statement?id=${id}`
-        })
-      },
       async setAvatar () {
         const choseImages = await wepy.chooseImage({
           count: 1,
@@ -105,6 +93,18 @@
             }
           })
         this.getHeader()
+      },
+      tabToday () {
+        this.tabActive = 'today'
+      },
+      tabWeek () {
+        this.tabActive = 'week'
+      },
+      tabMonth () {
+        this.tabActive = 'month'
+      },
+      tabYear () {
+        this.tabActive = 'year'
       }
     }
 
@@ -132,7 +132,7 @@
     }
 
     async onLoad () {
-      await this.getHeader()
+      // await this.getHeader()
       await this.getList()
     }
 
@@ -206,7 +206,32 @@
   }
 </script>
 <style lang="less">
-  .header {
+.scope {
+  text-align: center;
+  margin-bottom: 24rpx;
+  > view {
+    display: inline;
+    font-size: 28rpx;
+    padding: 12rpx 24rpx;
+  }
+  .today.active {
+    color: red;
+    border-bottom: 4rpx solid red;
+  }
+  .week.active {
+    color: green;
+    border-bottom: 4rpx solid green;
+  }
+  .month.active {
+    color: orange;
+    border-bottom: 4rpx solid orange;
+  }
+  .year.active {
+    color: blue;
+    border-bottom: 4rpx solid blue;
+  }
+}
+.header {
 	position:relative;
 	color:white;
 	height:460rpx;
