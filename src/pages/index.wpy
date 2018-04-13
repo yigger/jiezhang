@@ -28,10 +28,10 @@
     </view>
 
     <view class="scope">
-      <view class="today {{ tabActive == 'today' ? 'active' : '' }}" @tap="tabToday">今天</view>
-      <view class="week {{ tabActive == 'week' ? 'active' : '' }}" @tap="tabWeek">本周</view>
-      <view class="month {{ tabActive == 'month' ? 'active' : '' }}" @tap="tabMonth">本月</view>
-      <view class="year {{ tabActive == 'year' ? 'active' : '' }}" @tap="tabYear">本年</view>
+      <view class="today {{ tabActive == 'today' ? 'active' : '' }}" @tap="choseTab('today')">今天</view>
+      <view class="week {{ tabActive == 'week' ? 'active' : '' }}" @tap="choseTab('week')">本周</view>
+      <view class="month {{ tabActive == 'month' ? 'active' : '' }}" @tap="choseTab('month')">本月</view>
+      <view class="year {{ tabActive == 'year' ? 'active' : '' }}" @tap="choseTab('year')">本年</view>
     </view>
 
     <view class="statement-list">
@@ -61,8 +61,10 @@
       autoplay: false,
       duration: 600,
       tabActive: 'today',
+      scope: 'today',
       list: [],
       curPage: 1,
+      per_page: 20,
       header: {
         today_pay: 0,
         pay_num: 0,
@@ -94,17 +96,17 @@
           })
         this.getHeader()
       },
-      tabToday () {
-        this.tabActive = 'today'
+      async choseTab (item) {
+        this.tabActive = item
+        this.curPage = 1
+        if (this.scope != item) {
+          this.scope = item
+          this.list = []
+          await this.getList()
+        }
       },
-      tabWeek () {
-        this.tabActive = 'week'
-      },
-      tabMonth () {
-        this.tabActive = 'month'
-      },
-      tabYear () {
-        this.tabActive = 'year'
+      onTabItemClick(e) {
+        console.log(e)
       }
     }
 
@@ -132,7 +134,7 @@
     }
 
     async onLoad () {
-      // await this.getHeader()
+      await this.getHeader()
       await this.getList()
     }
 
@@ -161,12 +163,9 @@
       }
     }
 
-    onReachBottom () {
-      if (this.preventRepeatReuqest) return true
-      this.preventRepeatReuqest = true;
+    async onReachBottom () {
       this.curPage ++
-      this.getList()
-      this.preventRepeatReuqest = false
+      await this.getList()
     }
 
     async getHeader () {
@@ -176,18 +175,18 @@
     }
 
     async getList(options = {}) {
-      if(this.stopRequest) return false
       const res = await api.getIndexList({
         showLoading: options.showLoading,
         query: {
-          page: this.curPage
+          scope: this.scope,
+          page: this.curPage,
+          per_page: this.per_page
         }
       })
       const data = res.data
-      if(data.status == 405) {
-        this.stopRequest = true
+      if(data.status != 405) {
+        this.list = Array.from(new Set([...this.list, ...data]))
       }
-      this.list = [...this.list, ...data]
       this.$apply()
     }
 
@@ -227,14 +226,14 @@
     border-bottom: 4rpx solid orange;
   }
   .year.active {
-    color: blue;
-    border-bottom: 4rpx solid blue;
+    color: #A52A2A;
+    border-bottom: 4rpx solid #A52A2A;
   }
 }
 .header {
 	position:relative;
 	color:white;
-	height:460rpx;
+	height:380rpx;
 	.bg {
 	position:absolute;
 	width:100%;
