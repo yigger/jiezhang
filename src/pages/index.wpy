@@ -1,7 +1,7 @@
 <template>
   <view class="container">
     <view class="header">
-      <image class="bg" src="{{ header.bg_avatar }}"></image>
+      <image class="bg" src="{{ bgImage }}"></image>
       <!-- <view class="notification">
         <image src="../public/images/notification.png"></image>
       </view> -->
@@ -27,7 +27,7 @@
       </navigator>
     </view>
 
-    <view class="scope">
+    <view class="scope {{ tabFixed }}">
       <view class="today {{ tabActive == 'today' ? 'active' : '' }}" @tap="choseTab('today')">今天</view>
       <view class="week {{ tabActive == 'week' ? 'active' : '' }}" @tap="choseTab('week')">本周</view>
       <view class="month {{ tabActive == 'month' ? 'active' : '' }}" @tap="choseTab('month')">本月</view>
@@ -35,10 +35,21 @@
     </view>
 
     <view class="statement-list">
-      <repeat for="{{ list }}" key="index" index="index" item="item">
-        <indexst :statement.sync="item"></indexst>
-      </repeat>
+      <view wx:if="{{ scope == 'year' }}">
+        <IndexYear :list.sync="list"></IndexYear>
+      </view>
+
+      <view wx:else>
+        <repeat for="{{ list }}" key="index" index="index" item="item">
+          <indexst :statement.sync="item"></indexst>
+        </repeat>
+      </view>
     </view>
+
+    <view class="no-more-data" hidden="{{ !noMoreData }}">
+      没有更多了
+    </view>
+
     <!-- <view wx:else>
       <empty title="快来记录第一笔帐吧~"></empty>
     </view> -->
@@ -50,6 +61,7 @@
   import api from "../utils/api"
   import Empty from '../components/empty'
   import IndexSt from '../components/index_st'
+  import IndexYear from '../components/index/year'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '首页',
@@ -60,24 +72,28 @@
       indicatorDots: true,
       autoplay: false,
       duration: 600,
-      tabActive: 'today',
-      scope: 'today',
+      tabActive: 'year',
+      scope: 'year',
       list: [],
       curPage: 1,
       per_page: 20,
+      tabFixed: '',
       header: {
         today_pay: 0,
         pay_num: 0,
         budget: 0,
         bg_avatar: '../public/images/default-bg.jpeg'
       },
+      statementMonth: [],
+      noMoreData: false,
       stopRequest: false,
       preventRepeatReuqest: false
     }
 
     components = {
       empty: Empty,
-      indexst: IndexSt
+      indexst: IndexSt,
+      IndexYear: IndexYear
 		}
 
     methods = {
@@ -99,14 +115,28 @@
       async choseTab (item) {
         this.tabActive = item
         this.curPage = 1
+        // if (this.tabFixed == 'tab-fix') {
+        //   console.log('always tab-fix')
+        // }
         if (this.scope != item) {
           this.scope = item
-          this.list = []
-          await this.getList()
+          // let cacheList = wx.getStorageSync(item) || null
+          let cacheList = null
+          if (cacheList !== null) {
+            this.list = cacheList
+          } else {
+            this.list = []
+            await this.getList()
+          }
         }
       },
-      onTabItemClick(e) {
-        console.log(e)
+       onPageScroll: function (event) {
+        let scrollTop = event.scrollTop
+        if (scrollTop >= 250) {
+          this.tabFixed = 'tab-fix'
+        } else {
+          this.tabFixed = ''
+        }
       }
     }
 
@@ -121,6 +151,13 @@
         if (month < 10) month = "0" + month
         if (day < 10) day = "0" + day
         return  month + "-" + day
+      },
+      bgImage () {
+        let avatar = this.header.bg_avatar
+        if (avatar == null) {
+          avatar = "../public/images/default-bg.jpeg"
+        }
+        return avatar
       }
     }
 
@@ -165,7 +202,7 @@
 
     async onReachBottom () {
       this.curPage ++
-      await this.getList()
+      await this.getList({from: 'reachBottom'})
     }
 
     async getHeader () {
@@ -185,7 +222,15 @@
       })
       const data = res.data
       if(data.status != 405) {
-        this.list = Array.from(new Set([...this.list, ...data]))
+        if (this.scope == 'year') {
+          this.dealWithYear(data)
+        } else {
+          this.list = Array.from(new Set([...this.list, ...data]))
+          wx.setStorageSync(this.scope, this.list)
+        }
+        this.noMoreData = false
+      } else if (options.from == 'reachBottom') {
+        this.noMoreData = true
       }
       this.$apply()
     }
@@ -202,9 +247,81 @@
       this.$apply()
     }
 
+    // 太曲折了!!!
+    // 分组分页
+    dealWithYear (data) {
+      if (this.list.length == 0) {
+        this.list = data
+      } else {
+        let set1 = new Set(this.statementMonth)
+        for(let i = 0, length = data.length; i < length; ++i) {
+          if (set1.has(data[i].header.month)) {
+            data[i].header = null
+          }
+        }
+        this.list = Array.from(new Set([...this.list, ...data]))
+      }
+      for(let item of data) {
+        if (item.header !== null) this.statementMonth.push(item.header.month)
+      }
+    }
   }
 </script>
 <style lang="less">
+.statement-list > .total {
+  text-align: right;
+  margin:0 32rpx;
+  > text {
+    font-size: 12px;
+    &:first-child {
+      padding-right: 16rpx;
+    }
+  }
+}
+.date-category {
+  height: 60rpx;
+  padding: 0 12rpx;
+  display: flex;
+  align-items: center;
+  margin:28rpx 32rpx 0 32rpx;
+  justify-content: space-between;
+  border-bottom:1px solid #fafafa;
+  .name {
+    display: inline-block;
+    // color: #999;
+  }
+  .total {
+    > text {
+      font-size: 12px;
+      &:first-child {
+        padding-right: 16rpx;
+      }
+    }
+  }
+}
+#green {
+  background: #efefef;
+}
+#red {
+  background: #ccc;
+}
+.scroll-view_H{
+  width: 100%;
+  white-space: nowrap;
+}
+.scroll-view-item_H{
+  width: 100%;
+  height: 100px;
+  display: inline-block;
+}
+.no-more-data {
+  text-align: center;
+  color: #999;
+  background: #efefef;
+  height: 84rpx;
+  line-height: 84rpx;
+  font-size: 28rpx;
+}
 .scope {
   text-align: center;
   margin-bottom: 24rpx;
@@ -228,6 +345,13 @@
   .year.active {
     color: #A52A2A;
     border-bottom: 4rpx solid #A52A2A;
+  }
+  &.tab-fix {
+    position:fixed;
+    top:0;
+    width:100%;
+    height:70rpx;
+    background: white;
   }
 }
 .header {

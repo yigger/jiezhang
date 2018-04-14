@@ -1,26 +1,36 @@
 <template lang="wxml">
-  <view class="statement" @tap="statement('{{ statement.id }}')">
-    <view class="information">
-      <view class="icon">
-        <image src="{{ statement.icon_path }}"></image>
-      </view>
-      <view class="st-title">
-        <view class="title">{{ statement.category }}</view>
-        <view class="description" wx:if="{{statement.description}}">{{ statement.description }}</view>
-        <view class="time">{{ statement.timeStr }} · {{ statement.asset }}</view>
+  <view wx:for="{{ list }}">
+    <view class="date-category" wx-if="{{ item.header != null }}">
+      <view class="name fs18">{{ item.header.month }}</view>
+      <view class="total pull-right">
+        <text class="income">收入: {{ item.header.income }}</text>
+        <text class="expend">支出: {{ item.header.expend }}</text>
       </view>
     </view>
-    <view class="amount {{ statement.type }}">
-      {{ statement.money }}
+
+    <view class="statement" wx:for="{{ item.statements }}" @tap="statement('{{ item.id }}')">
+      <view class="information">
+        <view class="icon">
+          <image src="{{ item.icon_path }}"></image>
+        </view>
+        <view class="st-title">
+          <view class="title">{{ item.category }}</view>
+          <view class="description" wx:if="{{item.description}}">{{ item.description }}</view>
+          <view class="time">{{ item.timeStr }} · {{ item.asset }}</view>
+        </view>
+      </view>
+      <view class="amount {{ item.type }}">
+        {{ item.money }}
+      </view>
     </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
-  export default class IndexSt extends wepy.component {
+  export default class IndexYear extends wepy.component {
     props = {
-      statement: {
+      list: {
         type: Object,
         default: {}
       }

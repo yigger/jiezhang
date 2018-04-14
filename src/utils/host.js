@@ -3,7 +3,7 @@ const env = 0
 
 let host = ''
 if (env == 0) {
-  host = 'http://git.com'
+  host = 'http://jz.com'
 } else if (env == 1) {
   host = 'https://xiaoyounger.com'
 } else {
@@ -13,5 +13,6 @@ if (env == 0) {
 module.exports = {
   host: host,
   url: host + '/api',
-  login: host + '/api/login'
+  login: host + '/api/login',
+  env: env
 }
