@@ -35,7 +35,7 @@
     </view>
 
     <view class="statement-list">
-      <view wx:if="{{ scope == 'year' }}">
+      <view wx:if="{{ scope == 'year' || scope == 'month' }}">
         <IndexYear :list.sync="list"></IndexYear>
       </view>
 
@@ -120,6 +120,7 @@
         // }
         if (this.scope != item) {
           this.scope = item
+          this.statementMonth = []
           // let cacheList = wx.getStorageSync(item) || null
           let cacheList = null
           if (cacheList !== null) {
@@ -140,27 +141,6 @@
       }
     }
 
-    computed = {
-      showEmpty () {
-        return this.list.length <= 0
-      },
-      todayMonthDay () {
-        const NowDate = new Date()
-        let month = NowDate.getMonth() + 1
-        let day = NowDate.getDate()
-        if (month < 10) month = "0" + month
-        if (day < 10) day = "0" + day
-        return  month + "-" + day
-      },
-      bgImage () {
-        let avatar = this.header.bg_avatar
-        if (avatar == null) {
-          avatar = "../public/images/default-bg.jpeg"
-        }
-        return avatar
-      }
-    }
-
     onPullDownRefresh () {
       wx.stopPullDownRefresh()
       this.getHeader()
@@ -174,10 +154,6 @@
       await this.getHeader()
       await this.getList()
     }
-
-    // onShow () {
-    //   this.getHeader()
-    // }
 
     // 此函数用于 statement.wpy 里更新后调用
     updateStatement (id, type) {
@@ -222,7 +198,7 @@
       })
       const data = res.data
       if(data.status != 405) {
-        if (this.scope == 'year') {
+        if (this.scope == 'year' || this.scope == 'month') {
           this.dealWithYear(data)
         } else {
           this.list = Array.from(new Set([...this.list, ...data]))
@@ -263,6 +239,27 @@
       }
       for(let item of data) {
         if (item.header !== null) this.statementMonth.push(item.header.month)
+      }
+    }
+
+    computed = {
+      showEmpty () {
+        return this.list.length <= 0
+      },
+      todayMonthDay () {
+        const NowDate = new Date()
+        let month = NowDate.getMonth() + 1
+        let day = NowDate.getDate()
+        if (month < 10) month = "0" + month
+        if (day < 10) day = "0" + day
+        return  month + "-" + day
+      },
+      bgImage () {
+        let avatar = this.header.bg_avatar
+        if (avatar == null) {
+          avatar = "../public/images/default-bg.jpeg"
+        }
+        return avatar
       }
     }
   }

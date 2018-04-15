@@ -1,7 +1,7 @@
 <template lang="wxml">
   <view wx:for="{{ list }}">
     <view class="date-category" wx-if="{{ item.header != null }}">
-      <view class="name fs18">{{ item.header.month }}</view>
+      <view class="name fs18">{{ item.header.index }}</view>
       <view class="total pull-right">
         <text class="income">收入: {{ item.header.income }}</text>
         <text class="expend">支出: {{ item.header.expend }}</text>
