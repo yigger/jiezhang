@@ -15,17 +15,17 @@
       <view class="zan-cell__ft">{{ user.budget }}</view>
     </view>
 
-    <!-- <view class="zan-cell zan-cell--access">
-      <view class="zan-cell__bd">主题设置</view>
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/settings/set_cover')">
+      <view class="zan-cell__bd">封面设置</view>
       <view class="zan-cell__ft"></view>
     </view>
 
-    <view class="zan-cell zan-cell--access">
+    <!-- <view class="zan-cell zan-cell--access">
       <view class="zan-cell__bd">消费分析</view>
       <view class="zan-cell__ft"></view>
-    </view>
+    </view> -->
 
-    <view class="zan-cell zan-cell--access">
+    <!-- <view class="zan-cell zan-cell--access">
       <view class="zan-cell__bd">图表浏览</view>
       <view class="zan-cell__ft"></view>
     </view> -->
