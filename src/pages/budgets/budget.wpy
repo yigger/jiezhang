@@ -42,6 +42,10 @@
     </view>
 
     <caculate @invokeCaculation.user="invokeCaculation" :amount.sync="amount" :showCaculation.sync="showCaculation"></caculate>
+
+    <view hidden="{{ !showLoading }}">
+      <loading></loading>
+    </view>
   </view>
 </template>
 
@@ -56,7 +60,8 @@
       showCaculation: false,
       header: {},
       list: [],
-      amount: '0.00'
+      amount: '0.00',
+      showLoading: false
     }
     components = {
       caculate: Caculate
@@ -87,15 +92,17 @@
     }
     
     async getHeaderData() {
-      const res = await api.Budget({showLoading: true})
+      const res = await api.Budget()
       this.header = res.data
       this.amount = this.header.surplus
       this.$apply()
     }
 
     async getParentBudget() {
+      this.showLoading = true
       const res = await api.BudgetParent()
       this.list = res.data
+      this.showLoading = false
       this.$apply()
     }
 
@@ -128,7 +135,7 @@ page {
 	background:linear-gradient(rgba(251,75,77,1),rgba(241,75,77,0.9));
   box-shadow:0 0 20rpx #ccc;
   color:white;
-  padding:0 24rpx;
+  // padding:0 24rpx;
   .edit-icon {
     width:50rpx;
     height:50rpx;

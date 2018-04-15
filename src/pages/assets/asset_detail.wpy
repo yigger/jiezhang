@@ -2,9 +2,8 @@
 <view class="container">
   <view id="wallet-header">
     <view class="surplus">
-      <view class="surplus-amount fs24" @tap="showCaculate">
+      <view class="surplus-amount fs24">
         <text class="pull-left">{{ amount }}</text>
-        <image class="edit-icon pull-left" src="../../public/images/edit.png"></image>
       </view>
       <view class="fs16">余额</view>
     </view>
@@ -20,10 +19,13 @@
     </view>
   </view>
 
+  <view hidden="{{ !showLoading }}">
+    <loading></loading>
+  </view>
+
   <view id="all-assets" wx:if="{{ !showEmpty }}">
     <view class="asset category" wx:for="{{ list }}" wx:for-item="pst" bindtap="showHidden('{{ index }}')">
       <view class="detail">
-        <!-- header -->
         <view class="title">
           <view class="pull-left time align-column">
             <view class="fs16">{{ pst.month }}月</view>
@@ -38,7 +40,6 @@
           </view>
         </view>
 
-        <!-- content -->
         <view class="content" hidden="{{ pst.hidden }}">
           <repeat for="{{ pst.childs }}" key="index" index="index" item="item">
             <single :item.sync="item"></single>
@@ -63,7 +64,6 @@
   import Caculate from '../../components/caculate'
   import Empty from '../../components/empty'
   import Single from '../../components/single'
-  // import Filter from '../../components/filter'
   export default class AssetDetail extends wepy.page {
     config = {
       navigationBarTitleText: '消费详情'
@@ -86,7 +86,8 @@
       list: [], 
       already_load: false,
       showCaculation: false,
-      amount: '0.00'
+      amount: '0.00',
+      showLoading: false
     }
     
     methods = {
@@ -108,7 +109,6 @@
 
     onLoad (options) {
       this.asset_id = options.id
-      // this.asset_id = 34
     }
 
     onShow () {
@@ -118,7 +118,7 @@
 
     async information () {
        const res = await api.AssetDetailInformation({
-        showLoading: true,
+        // showLoading: true,
         query: {
           asset_id: this.asset_id
         }
@@ -129,13 +129,14 @@
     }
 
     async statements () {
-       const res = await api.AssetDetailList({
-        showLoading: true,
+      this.showLoading = true
+      const res = await api.AssetDetailList({
         query: {
           asset_id: this.asset_id
         }
       })
       this.list = res.data
+      this.showLoading = false
       this.$apply()
     }
 
@@ -172,7 +173,6 @@
   background:linear-gradient(rgba(251,75,77,1),rgba(241,75,77,0.9));
   box-shadow:0 0 20rpx #ccc;
   color:white;
-  padding:0 16rpx;
   .surplus {
     position: absolute;
     top:40rpx;
@@ -191,9 +191,12 @@
     height:50rpx;
     margin-left:16rpx;
   }
+  .surplus {
+    color: white;
+  }
   .surplus-amount {
     overflow:hidden;
-      image {
+    image {
       margin-top:8rpx;
     } 
   }

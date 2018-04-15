@@ -7,6 +7,9 @@
       </view>
       <text class="fs16" bindtap="newAsset">添加资产类型</text>
     </navigator>
+    <view hidden="{{ !showLoading }}">
+      <loading></loading>
+    </view>
   </view>
 </template>
 
@@ -26,7 +29,8 @@
       List: List
     }
     data = {
-      assets: []
+      assets: [],
+      showLoading: false
     }
     
     onShow () {
@@ -34,8 +38,10 @@
     }
 
     async getList() {
+      this.showLoading = true
       const json = await api.Asset();
       this.assets = json.data
+      this.showLoading = false
       this.$apply()
     }
 

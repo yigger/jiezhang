@@ -7,6 +7,9 @@
       </view>
       <text class="fs16" bindtap="newAsset">添加分类</text>
     </navigator>
+    <view hidden="{{ !showLoading }}">
+      <loading></loading>
+    </view>
   </view>
 </template>
 
@@ -26,12 +29,12 @@
 
     data = {
       categories: [],
-      type: 'expend'
+      type: 'expend',
+      showLoading: false
     }
 
     onLoad (options) {
       if(options.type != undefined) this.type = options.type
-      this.getList()
     }
     
     onShow () {
@@ -39,12 +42,14 @@
     }
 
     async getList() {
+      this.showLoading = true
       const json = await api.Category({
         query: {
           type: this.type
         }
       })
       this.categories = json.data
+      this.showLoading = false
       this.$apply()
     }
     
