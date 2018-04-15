@@ -21,6 +21,8 @@ const getBillFrequentUsed = (params) => wxRequest(params, `${apiUrl}/statements/
 const getBillAssets = (params) => wxRequest(params, `${apiUrl}/statements/assets`);
 const getExpendCategories = (params) => wxRequest(params, `${apiUrl}/statements/expend_categories`);
 const getIncomeCategories = (params) => wxRequest(params, `${apiUrl}/statements/income_categories`);
+const guessCategory = (params) => wxRequest(params, `${apiUrl}/statements/category_frequent`);
+const guessAsset = (params) => wxRequest(params, `${apiUrl}/statements/asset_frequent`);
 
 // tab 统计
 const Chart = (params) => wxRequest(params, `${apiUrl}/chart`);
@@ -103,5 +105,7 @@ module.exports = {
   AssetDetailInformation,
   AssetDetailList,
   AssetSurplus,
-  Upload
+  Upload,
+  guessCategory,
+  guessAsset
 }

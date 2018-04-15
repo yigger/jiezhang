@@ -16,7 +16,7 @@
         <view class="st-title">
           <view class="title">{{ item.category }}</view>
           <view class="description" wx:if="{{item.description}}">{{ item.description }}</view>
-          <view class="time">{{ item.timeStr }} · {{ item.asset }}</view>
+          <view class="time">{{ item.timeStr }} {{ item.week }} · {{ item.asset }}</view>
         </view>
       </view>
       <view class="amount {{ item.type }}">

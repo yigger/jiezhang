@@ -35,6 +35,12 @@
     </view>
 
     <view class="statement-list">
+      <view class="surplus" hidden="{{ scope == 'today' }}">
+        <text class="income">收入 {{ tabHeader.income }}</text>
+        <text class="expend">支出 {{ tabHeader.expend }}</text>
+        <text>结余 {{ tabHeader.surplus }}</text>
+      </view>
+
       <view wx:if="{{ scope == 'year' || scope == 'month' }}">
         <IndexYear :list.sync="list"></IndexYear>
       </view>
@@ -50,9 +56,9 @@
       没有更多了
     </view>
 
-    <!-- <view wx:else>
-      <empty title="快来记录第一笔帐吧~"></empty>
-    </view> -->
+    <view wx:if="{{ list.length == 0 && scope == 'today' }}">
+      <empty title="今天还没有记账呢~"></empty>
+    </view>
   </view>
 </template>
 
@@ -72,8 +78,13 @@
       indicatorDots: true,
       autoplay: false,
       duration: 600,
-      tabActive: 'year',
-      scope: 'year',
+      tabActive: 'today',
+      scope: 'today',
+      tabHeader: {
+        surplus: 0,
+        income: 0,
+        expend: 0
+      },
       list: [],
       curPage: 1,
       per_page: 20,
@@ -115,16 +126,15 @@
       async choseTab (item) {
         this.tabActive = item
         this.curPage = 1
-        // if (this.tabFixed == 'tab-fix') {
-        //   console.log('always tab-fix')
-        // }
         if (this.scope != item) {
           this.scope = item
+          this.noMoreData = false
           this.statementMonth = []
-          // let cacheList = wx.getStorageSync(item) || null
-          let cacheList = null
-          if (cacheList !== null) {
+          let cacheList = wx.getStorageSync(`list-${item}`) || null
+          let cacheHeader = wx.getStorageSync(`header-${item}`) || null
+          if (cacheList !== null && cacheHeader !== null) {
             this.list = cacheList
+            this.tabHeader = cacheHeader
           } else {
             this.list = []
             await this.getList()
@@ -139,6 +149,10 @@
           this.tabFixed = ''
         }
       }
+    }
+
+    onHide () {
+      this.deleteCache()
     }
 
     onPullDownRefresh () {
@@ -196,16 +210,19 @@
           per_page: this.per_page
         }
       })
-      const data = res.data
-      if(data.status != 405) {
+      const data = res.data.list
+      this.tabHeader = res.data.header
+      if(res.data.status != 405) {
         if (this.scope == 'year' || this.scope == 'month') {
           this.dealWithYear(data)
         } else {
           this.list = Array.from(new Set([...this.list, ...data]))
-          wx.setStorageSync(this.scope, this.list)
         }
+        wx.setStorageSync(`header-${this.scope}`, this.tabHeader)
+        wx.setStorageSync(`list-${this.scope}`, this.list)
         this.noMoreData = false
-      } else if (options.from == 'reachBottom') {
+      }
+      if (options.from == 'reachBottom' && ((data != undefined && data.length == 0) || res.data.status == 405)) {
         this.noMoreData = true
       }
       this.$apply()
@@ -242,6 +259,13 @@
       }
     }
 
+    deleteCache () {
+      for(let item of ['today', 'week', 'month', 'year']) {
+        wx.removeStorageSync(`header-${item}`)
+        wx.removeStorageSync(`list-${item}`)
+      }
+    }
+
     computed = {
       showEmpty () {
         return this.list.length <= 0
@@ -265,141 +289,52 @@
   }
 </script>
 <style lang="less">
-.statement-list > .total {
-  text-align: right;
-  margin:0 32rpx;
-  > text {
-    font-size: 12px;
-    &:first-child {
-      padding-right: 16rpx;
-    }
-  }
-}
-.date-category {
-  height: 60rpx;
-  padding: 0 12rpx;
-  display: flex;
-  align-items: center;
-  margin:28rpx 32rpx 0 32rpx;
-  justify-content: space-between;
-  border-bottom:1px solid #fafafa;
-  .name {
-    display: inline-block;
-    // color: #999;
-  }
-  .total {
-    > text {
-      font-size: 12px;
-      &:first-child {
-        padding-right: 16rpx;
-      }
-    }
-  }
-}
-#green {
-  background: #efefef;
-}
-#red {
-  background: #ccc;
-}
-.scroll-view_H{
-  width: 100%;
-  white-space: nowrap;
-}
-.scroll-view-item_H{
-  width: 100%;
-  height: 100px;
-  display: inline-block;
-}
-.no-more-data {
-  text-align: center;
-  color: #999;
-  background: #efefef;
-  height: 84rpx;
-  line-height: 84rpx;
-  font-size: 28rpx;
-}
-.scope {
-  text-align: center;
-  margin-bottom: 24rpx;
-  > view {
-    display: inline;
-    font-size: 28rpx;
-    padding: 12rpx 24rpx;
-  }
-  .today.active {
-    color: red;
-    border-bottom: 4rpx solid red;
-  }
-  .week.active {
-    color: green;
-    border-bottom: 4rpx solid green;
-  }
-  .month.active {
-    color: orange;
-    border-bottom: 4rpx solid orange;
-  }
-  .year.active {
-    color: #A52A2A;
-    border-bottom: 4rpx solid #A52A2A;
-  }
-  &.tab-fix {
-    position:fixed;
-    top:0;
-    width:100%;
-    height:70rpx;
-    background: white;
-  }
-}
 .header {
 	position:relative;
 	color:white;
 	height:380rpx;
 	.bg {
-	position:absolute;
-	width:100%;
-	height:100%;
-	top:0;
-	left:0;
-	z-index:-1;
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    z-index:-1;
+  }
+  .level-2 {
+    position:absolute;
+    bottom:24rpx;
+    width:100%;
+    .today-expend {
+      font-size:64rpx;
+      margin-bottom:16rpx;
+    }
+    > view {
+      padding:0 16rpx;
+    }
+  }
+  .pay-num {
+    background:rgb(32,86,174);
+    margin:0 4rpx;
+  }
+  .notification {
+    position:absolute;
+    top:42rpx;
+    right:42rpx;
+    width:60rpx;
+    height:60rpx;
+    background:black;
+    border-radius:50%;
+    padding:8rpx;
+    image {
+      width:100%;
+      height:100%;
+    }
+  }
 }
-.level-2 {
-	position:absolute;
-	bottom:24rpx;
-	width:100%;
-	.today-expend {
-	font-size:64rpx;
-	margin-bottom:16rpx;
-}
-> view {
-	padding:0 16rpx;
-}
-}.pay-num {
-	background:rgb(32,86,174);
-	margin:0 4rpx;
-}
-.notification {
-	position:absolute;
-	top:42rpx;
-	right:42rpx;
-	width:60rpx;
-	height:60rpx;
-	background:black;
-	border-radius:50%;
-	padding:8rpx;
-	image {
-	width:100%;
-	height:100%;
-}
-}}.today {
+.today {
 	background-size:cover;
 	background-position:10rpx -170rpx;
-}
-.today-pay {
-	font-size:24rpx;
-}
-.today-total {
-	font-weight:600;
 }
 .cur-month-progress {
 	padding:0 40rpx;
@@ -437,87 +372,6 @@
 .new-bill:before {
 	content:none !important;
 }
-/* 时间轴 */
-  .time-mark {
-	font-size:36rpx;
-	color:#bfa073;
-	font-weight:bold;
-}
-.time-axis {
-	position:relative;
-	padding:32rpx 24rpx;
-}
-.time-axis ul:before {
-	content:'';
-	position:absolute;
-	top:0;
-	bottom:0;
-	width:4rpx;
-	background:#efefef;
-	left:60rpx;
-	margin-left:-20rpx;
-}
-.time-axis ul li {
-	position:relative;
-	margin-left:66rpx;
-	margin-bottom:24rpx;
-	/*overflow:hidden;
-	*/
-    display:block;
-}
-.time-axis ul li image {
-	width:60rpx;
-	height:60rpx;
-}
-.time-axis ul li .category-month-day {
-	position:absolute;
-	top:28rpx;
-	left:-80rpx;
-	font-size:20rpx;
-	color:#999;
-	width:64rpx;
-	height:64rpx;
-	line-height:64rpx;
-	border-radius:50%;
-	text-align:center;
-	border:2rpx solid #efefef;
-	background:white;
-}
-.time-axis ul li:not(.normal) {
-	box-shadow:0rpx 0rpx 2rpx #ccc;
-	border-radius:4rpx;
-	padding:0rpx 24rpx 20rpx 24rpx;
-}
-.time-mark:before {
-	margin-left:-50rpx !important;
-}
-.time-axis ul li > view {
-	margin-bottom:4rpx;
-}
-.time-axis ul li .title {
-	color:#587284;
-	display:inline-block;
-}
-.time-axis ul li .description {
-	font-size:28rpx;
-	color:#6a6a6a;
-}
-.time-axis ul li category {
-	font-size:24rpx;
-}
-.time-axis ul li category label {
-	padding:6rpx 10rpx;
-	background-color:#EFEFEF;
-	color:#6a6a6a;
-	margin-right:8rpx;
-}
-.time-axis ul li time {
-	font-size:24rpx;
-	color:#9B9B9B;
-}
-.st-title {
-	padding-top:8rpx;
-}
 .current-day {
 	background: orange !important;
 	color:white !important;
@@ -534,5 +388,87 @@
   font-size:24rpx;
   border-radius:32rpx;
   color:#ccc;
+}
+.statement-list {
+  margin-bottom: 40rpx;
+  > .surplus {
+    text-align: center;
+    > text {
+      font-size: 24rpx;
+      padding:0 12rpx;
+    }
+  }
+  > .total {
+    text-align: right;
+    margin:0 32rpx;
+    > text {
+      font-size: 24rpx;
+      &:first-child {
+        padding-right: 16rpx;
+      }
+    }
+  }
+}
+
+.date-category {
+  height: 60rpx;
+  padding: 0 12rpx;
+  display: flex;
+  align-items: center;
+  margin:28rpx 32rpx 0 32rpx;
+  justify-content: space-between;
+  border-bottom:1px solid #fafafa;
+  .name {
+    display: inline-block;
+    // color: #999;
+  }
+  .total {
+    > text {
+      font-size: 12px;
+      &:first-child {
+        padding-right: 16rpx;
+      }
+    }
+  }
+}
+.no-more-data {
+  text-align: center;
+  color: #999;
+  background: #efefef;
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 28rpx;
+}
+.scope {
+  text-align: center;
+  margin-bottom: 24rpx;
+  > view {
+    display: inline;
+    font-size: 32rpx;
+    padding: 12rpx 24rpx;
+  }
+  .today.active {
+    color: red;
+    border-bottom: 4rpx solid red;
+  }
+  .week.active {
+    color: green;
+    border-bottom: 4rpx solid green;
+  }
+  .month.active {
+    color: orange;
+    border-bottom: 4rpx solid orange;
+  }
+  .year.active {
+    color: #A52A2A;
+    border-bottom: 4rpx solid #A52A2A;
+  }
+  &.tab-fix {
+    position:fixed;
+    top:0;
+    width:100%;
+    height:70rpx;
+    background: white;
+  }
 }
 </style>

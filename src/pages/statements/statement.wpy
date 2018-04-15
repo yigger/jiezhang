@@ -16,6 +16,11 @@
         <input hidden  name="category_id" value="{{ category_id }}" type="number"/>
       </navigator>
 
+      <view class="frequent-use" wx:if="{{ categories_label.length > 0 }}">
+        <text>猜你想用：</text>
+        <text class="label" wx:for="{{ categories_label }}" @tap="tabCategory({{item}})">{{ item.name }}</text>
+      </view>
+
       <navigator class="column zan-cell--access" url="/pages/statements/chose_asset">
         <!-- 默认选中最常用的 -->
         <text>账户</text>
@@ -23,6 +28,11 @@
         <input hidden name="asset_id" value="{{ asset_id }}" type="number"/>
       </navigator>
 
+      <view class="frequent-use" wx:if="{{ assets_label.length > 0 }}">
+        <text>猜你想用：</text>
+        <text class="label" wx:for="{{ assets_label }}" @tap="tabAsset({{item}})">{{ item.name }}</text>
+      </view>
+      
       <picker class="column zan-cell--access" mode="date" start="2017-01-01" bindchange="dateChange">
         <text>日期</text>
         <text class="pull-right">{{ date }}</text>
@@ -69,7 +79,9 @@
       asset_id: 0,
       asset_name: '请选择账户',
       description: '',
-      date: ''
+      date: '',
+      assets_label: [],
+      categories_label: []
     }
 
     onLoad(options) {
@@ -86,6 +98,8 @@
         // 获取上次使用的分类和账户
         this.getLastUsed()
       }
+      this.guessCategory()
+      this.guessAsset()
     }
 
     computed = {
@@ -95,7 +109,7 @@
     }
 
     methods = {
-      async   formSubmit (e) {
+      async formSubmit (e) {
         let statement = e.detail.value
         if (statement.amount == 0 || statement.amount == '') {
           tip.error('金额不能为零')
@@ -141,6 +155,16 @@
           this.category_name = '请选择分类'
         }
         this.type = type
+        this.guessCategory()
+        this.guessAsset()
+      },
+      tabAsset (asset) {
+        this.asset_id = asset.id
+        this.asset_name = asset.name
+      },
+      tabCategory (category) {
+        this.category_id = category.id
+        this.category_name = category.name
       }
     }
 
@@ -187,6 +211,22 @@
       this.asset_id = result.asset_id
       this.category_name = result.category_name
       this.asset_name = result.asset_name
+      this.$apply()
+    }
+
+    async guessCategory () {
+      const res = await api.guessCategory({
+        query: {
+          type: this.type
+        }
+      });
+      this.categories_label = res.data
+      this.$apply()
+    }
+
+    async guessAsset () {
+      const res = await api.guessAsset();
+      this.assets_label = res.data
       this.$apply()
     }
 
@@ -240,6 +280,23 @@
       font-size: 56rpx;
       text-align: right;
     }
+    .frequent-use {
+      text-align: right;
+      font-size: 24rpx;
+      margin:24rpx;
+      > text:first-child {
+        color: #999;
+      }
+      .label {
+        background: #efefef;
+        color: grey;
+        padding:8rpx 16rpx;
+        margin-right: 8rpx;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
   }
   .tab {
     height: 80rpx;
@@ -250,18 +307,17 @@
     > view {
       flex: 1;
       text-align: center;
+      background: #fafafa;
       &:first-child {
         border-right: 1px solid #efefef;
       }
     }
     .expend-active {
       color: green;
-      background: #fafafa;
       border-bottom: 1px solid green;
     }
     .income-active {
       color: red;
-      background: #fafafa;
       border-bottom: 1px solid red;
     }
   }

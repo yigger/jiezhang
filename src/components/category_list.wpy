@@ -1,9 +1,9 @@
 <template lang="wxml">
   <view wx:for="{{ list }}">
-    <view class="category parent-category" data-id="{{ item.id }}" bindtap="edit">
+    <navigator class="category parent-category" url="{{ editUrl }}?id={{ item.id }}&type={{ type }}" >
       <text class="category-name">{{ item.name }}</text>
-    </view>
-    
+    </navigator>
+
     <navigator class="category child-category" wx:for="{{ item.childs }}" wx:for-item="child" url="{{ editUrl }}?id={{ child.id }}&type={{ type }}" >
       <view class="image">
         <image class='ljt-icon' src="{{ child.icon_url }}"></image>
