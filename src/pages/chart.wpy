@@ -10,12 +10,12 @@
           </picker>
           <image src="../public/images/down-white.png"></image>
         </view>
-        <view class="pull-right select-type">
+        <!-- <view class="pull-right select-type">
           <image src="../public/images/filter.png"></image>
           <picker bindchange="bindFilterChange" value="{{filterIndex}}" range="{{filterArray}}">
               范围选择
           </picker>
-        </view>
+        </view> -->
       </view>
 
       <view class="weeks box box-lr box-pack-center box-align-center">
@@ -38,11 +38,29 @@
 	</view>
 
   <view class="assets">
-    <view hidden="{{ tabActive == 'category' || singleData.length == 0 }}">
+    <view hidden="{{ tabActive == 'category' || singleList.length == 0 }}">
 			<!-- 单条 -->
-			<repeat for="{{ singleData }}" key="index" index="index" item="item">
-        <singleColumn :obj.sync="item"></singleColumn>
-      </repeat>
+			<view class="left-amount">
+				<text class="income income-border">收入: {{ singleData.surplus.income }}</text>
+				<text class="expend expend-border">支出: {{ singleData.surplus.expend }}</text>
+				<text class="surplus surplus-border">结余: {{ singleData.surplus.surplus }}</text>
+			</view>
+
+			<view class="tiaomu" wx:for="{{singleData.list }}" @tap="showStatement('{{ item.id }}')">
+				<view class="pull-left col999 date-time">
+					<view class="fs14">{{ item.day }}</view>
+					<view class="fs12">{{ item.detail_day }}</view>
+				</view>
+				<view class="pull-right fs16 money {{ item.type }}">{{ item.amount }}</view>
+				<view class="information">
+					<view class="pull-left icon"><image src="{{ item.category_icon }}"></image></view>
+					<view class="pull-left title">
+						<view class="fs14">{{ item.category }}</view>
+						<view class="fs12 description" wx:if="{{ item.description != null }}">{{ item.description }}</view>
+						<view class="col999 fs12">{{ item.time }} · {{ item.wallet }}</view>
+					</view>
+				</view>
+			</view>
     </view>
 
 		<view class="mutiple" hidden="{{ tabActive == 'single' || mutipleData.length == 0 }}">
@@ -57,7 +75,7 @@
 			</repeat>	
 		</view>
 
-		<empty title="这天还没有记账呢~" hidden="{{ singleData.length > 0 }}"></empty>
+		<empty title="这天还没有记账呢~" hidden="{{ singleList.length > 0 }}"></empty>
   </view>
 </view>
 </template>
@@ -88,6 +106,7 @@
 			days: [],
 			mutipleData: [],
 			singleData: [],
+			singleList: [],
 			empytGrids: [],
 			curYearMonth: this.getNowFormatDate('.'),
 			weeks_ch: ['日', '一', '二', '三', '四', '五', '六'],
@@ -95,7 +114,7 @@
       startDate: null,
       endDate: null,
       dateParams: [],
-      filterIndex: 0,
+      filterIndex: 1,
       filterArray: ['按天选择', '按范围选择']
     };
 
@@ -135,25 +154,24 @@
 			tapDayItem(e) {
 				let idx = e.currentTarget.dataset.idx
 				let days = this.days
-				if (this.prevSelectedIndex == idx) {
-          let endDate = null
-          if (days[idx].start) {
-            endDate =  new Date(Date.parse(this.startDate))
-          } else {
-            endDate =  new Date(Date.parse(this.endDate))
-          }
-          if (endDate != null && this.cur_year == endDate.getFullYear() && 
-                this.cur_month == endDate.getMonth()+1 && 
-                days[idx].day == endDate.getDate()) {
-            this.startDate = `${this.cur_year}-${this.cur_month}-${days[idx].day}`
-            this.dateParams = [this.startDate, this.startDate]
-            this.refreshCalendarTab()
-          }
-          return ;
-        }
+
+				let endDate = null
+				if (days[idx].start) {
+					endDate = new Date(Date.parse(this.startDate))
+				} else {
+					endDate = new Date(Date.parse(this.endDate))
+				}
+				
+				if (endDate != null && this.cur_year == endDate.getFullYear() && this.cur_month == endDate.getMonth()+1 && days[idx].day == endDate.getDate()) {
+					this.startDate = `${this.cur_year}-${this.cur_month}-${days[idx].day}`
+					this.dateParams = [this.startDate, this.startDate]
+					this.refreshCalendarTab()
+				}
+				
 				if (this.prevSelectedIndex != -1) {
           days[this.prevSelectedIndex].choosed = false
-        }
+				}
+
 				days[idx].choosed = !days[idx].choosed
 				this.prevSelectedIndex = idx
 				this.days = days
@@ -201,7 +219,6 @@
 			let cur_month = NowDate.getMonth() + 1
 			this.calculateEmptyGrids(cur_year, cur_month)
 			this.calculateDays(cur_year, cur_month)
-			this.getChart()
 		}
 
 		onShow () {
@@ -280,13 +297,14 @@
 				query: query
 			});
       if (res.data.status == 200) {
-        this.singleData = res.data.single
+				this.singleData = res.data.single
+				this.singleList = this.singleData.list
 			  this.mutipleData = res.data.mutiple
       } else {
-        this.singleData = []
+				this.singleData = []
+				this.singleList = []
 			  this.mutipleData = []
       }
-			
 			this.$apply()
 		}
 
@@ -385,11 +403,18 @@
 .col999 {
 	color: #999;
 }
-
+.left-amount {
+	font-size: 24rpx;
+	text-align: right;
+	padding-top: 24rpx;
+	> text {
+		margin-right: 12rpx;
+	}
+}
 // tab 样式
 .ljt-tab {
-	height: 100rpx;
-	line-height: 100rpx;
+	height: 80rpx;
+	line-height: 80rpx;
 	background: white;
 	border-bottom:2rpx solid #efefef;
 	.time {
@@ -518,8 +543,6 @@
 		color:#fff;
 	}
 	.today {
-		// background:#46c4f4;
-		// box-shadow:0 0 10rpx #ccc;
     background: #fb4b4d;
 	}
   .start-bg {
