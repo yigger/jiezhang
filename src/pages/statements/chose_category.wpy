@@ -69,7 +69,9 @@
     }
 
     async getExpendCategory () {
-      const res = await api.getExpendCategories({showLoading: true})
+      const res = await api.getExpendCategories({
+        showLoading: true
+      })
       const data = res.data
       this.frequent = data.frequent
       this.last = data.last

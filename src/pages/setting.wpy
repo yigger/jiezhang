@@ -96,7 +96,9 @@
     }
 
     async getData () {
-      const res = await api.Settings()
+      const res = await api.Settings({
+        addCache: `user-info`,
+      })
       const data =  res.data
       this.user = data.user
       this.version = data.version

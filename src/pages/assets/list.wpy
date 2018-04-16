@@ -19,6 +19,7 @@
   import tip from '../../utils/tip'
   import HostMixin from '../../mixins/host'
   import List from '../../components/category_list'
+  import Session from '../../utils/session'
   export default class AssetList extends wepy.page {
     mixins = [ HostMixin ];
 
@@ -39,7 +40,9 @@
 
     async getList() {
       this.showLoading = true
-      const json = await api.Asset();
+      const json = await api.Asset({
+        addCache: Session.key.asset.list
+      });
       this.assets = json.data
       this.showLoading = false
       this.$apply()

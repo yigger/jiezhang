@@ -93,6 +93,7 @@
 
     async updateUser () {
       const res = await api.User({
+        delCache: 'user-info',
         method: 'PUT',
         query: {
           user: this.user

@@ -18,6 +18,7 @@
   import api from "../../utils/api"
   import tip from '../../utils/tip'
   import List from '../../components/category_list'
+  import Session from '../../utils/session'
   export default class CategoryList extends wepy.page {
     config = {
       navigationBarTitleText: '分类管理'
@@ -44,6 +45,7 @@
     async getList() {
       this.showLoading = true
       const json = await api.Category({
+        addCache: this.cacheKey(),
         query: {
           type: this.type
         }
@@ -53,6 +55,9 @@
       this.$apply()
     }
     
+    cacheKey () {
+      return this.type == 'expend' ? Session.key.category.expendList : Session.key.category.incomeList
+    }
   }
 </script>
 

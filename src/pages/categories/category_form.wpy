@@ -56,6 +56,7 @@
   import api from "../../utils/api"
   import tip from '../../utils/tip'
   import HostMixin from '../../mixins/host'
+  import Session from '../../utils/session'
   export default class CategoryForm extends wepy.page {
     mixins = [ HostMixin ];
     data = {
@@ -99,6 +100,7 @@
           method: 'DELETE'
         }, this.category.id)
         if (res.data.status == 200) {
+          Session.clearByKey('category')
           wepy.navigateBack({
             delta: 1
           })
@@ -123,6 +125,7 @@
         }, cId);
 
         if (res.data.status == 200) {
+          Session.clearByKey('category')
           wepy.navigateBack({
             delta: 1
           })

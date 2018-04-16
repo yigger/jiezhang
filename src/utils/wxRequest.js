@@ -1,33 +1,38 @@
 import wepy from 'wepy'
 import tip from './tip'
 import Host from '../utils/host';
-
-const SESSION_KEY = 'weapp_login_session'
+import Session from '../utils/session'
+const SESSION_LOGIN_KEY = 'weapp_login_session'
 const wxRequest = async(params = {}, url) => {
 	let data = params.query || {};
 	let res = null
-	// console.log("进来WxRequest" + url)
-
+	
 	if (params.showLoading) {
 		tip.loading();
-  }
+	}
 	
+	if (params.delCache && Session.get(params.delCache)) {
+		Session.clear(params.delCache)
+	}
+
+	if (params.addCache && Session.get(params.addCache)) {
+		return Session.get(params.addCache)
+	}
+
 	if (Host.env == 0) {
+		// 测试环境不进行授权登录，直接请求接口
 		res = await doRequest(params, url)
 	} else {
-		if (SessionLogin.get() == null) {
+		if (Session.get(SESSION_LOGIN_KEY) == null) {
 			const loginResult = await wxLogin()
-			// console.log("登录成功-1")
 			const requestResult = await doRequest(params, url)
-			// console.log("请求成功-1")
 			return requestResult
 		} else {
 			res = await doRequest(params, url)
 			if (res.data.status == 301) {
-				// Session 过期了，清除本地 Session 后重新请求
-				SessionLogin.clear()
+				// Session 过期，清除本地 Session 后重新请求
+				Session.clear(SESSION_LOGIN_KEY)
 				const loginResult = await wxLogin()
-				// console.log("登录成功-2")
 				res = await doRequest(params, url)
 			}
 		}
@@ -36,18 +41,20 @@ const wxRequest = async(params = {}, url) => {
 	if (params.showLoading) {
 		tip.loaded();
 	}
-	// console.log("Request 结束")
 	return res;
 };
 
 const doRequest = async (params = {}, url) => {
 	let data = params.query || {};
-	let res = await wepy.request({
+	const res = await wepy.request({
 		url: url,
 		method: params.method || 'GET',
 		data: data,
-		header: { 'Content-Type': 'application/json', 'X-WX-Skey': SessionLogin.get() },
+		header: { 'Content-Type': 'application/json', 'X-WX-Skey': Session.get(SESSION_LOGIN_KEY) },
 	});
+	if (params.addCache) {
+		Session.set(params.addCache, res)
+	}
 	return res
 }
 
@@ -118,7 +125,7 @@ const wxLogin = async () => {
 	});
 
 	// 4. 存储用户在服务端的 session 值，以便下次使用
-	SessionLogin.set(loginResult.data.session);
+	Session.set(loginResult.data.session);
 }
 
 const wxUpload = async (params = {}, url) => {
@@ -128,27 +135,13 @@ const wxUpload = async (params = {}, url) => {
   }
   const uploadResult = await wepy.uploadFile({
     url: url,
-    header: {'X-WX-Skey': SessionLogin.get()},
+    header: {'X-WX-Skey': Session.get(SESSION_LOGIN_KEY)},
     filePath: params.file_path,
     formData: params.query,
     name: 'file'
   })
   return uploadResult
 }
-
-const SessionLogin = {
-	get: function () {
-		return wx.getStorageSync(SESSION_KEY) || null;
-	},
-
-	set: function (session) {
-		wx.setStorageSync(SESSION_KEY, session);
-	},
-
-	clear: function () {
-		wx.removeStorageSync(SESSION_KEY);
-	},
-};
 
 module.exports = {
   wxRequest,

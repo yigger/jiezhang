@@ -68,6 +68,7 @@
   import api from "../../utils/api"
   import tip from '../../utils/tip'
   import HostMixin from '../../mixins/host'
+  import Session from '../../utils/session'
   export default class AssetList extends wepy.page {
     config = {
       navigationBarTitleText: '资产设置'
@@ -133,6 +134,7 @@
           method: 'DELETE'
         }, this.wallet.id)
         if (res.data.status == 200) {
+          Session.clearByKey('asset')
           wepy.navigateBack({
             delta: 1
           })
@@ -161,6 +163,7 @@
         }, cId);
 
         if (res.statusCode == 200 && res.data.status == 200) {
+          Session.clearByKey('asset')
           wepy.navigateBack({
             delta: 1
           })
