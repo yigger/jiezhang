@@ -60,8 +60,8 @@
       没有更多了
     </view>
 
-    <view wx:if="{{ list.length == 0 && scope == 'today' }}">
-      <empty title="今天还没有记账呢~"></empty>
+    <view wx:if="{{ list.length == 0 && !showLoading }}">
+      <empty :title.sync="emptyTitle"></empty>
     </view>
   </view>
 </template>
@@ -73,6 +73,7 @@
   import IndexSt from '../components/index_st'
   import IndexYear from '../components/index/year'
   import loading from '../components/loading'
+  import Session from '../utils/session'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '首页',
@@ -80,11 +81,9 @@
     }
 
     data = {
-      indicatorDots: true,
-      autoplay: false,
-      duration: 600,
       tabActive: 'today',
       scope: 'today',
+      emptyTitle: '今天还没有记账呢~',
       tabHeader: {
         surplus: 0,
         income: 0,
@@ -98,7 +97,7 @@
         today_pay: 0,
         pay_num: 0,
         budget: 0,
-        bg_avatar: '../public/images/default-bg.jpeg'
+        bg_avatar: null
       },
       statementMonth: [],
       noMoreData: false,
@@ -133,13 +132,19 @@
       async choseTab (item) {
         this.tabActive = item
         this.curPage = 1
+        if (item == 'today') {
+          this.emptyTitle = '今天还没又记账呢~'
+        } else {
+          this.emptyTitle = '没找到记账数据呢~'
+        }
+        
         if (this.scope != item) {
           this.scope = item
           this.noMoreData = false
           this.statementMonth = []
           let cacheList = wx.getStorageSync(`list-${item}`) || null
           let cacheHeader = wx.getStorageSync(`header-${item}`) || null
-          if (cacheList !== null && cacheHeader !== null) {
+          if (cacheList !== null || cacheHeader !== null) {
             this.list = cacheList
             this.tabHeader = cacheHeader
           } else {
@@ -148,7 +153,8 @@
           }
         }
       },
-       onPageScroll: function (event) {
+      // 吸顶
+      onPageScroll: function (event) {
         let scrollTop = event.scrollTop
         if (scrollTop >= 250) {
           this.tabFixed = 'tab-fix'
@@ -172,8 +178,14 @@
     }
 
     async onLoad () {
-      await this.getHeader()
+      if (Session.get('index-header')) {
+        this.header = Session.get('index-header')
+      }
       await this.getList()
+    }
+
+    async onShow () {
+      await this.getHeader()
     }
 
     // 此函数用于 statement.wpy 里更新后调用
@@ -205,6 +217,7 @@
     async getHeader () {
       const res = await api.getIndexHeader()
       this.header = res.data
+      Session.set('index-header', this.header)
       this.$apply()
     }
 
@@ -229,10 +242,15 @@
         wx.setStorageSync(`header-${this.scope}`, this.tabHeader)
         wx.setStorageSync(`list-${this.scope}`, this.list)
         this.noMoreData = false
+      } else {
+        wx.setStorageSync(`header-${this.scope}`, { surplus: 0, income: 0, expend: 0 })
+        wx.setStorageSync(`list-${this.scope}`, [])
       }
+
       if (options.from == 'reachBottom' && ((data != undefined && data.length == 0) || res.data.status == 405)) {
         this.noMoreData = true
       }
+      
       this.showLoading = false
       this.$apply()
     }
@@ -249,8 +267,8 @@
       this.$apply()
     }
 
-    // 太曲折了!!!
-    // 分组分页
+    // 分组分页。周/月/年 Tab选项。需改进
+    // 追加后端返回的信息到对应的分组
     dealWithYear (data) {
       if (this.list.length == 0) {
         this.list = data
@@ -290,7 +308,7 @@
       bgImage () {
         let avatar = this.header.bg_avatar
         if (avatar == null) {
-          avatar = "../public/images/default-bg.jpeg"
+          avatar = "../public/images/default-2.jpeg"
         }
         return avatar
       }
@@ -312,14 +330,14 @@
   }
   .level-2 {
     position:absolute;
-    bottom:24rpx;
+    bottom:32rpx;
     width:100%;
     .today-expend {
       font-size:64rpx;
-      margin-bottom:16rpx;
+      margin-bottom:24rpx;
     }
     > view {
-      padding:0 16rpx;
+      padding:0 24rpx;
     }
   }
   .pay-num {
