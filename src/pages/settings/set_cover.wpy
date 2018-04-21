@@ -1,26 +1,9 @@
 <template>
   <view class="container">
-    <view>
-      <view class="image">
-        <image></image>
-      </view>
-      <view>中国红</view>
+    <view class="item" wx:for="{{ avatars }}" @tap="setAvatar('{{ item.path }}')">
+      <view><image src="{{ item.path }}"></image></view>
+      <view>{{ item.name }} <text wx-if="{{ item.path == user.avatar }}">（当前封面）</text></view>
     </view>
-
-    <view>
-      <view class="image">
-        <image></image>
-      </view>
-      <view>金灿灿</view>
-    </view>
-
-    <view>
-      <view class="image">
-        <image></image>
-      </view>
-      <view>典雅黑</view>
-    </view>
-
   </view>
 </template>
 
@@ -34,15 +17,33 @@
     }
 
     data = {
+      user: {},
       avatars: []
     }
 
     methods = {
-      
+      async setAvatar (path) {
+        const res = await api.SetCover({
+          method: 'POST',
+          query: {
+            path: path
+          }
+        })
+        const data = res.data
+        if (data.status == 200) {
+          tip.success('设置成功')
+          wepy.navigateBack({
+            delta: 1
+          })
+        } else {
+          tip.error('设置失败')
+        }
+      }
     }
 
-    onLoad () {
-      
+    onShow () {
+      this.getUser()
+      this.getAvatars()
     }
     
     async getUser () {
@@ -51,22 +52,25 @@
       this.$apply()
     }
 
+    async getAvatars () {
+      const res = await api.Covers()
+      this.avatars = res.data.data
+      this.$apply()
+    }
+
   }
 </script>
 <style lang="less">
   .container {
-    text-align: center;
+    background: #fefefe;
+    margin-top: 12px;
   }
-  .container > view {
-    display: inline-block;
-    margin-right: 12rpx;
-  }
-  .image {
-    background:red;
-    width:60px;
-    height:60px;
+  .item {
+    width: 80%;
+    margin: 24px auto;
     image {
       width: 100%;
+      height: 150px;
     }
   }
 </style>

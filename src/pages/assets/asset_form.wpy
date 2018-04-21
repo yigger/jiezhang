@@ -7,7 +7,7 @@
       </view>
 
       <view class="item">
-        <view class="item-name pull-left"> <text>余额</text> </view>
+        <view class="item-name pull-left"> <text>总额</text> </view>
         <input class="pull-right" type="number" placeholder="0.00" value="{{ wallet.amount }}" bindinput="bindKeyAmount" maxlength="10" placeholder="请输入账户余额" />
       </view>
 

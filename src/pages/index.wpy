@@ -5,7 +5,7 @@
       <!-- <view class="notification">
         <image src="../public/images/notification.png"></image>
       </view> -->
-      <view class="set-avatar" @tap="setAvatar">设置封面</view>
+      <!-- <view class="set-avatar" @tap="setAvatar">设置封面</view> -->
 
       <view class="level-2">
         <view class="fs14">

@@ -15,10 +15,10 @@
       <view class="zan-cell__ft">{{ user.budget }}</view>
     </view>
 
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/settings/set_cover')">
+    <!-- <view class="zan-cell zan-cell--access" @tap="redirect('/pages/settings/set_cover')">
       <view class="zan-cell__bd">封面设置</view>
       <view class="zan-cell__ft"></view>
-    </view>
+    </view> -->
 
     <!-- <view class="zan-cell zan-cell--access">
       <view class="zan-cell__bd">消费分析</view>
@@ -54,10 +54,9 @@
       <view class="zan-cell__ft"></view>
     </view>
 
-    <!-- <view class="zan-cell zan-cell--access">
-      <view class="zan-cell__bd">分享小程序</view>
-      <view class="zan-cell__ft"></view>
-    </view> -->
+    <view class="zan-cell zan-cell--access" @tap="cleanSession">
+      <view class="zan-cell__bd">清理缓存</view>
+    </view>
 
     <view class="zan-cell zan-cell--access">
       <view class="zan-cell__bd">关于洁账</view>
@@ -92,13 +91,15 @@
         wepy.navigateTo({
           url: url
         })
+      },
+      cleanSession () {
+        wx.clearStorage()
+        tip.toast('清理成功')
       }
     }
 
     async getData () {
-      const res = await api.Settings({
-        addCache: `user-info`,
-      })
+      const res = await api.Settings()
       const data =  res.data
       this.user = data.user
       this.version = data.version

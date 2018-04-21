@@ -19,7 +19,7 @@ const wxRequest = async(params = {}, url) => {
 		return Session.get(params.addCache)
 	}
 
-	if (Host.env == 0) {
+	if (Host.env === 0) {
 		// 测试环境不进行授权登录，直接请求接口
 		res = await doRequest(params, url)
 	} else {
@@ -125,7 +125,7 @@ const wxLogin = async () => {
 	});
 
 	// 4. 存储用户在服务端的 session 值，以便下次使用
-	Session.set(loginResult.data.session);
+	Session.set(SESSION_LOGIN_KEY, loginResult.data.session);
 }
 
 const wxUpload = async (params = {}, url) => {

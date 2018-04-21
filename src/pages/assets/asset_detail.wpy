@@ -5,7 +5,7 @@
       <view class="surplus-amount fs24">
         <text class="pull-left">{{ amount }}</text>
       </view>
-      <view class="fs16">余额</view>
+      <view class="fs16">总额</view>
     </view>
     <view class="bottom">
       <view>
@@ -176,11 +176,13 @@
   .surplus {
     position: absolute;
     top:40rpx;
+    left: 12px;
   }
   .bottom {
     position: absolute;
     bottom: 20rpx;
     width: 100%;
+    left: 12px;
     & > view {
       width:50%;
       float:left;
@@ -230,9 +232,6 @@
         color:#999;
         text-align:right;
       }
-    }
-    .detail > .content {
-      background: #FAFAFC;
     }
   }
 }

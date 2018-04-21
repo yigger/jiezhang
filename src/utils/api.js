@@ -61,6 +61,9 @@ const Wallet = (params, c_id = 0) => {
 const Settings = (params) => wxRequest(params, `${apiUrl}/settings`);
 // 反馈
 const Feedback = (params) => wxRequest(params, `${apiUrl}/settings/feedback`);
+// 封面图片
+const Covers = (params) => wxRequest(params, `${apiUrl}/settings/covers`);
+const SetCover = (params) => wxRequest(params, `${apiUrl}/settings/set_cover`);
 // 个人信息
 const User = (params, c_id = 0) => {
   let url = `${apiUrl}/users`
@@ -107,5 +110,7 @@ module.exports = {
   AssetSurplus,
   Upload,
   guessCategory,
-  guessAsset
+  guessAsset,
+  Covers,
+  SetCover
 }

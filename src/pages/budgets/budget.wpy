@@ -145,12 +145,16 @@ page {
     position: absolute;
     width: 100%;
     top: 18rpx;
+    > view {
+      padding: 0 24rpx;
+    }
   }
   .level-2 {
     position: absolute;
-    width: 100%;
+    width: 90%;
     height: 100rpx;
     bottom: 12rpx;
+    padding: 0 24rpx;
   }
   .level-2 > view {
     width:50%;
