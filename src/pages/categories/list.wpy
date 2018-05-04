@@ -5,7 +5,7 @@
       <view>
         <image src="../../public/images/wallet-add.png"></image>
       </view>
-      <text class="fs16" bindtap="newAsset">添加分类</text>
+      <text class="fs16">添加分类</text>
     </navigator>
     <view hidden="{{ !showLoading }}">
       <loading></loading>

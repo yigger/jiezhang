@@ -2,11 +2,6 @@
   <view class="container">
     <view class="header">
       <image class="bg" src="{{ bgImage }}"></image>
-      <!-- <view class="notification">
-        <image src="../public/images/notification.png"></image>
-      </view> -->
-      <!-- <view class="set-avatar" @tap="setAvatar">设置封面</view> -->
-
       <view class="level-2">
         <view class="fs14">
           <text>今日支出</text>
@@ -23,7 +18,7 @@
     
     <view class="zan-btns">
       <navigator url="/pages/statements/statement">
-        <button class="zan-btn zan-btn--danger btn-shadow">记一笔</button>
+        <button class="zan-btn jz-btn btn-shadow">记一笔</button>
       </navigator>
     </view>
 
@@ -73,7 +68,6 @@
   import IndexSt from '../components/index_st'
   import IndexYear from '../components/index/year'
   import loading from '../components/loading'
-  import Session from '../utils/session'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '首页',
@@ -94,9 +88,9 @@
       per_page: 20,
       tabFixed: '',
       header: {
-        today_pay: 0,
+        today_pay: '0.00',
+        budget: '未设置预算',
         pay_num: 0,
-        budget: 0,
         bg_avatar: null
       },
       statementMonth: [],
@@ -178,9 +172,6 @@
     }
 
     async onLoad () {
-      if (Session.get('index-header')) {
-        this.header = Session.get('index-header')
-      }
       await this.getList()
     }
 
@@ -217,14 +208,12 @@
     async getHeader () {
       const res = await api.getIndexHeader()
       this.header = res.data
-      Session.set('index-header', this.header)
       this.$apply()
     }
 
     async getList(options = {}) {
       this.showLoading = true
       const res = await api.getIndexList({
-        showLoading: options.showLoading,
         query: {
           scope: this.scope,
           page: this.curPage,
@@ -239,12 +228,12 @@
         } else {
           this.list = Array.from(new Set([...this.list, ...data]))
         }
-        wx.setStorageSync(`header-${this.scope}`, this.tabHeader)
-        wx.setStorageSync(`list-${this.scope}`, this.list)
+        // wx.setStorageSync(`header-${this.scope}`, this.tabHeader)
+        // wx.setStorageSync(`list-${this.scope}`, this.list)
         this.noMoreData = false
       } else {
-        wx.setStorageSync(`header-${this.scope}`, { surplus: 0, income: 0, expend: 0 })
-        wx.setStorageSync(`list-${this.scope}`, [])
+        // wx.setStorageSync(`header-${this.scope}`, { surplus: 0, income: 0, expend: 0 })
+        // wx.setStorageSync(`list-${this.scope}`, [])
       }
 
       if (options.from == 'reachBottom' && ((data != undefined && data.length == 0) || res.data.status == 405)) {
@@ -270,19 +259,15 @@
     // 分组分页。周/月/年 Tab选项。需改进
     // 追加后端返回的信息到对应的分组
     dealWithYear (data) {
-      if (this.list.length == 0) {
-        this.list = data
-      } else {
-        let set1 = new Set(this.statementMonth)
-        for(let i = 0, length = data.length; i < length; ++i) {
-          if (set1.has(data[i].header.month)) {
-            data[i].header = null
-          }
+      let set1 = new Set(this.statementMonth)
+      for(let i = 0, length = data.length; i < length; ++i) {
+        if (set1.has(data[i].header.index)) {
+          data[i].header = null
         }
-        this.list = Array.from(new Set([...this.list, ...data]))
       }
+      this.list = Array.from(new Set([...this.list, ...data]))
       for(let item of data) {
-        if (item.header !== null) this.statementMonth.push(item.header.month)
+        if (item.header !== null) this.statementMonth.push(item.header.index)
       }
     }
 
@@ -315,187 +300,4 @@
     }
   }
 </script>
-<style lang="less">
-.header {
-	position:relative;
-	color:white;
-	height:380rpx;
-	.bg {
-    position:absolute;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-    z-index:-1;
-  }
-  .level-2 {
-    position:absolute;
-    bottom:32rpx;
-    width:100%;
-    .today-expend {
-      font-size:64rpx;
-      margin-bottom:24rpx;
-    }
-    > view {
-      padding:0 24rpx;
-    }
-  }
-  .pay-num {
-    background:rgb(32,86,174);
-    margin:0 4rpx;
-  }
-  .notification {
-    position:absolute;
-    top:42rpx;
-    right:42rpx;
-    width:60rpx;
-    height:60rpx;
-    background:black;
-    border-radius:50%;
-    padding:8rpx;
-    image {
-      width:100%;
-      height:100%;
-    }
-  }
-}
-.today {
-	background-size:cover;
-	background-position:10rpx -170rpx;
-}
-.cur-month-progress {
-	padding:0 40rpx;
-}
-.new-record-btn {
-	margin-bottom:16rpx;
-	position:relative;
-	display:block;
-	margin-left:auto;
-	margin-right:auto;
-	padding-left:28rpx;
-	padding-right:28rpx;
-	box-sizing:border-box;
-	font-size:36rpx;
-	text-align:center;
-	text-decoration:none;
-	line-height:2;
-	border-radius:6rpx;
-	-webkit-tap-highlight-color:transparent;
-	overflow:hidden;
-	color:white;
-	background-color:#48C4FE;
-}
-.new-bill {
-	margin:24rpx;
-}
-.new-bill button {
-	border-radius:4rpx;
-	background:rgba(251,75,77,0.9);
-	color:white;
-	box-shadow:4rpx 6rpx 16rpx #ccc;
-	text-align:center;
-	line-height:2;
-}
-.new-bill:before {
-	content:none !important;
-}
-.current-day {
-	background: orange !important;
-	color:white !important;
-}
-.set-avatar {
-  position:absolute;
-  right:8rpx;
-  top:40rpx;
-  width:160rpx;
-  text-align:center;
-  height:60rpx;
-  line-height:64rpx;
-  background:rgba(0, 0, 0, 0.5);
-  font-size:24rpx;
-  border-radius:32rpx;
-  color:#ccc;
-}
-.statement-list {
-  margin-bottom: 40rpx;
-  > .surplus {
-    text-align: center;
-    > text {
-      font-size: 24rpx;
-      padding:0 12rpx;
-    }
-  }
-  > .total {
-    text-align: right;
-    margin:0 32rpx;
-    > text {
-      font-size: 24rpx;
-      &:first-child {
-        padding-right: 16rpx;
-      }
-    }
-  }
-}
-
-.date-category {
-  height: 60rpx;
-  padding: 0 12rpx;
-  display: flex;
-  align-items: center;
-  margin:28rpx 32rpx 0 32rpx;
-  justify-content: space-between;
-  border-bottom:1px solid #fafafa;
-  .name {
-    display: inline-block;
-    // color: #999;
-  }
-  .total {
-    > text {
-      font-size: 12px;
-      &:first-child {
-        padding-right: 16rpx;
-      }
-    }
-  }
-}
-.no-more-data {
-  text-align: center;
-  color: #999;
-  background: #efefef;
-  height: 60rpx;
-  line-height: 60rpx;
-  font-size: 28rpx;
-}
-.scope {
-  text-align: center;
-  margin-bottom: 24rpx;
-  > view {
-    display: inline;
-    font-size: 32rpx;
-    padding: 12rpx 24rpx;
-  }
-  .today.active {
-    color: red;
-    border-bottom: 4rpx solid red;
-  }
-  .week.active {
-    color: green;
-    border-bottom: 4rpx solid green;
-  }
-  .month.active {
-    color: orange;
-    border-bottom: 4rpx solid orange;
-  }
-  .year.active {
-    color: #A52A2A;
-    border-bottom: 4rpx solid #A52A2A;
-  }
-  &.tab-fix {
-    position:fixed;
-    top:0;
-    width:100%;
-    height:70rpx;
-    background: white;
-  }
-}
-</style>
+<style lang="scss" src="../public/styles/index.scss"></style>

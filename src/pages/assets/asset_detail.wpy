@@ -3,18 +3,18 @@
   <view id="wallet-header">
     <view class="surplus">
       <view class="surplus-amount fs24">
-        <text class="pull-left">{{ amount }}</text>
+        {{ amount }}
       </view>
-      <view class="fs16">总额</view>
+      <view class="fs14">总额</view>
     </view>
     <view class="bottom">
       <view>
-        <view class="fs24">{{ header.income }}</view>
-        <view class="fs16">收入</view>
+        <view class="fs22">{{ header.income }}</view>
+        <view class="fs14">收入</view>
       </view>
       <view>
-        <view class="fs24">{{ header.expend }}</view>
-        <view class="fs16">支出</view>
+        <view class="fs22">{{ header.expend }}</view>
+        <view class="fs14">支出</view>
       </view>
     </view>
   </view>
@@ -52,8 +52,6 @@
   <view wx:else>
     <empty title="暂无数据哦~"></empty>
   </view>
-
-  <caculate @invokeCaculation.user="invokeCaculation" :amount.sync="amount" :showCaculation.sync="showCaculation"></caculate>
 </view>
 </template>
 
@@ -61,7 +59,6 @@
 	import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
-  import Caculate from '../../components/caculate'
   import Empty from '../../components/empty'
   import Single from '../../components/single'
   export default class AssetDetail extends wepy.page {
@@ -70,7 +67,6 @@
     }
 
     components = {
-      caculate: Caculate,
       empty: Empty,
       single: Single
       // filter: Filter
@@ -85,7 +81,6 @@
       },
       list: [], 
       already_load: false,
-      showCaculation: false,
       amount: '0.00',
       showLoading: false
     }
@@ -97,13 +92,6 @@
 			},
       showStatement (id) {
         wx.navigateTo({ url: `/pages/statements/statement?id=${id}` })
-      },
-      showCaculate() {
-        this.showCaculation = true
-      },
-      invokeCaculation (amount) {
-        this.showCaculation = false
-        this.updateSurplus(amount)
       }
     }
 
@@ -118,7 +106,6 @@
 
     async information () {
        const res = await api.AssetDetailInformation({
-        // showLoading: true,
         query: {
           asset_id: this.asset_id
         }
@@ -164,75 +151,4 @@
 
   }
 </script>
-<style lang="less">
-@themColor: #fb4b4d;
-@fontColor: #999;
-#wallet-header {
-  position:relative;
-  height:300rpx;
-  background:linear-gradient(rgba(251,75,77,1),rgba(241,75,77,0.9));
-  box-shadow:0 0 20rpx #ccc;
-  color:white;
-  .surplus {
-    position: absolute;
-    top:40rpx;
-    left: 12px;
-  }
-  .bottom {
-    position: absolute;
-    bottom: 20rpx;
-    width: 100%;
-    left: 12px;
-    & > view {
-      width:50%;
-      float:left;
-    }
-  }
-  .edit-icon {
-    width:50rpx;
-    height:50rpx;
-    margin-left:16rpx;
-  }
-  .surplus {
-    color: white;
-  }
-  .surplus-amount {
-    overflow:hidden;
-    image {
-      margin-top:8rpx;
-    } 
-  }
-}
-
-#all-assets {
-  height: 100%;
-  .col999 {
-    color: @fontColor;
-  }
-  .category {
-    .detail > .title {
-      overflow-y:hidden;
-      padding:0 24rpx;
-      height: 120rpx;
-      border-bottom:2rpx solid #efefef;
-      > .time {
-        height: 100%;
-        text-align:center;
-      }
-      .align-column {
-        display:flex;
-        justify-content:center;
-        flex-direction:column;
-        height: 100%;
-      }
-      .income-and-expend {
-        margin-left:16rpx;
-      }
-      .left-money {
-        color:#999;
-        text-align:right;
-      }
-    }
-  }
-}
-</style>
+<style lang="scss" src="../../public/styles/assets/asset_detail.scss"></style>

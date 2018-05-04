@@ -37,9 +37,8 @@ export default class extends wepy.app {
       "pages/message/message"
     ],
     window: {
-      backgroundColor: "#fb4b4d",
-      navigationBarBackgroundColor: "#fb4b4d",
-      // navigationBarBackgroundColor: "#fefefe",
+      backgroundColor: "#BDBDBD",
+      navigationBarBackgroundColor: "#1976D2",
       backgroundTextStyle: "light",
       navigationBarTitleText: "洁账",
       navigationBarTextStyle: "white",
@@ -84,7 +83,7 @@ export default class extends wepy.app {
   }
 
   onLaunch () {
-    console.log('小程序第一次启动，此处应当获取版本号')
+    // console.log('小程序第一次启动，此处应当获取版本号')
   }
 
   constructor () {

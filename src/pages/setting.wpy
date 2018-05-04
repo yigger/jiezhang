@@ -29,6 +29,11 @@
       <view class="zan-cell__bd">图表浏览</view>
       <view class="zan-cell__ft"></view>
     </view> -->
+
+    <!-- <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">超级账单</view>
+      <view class="zan-cell__ft"></view>
+    </view> -->
   </view>
 
   <view class="zan-panel">
@@ -107,41 +112,4 @@
     }
   }
 </script>
-<style lang="less">
-page {
-	height:100%;
-	background:#F4F4F4;
-}
-.header {
-	padding:24rpx;
-	background:white;
-}
-.header image {
-	width:100rpx;
-	height:100rpx;
-	display:block;
-	margin-right:16rpx;
-	border-radius:50%;
-}
-.user-info {
-	font-size:28rpx;
-}
-.remark-day {
-	line-height:90rpx;
-	font-size:28rpx;
-	color:#999;
-}
-.cell-list {
-	margin-bottom:24rpx;
-}
-.cell-list:last-child {
-	margin:0;
-}
-.weui-cells {
-	font-size:30rpx;
-}
-.weui-cell {
-	padding:30rpx !important;
-}
-
-</style>
+<style lang="scss" src="../public/styles/setting.scss"></style>

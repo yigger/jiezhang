@@ -481,10 +481,10 @@
     line-height: 80rpx;
     border-bottom:1px solid #efefef;
     padding: 0 28rpx;
-    background:#fb4b4d;
-    color:white;
+    background:white;
+    color:#757575;
     font-size: 40rpx;
-    border-top: 1px solid #f56061;
+    // border-top: 1px solid #2196F3;
     .selectDate {
       display: inline-block;
       position: relative;
@@ -543,7 +543,7 @@
 		color:#fff;
 	}
 	.today {
-    background: #fb4b4d;
+    background: #2196F3;
 	}
   .start-bg {
     background: #FF7F00;

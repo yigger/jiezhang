@@ -1,0 +1,76 @@
+$darkPrimaryColor: #1976D2;
+$primaryColor: #2196F3;
+$primaryText: #212121;
+$secondaryText: #757575;
+$divideText: #BDBDBD;
+$expendColor: green;
+$incomeColor: red;
+
+page {
+  background: #fafafa;
+}
+.container {
+  > .money {
+    height:130rpx !important;
+    line-height: 130rpx !important;
+  }
+  > .column {
+    height: 120rpx;
+    line-height: 120rpx;
+    padding:0 24rpx;
+    border-bottom: 1px solid #efefef;
+    font-size: 32rpx;
+    background: white;
+    > text:last-child {
+      color: $secondaryText;
+    }
+    .remark {
+      height:120rpx !important;
+      line-height: 120rpx !important;
+      text-align: right;
+    }
+  }
+  .money-input {
+    height: 130rpx;
+    font-size: 56rpx;
+    text-align: right;
+  }
+  .frequent-use {
+    text-align: right;
+    font-size: 24rpx;
+    margin:24rpx;
+    > text:first-child {
+      color: $secondaryText;
+    }
+    .label {
+      background: #efefef;
+      color: $secondaryText;
+      padding:8rpx 16rpx;
+      margin-right: 8rpx;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+.tab {
+  height: 80rpx;
+  line-height: 80rpx;
+  background: white;
+  display: flex;
+  > view {
+    flex: 1;
+    text-align: center;
+    &:first-child {
+      border-right: 1px solid #efefef;
+    }
+  }
+  .expend-active {
+    color: $expendColor;
+    border-bottom: 1px solid $expendColor;
+  }
+  .income-active {
+    color: $incomeColor;
+    border-bottom: 1px solid $incomeColor;
+  }
+}

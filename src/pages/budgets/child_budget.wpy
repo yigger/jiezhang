@@ -38,8 +38,6 @@
           <view class="fs12 budget-amount">支出预算 {{ item.amount }}</view>
         </view>
       </view>
-      <!-- <caculate @invokeCaculation.user="invokeCaculation" hidden="{{ !showCaculation }}"></caculate> -->
-      <caculate @invokeCaculation.user="invokeCaculation" :amount.sync="amount" :showCaculation.sync="showCaculation"></caculate>
     </view>
   </view>
 </template>
@@ -48,7 +46,6 @@
   import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
-  import Caculate from '../../components/caculate'
 
   export default class ChildBudget extends wepy.page {
     config = {
@@ -56,27 +53,11 @@
     }
 
     data = {
-      showCaculation: false,
       budget: {},
       childs: [],
       parentId: 0,
       curCategoryId: 0,
       amount: '0.00'
-    }
-
-    components = {
-      caculate: Caculate
-    }
-
-    methods = {
-      invokeCaculation (amount) {
-        this.showCaculation = false
-        this.updateBudget(amount)
-      },
-      showCaculate(id) {
-        this.curCategoryId = id
-        this.showCaculation = true
-      }
     }
 
     onLoad (options) {
@@ -109,60 +90,4 @@
     }
   }
 </script>
-
-<style lang="less">
-.container {
-	height:100%;
-	.parent {
-    background:#f8f8f8;
-    border-bottom:2rpx solid #ccc;
-    .left {
-      background:#f2f2f2 !important;
-    }
-  }
-  .child .budget-info .right {
-    border-bottom:2rpx solid #f2f2f2;
-  }
-  .parent .budget-info,.child .budget-info {
-    height:120rpx;
-    padding:8rpx 24rpx 8rpx 12rpx;
-    .left {
-      float:left;
-      text-align:center;
-      display:flex;
-      justify-content:center;
-      margin-top:10rpx;
-      image {
-        width:70rpx;
-        height:70rpx;
-      }
-    }
-    .right {
-      margin-left:92rpx;
-      padding-bottom:16rpx;
-      .title {
-        overflow:hidden;
-        vertical-align:text-bottom;
-      }
-      .budget-amount {
-        color:#999;
-      }
-    }
-  }
-  .progress {
-    margin:12rpx 0;
-    overflow:hidden;
-    > view {
-      float:left;
-      width:50%;
-      height:8rpx;
-    }
-    .orange {
-      background:orange;
-    }
-    .gray {
-      background:#f2f2f2;
-    }
-  }
-}
-</style>
+<style lang="scss" src="../../public/styles/budgets/child_budget.scss"></style>

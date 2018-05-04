@@ -3,22 +3,19 @@
   <view class="wallet-header">
     <view class="assets">
       <view>
-        <view style='font-size: 28px'>{{ netWorth }}</view>
-        <view style='font-size: 14px'>净资产</view>
+        <view class="header-text">{{ netWorth }}</view>
+        <view class="desc-text">净资产</view>
       </view>
-
-      <view class="right">
-        <view class="fs14">
-          <text>总资产</text>
-          <text>{{ totalAssets }}</text>
-        </view>
-        <view class="fs14">
-          <text>总负债</text>
-          <text>{{ totalDebt }}</text>
-        </view>
+      <view>
+        <view class="header-text">{{ totalAssets }}</view>
+        <view class="desc-text">总资产</view>
       </view>
     </view>
     <view class="yesterday-amount">
+      <view>
+        <text>总负债：</text>
+        <text>{{ totalDebt }}</text>
+      </view>
       <view>
         <text>昨日结余：</text>
         <text>{{ yesterdayAmount }}</text>
@@ -36,7 +33,10 @@
 
   <view id="all-assets">
     <view class="asset" wx:for="{{ wallets }}">
-      <text class="fs12">{{ item.name }}</text>
+      <view class="asset-header">
+        <text class="fs12">{{ item.name }}</text>
+        <text class="fs12">{{ item.amount }}</text>
+      </view>
       <view class="column" wx:for="{{ item.childs }}" bindtap="showAsset('{{ item.id }}')">
         <view class="icon pull-left">
           <image class="ljt-icon" src="{{ item.icon_path }}"></image>
@@ -94,93 +94,4 @@
 		}
   }
 </script>
-<style lang="less">
-// Tab 资产界面
-.wallet-header {
-  height:360rpx;
-  position:relative;
-  background:linear-gradient(rgba(251,75,77,1),rgba(241,75,77,0.9));
-  box-shadow:0 0 20rpx #ccc;
-  .assets {
-    height:240rpx;
-    > view {
-      float:left;
-      width:50%;
-      color:white;
-      text-align:center;
-      margin-top:80rpx;
-      &:last-child {
-        margin-top:100rpx;
-      }
-    }
-    .right > view {
-      float:left;
-      margin-left:64rpx;
-      > text {
-        margin-right:28rpx;
-      }
-    }
-  }
-  .yesterday-amount {
-    color:white;
-    font-size:24rpx;
-    text-align:center;
-  }
-}
-
-#all-assets {
-  background:#f2f2f2;
-  .asset {
-    background:#fff;
-    padding:0 24rpx;
-    margin-bottom:24rpx;
-    box-shadow:0rpx 0rpx 2rpx #ccc;
-    &:last-child {
-      margin-bottom:0;
-    }
-    .column:last-child {
-      border: none;
-    }
-    > text {
-      color:#333;
-    }
-  }
-
-  .column:before, .column:after {
-    display:table;
-    content:" ";
-  }
-  .column:after {
-    clear:both;
-  }
-
-  .column {
-    height: 110rpx;
-    line-height: 110rpx;
-    border-bottom:1px solid #efefef;
-    &:last-child {
-      .title, .money {
-        border:none;
-      }
-    }
-    .icon {
-      height: 110rpx;
-      display: flex;
-      justify-content: center;
-      flex-direction:column;
-    }
-    .title {
-      margin-left:60rpx;
-      margin-right:180rpx;
-      padding-left:16rpx;
-      font-size:34rpx;
-    }
-    .money {
-      font-size:34rpx;
-      text-align:right;
-      color:#999;
-    }
-  }
-}
-
-</style>
+<style lang="scss" src="../public/styles/asset.scss"></style>
