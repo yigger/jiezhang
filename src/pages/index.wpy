@@ -46,14 +46,16 @@
         </repeat>
       </view>
 
-      <view hidden="{{ !showLoading }}">
-        <loading></loading>
+      <view class="zan-loadmore" hidden="{{ !showLoading }}">
+        <view class="zan-loading"></view>
+        <view class="zan-loadmore__tips">加载中...</view>
       </view>
     </view>
 
-    <view class="no-more-data" hidden="{{ !noMoreData }}">
-      没有更多了
+    <view class="zan-loadmore zan-loadmore--nodata" hidden="{{ !noMoreData }}">
+      <view class="zan-loadmore__tips">没有更多了</view>
     </view>
+    
 
     <view wx:if="{{ list.length == 0 && !showLoading }}">
       <empty :title.sync="emptyTitle"></empty>
@@ -127,7 +129,7 @@
         this.tabActive = item
         this.curPage = 1
         if (item == 'today') {
-          this.emptyTitle = '今天还没又记账呢~'
+          this.emptyTitle = '你今天还没记账呢~'
         } else {
           this.emptyTitle = '没找到记账数据呢~'
         }
@@ -228,12 +230,7 @@
         } else {
           this.list = Array.from(new Set([...this.list, ...data]))
         }
-        // wx.setStorageSync(`header-${this.scope}`, this.tabHeader)
-        // wx.setStorageSync(`list-${this.scope}`, this.list)
         this.noMoreData = false
-      } else {
-        // wx.setStorageSync(`header-${this.scope}`, { surplus: 0, income: 0, expend: 0 })
-        // wx.setStorageSync(`list-${this.scope}`, [])
       }
 
       if (options.from == 'reachBottom' && ((data != undefined && data.length == 0) || res.data.status == 405)) {

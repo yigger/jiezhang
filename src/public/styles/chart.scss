@@ -1,0 +1,197 @@
+$darkPrimaryColor: #1976D2;
+$primaryColor: #2196F3;
+$primaryText: #212121;
+$secondaryText: #757575;
+$divideText: #BDBDBD;
+$expendColor: green;
+$incomeColor: red;
+.container {
+	background:#f2f2f2;
+}
+#calendar {
+	background:white;
+	margin-bottom:16rpx;
+	box-shadow:0 0 10rpx #ccc;
+	padding-bottom:12rpx;
+}
+
+.col999 {
+	color: #999;
+}
+.left-amount {
+	font-size: 24rpx;
+	text-align: right;
+	padding-top: 24rpx;
+	> text {
+		margin-right: 12rpx;
+	}
+}
+// tab 样式
+.ljt-tab {
+	height: 80rpx;
+	line-height: 80rpx;
+	background: white;
+	border-bottom:2rpx solid #efefef;
+	.time {
+		border-right: 1px solid #f4f4f4;
+		color: #999;
+	}
+	.active {
+		color: $primaryColor;
+		border-bottom: 2px solid $primaryColor;
+	}
+	> view {
+		display: inline-block;
+		width: 33%;
+		text-align: center;
+	}
+}
+
+.assets {
+	background: white;
+	$tmHeight: 100rpx;
+	// 分类查看的样式
+	.mutiple {
+		> .header {
+			height: $tmHeight;
+			line-height: $tmHeight;
+			border-bottom: 1px solid #efefef;
+			padding:0 24rpx;
+			background:#FAFAFC;
+		}
+	}
+}
+
+/* 日历样式 */
+#calendar {
+	.box {
+		display:flex;
+	}
+	.box-lr {
+		flex-direction:row;
+	}
+	.box-rl {
+		flex-direction:row-reverse;
+	}
+	.box-tb {
+		flex-direction:column;
+	}
+	.selected-bg {
+		background:#ccc;
+	}
+	.box-pack-center {
+		justify-content:center;
+	}
+	.box-align-center {
+		align-items:center;
+	}
+	.box-wrap {
+		flex-wrap:wrap;
+	}
+	.flex {
+		flex-grow:1;
+	}
+  .calendar-header {
+    height: 80rpx;
+    line-height: 80rpx;
+    border-bottom:1px solid #efefef;
+    padding: 0 28rpx;
+    background:white;
+    color:#757575;
+    font-size: 40rpx;
+    // border-top: 1px solid #2196F3;
+    .selectDate {
+      display: inline-block;
+      position: relative;
+      padding-right: 36rpx;
+      image {
+        position:absolute;
+        right:0;
+        top:0;
+        margin-top:26rpx;
+        width:30rpx;
+        height:30rpx;
+      }
+    }
+    .select-type {
+      font-size: 14px;
+      picker {
+        display:inline-block;
+      }
+      image {
+        width: 30rpx;
+        height: 30rpx;
+        float:left;
+        margin-top:24rpx;
+        margin-right: 8rpx;
+      }
+    }
+  }
+	
+	.weeks {
+		height: 60rpx;
+		line-height: 60rpx;
+		color:#999;
+		border-bottom:2rpx solid #f3f3f3;
+	}
+	.week {
+		text-align:center;
+	}
+	.days {
+		height:480rpx;
+	}
+	.grid {
+		width:107.1428571429rpx;
+	}
+	.day {
+		width:70rpx;
+		height:70rpx;
+		color:black;
+		font-size:32rpx;
+		font-weight:400;
+	}
+	.border-radius {
+		border-radius:50%;
+		position:relative;
+		left:0;
+		top:0;
+		color:#fff;
+	}
+	.today {
+    background: #2196F3;
+	}
+  .start-bg {
+    background: #FF7F00;
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      right: 0;
+      width: 3px;
+      height: 3px;
+      text-align: center;
+      background: #FF7F00;
+      left: 50%;
+      margin-left: -2px;
+      border-radius: 50%;
+    }
+  }
+  .end-bg {
+    background: #8B8B83;
+     &:after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      right: 0;
+      width: 3px;
+      height: 3px;
+      text-align: center;
+      background: #8B8B83;
+      left: 50%;
+      margin-left: -2px;
+      border-radius: 50%;
+    }
+  }
+}
