@@ -6,44 +6,47 @@ $divideText: #BDBDBD;
 $expendColor: green;
 $incomeColor: red;
 
-page {
-	background:#f2f2f2;
-}
-.container {
-	height:100%;
-}
 .header {
-	height:300rpx;
-	position:relative;
-	background: $primaryColor;
-  box-shadow:0 0 20rpx #ccc;
+  position:relative;
+  height:300rpx;
+  background: $primaryColor;
+  box-shadow:0 0 20rpx $divideText;
   color:white;
-  .edit-icon {
-    width:50rpx;
-    height:50rpx;
-    margin-left:16rpx;
+  .surplus {
+    color:white;
+    padding: 48rpx 0;
+    text-align:center;
+    color: white;
   }
-  .level-1 {
+  .bottom {
     position: absolute;
+    bottom: 0;
+    padding: 10rpx 0;
     width: 100%;
-    top: 18rpx;
-    > view {
-      padding: 0 24rpx;
+    border-top:1px solid #448aff;
+    & > view {
+      width:50%;
+      text-align: center;
+      display: inline-block;
+      &:first-child {
+        box-shadow: 1px 0 0 #448aff;
+      }
     }
   }
-  .level-2 {
-    position: absolute;
-    width: 90%;
-    height: 100rpx;
-    bottom: 12rpx;
-    padding: 0 24rpx;
+  .edit-icon {
+    width:40rpx;
+    height:40rpx;
+    margin-left:16rpx;
   }
-  .level-2 > view {
-    width:50%;
-    text-align:left;
-    display:inline-block;
+  .surplus-amount {
+    overflow:hidden;
+    text-align: center;
+    image {
+      margin-top:8rpx;
+    } 
   }
 }
+
 .center {
 	background:white;
 	height:100%;

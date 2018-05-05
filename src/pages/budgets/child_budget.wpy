@@ -2,7 +2,7 @@
   <view class="container">
 
     <view class="parent">
-      <view class="budget-info" @tap="showCaculate('{{ budget.id }}')">
+      <view class="budget-info" @tap="showAmount('{{ budget.id }}')">
         <view class="left"><image src="{{ budget.icon_path }}"></image></view>
         <view class="right">
           <view class="title">
@@ -21,7 +21,7 @@
     </view>
 
     <view class="child">
-      <view class="budget-info" wx:for="{{ childs }}" @tap="showCaculate('{{ item.id }}')">
+      <view class="budget-info" wx:for="{{ childs }}" @tap="showAmount('{{ item.id }}', '{{ item.amount }}')">
         <view class="left"><image src="{{ item.icon_path }}"></image></view>
         <view class="right">
           <view class="title">
@@ -39,6 +39,14 @@
         </view>
       </view>
     </view>
+
+    <modal-money 
+      :visible.sync="showModalMoney"
+      :amount.sync="modalAmount"
+      @submit.user="changeAmount"
+      @cancel.user="cancel"
+    ></modal-money>
+
   </view>
 </template>
 
@@ -46,6 +54,7 @@
   import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
+  import ModalMoney from '../../components/modal_money'
 
   export default class ChildBudget extends wepy.page {
     config = {
@@ -57,13 +66,35 @@
       childs: [],
       parentId: 0,
       curCategoryId: 0,
-      amount: '0.00'
+      amount: '0.00',
+      modalAmount: 0,
+      showModalMoney: false
     }
 
+    components = {
+      'modal-money': ModalMoney
+    }
+    
     onLoad (options) {
       let id = options.id
       this.parentId = id
       this.getData(id)
+    }
+
+    methods = {
+      showAmount(id, amount) {
+        this.curCategoryId = id
+        this.modalAmount = amount
+        this.showModalMoney = true
+        // this.$apply()
+      },
+      changeAmount (amount) {
+        this.updateBudget(amount)
+        this.showModalMoney = false
+      },
+      cancel (amount) {
+        this.showModalMoney = false
+      }
     }
 
     async getData(id) {

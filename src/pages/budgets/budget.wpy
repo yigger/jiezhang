@@ -1,21 +1,21 @@
 <template>
   <view class="container">
     <view class="header">
-      <view class="level-1">
-        <view class="budget-amount fs32">
+      <view class="surplus">
+        <view class="surplus-amount fs24" @tap="showAmountModal">
           <text>{{ amount }}</text>
           <image class="edit-icon" src="../../public/images/edit.png"></image>
         </view>
-        <view class="fs12">支出总预算</view>
+        <view class="fs14">支出总预算</view>
       </view>
-      <view class="level-2">
+      <view class="bottom">
         <view>
-          <text class="fs21">{{ header.used }}</text>
-          <view class="fs12">当月已用</view>
+          <view class="fs22">{{ header.used }}</view>
+          <view class="fs14">当月已用</view>
         </view>
         <view>
-          <text class="fs21">{{ header.surplus }}</text>
-          <view class="fs12">预算剩余</view>
+          <view class="fs22">{{ header.surplus }}</view>
+          <view class="fs14">预算剩余</view>
         </view>
       </view>
     </view>
@@ -41,9 +41,12 @@
       </view>
     </view>
 
-    <view hidden="{{ !showLoading }}">
-      <loading></loading>
-    </view>
+    <modal-money 
+      :visible.sync="showModalMoney"
+      :amount.sync="amount"
+      @submit.user="changeAmount"
+      @cancel.user="cancel"
+    ></modal-money>
   </view>
 </template>
 
@@ -51,28 +54,39 @@
   import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
-  import Caculate from '../../components/caculate'
+  import ModalMoney from '../../components/modal_money'
 
   export default class Budget extends wepy.page {
-    data = {
-      header: {},
-      list: [],
-      amount: '0.00',
-      showLoading: false
-    }
-    components = {
-      caculate: Caculate
-    }
-
     config = {
       navigationBarTitleText: '预算设置'
     }
 
+    data = {
+      header: {},
+      list: [],
+      amount: '0.00',
+      showModalMoney: false
+    }
+
+    components = {
+      'modal-money': ModalMoney
+    }
+   
     methods = {
       redirect (id) {
         wepy.redirectTo({
           url: '/pages/budgets/child_budget?id='+id
         })
+      },
+      showAmountModal () {
+        this.showModalMoney = true
+      },
+      changeAmount (amount) {
+        this.updateBudget(amount)
+        this.showModalMoney = false
+      },
+      cancel() {
+        this.showModalMoney = false
       }
     }
 
@@ -89,10 +103,8 @@
     }
 
     async getParentBudget() {
-      this.showLoading = true
       const res = await api.BudgetParent()
       this.list = res.data
-      this.showLoading = false
       this.$apply()
     }
 

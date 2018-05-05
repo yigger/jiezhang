@@ -2,8 +2,9 @@
 <view class="container">
   <view id="wallet-header">
     <view class="surplus">
-      <view class="surplus-amount fs24">
-        {{ amount }}
+      <view class="surplus-amount fs24" @tap="showAmountModal">
+        <text>{{ amount }}</text>
+        <image class="edit-icon" src="../../public/images/edit.png"></image>
       </view>
       <view class="fs14">总额</view>
     </view>
@@ -52,6 +53,13 @@
   <view wx:else>
     <empty title="暂无数据哦~"></empty>
   </view>
+
+  <modal-money 
+    :visible.sync="showModalMoney"
+    :amount.sync="amount"
+    @submit.user="changeAmount"
+    @cancel.user="cancel"
+  ></modal-money>
 </view>
 </template>
 
@@ -61,6 +69,8 @@
   import tip from '../../utils/tip'
   import Empty from '../../components/empty'
   import Single from '../../components/single'
+  import ModalMoney from '../../components/modal_money'
+  
   export default class AssetDetail extends wepy.page {
     config = {
       navigationBarTitleText: '消费详情'
@@ -68,8 +78,8 @@
 
     components = {
       empty: Empty,
-      single: Single
-      // filter: Filter
+      single: Single,
+      'modal-money': ModalMoney
     }
 
 		data = {
@@ -82,7 +92,8 @@
       list: [], 
       already_load: false,
       amount: '0.00',
-      showLoading: false
+      showLoading: false,
+      showModalMoney: false
     }
     
     methods = {
@@ -92,6 +103,16 @@
 			},
       showStatement (id) {
         wx.navigateTo({ url: `/pages/statements/statement?id=${id}` })
+      },
+      showAmountModal () {
+        this.showModalMoney = true
+      },
+      changeAmount (amount) {
+        this.updateSurplus(amount)
+        this.showModalMoney = false
+      },
+      cancel () {
+        this.showModalMoney = false
       }
     }
 
