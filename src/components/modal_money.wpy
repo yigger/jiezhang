@@ -15,6 +15,7 @@
 </template>
 
 <script>
+  // 设置金额的 modal 弹出层
 	import wepy from 'wepy'
   export default class ModalMoney extends wepy.component {
     props = {

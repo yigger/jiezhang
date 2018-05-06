@@ -18,7 +18,7 @@
 
 <script>
   import wepy from 'wepy'
-  export default class IndexSt extends wepy.component {
+  export default class IndexStatement extends wepy.component {
     props = {
       statement: {
         type: Object,

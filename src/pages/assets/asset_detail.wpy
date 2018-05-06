@@ -20,10 +20,6 @@
     </view>
   </view>
 
-  <view hidden="{{ !showLoading }}">
-    <loading></loading>
-  </view>
-
   <view id="all-assets" wx:if="{{ !showEmpty }}">
     <view class="asset category" wx:for="{{ list }}" wx:for-item="pst" bindtap="showHidden('{{ index }}')">
       <view class="detail">
@@ -92,7 +88,6 @@
       list: [], 
       already_load: false,
       amount: '0.00',
-      showLoading: false,
       showModalMoney: false
     }
     
@@ -137,14 +132,12 @@
     }
 
     async statements () {
-      this.showLoading = true
       const res = await api.AssetDetailList({
         query: {
           asset_id: this.asset_id
         }
       })
       this.list = res.data
-      this.showLoading = false
       this.$apply()
     }
 

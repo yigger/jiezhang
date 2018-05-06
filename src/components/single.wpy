@@ -1,5 +1,4 @@
 <template lang="wxml">
-  <!-- 用于 asset_detail 的模板 -->
   <view class="tiaomu" @tap="showStatement('{{ item.id }}')">
     <view class="pull-left col999 date-time">
       <view class="fs14">{{ item.day }}</view>
@@ -17,6 +16,7 @@
 </template>
 
 <script>
+	// asset_detail 消费详情
 	import wepy from 'wepy'
   export default class Single extends wepy.component {
     props = {

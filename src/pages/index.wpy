@@ -37,12 +37,12 @@
       </view>
 
       <view wx:if="{{ scope == 'year' || scope == 'month' }}">
-        <IndexYear :list.sync="list"></IndexYear>
+        <index-year-month :list.sync="list"></index-year-month>
       </view>
 
       <view wx:else>
         <repeat for="{{ list }}" key="index" index="index" item="item">
-          <indexst :statement.sync="item"></indexst>
+          <index-statement :statement.sync="item"></index-statement>
         </repeat>
       </view>
 
@@ -67,9 +67,8 @@
   import wepy from 'wepy'
   import api from "../utils/api"
   import Empty from '../components/empty'
-  import IndexSt from '../components/index_st'
-  import IndexYear from '../components/index/year'
-  import loading from '../components/loading'
+  import IndexStatement from '../components/index/statement'
+  import IndexYearMonth from '../components/index/year_month'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '首页',
@@ -104,9 +103,8 @@
 
     components = {
       empty: Empty,
-      indexst: IndexSt,
-      IndexYear: IndexYear,
-      loading: loading
+      'index-statement': IndexStatement,
+      'index-year-month': IndexYearMonth
 		}
 
     methods = {

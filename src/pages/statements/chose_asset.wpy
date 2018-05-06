@@ -33,7 +33,7 @@
   import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
-  import Category from '../../components/category'
+  import Category from '../../components/category_item'
   export default class choseAsset extends wepy.page {
     data = {
       frequent: [],

@@ -9,7 +9,7 @@
 
 <script>
   import wepy from 'wepy'
-  export default class Category extends wepy.component {
+  export default class CategoryItem extends wepy.component {
     props = {
       category: {
         type: Object,

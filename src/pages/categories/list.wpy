@@ -7,9 +7,6 @@
       </view>
       <text class="fs16">添加分类</text>
     </navigator>
-    <view hidden="{{ !showLoading }}">
-      <loading></loading>
-    </view>
   </view>
 </template>
 
@@ -30,8 +27,7 @@
 
     data = {
       categories: [],
-      type: 'expend',
-      showLoading: false
+      type: 'expend'
     }
 
     onLoad (options) {
@@ -43,7 +39,6 @@
     }
 
     async getList() {
-      this.showLoading = true
       const json = await api.Category({
         addCache: this.cacheKey(),
         query: {
@@ -51,7 +46,6 @@
         }
       })
       this.categories = json.data
-      this.showLoading = false
       this.$apply()
     }
     

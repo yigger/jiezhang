@@ -54,9 +54,7 @@
       </view>
 
       <input hidden type="text" name="type" value="{{ type }}"/>
-
     </view>
-    <category></category>
   </form>
 </template>
 

@@ -46,6 +46,7 @@
 </template>
 
 <script>
+// 计算器组件（暂时已弃用）
 import wepy from 'wepy';
 export default class Caculate extends wepy.component {
     props = {
