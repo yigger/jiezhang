@@ -98,7 +98,8 @@
       noMoreData: false,
       stopRequest: false,
       preventRepeatReuqest: false,
-      showLoading: false
+      showLoading: false,
+      isLoaded: false
     }
 
     components = {
@@ -172,11 +173,19 @@
     }
 
     async onLoad () {
+      this.isLoaded = true
+      await this.getHeader()
       await this.getList()
     }
 
     async onShow () {
-      await this.getHeader()
+      if(!this.isLoaded) {
+        await this.getHeader()
+      }
+    }
+
+    onHide() {
+      this.isLoaded = false
     }
 
     // 此函数用于 statement.wpy 里更新后调用
