@@ -37,6 +37,11 @@
   </view>
 
   <view class="zan-panel">
+    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/settings/super_statement')">
+      <view class="zan-cell__bd">超级账单</view>
+      <view class="zan-cell__ft"></view>
+    </view>
+
     <view class="zan-cell zan-cell--access" @tap="redirect('/pages/assets/list')">
       <view class="zan-cell__bd">资产类型管理</view>
       <view class="zan-cell__ft"></view>

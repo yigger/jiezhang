@@ -292,7 +292,7 @@
     }
 
     async getLastUsed() {
-      const res = await api.StatementFrequentUsed({
+      const res = await api.LastUsed({
         showLoading: true,
         query: {
           type: this.type

@@ -50,11 +50,7 @@
     }
     
     onShow () {
-      if (this.type == 'expend') {
-        this.getExpendCategory()
-      } else {
-        this.getIncomeCategory()
-      }
+      this.getCategory()
     }
 
     methods = {
@@ -68,19 +64,10 @@
       }
     }
 
-    async getExpendCategory () {
-      const res = await api.getExpendCategories({
-        showLoading: true
+    async getCategory () {
+      const res = await api.StatementCategories({
+        query: { type: this.type }
       })
-      const data = res.data
-      this.frequent = data.frequent
-      this.last = data.last
-      this.list = data.categories
-      this.$apply()
-    }
-
-    async getIncomeCategory () {
-      const res = await api.getIncomeCategories({showLoading: true})
       const data = res.data
       this.frequent = data.frequent
       this.last = data.last

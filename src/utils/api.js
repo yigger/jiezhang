@@ -17,10 +17,9 @@ const Statement = (params, c_id = 0) => {
   if (c_id != null && c_id != 0) url = `${url}/${c_id}`
   return wxRequest(params, url)
 }
-const StatementFrequentUsed = (params) => wxRequest(params, `${apiUrl}/statements/frequent_used`);
+const LastUsed = (params) => wxRequest(params, `${apiUrl}/statements/frequent_used`);
 const getStatementAssets = (params) => wxRequest(params, `${apiUrl}/statements/assets`);
-const getExpendCategories = (params) => wxRequest(params, `${apiUrl}/statements/expend_categories`);
-const getIncomeCategories = (params) => wxRequest(params, `${apiUrl}/statements/income_categories`);
+const StatementCategories = (params) => wxRequest(params, `${apiUrl}/statements/categories`);
 const guessCategory = (params) => wxRequest(params, `${apiUrl}/statements/category_frequent`);
 const guessAsset = (params) => wxRequest(params, `${apiUrl}/statements/asset_frequent`);
 
@@ -86,10 +85,9 @@ module.exports = {
   getIndexHeader,
   getIndexStatement,
   Statement,
-  StatementFrequentUsed,
+  LastUsed,
   getStatementAssets,
-  getExpendCategories,
-  getIncomeCategories,
+  StatementCategories,
   Chart,
   Asset,
   AssetIcon,
