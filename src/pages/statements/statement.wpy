@@ -1,10 +1,12 @@
 <template lang="wxml">
   <view class="tab">
-    <view class="{{ type == 'expend' ? 'expend-active' : '' }}" @tap="choseTab('expend')">支出</view>
-    <view class="{{ type == 'income' ? 'income-active' : '' }}" @tap="choseTab('income')">收入</view>
+    <view class="{{ type == 'expend' ? 'active' : '' }}" @tap="choseTab('expend')">支出</view>
+    <view class="{{ type == 'income' ? 'active' : '' }}" @tap="choseTab('income')">收入</view>
+    <view class="{{ type == 'transfer' ? 'active' : '' }}" @tap="choseTab('transfer')">转账</view>
+    <view class="{{ type == 'balance' ? 'active' : '' }}" @tap="choseTab('balance')">余额</view>
   </view>
   <form bindsubmit="formSubmit">
-    <view class="container">
+    <view class="container" wx:if="{{type == 'expend' || type == 'income'}}">
       <view class="column money">
         <text>金额</text>
         <input class="pull-right money-input {{ type }}" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
@@ -55,6 +57,52 @@
 
       <input hidden type="text" name="type" value="{{ type }}"/>
     </view>
+
+    <view class="container" wx:if="{{ type == 'transfer' }}">
+      <view class="column money">
+        <text>金额</text>
+        <input class="pull-right money-input {{ type }}" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
+      </view>
+
+      <view class="column transfer-type">
+        <view @tap="assetFrom">{{ source }}</view>
+        <image @tap="exchangeAsset" class="transfer-icon" src="/public/images/transfer.png"></image>
+        <view @tap="assetTo">{{ target }}</view>
+      </view>
+
+      <picker class="column zan-cell--access" mode="date" start="2017-01-01" bindchange="dateChange">
+        <text>日期</text>
+        <text class="pull-right">{{ date }}</text>
+        <input hidden name="date" value="{{ date }}" type="number"/>
+      </picker>
+
+      <view class="column">
+        <text>备注</text>
+        <input class="pull-right remark" type="text" name="description"  value="{{ description }}" placeholder="备注信息"/>
+      </view>
+
+      <view class="zan-btns">
+        <button class="zan-btn ljt-btn" formType="submit" @tap="submit">保存</button>
+      </view>
+    </view>
+
+    <view class="container" wx:if="{{ type == 'balance' }}">
+      <view class="column money">
+        <text>余额</text>
+        <input class="pull-right money-input" placeholder="0.00" name="amount" type="digit" value="{{ amount }}"/>
+      </view>
+
+      <navigator class="column zan-cell--access" url="/pages/statements/chose_category?type={{ type }}">
+        <text>分类</text>
+        <text class="pull-right" type="digit">{{ category_name }}</text>
+        <input hidden  name="category_id" value="{{ category_id }}" type="number"/>
+      </navigator>
+
+      <view class="zan-btns">
+        <button class="ljt-btn" formType="submit" @tap="submit">保存</button>
+      </view>
+    </view>
+
   </form>
 </template>
 
@@ -79,7 +127,13 @@
       description: '',
       date: '',
       assets_label: [],
-      categories_label: []
+      categories_label: [],
+      asset_log_id: 0,
+      source: '请选择账户',
+      target: '请选择账户',
+      from: 0,
+      to: 0,
+      transferType: 0
     }
 
     onLoad(options) {
@@ -90,8 +144,11 @@
       if (month < 10) month = `0${month}`
       if (day < 10) day = `0${day}`
       this.date = [year, month, day].join('-')
+
       if (options.id != undefined) {
         this.getStatement(options.id)
+      } else if (options.asset_log_id != undefined) {
+        this.getTransfer(options.asset_log_id)
       } else {
         // 获取上次使用的分类和账户
         this.getLastUsed()
@@ -109,6 +166,7 @@
     methods = {
       async formSubmit (e) {
         let statement = e.detail.value
+        statement.type = this.type
         if (statement.amount == 0 || statement.amount == '') {
           tip.error('金额不能为零')
           return false
@@ -124,9 +182,23 @@
           return false
         }
 
+        if (this.type == 'transfer') {
+          if (this.from == 0 || this.to == 0) {
+            tip.error('未选择转账分类')
+            return false
+          } else if (this.from == this.to) {
+            tip.error('不能转去同一类型')
+            return false
+          }else {
+            statement.from = this.from
+            statement.to = this.to
+          }
+        }
+
         const localDate = new Date();
         statement.time = [localDate.getHours(), localDate.getMinutes(), localDate.getSeconds()].join(':')
-        const res = await api.Bill({
+        statement.asset_log_id = this.asset_log_id
+        const res = await api.Statement({
           showLoading: true,
           method: this.method,
           query: {
@@ -139,7 +211,7 @@
             delta: 1
           })
           // 保存成功后更新上个页面的数据
-          this.updatePrevPage(result.msg.id, this.method)
+          // this.updatePrevPage(result.msg.id, this.method)
         } else {
           tip.error(result.msg)
         }
@@ -163,11 +235,28 @@
       tabCategory (category) {
         this.category_id = category.id
         this.category_name = category.name
+      },
+      assetFrom () {
+        this.transferType = 1
+        wx.navigateTo({ url: "/pages/statements/chose_asset" })
+      },
+      assetTo () {
+        this.transferType = 2
+        wx.navigateTo({ url: "/pages/statements/chose_asset" })
+      },
+      exchangeAsset () {
+        let tmp1 = this.source
+        this.source = this.target
+        this.target = tmp1
+
+        let tmp2 = this.from
+        this.from = this.to
+        this.to = tmp2
       }
     }
 
     async getStatement (id) {
-      const res = await api.Bill({showLoading: true}, id);
+      const res = await api.Statement({showLoading: true}, id);
       const statement = res.data
       if (statement.status != undefined && statement.status != 200) {
         wepy.navigateBack({
@@ -188,9 +277,14 @@
       this.$apply()
     }
 
+    async getTransfer (id) {
+      // 获取转账信息
+
+    }
+
     async del () {
       await tip.confirm('确定删除该条记录？', {}, '提示')
-      const res = await api.Bill({showLoading: true, method: 'DELETE'}, this.statement_id);
+      const res = await api.Statement({showLoading: true, method: 'DELETE'}, this.statement_id);
       this.updatePrevPage(this.statement_id, 'delete')
       wepy.navigateBack({
         delta: 1
@@ -198,7 +292,7 @@
     }
 
     async getLastUsed() {
-      const res = await api.getBillFrequentUsed({
+      const res = await api.StatementFrequentUsed({
         showLoading: true,
         query: {
           type: this.type
@@ -243,9 +337,20 @@
     }
 
     setAsset (asset) {
-      this.asset_id = asset.id
-      this.asset_name = asset.name
+      if (this.type != 'transfer') {
+        this.asset_id = asset.id
+        this.asset_name = asset.name
+      } else {
+        if (this.transferType == 1) {
+          this.source = asset.name
+          this.from = asset.id
+        } else {
+          this.target = asset.name
+          this.to = asset.id
+        }
+      }
     }
+
   }
 </script>
 <style lang="scss" src="../../public/styles/statement/statement.scss"></style>

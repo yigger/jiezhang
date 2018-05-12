@@ -249,13 +249,13 @@
     }
 
     async getStatementById(obj, id) {
-      const res = await api.getIndexBill(id)
+      const res = await api.getIndexStatement(id)
       Object.assign(obj, res.data)
       this.$apply()
     }
 
     async addStatementById(id) {
-      const res = await api.getIndexBill(id)
+      const res = await api.getIndexStatement(id)
       this.list = [res.data].concat(this.list)
       this.$apply()
     }

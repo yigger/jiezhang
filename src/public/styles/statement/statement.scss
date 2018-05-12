@@ -52,6 +52,26 @@ page {
       }
     }
   }
+  .transfer-type {
+    position: relative;
+    > view {
+      width: 50%;
+      text-align: center;
+      display: inline-block;
+    }
+    .transfer-icon {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      width:60rpx;
+      height:60rpx;
+      
+    }
+  }
+  
 }
 .tab {
   height: 80rpx;
@@ -61,16 +81,9 @@ page {
   > view {
     flex: 1;
     text-align: center;
-    &:first-child {
-      border-right: 1px solid #efefef;
-    }
   }
-  .expend-active {
-    color: $expendColor;
-    border-bottom: 1px solid $expendColor;
-  }
-  .income-active {
-    color: $incomeColor;
-    border-bottom: 1px solid $incomeColor;
+  .active {
+    color: $primaryColor;
+    border-bottom: 1px solid $primaryColor;
   }
 }

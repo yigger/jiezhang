@@ -61,7 +61,7 @@
     }
 
     async getAsset () {
-      const res = await api.getBillAssets({showLoading: true})
+      const res = await api.getStatementAssets({showLoading: true})
       const data = res.data
       this.frequent = data.frequent
       this.last = data.last

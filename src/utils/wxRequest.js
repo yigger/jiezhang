@@ -19,7 +19,7 @@ const wxRequest = async(params = {}, url) => {
 		return Session.get(params.addCache)
 	}
 
-	if (Host.env === 0) {
+	if (Host.env !== 2) {
 		// 测试环境不进行授权登录，直接请求接口
 		res = await doRequest(params, url)
 	} else {

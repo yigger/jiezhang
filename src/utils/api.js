@@ -9,16 +9,16 @@ const apiUrl = Host.url
 // 获取首页数据
 const getIndexList = (params) => wxRequest(params, `${apiUrl}/index`);
 const getIndexHeader = (params) => wxRequest(params, `${apiUrl}/header`);
-const getIndexBill = (id) => wxRequest({}, `${apiUrl}/statement/${id}`);
+const getIndexStatement = (id) => wxRequest({}, `${apiUrl}/statement/${id}`);
 
 // 获取账单
-const Bill = (params, c_id = 0) => {
+const Statement = (params, c_id = 0) => {
   let url = `${apiUrl}/statements`
   if (c_id != null && c_id != 0) url = `${url}/${c_id}`
   return wxRequest(params, url)
 }
-const getBillFrequentUsed = (params) => wxRequest(params, `${apiUrl}/statements/frequent_used`);
-const getBillAssets = (params) => wxRequest(params, `${apiUrl}/statements/assets`);
+const StatementFrequentUsed = (params) => wxRequest(params, `${apiUrl}/statements/frequent_used`);
+const getStatementAssets = (params) => wxRequest(params, `${apiUrl}/statements/assets`);
 const getExpendCategories = (params) => wxRequest(params, `${apiUrl}/statements/expend_categories`);
 const getIncomeCategories = (params) => wxRequest(params, `${apiUrl}/statements/income_categories`);
 const guessCategory = (params) => wxRequest(params, `${apiUrl}/statements/category_frequent`);
@@ -84,10 +84,10 @@ module.exports = {
   host: Host.host,
   getIndexList,
   getIndexHeader,
-  getIndexBill,
-  Bill,
-  getBillFrequentUsed,
-  getBillAssets,
+  getIndexStatement,
+  Statement,
+  StatementFrequentUsed,
+  getStatementAssets,
   getExpendCategories,
   getIncomeCategories,
   Chart,
