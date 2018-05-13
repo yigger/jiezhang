@@ -22,6 +22,11 @@ const getStatementAssets = (params) => wxRequest(params, `${apiUrl}/statements/a
 const StatementCategories = (params) => wxRequest(params, `${apiUrl}/statements/categories`);
 const guessCategory = (params) => wxRequest(params, `${apiUrl}/statements/category_frequent`);
 const guessAsset = (params) => wxRequest(params, `${apiUrl}/statements/asset_frequent`);
+const TransferInfo = (params, c_id = 0) => {
+  let url = `${apiUrl}/transfer`
+  if (c_id != null && c_id != 0) url = `${url}/${c_id}`
+  return wxRequest(params, url)
+}
 
 // tab 统计
 const Chart = (params) => wxRequest(params, `${apiUrl}/chart`);
@@ -88,6 +93,7 @@ module.exports = {
   LastUsed,
   getStatementAssets,
   StatementCategories,
+  TransferInfo,
   Chart,
   Asset,
   AssetIcon,

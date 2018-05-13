@@ -1,5 +1,5 @@
 <template lang="wxml">
-  <view class="tab">
+  <view class="tab" wx:if="{{ !(type == 'transfer' && method == 'PUT') }}">
     <view class="{{ type == 'expend' ? 'active' : '' }}" @tap="choseTab('expend')">支出</view>
     <view class="{{ type == 'income' ? 'active' : '' }}" @tap="choseTab('income')">收入</view>
     <view class="{{ type == 'transfer' ? 'active' : '' }}" @tap="choseTab('transfer')">转账</view>
@@ -61,7 +61,7 @@
     <view class="container" wx:if="{{ type == 'transfer' }}">
       <view class="column money">
         <text>金额</text>
-        <input class="pull-right money-input {{ type }}" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
+        <input class="pull-right money-input expend" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
       </view>
 
       <view class="column transfer-type">
@@ -128,6 +128,7 @@
       date: '',
       assets_label: [],
       categories_label: [],
+      // 转账信息
       asset_log_id: 0,
       source: '请选择账户',
       target: '请选择账户',
@@ -198,6 +199,10 @@
         const localDate = new Date();
         statement.time = [localDate.getHours(), localDate.getMinutes(), localDate.getSeconds()].join(':')
         statement.asset_log_id = this.asset_log_id
+        if (this.type == 'transfer' && this.method == 'PUT') {
+          this.statement_id = this.asset_log_id
+        }
+        
         const res = await api.Statement({
           showLoading: true,
           method: this.method,
@@ -279,7 +284,19 @@
 
     async getTransfer (id) {
       // 获取转账信息
-
+      this.type = 'transfer'
+      const res = await api.TransferInfo({}, id);
+      const data = res.data
+      this.method = 'PUT'
+      this.asset_log_id = data.id
+      this.amount = data.amount
+      this.from = data.from
+      this.to = data.to
+      this.description = data.description
+      this.date = data.date
+      this.source = data.source
+      this.target = data.target
+      this.$apply()
     }
 
     async del () {
