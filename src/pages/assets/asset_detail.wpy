@@ -121,7 +121,7 @@
     }
 
     async information () {
-       const res = await api.AssetDetailInformation({
+      const res = await api.AssetDetailInformation({
         query: {
           asset_id: this.asset_id
         }

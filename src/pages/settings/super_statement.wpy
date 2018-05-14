@@ -19,27 +19,87 @@
       </view>
     </view>
     
+    <filter @paramsFilter.user="setParams"></filter>
+
+    <view id="all-assets">
+      <view class="asset category" wx:for="{{ list }}" wx:for-item="pst" @tap="showHidden('{{ index }}')">
+        <view class="detail">
+          <view class="title">
+            <view class="pull-left time align-column">
+              <view class="fs16">{{ pst.month }}月</view>
+              <view class="fs14 description">{{ pst.year }}</view>
+            </view>
+            <view class="pull-left align-column income-and-expend">
+              <view class="fs14 income">收入 {{ pst.income_amount }}</view>
+              <view class="fs14 expend">支出 {{ pst.expend_amount }}</view>
+            </view>
+            <view class="pull-right align-column left-money">
+              <view class="fs18">{{ pst.surplus }}</view>
+            </view>
+          </view>
+
+          <view class="content" hidden="{{ pst.hidden }}">
+            <repeat for="{{ pst.childs }}" key="index" index="index" item="item">
+              <single :item.sync="item"></single>
+            </repeat>
+          </view>
+        </view>
+      </view>
+    </view>
 
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
+  import api from "../../utils/api"
+  import tip from '../../utils/tip'
+  import Single from '../../components/single'
+  import Filter from '../../components/filter'
   export default class SuperStatement extends wepy.page {
     config = {
       navigationBarTitleText: '超级账单'
     }
 
-    data = {
+    components = {
+      filter: Filter,
+      single: Single
+    }
 
+    data = {
+      list: [],
+      params: {}
+    }
+
+    onLoad () {
+      this.statements()
     }
 
     methods = {
+      showHidden(idx) {
+        let value = !this.list[idx].hidden
+        this.list[idx]['hidden'] = value
+			},
+      showStatement (id) {
+        wx.navigateTo({ url: `/pages/statements/statement?id=${id}` })
+      },
+      setParams (params) {
+        this.params = params
+        this.statements()
+      }
     }
 
+    async statements () {
+      const res = await api.StatementList({
+        query: this.params
+      })
+      this.list = res.data.data
+      this.$apply()
+    }
 
   }
 </script>
+<style lang="scss" src="../../public/styles/assets/asset_detail.scss"></style>
 <style lang="scss">
   $darkPrimaryColor: #1976D2;
   $primaryColor: #2196F3;
