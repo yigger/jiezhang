@@ -3,7 +3,7 @@
     <view class="{{ type == 'expend' ? 'active' : '' }}" @tap="choseTab('expend')">支出</view>
     <view class="{{ type == 'income' ? 'active' : '' }}" @tap="choseTab('income')">收入</view>
     <view class="{{ type == 'transfer' ? 'active' : '' }}" @tap="choseTab('transfer')">转账</view>
-    <view class="{{ type == 'balance' ? 'active' : '' }}" @tap="choseTab('balance')">余额</view>
+    <!-- <view class="{{ type == 'balance' ? 'active' : '' }}" @tap="choseTab('balance')">余额</view> -->
   </view>
   <form bindsubmit="formSubmit">
     <view class="container" wx:if="{{type == 'expend' || type == 'income'}}">

@@ -3,17 +3,17 @@
     <view id="wallet-header">
       <view class="surplus">
         <view class="surplus-amount fs24" @tap="showAmountModal">
-          <text>2300.00</text>
+          <text>{{ header.left }}</text>
         </view>
         <view class="fs14">结余</view>
       </view>
       <view class="bottom">
         <view>
-          <view class="fs22">2500</view>
+          <view class="fs22">{{ header.income }}</view>
           <view class="fs14">收入</view>
         </view>
         <view>
-          <view class="fs22">3000</view>
+          <view class="fs22">{{ header.expend }}</view>
           <view class="fs14">支出</view>
         </view>
       </view>
@@ -67,6 +67,11 @@
     }
 
     data = {
+      header: {
+        income: 0,
+        expend: 0,
+        left: 0
+      },
       list: [],
       params: {}
     }
@@ -90,10 +95,12 @@
     }
 
     async statements () {
-      const res = await api.StatementList({
+      const res = (await api.StatementList({
         query: this.params
-      })
-      this.list = res.data.data
+      })).data
+      const data = res.data
+      this.list = data.statements
+      this.header = data.header
       this.$apply()
     }
 
@@ -146,5 +153,8 @@
         margin-top:8rpx;
       } 
     }
+  }
+  .left-money {
+    color: $secondaryText;
   }
 </style>

@@ -10,6 +10,7 @@
       <view class="pull-left title">
         <view class="fs14">{{ item.name }}</view>
         <view class="fs12 description" wx:if="{{ item.description != null }}">{{ item.description }}</view>
+				<view class="time">{{ item.timeStr }} · {{ item.asset }}</view>
       </view>
     </view>
   </view>
@@ -65,6 +66,10 @@
 			justify-content:center;
 			flex-direction:column;
 			height:@tmHeight;
+			.time {
+				color: #999;
+				font-size: 24rpx;
+			}
 		}
 		.description {
 			color:#999;
