@@ -76,6 +76,8 @@ const User = (params, c_id = 0) => {
   if (c_id != null && c_id != 0) url = `${url}/${c_id}`
   return wxRequest(params, url)
 }
+// 更新个人信息
+const updateUser = (params) => wxRequest(params, `${apiUrl}/users/update_user`)
 
 // 预算管理界面
 const Budget = (params) => wxRequest(params, `${apiUrl}/budgets`);
@@ -120,5 +122,6 @@ module.exports = {
   guessCategory,
   guessAsset,
   Covers,
-  SetCover
+  SetCover,
+  updateUser
 }

@@ -78,7 +78,7 @@
     }
 
     onUnload () {
-      this.updateUser()
+      // this.updateUser()
     }
 
     onShow () {
@@ -92,13 +92,13 @@
     }
 
     async updateUser () {
-      const res = await api.User({
+      const res = await api.updateUser({
         delCache: 'user-info',
         method: 'PUT',
         query: {
           user: this.user
         }
-      }, 1)
+      })
     }
   }
 </script>

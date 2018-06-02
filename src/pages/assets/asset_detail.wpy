@@ -49,13 +49,6 @@
   <view wx:else>
     <empty title="暂无数据哦~"></empty>
   </view>
-
-  <modal-money 
-    :visible.sync="showModalMoney"
-    :amount.sync="amount"
-    @submit.user="changeAmount"
-    @cancel.user="cancel"
-  ></modal-money>
 </view>
 </template>
 
@@ -65,7 +58,6 @@
   import tip from '../../utils/tip'
   import Empty from '../../components/empty'
   import Single from '../../components/single'
-  import ModalMoney from '../../components/modal_money'
   
   export default class AssetDetail extends wepy.page {
     config = {
@@ -74,8 +66,7 @@
 
     components = {
       empty: Empty,
-      single: Single,
-      'modal-money': ModalMoney
+      single: Single
     }
 
 		data = {
@@ -87,8 +78,7 @@
       },
       list: [], 
       already_load: false,
-      amount: '0.00',
-      showModalMoney: false
+      amount: '0.00'
     }
     
     methods = {
@@ -100,14 +90,7 @@
         wx.navigateTo({ url: `/pages/statements/statement?id=${id}` })
       },
       showAmountModal () {
-        this.showModalMoney = true
-      },
-      changeAmount (amount) {
-        this.updateSurplus(amount)
-        this.showModalMoney = false
-      },
-      cancel () {
-        this.showModalMoney = false
+        wx.navigateTo({ url: `/pages/forms/asset_form?id=${this.asset_id}&amount=${this.amount}` })
       }
     }
 

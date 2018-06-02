@@ -1,12 +1,18 @@
 <template>
 <view class="container">
-  <view class="header overflow-hide" @tap="redirect('/pages/settings/user_info')">
+
+  <view class="header overflow-hide" @tap="redirect('/pages/settings/user_info')" wx:if="{{ alreadyLogin }}">
     <image class="pull-left" src="{{ user.avatar_url }}" />
     <view class="pull-left user-info">
       <view>{{ user.name }}</view>
       <view>个人信息> </view>
     </view>
     <view class="pull-right remark-day">已坚持记账 {{ user.persist }} 天</view>
+  </view>
+
+  <view class="header overflow-hide" wx:else>
+    <image class="pull-left" src="/public/images/no_login_avatar.png" />
+    <button class="get-user-btn" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击登录</button>
   </view>
 
   <view class="zan-panel">
@@ -81,6 +87,7 @@
   import wepy from 'wepy'
   import api from "../utils/api";
   import tip from '../utils/tip'
+  import Session from '../utils/session'
 
   export default class Setting extends wepy.page {
     config = {
@@ -89,7 +96,8 @@
 
     data = {
       user: {},
-      version: ''
+      version: '',
+      alreadyLogin: this.loginStatus()
     }
 
     onShow () {
@@ -105,7 +113,26 @@
       cleanSession () {
         wx.clearStorage()
         tip.toast('清理成功')
+      },
+      async getUserInfo (e) {
+        if(e.detail.errMsg != 'getUserInfo:ok') return false
+        
+        let userInfo = e.detail.userInfo
+        const res = await api.updateUser({
+          method: 'PUT',
+          query: { user: userInfo }
+        })
+        let key = Session.key.alreadyLogin
+        Session.set(key, true)
+        this.getData()
+        this.alreadyLogin = true
+        this.$apply()
       }
+    }
+
+    loginStatus () {
+      let key = Session.key.alreadyLogin
+      return Session.get(key) == null ? false : true
     }
 
     async getData () {

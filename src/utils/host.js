@@ -14,5 +14,6 @@ module.exports = {
   host: host,
   url: host + '/api',
   login: host + '/api/login',
+  check_openid: host + '/api/check_openid',
   env: env
 }

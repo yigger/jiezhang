@@ -8,7 +8,8 @@ const KEY = {
 	asset: {
 		statementAssets: "@asset_statement@",
 		list: "@asset_list@"
-	}
+	},
+	alreadyLogin: "@alreadyLogin@"
 }
 
 module.exports = {

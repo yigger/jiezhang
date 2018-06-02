@@ -79,7 +79,7 @@
         })
       },
       showAmountModal () {
-        this.showModalMoney = true
+        wx.navigateTo({ url: `/pages/forms/budget_form?id=0&amount=${this.amount}` })
       },
       changeAmount (amount) {
         this.updateBudget(amount)
