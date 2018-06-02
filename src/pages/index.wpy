@@ -172,20 +172,11 @@
       this.getList()
     }
 
-    async onLoad () {
-      this.isLoaded = true
+    async onShow () {
+      this.curPage = 1
+      this.list = []
       await this.getHeader()
       await this.getList()
-    }
-
-    async onShow () {
-      if(!this.isLoaded) {
-        await this.getHeader()
-      }
-    }
-
-    onHide() {
-      this.isLoaded = false
     }
 
     // 此函数用于 statement.wpy 里更新后调用

@@ -14,7 +14,7 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api";
+  import api from "../../utils/api"
   import tip from '../../utils/tip'
   
   export default class Setting extends wepy.page {
@@ -24,40 +24,65 @@
 
     data = {
       amount: 0,
-      category_id: 0
+      category_id: 0,
+      rootId: 0
     }
 
     onLoad (options) {
       this.amount = options.amount
       this.category_id = options.id
+      this.rootId = options.root_id
     }
     
     methods = {
       async formSubmit (e) {
         let amount = e.detail.value.amount
         if (this.category_id == 0) {
-          const res = await api.BudgetUpdate({
-            method: "PUT",
-            query: {
-              type: 'user',
-              amount: amount
-            }
-          })
+          this.updateRootBudget(amount)
         } else {
-          const res = await api.BudgetUpdate({
-            method: "PUT",
-            query: {
-              type: 'category',
-              category_id: this.category_id,
-              amount: amount
-            }
-          })
+          this.updateCategoryBudget(amount)
         }
+      }
+    }
+
+    async updateRootBudget(amount) {
+      const res = (await api.BudgetUpdate({
+        method: "PUT",
+        query: {
+          type: 'user',
+          amount: amount
+        }
+      })).data
+      if (res.status === 200) {
         wepy.navigateBack({
           delta: 1
         })
+      } else {
+        tip.error(res.msg)
       }
     }
+    
+    async updateCategoryBudget (amount) {
+      const res = (await api.BudgetUpdate({
+        method: "PUT",
+        query: {
+          type: 'category',
+          category_id: this.category_id,
+          amount: amount
+        }
+      })).data
+      if (res.status == 200) {
+         const pages = getCurrentPages()
+         const prevPage = pages[pages.length - 2]
+         prevPage.getData(this.rootId)
+        wepy.navigateBack({
+          delta: 1
+        })
+      } else {
+        tip.error(res.msg)
+      }
+    }
+
   }
 </script>
 <style lang="scss" src="../../public/styles/statement/statement.scss"></style>

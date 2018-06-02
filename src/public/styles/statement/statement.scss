@@ -70,7 +70,11 @@ page {
       height:60rpx;
     }
   }
-  
+  .zan-btns > button{
+    &:last-child {
+      margin-top: 8px;
+    }
+  }
 }
 .tab {
   height: 80rpx;

@@ -2,7 +2,7 @@
   <view class="container">
 
     <view class="parent">
-      <view class="budget-info" @tap="showAmount('{{ budget.id }}', '{{ budget.amount }}')">
+      <view class="budget-info" @tap="showAmount('{{ budget.id }}', '{{ budget.source_amount }}')">
         <view class="left"><image src="{{ budget.icon_path }}"></image></view>
         <view class="right">
           <view class="title">
@@ -21,7 +21,7 @@
     </view>
 
     <view class="child">
-      <view class="budget-info" wx:for="{{ childs }}" @tap="showAmount('{{ item.id }}', '{{ item.amount }}')">
+      <view class="budget-info" wx:for="{{ childs }}" @tap="showAmount('{{ item.id }}', '{{ item.source_amount }}')">
         <view class="left"><image src="{{ item.icon_path }}"></image></view>
         <view class="right">
           <view class="title">
@@ -55,29 +55,29 @@
     data = {
       budget: {},
       childs: [],
-      parentId: 0,
+      rootId: 0,
       curCategoryId: 0,
       amount: '0.00',
-      modalAmount: 0
+      source_amount: 0
     }
 
     onLoad (options) {
       let id = options.id
-      this.parentId = id
+      this.rootId = id
       this.getData(id)
     }
 
     methods = {
       showAmount(id, amount) {
-        wx.navigateTo({ url: `/pages/forms/budget_form?id=${id}&amount=${amount}` })
+        wx.navigateTo({ url: `/pages/forms/budget_form?id=${id}&amount=${amount}&root_id=${this.rootId}` })
       }
     }
 
     async getData(id) {
-      id = id || this.parentId
       const res = await api.BudgetDetail({showLoading: true}, id)
       this.budget = res.data.root
       this.amount = this.budget.amount
+      this.source_amount = this.budget.source_amount
       this.childs = res.data.childs
       this.$apply()
     }

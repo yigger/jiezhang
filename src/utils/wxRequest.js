@@ -8,7 +8,7 @@ const wxRequest = async(params = {}, url) => {
 	let data = params.query || {}
 	let res = {}
 	
-	if (Host.env !== 0) {
+	if (Host.env == 0) {
 		// 测试环境不进行授权登录，直接请求接口
 		res = await doRequest(params, url)
 	} else {

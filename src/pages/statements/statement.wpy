@@ -3,7 +3,6 @@
     <view class="{{ type == 'expend' ? 'active' : '' }}" @tap="choseTab('expend')">支出</view>
     <view class="{{ type == 'income' ? 'active' : '' }}" @tap="choseTab('income')">收入</view>
     <view class="{{ type == 'transfer' ? 'active' : '' }}" @tap="choseTab('transfer')">转账</view>
-    <!-- <view class="{{ type == 'balance' ? 'active' : '' }}" @tap="choseTab('balance')">余额</view> -->
   </view>
   <form bindsubmit="formSubmit">
     <view class="container" wx:if="{{type == 'expend' || type == 'income'}}">
@@ -83,23 +82,6 @@
 
       <view class="zan-btns">
         <button class="zan-btn ljt-btn" formType="submit" @tap="submit">保存</button>
-      </view>
-    </view>
-
-    <view class="container" wx:if="{{ type == 'balance' }}">
-      <view class="column money">
-        <text>余额</text>
-        <input class="pull-right money-input" placeholder="0.00" name="amount" type="digit" value="{{ amount }}"/>
-      </view>
-
-      <navigator class="column zan-cell--access" url="/pages/statements/chose_category?type={{ type }}">
-        <text>分类</text>
-        <text class="pull-right" type="digit">{{ category_name }}</text>
-        <input hidden  name="category_id" value="{{ category_id }}" type="number"/>
-      </navigator>
-
-      <view class="zan-btns">
-        <button class="ljt-btn" formType="submit" @tap="submit">保存</button>
       </view>
     </view>
 

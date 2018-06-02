@@ -78,7 +78,8 @@
       },
       list: [], 
       already_load: false,
-      amount: '0.00'
+      amount: '0.00',
+      source_amount: 0
     }
     
     methods = {
@@ -90,7 +91,7 @@
         wx.navigateTo({ url: `/pages/statements/statement?id=${id}` })
       },
       showAmountModal () {
-        wx.navigateTo({ url: `/pages/forms/asset_form?id=${this.asset_id}&amount=${this.amount}` })
+        wx.navigateTo({ url: `/pages/forms/asset_form?id=${this.asset_id}&amount=${this.source_amount}` })
       }
     }
 
@@ -111,6 +112,7 @@
       })
       this.header = res.data
       this.amount = this.header.surplus
+      this.source_amount = this.header.source_surplus
       this.$apply()
     }
 

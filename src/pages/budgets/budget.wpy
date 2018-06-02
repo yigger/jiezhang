@@ -41,12 +41,6 @@
       </view>
     </view>
 
-    <modal-money 
-      :visible.sync="showModalMoney"
-      :amount.sync="amount"
-      @submit.user="changeAmount"
-      @cancel.user="cancel"
-    ></modal-money>
   </view>
 </template>
 
@@ -54,8 +48,6 @@
   import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
-  import ModalMoney from '../../components/modal_money'
-
   export default class Budget extends wepy.page {
     config = {
       navigationBarTitleText: '预算设置'
@@ -65,11 +57,7 @@
       header: {},
       list: [],
       amount: '0.00',
-      showModalMoney: false
-    }
-
-    components = {
-      'modal-money': ModalMoney
+      source_amount: 0
     }
    
     methods = {
@@ -79,14 +67,7 @@
         })
       },
       showAmountModal () {
-        wx.navigateTo({ url: `/pages/forms/budget_form?id=0&amount=${this.amount}` })
-      },
-      changeAmount (amount) {
-        this.updateBudget(amount)
-        this.showModalMoney = false
-      },
-      cancel() {
-        this.showModalMoney = false
+        wx.navigateTo({ url: `/pages/forms/budget_form?id=0&amount=${this.source_amount}` })
       }
     }
 
@@ -98,7 +79,8 @@
     async getHeaderData() {
       const res = await api.Budget()
       this.header = res.data
-      this.amount = this.header.surplus
+      this.amount = this.header.amount
+      this.source_amount = this.header.source_amount
       this.$apply()
     }
 

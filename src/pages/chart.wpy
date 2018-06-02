@@ -211,6 +211,11 @@
 				let value = !this.mutipleData[idx].hidden
 				this.mutipleData[idx]['hidden'] = value
 				this.$apply()
+			},
+			showStatement (id) {
+				wepy.navigateTo({
+          url: `/pages/statements/statement?id=${id}`
+        })
 			}
 		}
 

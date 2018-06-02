@@ -50,7 +50,7 @@ export default class Tips {
     });
   }
 
-  static toast(title, onHide, icon = "success") {
+  static toast(title, icon = "success") {
     setTimeout(() => {
       wx.showToast({
         title: title,
@@ -59,13 +59,6 @@ export default class Tips {
         duration: 1000
       });
     }, 1000);
-
-    // 隐藏结束回调
-    if (onHide) {
-      setTimeout(() => {
-        onHide();
-      }, 1000);
-    }
   }
 
   /**
@@ -74,7 +67,7 @@ export default class Tips {
   static alert(title) {
     wx.showToast({
       title: title,
-      image: "/public/images/error.png",
+      icon: "/public/images/error.png",
       mask: true,
       duration: 1500
     });
@@ -84,19 +77,12 @@ export default class Tips {
    * 错误框
    */
 
-  static error(title, onHide) {
+  static error(title) {
     wx.showToast({
       title: title,
-      image: "/public/images/error.png",
-      mask: true,
-      duration: 1000
+      icon: 'none',
+      mask: false
     });
-    // 隐藏结束回调
-    if (onHide) {
-      setTimeout(() => {
-        onHide();
-      }, 1000);
-    }
   }
 
   /**
