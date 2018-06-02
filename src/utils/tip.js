@@ -81,7 +81,8 @@ export default class Tips {
     wx.showToast({
       title: title,
       icon: 'none',
-      mask: false
+      mask: false,
+      duration: 1000
     });
   }
 

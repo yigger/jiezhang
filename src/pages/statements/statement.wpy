@@ -198,7 +198,7 @@
             delta: 1
           })
           // 保存成功后更新上个页面的数据
-          // this.updatePrevPage(result.msg.id, this.method)
+          this.updatePrevPage()
         } else {
           tip.error(result.msg)
         }
@@ -284,7 +284,7 @@
     async del () {
       await tip.confirm('确定删除该条记录？', {}, '提示')
       const res = await api.Statement({showLoading: true, method: 'DELETE'}, this.statement_id);
-      this.updatePrevPage(this.statement_id, 'delete')
+      this.updatePrevPage()
       wepy.navigateBack({
         delta: 1
       })
@@ -321,12 +321,14 @@
       this.$apply()
     }
 
-    updatePrevPage(id, method) {
+    updatePrevPage() {
       const pages = getCurrentPages()
       const prevPage = pages[pages.length - 2]
       const path = prevPage.route
       if (path == 'pages/index') {
-        prevPage.updateStatement(id, method.toLowerCase())
+        prevPage.list = []
+        prevPage.curPage = 1
+        prevPage.updateStatement()
       }
     }
 

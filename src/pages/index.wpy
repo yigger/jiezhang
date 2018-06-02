@@ -172,32 +172,20 @@
       this.getList()
     }
 
-    async onShow () {
-      this.curPage = 1
-      this.list = []
-      await this.getHeader()
-      await this.getList()
+    onLoad () {
+      this.getList()
+    }
+
+    onShow () {
+      this.getHeader()
     }
 
     // 此函数用于 statement.wpy 里更新后调用
-    updateStatement (id, type) {
-      // 此处应使用二分查找
-      if (type == 'put' || type == 'delete') {
-        let index = 0
-        for(let item of this.list) {
-          if (item.id == id) {
-            if(type == 'delete') {
-              this.list.splice(index, 1)
-            } else {
-              this.getStatementById(item, id)
-            }
-            break
-          }
-          index += 1
-        }
-      } else {
-        this.addStatementById(id)
-      }
+    updateStatement () {
+      this.curPage = 1
+      this.list = []
+      this.getHeader()
+      this.getList()
     }
 
     async onReachBottom () {
