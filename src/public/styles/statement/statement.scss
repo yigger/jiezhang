@@ -15,6 +15,7 @@ page {
     line-height: 130rpx !important;
   }
   > .column {
+    min-height: 120rpx;
     height: 120rpx;
     line-height: 120rpx;
     padding:0 24rpx;
@@ -23,8 +24,11 @@ page {
     background: white;
     display: flex;
     justify-content: space-between;
-    > text:last-child {
-      color: $secondaryText;
+    > text {
+      min-width:100rpx;
+      &:last-child {
+        color: $secondaryText;
+      }
     }
     .remark {
       height:120rpx !important;
