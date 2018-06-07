@@ -172,13 +172,14 @@
       this.getList()
     }
 
-    onLoad () {
-      this.getList()
+    async onLoad () {
+      await this.getList()
+      await this.getHeader()
     }
 
-    onShow () {
-      this.getHeader()
-    }
+    // onShow () {
+    //   this.getHeader()
+    // }
 
     // 此函数用于 statement.wpy 里更新后调用
     updateStatement () {

@@ -5,44 +5,47 @@
     <view class="{{ type == 'transfer' ? 'active' : '' }}" @tap="choseTab('transfer')">转账</view>
   </view>
   <form bindsubmit="formSubmit">
+    <!-- 收入/支出 -->
     <view class="container" wx:if="{{type == 'expend' || type == 'income'}}">
       <view class="column money">
         <text>金额</text>
-        <input class="pull-right money-input {{ type }}" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
+        <input class="money-input {{ type }}" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
       </view>
 
-      <navigator class="column zan-cell--access" url="/pages/statements/chose_category?type={{ type }}">
+      <view class="column" @tap="redirectChoseCategory">
         <text>分类</text>
-        <text class="pull-right" type="digit">{{ category_name }}</text>
-        <input hidden  name="category_id" value="{{ category_id }}" type="number"/>
-      </navigator>
+        <text type="digit">{{ category_name }}</text>
+        <input hidden name="category_id" value="{{ category_id }}" type="number"/>
+      </view>
 
       <view class="frequent-use" wx:if="{{ categories_label.length > 0 }}">
         <text>猜你想用：</text>
         <text class="label" wx:for="{{ categories_label }}" @tap="tabCategory({{item}})">{{ item.name }}</text>
       </view>
 
-      <navigator class="column zan-cell--access" url="/pages/statements/chose_asset">
+      <view class="column" @tap="redirectChoseAsset">
         <!-- 默认选中最常用的 -->
         <text>账户</text>
-        <text class="pull-right">{{ asset_name }}</text>
+        <text>{{ asset_name }}</text>
         <input hidden name="asset_id" value="{{ asset_id }}" type="number"/>
-      </navigator>
+      </view>
 
       <view class="frequent-use" wx:if="{{ assets_label.length > 0 }}">
         <text>猜你想用：</text>
         <text class="label" wx:for="{{ assets_label }}" @tap="tabAsset({{item}})">{{ item.name }}</text>
       </view>
       
-      <picker class="column zan-cell--access" mode="date" start="2017-01-01" bindchange="dateChange">
+      <view class="column">
         <text>日期</text>
-        <text class="pull-right">{{ date }}</text>
+        <picker mode="date" start="2017-01-01" bindchange="dateChange">
+          <text>{{ date }}</text>
+       </picker>
         <input hidden name="date" value="{{ date }}" type="number"/>
-      </picker>
-
+      </view>
+      
       <view class="column">
         <text>备注</text>
-        <input class="pull-right remark" type="text" name="description"  value="{{ description }}" placeholder="备注信息"/>
+        <input class="remark" type="text" name="description"  value="{{ description }}" placeholder="本笔账单的简单说明"/>
       </view>
 
       <view class="zan-btns" wx:if="{{ statement_id == 0 }}">
@@ -57,10 +60,11 @@
       <input hidden type="text" name="type" value="{{ type }}"/>
     </view>
 
+    <!-- 转账 -->
     <view class="container" wx:if="{{ type == 'transfer' }}">
       <view class="column money">
         <text>金额</text>
-        <input class="pull-right money-input expend" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
+        <input class="money-input expend" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
       </view>
 
       <view class="column transfer-type">
@@ -69,15 +73,17 @@
         <view @tap="assetTo">{{ target }}</view>
       </view>
 
-      <picker class="column zan-cell--access" mode="date" start="2017-01-01" bindchange="dateChange">
+      <view class="column">
         <text>日期</text>
-        <text class="pull-right">{{ date }}</text>
+        <picker mode="date" start="2017-01-01" bindchange="dateChange">
+          <text>{{ date }}</text>
+       </picker>
         <input hidden name="date" value="{{ date }}" type="number"/>
-      </picker>
+      </view>
 
       <view class="column">
         <text>备注</text>
-        <input class="pull-right remark" type="text" name="description"  value="{{ description }}" placeholder="备注信息"/>
+        <input class="pull-right remark" type="text" name="description"  value="{{ description }}" placeholder="本笔账单的简单说明"/>
       </view>
 
       <view class="zan-btns">
@@ -239,6 +245,12 @@
         let tmp2 = this.from
         this.from = this.to
         this.to = tmp2
+      },
+      redirectChoseAsset () {
+        wx.navigateTo({ url: "/pages/statements/chose_asset" })
+      },
+      redirectChoseCategory () {
+        wx.navigateTo({ url: `/pages/statements/chose_category?type=${this.type}` })
       }
     }
 

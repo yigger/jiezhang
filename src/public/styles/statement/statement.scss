@@ -21,6 +21,8 @@ page {
     border-bottom: 1px solid #efefef;
     font-size: 32rpx;
     background: white;
+    display: flex;
+    justify-content: space-between;
     > text:last-child {
       color: $secondaryText;
     }
@@ -53,19 +55,9 @@ page {
     }
   }
   .transfer-type {
-    position: relative;
-    > view {
-      width: 50%;
-      text-align: center;
-      display: inline-block;
-    }
+    display: flex;
+    align-items: center;
     .transfer-icon {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: auto;
       width:60rpx;
       height:60rpx;
     }
