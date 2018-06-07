@@ -78,6 +78,10 @@
       <view class="zan-cell__bd">关于洁账</view>
       <view>{{ version }}</view>
     </view>
+
+    <view class="zan-cell zan-cell--access" wx:if="{{ alreadyLogin }}" @tap="logout">
+      <view class="zan-cell__bd">退出登录</view>
+    </view>
   </view>
 
 </view>
@@ -127,6 +131,11 @@
         this.getData()
         this.alreadyLogin = true
         this.$apply()
+      },
+      logout () {
+        let key = Session.key.alreadyLogin
+        Session.clear(key)
+        this.alreadyLogin = false
       }
     }
 
