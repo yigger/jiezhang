@@ -17,6 +17,7 @@
 </template>
 
 <script>
+	// 收支统计图表页面所需
 	import wepy from 'wepy'
   export default class chartColumn extends wepy.component {
     props = {

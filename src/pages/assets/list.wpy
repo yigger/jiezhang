@@ -14,12 +14,9 @@
   import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
-  import HostMixin from '../../mixins/host'
   import List from '../../components/category_list'
   import Session from '../../utils/session'
   export default class AssetList extends wepy.page {
-    mixins = [ HostMixin ];
-
     config = {
       navigationBarTitleText: '资产列表'
     }

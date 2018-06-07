@@ -67,13 +67,12 @@
   import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
-  import HostMixin from '../../mixins/host'
+  import { host } from '../../utils/host'
   import Session from '../../utils/session'
   export default class AssetList extends wepy.page {
     config = {
       navigationBarTitleText: '资产设置'
     }
-    mixins = [ HostMixin ];
     data = {
       wallet: {
         id: 0,

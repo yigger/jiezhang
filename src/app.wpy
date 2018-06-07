@@ -33,7 +33,7 @@ export default class extends wepy.app {
       "pages/message/message"
     ],
     window: {
-      backgroundColor: "#BDBDBD",
+      backgroundColor: "#efefef",
       navigationBarBackgroundColor: "#1976D2",
       backgroundTextStyle: "light",
       navigationBarTitleText: "洁账",

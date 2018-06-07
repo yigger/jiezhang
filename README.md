@@ -13,6 +13,8 @@ npm install wepy-cli -g
 
 npm install
 
+cp src/utils/host.js.example src/utils/host.js
+
 npm run dev // 开发环境开启
 
 npm run build // 发布时执行
@@ -29,12 +31,16 @@ npm run build // 发布时执行
 
 5、其它问题请查看 wepy 官网或者查询 Issue
 
+### 相关截图
+![首页](https://github.com/yigger/jiezhang/raw/master/screenshots/index.png)  ![图表](https://github.com/yigger/jiezhang/raw/master/screenshots/chart.png)  ![记一笔](https://github.com/yigger/jiezhang/raw/master/screenshots/remark.png)  ![资产详情](https://github.com/yigger/jiezhang/raw/master/screenshots/asset.png)
+
 ### 如需帮助
 联系邮箱 b21738331@163.com
 
 ### 感谢
-https://github.com/dyq086/wepy-mall
-https://tencent.github.io/wepy/
+https://tencent.github.io/wepy/  
+https://github.com/dyq086/wepy-mall  
+
 
 ### License
 RubyWord is licensed under [The MIT License](LICENSE)

@@ -55,10 +55,9 @@
   import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
-  import HostMixin from '../../mixins/host'
+  import { host } from '../../utils/host'
   import Session from '../../utils/session'
   export default class CategoryForm extends wepy.page {
-    mixins = [ HostMixin ];
     data = {
       category: {
         id: 0,
