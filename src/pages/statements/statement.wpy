@@ -42,6 +42,14 @@
        </picker>
         <input hidden name="date" value="{{ date }}" type="number"/>
       </view>
+
+      <view class="column location-column">
+        <text>地理位置</text>
+        <view>
+          <input name="location" type="text" value="{{ address }}"/>
+          <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
+        </view>
+      </view>
       
       <view class="column">
         <text>备注</text>
@@ -98,6 +106,9 @@
 	import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
+  import { mapKey } from '../../utils/host'
+  import Session from '../../utils/session'
+  import QQMapWX from '../../utils/qqmap-wx-jssdk.js'
   export default class NewStatement extends wepy.page {
     config = {
       navigationBarTitleText: '记一笔'
@@ -114,6 +125,7 @@
       asset_name: '请选择账户',
       description: '',
       date: '',
+      address: '',
       assets_label: [],
       categories_label: [],
       // 转账信息
@@ -122,10 +134,12 @@
       target: '请选择账户',
       from: 0,
       to: 0,
-      transferType: 0
+      transferType: 0,
+      switchCheck: Session.get('getLocationSwitch') || false,
+      qqmapSDK: null
     }
 
-    onLoad(options) {
+    async onLoad(options) {
       const myDate = new Date()
       let year = myDate.getFullYear()
       let month = myDate.getMonth() + 1
@@ -142,6 +156,12 @@
         // 获取上次使用的分类和账户
         this.getLastUsed()
       }
+
+      if (this.switchCheck) {
+        // 初始化地理位置信息
+        this.setLocation()
+      }
+
       this.guessCategory()
       this.guessAsset()
     }
@@ -251,6 +271,17 @@
       },
       redirectChoseCategory () {
         wx.navigateTo({ url: `/pages/statements/chose_category?type=${this.type}` })
+      },
+      getLocation (e) {
+        let locationSwitch = e.detail.value
+        Session.set('getLocationSwitch', locationSwitch)
+        if(locationSwitch) {
+          this.setLocation()
+        } else {
+          // 关闭获取地理位置
+          this.address = ''
+          this.$apply()
+        }
       }
     }
 
@@ -331,6 +362,29 @@
       const res = await api.guessAsset();
       this.assets_label = res.data
       this.$apply()
+    }
+
+    async setLocation () {
+      this.qqmapSDK = new QQMapWX({
+        key: mapKey
+      });
+      try {
+        const result = await wepy.getLocation()
+        this.qqmapSDK.reverseGeocoder({
+          location: {
+            latitude: result.latitude,
+            longitude: result.longitude
+          },
+          success: (addressRes) => {
+            this.address = addressRes.result.address
+            this.$apply()
+          }
+        })
+      } catch (e) {
+        Session.set('getLocationSwitch', false)
+        this.switchCheck = false
+        this.$apply()
+      }
     }
 
     updatePrevPage() {

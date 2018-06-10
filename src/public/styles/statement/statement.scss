@@ -36,6 +36,16 @@ page {
       text-align: right;
     }
   }
+  > .location-column {
+    > view {
+      display:flex;
+      align-items:center;
+    }
+    input {
+      display: inline-block;
+      padding-right:6px;
+    }
+  }
   .money-input {
     height: 130rpx;
     font-size: 56rpx;

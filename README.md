@@ -37,6 +37,9 @@ npm run build // 发布时执行
 ### 如需帮助
 联系邮箱 b21738331@163.com
 
+### 更新日志
+[Change Log](CHANGELOG.md)
+
 ### 感谢
 https://tencent.github.io/wepy/  
 https://github.com/dyq086/wepy-mall  
