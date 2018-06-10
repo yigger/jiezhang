@@ -10,6 +10,7 @@ export default class extends wepy.app {
       "pages/setting",
       // 记一笔
       "pages/statements/statement",
+      "pages/statements/detail",
       "pages/statements/chose_category",
       "pages/statements/chose_asset",
       // 余额设置

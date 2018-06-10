@@ -86,7 +86,7 @@
         this.list[idx]['hidden'] = value
 			},
       showStatement (id) {
-        wx.navigateTo({ url: `/pages/statements/statement?id=${id}` })
+        wx.navigateTo({ url: `/pages/statements/detail?id=${id}` })
       },
       setParams (params) {
         this.params = params

@@ -88,7 +88,7 @@
         this.list[idx]['hidden'] = value
 			},
       showStatement (id) {
-        wx.navigateTo({ url: `/pages/statements/statement?id=${id}` })
+        wx.navigateTo({ url: `/pages/statements/detail?id=${id}` })
       },
       showAmountModal () {
         wx.navigateTo({ url: `/pages/forms/asset_form?id=${this.asset_id}&amount=${this.source_amount}` })

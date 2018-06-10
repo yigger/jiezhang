@@ -36,10 +36,12 @@
         <text>结余 {{ tabHeader.surplus }}</text>
       </view>
 
+      <!-- 本年/本月渲染的视图 -->
       <view wx:if="{{ scope == 'year' || scope == 'month' }}">
         <index-year-month :list.sync="list"></index-year-month>
       </view>
 
+      <!-- 今天/本周渲染的视图 -->
       <view wx:else>
         <repeat for="{{ list }}" key="index" index="index" item="item">
           <index-statement :statement.sync="item"></index-statement>

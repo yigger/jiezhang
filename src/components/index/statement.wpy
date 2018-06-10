@@ -42,8 +42,9 @@
 
     methods = {
       statement (key, id) {
+        if (key == 'asset_log_id') return false;
         wepy.navigateTo({
-          url: `/pages/statements/statement?${key}=${id}`
+          url: `/pages/statements/detail?${key}=${id}`
         })
       }
     }

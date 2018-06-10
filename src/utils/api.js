@@ -17,6 +17,7 @@ const Statement = (params, c_id = 0) => {
   if (c_id != null && c_id != 0) url = `${url}/${c_id}`
   return wxRequest(params, url)
 }
+const StatementDetail = (params) => wxRequest(params, `${apiUrl}/statements/detail`);
 const StatementList = (params) => wxRequest(params, `${apiUrl}/statements/list`);
 const StatementFilters = (params) => wxRequest(params, `${apiUrl}/statements/filter`);
 const LastUsed = (params) => wxRequest(params, `${apiUrl}/statements/frequent_used`);
@@ -94,6 +95,7 @@ module.exports = {
   getIndexHeader,
   getIndexStatement,
   Statement,
+  StatementDetail,
   StatementFilters,
   StatementList,
   LastUsed,

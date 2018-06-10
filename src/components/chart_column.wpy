@@ -34,7 +34,7 @@
     methods = {
       showStatement (id) {
 				wepy.navigateTo({
-          url: `/pages/statements/statement?id=${id}`
+          url: `/pages/statements/detail?id=${id}`
         })
 			}
     }

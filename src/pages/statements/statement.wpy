@@ -48,6 +48,12 @@
         <view>
           <input name="location" type="text" value="{{ address }}"/>
           <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
+
+          <input class="input-hidden" name="nation" value="{{ nation }}"/>
+          <input class="input-hidden" name="province" value="{{ province }}"/>
+          <input class="input-hidden" name="city" value="{{ city }}"/>
+          <input class="input-hidden" name="district" value="{{ district }}"/>
+          <input class="input-hidden" name="street" value="{{ street }}"/>
         </view>
       </view>
       
@@ -56,15 +62,7 @@
         <input class="remark" type="text" name="description"  value="{{ description }}" placeholder="本笔账单的简单说明"/>
       </view>
 
-      <view class="zan-btns" wx:if="{{ statement_id == 0 }}">
-        <button class="zan-btn ljt-btn" formType="submit" @tap="submit">保存</button>
-      </view>
-
-      <view class="zan-btns" wx:else>
-        <button class="ljt-btn" formType="submit" @tap="submit">保存</button>
-        <button class="zan-btn zan-btn--danger zan-btn--plain" @tap="del">删除</button>
-      </view>
-
+      <button class="zan-btn ljt-btn" formType="submit" @tap="submit">保存</button>
       <input hidden type="text" name="type" value="{{ type }}"/>
     </view>
 
@@ -136,7 +134,12 @@
       to: 0,
       transferType: 0,
       switchCheck: Session.get('getLocationSwitch') || false,
-      qqmapSDK: null
+      qqmapSDK: null,
+      nation: '',
+      province: '',
+      city: '',
+      district: '',
+      street: ''
     }
 
     async onLoad(options) {
@@ -324,15 +327,6 @@
       this.$apply()
     }
 
-    async del () {
-      await tip.confirm('确定删除该条记录？', {}, '提示')
-      const res = await api.Statement({showLoading: true, method: 'DELETE'}, this.statement_id);
-      this.updatePrevPage()
-      wepy.navigateBack({
-        delta: 1
-      })
-    }
-
     async getLastUsed() {
       const res = await api.LastUsed({
         showLoading: true,
@@ -376,6 +370,13 @@
             longitude: result.longitude
           },
           success: (addressRes) => {
+            let address_component = addressRes.result.address_component
+            console.log(address_component)
+            this.nation = address_component.nation
+            this.province = address_component.province
+            this.city = address_component.city
+            this.district = address_component.district
+            this.street = address_component.street
             this.address = addressRes.result.address
             this.$apply()
           }
