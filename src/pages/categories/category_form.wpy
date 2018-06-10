@@ -10,6 +10,21 @@
 
       <view class="item">
         <view class="item-name pull-left">
+          <text>是否一级分类</text>
+        </view>
+        <switch class="pull-right" checked="{{ isParentLevel }}" bindchange="changeSwitch" />
+      </view>
+
+      <view class="item picker" hidden="{{ isParentLevel }}">
+        <picker range="{{ parentCategories }}" value="{{ curIndex }}" range-key="name" bindchange="changeCategory">
+          <text class="picker-type">所属分类</text>
+          <view class="name">{{ parentCategories[curIndex]['name'] }}</view>
+        </picker>
+      </view>
+    </view>
+
+      <view class="item">
+        <view class="item-name pull-left">
           <text>图标</text>
         </view>
         <image class="icon-image" src="{{ host }}{{ category.icon_path }}"></image>
@@ -25,20 +40,7 @@
         </swiper-item>
       </swiper>
 
-      <view class="item">
-        <view class="item-name pull-left">
-          <text>是否一级分类</text>
-        </view>
-        <switch class="pull-right" checked="{{ isParentLevel }}" bindchange="changeSwitch" />
-      </view>
-
-      <view class="item picker" hidden="{{ isParentLevel }}">
-        <picker range="{{ parentCategories }}" value="{{ curIndex }}" range-key="name" bindchange="changeCategory">
-          <text class="picker-type">所属分类</text>
-          <view class="name">{{ parentCategories[curIndex]['name'] }}</view>
-        </picker>
-      </view>
-    </view>
+      
 
     <view class="save-btn" wx:if="{{ category.id != 0 }}">
       <view class="bill-btn" @tap="del">删除</view>
@@ -55,7 +57,6 @@
   import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
-  import { host } from '../../utils/host'
   import Session from '../../utils/session'
   export default class CategoryForm extends wepy.page {
     data = {
@@ -71,7 +72,7 @@
       curIndex: 0,
       isParentLevel: false
     }
-    
+
     methods = {
       changeSwitch (e) {
         this.isParentLevel = e.detail.value
@@ -141,6 +142,12 @@
         this.getCategory(options.id)
       }
       this.getIcons()
+    }
+
+    computed = {
+      host () {
+        return api.host;
+      }
     }
 
     async getIcons () {

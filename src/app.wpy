@@ -47,27 +47,27 @@ export default class extends wepy.app {
       list: [
         {
           pagePath: "pages/index",
-          iconPath: "public/images/01.png",
-          selectedIconPath: "public/images/01.png",
+          iconPath: "public/images/settings/statement.png",
+          selectedIconPath: "public/images/settings/statement-active.png",
           text: "账单"
         },
         {
           pagePath: "pages/chart",
-          iconPath: "public/images/02.png",
-          selectedIconPath: "public/images/02.png",
+          iconPath: "public/images/settings/statistic.png",
+          selectedIconPath: "public/images/settings/statistic-active.png",
           text: "统计"
         },
         {
           pagePath: "pages/asset",
-          iconPath: "public/images/03.png",
-          selectedIconPath: "public/images/03.png",
+          iconPath: "public/images/settings/asset.png",
+          selectedIconPath: "public/images/settings/asset-active.png",
           text: "资产"
         },
         {
           pagePath: "pages/setting",
-          iconPath: "public/images/04.png",
-          selectedIconPath: "public/images/04.png",
-          text: "我"
+          iconPath: "public/images/settings/user.png",
+          selectedIconPath: "public/images/settings/user-active.png",
+          text: "我的"
         }
       ]
     },

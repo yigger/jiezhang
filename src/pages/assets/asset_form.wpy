@@ -67,7 +67,6 @@
   import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
-  import { host } from '../../utils/host'
   import Session from '../../utils/session'
   export default class AssetList extends wepy.page {
     config = {
