@@ -5,45 +5,132 @@ $secondaryText: #757575;
 $divideText: #BDBDBD;
 $expendColor: green;
 $incomeColor: red;
-
 page {
-	height:100%;
-	background:#F4F4F4;
+  height: 100%;
+  background: #F4F4F4;
 }
 .header {
-	padding:24rpx;
-	background:white;
-	.get-user-btn {
-		border: none;
-		display: inline;
-		background-color: transparent;
-		position: static;
-	}
+  height: 260rpx;
+  background-color: #1976D2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding:0 24px;
+  // background-image: url('../public/images/4k-wallpaper-adventure-aerial-670061.png');
+  background-repeat:no-repeat;
+  background-size:100% 100%;
+  .user {
+    display: flex;
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      background-color: #37AAFF;
+      border: 1px solid white;
+      border-radius: 50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      image {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+      }
+    }
+    .user-info {
+      display: inline-block;
+      font-size: 16px;
+      color: white;
+      margin-left: 8px;
+      padding-top: 4px;
+      > view {
+        margin-bottom: 6px;
+      }
+      .designation {
+        margin-left: 8px;
+        padding: 0px 2px;
+        font-size: 14px;
+        border-radius: 1px;
+        background: #FF9C0B;
+      }
+    }
+    .get-user-btn {
+      border: none;
+      display: inline;
+      background-color: transparent;
+      line-height: 0;
+      padding: 0;
+      color: white;
+    }
+    button::after {
+      border: 0;
+    }
+  }
+  .arrow-icon{
+    width: 35px;
+    height: 35px;
+    image{
+      width: 100%;
+      height: 100%;
+    }
+  } 
+  
 }
-.header image {
-	width:100rpx;
-	height:100rpx;
-	display:block;
-	margin-right:16rpx;
-	border-radius:50%;
+
+.three.column {
+  background: white;
+  height: 70px;
+  display: flex;
+  border-bottom: 1px solid #EAEAEA;
+  > view {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction:column;
+    font-size: 14px;
+    border-right: 1px solid #EAEAEA;
+    margin:12px 0;
+    image {
+      width: 30px;
+      height: 30px;
+    }
+  }
 }
-.user-info {
-	font-size:28rpx;
-}
-.remark-day {
-	line-height:90rpx;
-	font-size:28rpx;
-	color:$secondaryText;
-}
-.cell-list {
-	margin-bottom:24rpx;
-}
-.cell-list:last-child {
-	margin:0;
-}
-.weui-cells {
-	font-size:30rpx;
-}
-.weui-cell {
-	padding:30rpx !important;
+
+.setting-container {
+  padding: 0px 20px;
+  background: white;
+  margin: 16px 0;
+  border-bottom: 1px solid #EAEAEA;
+  > view {
+    display: flex;
+    border-bottom: 1px solid #EAEAEA;
+    font-size: 16px;
+    padding: 10px 6px;
+    justify-content: space-between;
+    align-items:center;
+    > view {
+      display: flex;
+    }
+    &:last-child {
+      border-bottom: none;
+    }
+    image {
+      width: 25px;
+      height: 25px;
+      margin-right: 8px;
+    }
+  }
+  .about-jz {
+    display: flex;
+    justify-content: space-between;
+    .version {
+      color: #999;
+    }
+  }
+  .zan-icon.zan-icon-arrow {
+    color: #999;
+    font-size:14px;
+
+  }
 }

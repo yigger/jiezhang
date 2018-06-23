@@ -1,90 +1,96 @@
 <template>
-<view class="container">
+  <view class="container">
+    <view class="header">
+      <!-- header -->
+      <view class="user" wx:if="{{ alreadyLogin }}">
+        <view class="user-avatar">
+          <image src="{{ user.avatar_url }}"></image>
+        </view>
+        <view class="user-info">
+          <view>
+            <text class="user-name">{{ user.name }}</text>
+            <text class="designation">记账达人</text>
+          </view>
+          <view class="persistence">
+            已坚持记账 {{ user.persist }} 天
+          </view>
+        </view>
+      </view>
 
-  <view class="header overflow-hide" @tap="redirect('/pages/settings/user_info')" wx:if="{{ alreadyLogin }}">
-    <image class="pull-left" src="{{ user.avatar_url }}" />
-    <view class="pull-left user-info">
-      <view>{{ user.name }}</view>
-      <view>个人信息> </view>
+      <view class="user" wx:else>
+        <view class="user-avatar">
+          <image src="../public/images/default-user.png"></image>
+        </view>
+        <view class="user-info">
+          <button class="get-user-btn" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击登录</button>
+          <view class="persistence" style="font-size: 14px; margin-top: 6px">
+            登录后开启记账之旅
+          </view>
+        </view>
+      </view>
+      <!-- <view class="arrow-icon"><image src="../public/images/setting-right-arrow.png"></image></view> -->
     </view>
-    <view class="pull-right remark-day">已坚持记账 {{ user.persist }} 天</view>
+
+    <view class="three column">
+      <view @tap="redirect('/pages/settings/super_statement')">
+        <view><image src="../public/images/004-receipt.png"></image></view>
+        <view>超级账单</view>
+      </view>
+      <view>
+        <view><image src="../public/images/003-pie-chart.png"></image></view>
+        <view>消费报表</view>
+      </view>
+      <view>
+        <view><image src="../public/images/001-list-1.png"></image></view>
+        <view>预购清单</view>
+      </view>
+    </view>
+
+    <view class="setting-container">
+      <view @tap="redirect('/pages/budgets/budget')">
+        <view>
+          <image src="../public/images/001-calculator.png"></image>
+          <text>预算设置</text>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+
+      <view>
+        <view>
+          <image src="../public/images/003-user.png"></image>
+          <text>多人记账</text>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+
+      <view>
+        <view>
+          <image src="../public/images/002-piggybank.png"></image>
+          <text>梦想存钱罐</text>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+    </view>
+
+    <view class="setting-container" style="margin: 12px 0">
+      <view wx:for="{{ menu }}" @tap="redirect('{{ item.url }}')">
+        <view>
+          <text>{{ item.name }}</text>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+
+      <!-- <view class="about-jz" @tap="cleanSession">
+        <text>清除缓存</text>
+        <text class="version">1.2M</text>
+      </view> -->
+
+      <view class="about-jz">
+        <text>关于洁账</text>
+        <text class="version">{{ version }}</text>
+      </view>
+    </view>
   </view>
-
-  <view class="header overflow-hide" wx:else>
-    <image class="pull-left" src="/public/images/no_login_avatar.png" />
-    <button class="get-user-btn" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击登录</button>
-  </view>
-
-  <view class="zan-panel">
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/budgets/budget')">
-      <view class="zan-cell__bd">预算设置</view>
-      <view class="zan-cell__ft">{{ user.budget }}</view>
-    </view>
-
-    <!-- <view class="zan-cell zan-cell--access" @tap="redirect('/pages/settings/set_cover')">
-      <view class="zan-cell__bd">封面设置</view>
-      <view class="zan-cell__ft"></view>
-    </view> -->
-
-    <!-- <view class="zan-cell zan-cell--access">
-      <view class="zan-cell__bd">消费分析</view>
-      <view class="zan-cell__ft"></view>
-    </view> -->
-
-    <!-- <view class="zan-cell zan-cell--access">
-      <view class="zan-cell__bd">图表浏览</view>
-      <view class="zan-cell__ft"></view>
-    </view> -->
-
-    <!-- <view class="zan-cell zan-cell--access">
-      <view class="zan-cell__bd">超级账单</view>
-      <view class="zan-cell__ft"></view>
-    </view> -->
-  </view>
-
-  <view class="zan-panel">
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/settings/super_statement')">
-      <view class="zan-cell__bd">超级账单</view>
-      <view class="zan-cell__ft"></view>
-    </view>
-
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/assets/list')">
-      <view class="zan-cell__bd">资产类型管理</view>
-      <view class="zan-cell__ft"></view>
-    </view>
-
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/categories/list?type=expend')">
-      <view class="zan-cell__bd">支出分类管理</view>
-      <view class="zan-cell__ft"></view>
-    </view>
-
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/categories/list?type=income')">
-      <view class="zan-cell__bd">收入分类管理</view>
-      <view class="zan-cell__ft"></view>
-    </view>
-  </view>
-
-  <view class="zan-panel">
-    <view class="zan-cell zan-cell--access" @tap="redirect('/pages/settings/feedback')">
-      <view class="zan-cell__bd">帮助与反馈</view>
-      <view class="zan-cell__ft"></view>
-    </view>
-
-    <view class="zan-cell zan-cell--access" @tap="cleanSession">
-      <view class="zan-cell__bd">清理缓存</view>
-    </view>
-
-    <view class="zan-cell zan-cell--access">
-      <view class="zan-cell__bd">关于洁账</view>
-      <view>{{ version }}</view>
-    </view>
-
-    <view class="zan-cell zan-cell--access" wx:if="{{ alreadyLogin }}" @tap="logout">
-      <view class="zan-cell__bd">退出登录</view>
-    </view>
-  </view>
-
-</view>
 </template>
 
 <script>
@@ -95,10 +101,32 @@
 
   export default class Setting extends wepy.page {
     config = {
-      navigationBarTitleText: '个人设置'
+      navigationBarTitleText: '我的'
     }
-
+    
     data = {
+      menu: [
+        {
+          name: '资产类型分类',
+          url: '/pages/assets/list'
+        },
+        {
+          name: '支出分类管理',
+          url: '/pages/categories/list?type=expend'
+        },
+        {
+          name: '收入分类管理',
+          url: '/pages/categories/list?type=income'
+        },
+        {
+          name: '封面设置',
+          url: '/pages/settings/set_cover'
+        },
+        {
+          name: '反馈与建议',
+          url: '/pages/settings/feedback'
+        }
+      ],
       user: {},
       version: '',
       alreadyLogin: this.loginStatus()

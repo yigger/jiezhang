@@ -8,7 +8,6 @@ export default class extends wepy.app {
       "pages/chart",
       "pages/asset",
       "pages/setting",
-      "pages/new_setting",
       // 记一笔
       "pages/statements/statement",
       "pages/statements/detail",
