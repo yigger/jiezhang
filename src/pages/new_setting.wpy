@@ -1,0 +1,102 @@
+<template>
+  <view class="container">
+    <view class="header">
+      <!-- header -->
+      <view class="user">
+        <view class="user-avatar">
+          <image src="../public/images/default-user.png"></image>
+        </view>
+        <view class="user-info">
+          <view>
+            <text class="user-name">youngiii</text>
+            <text class="designation">记账达人</text>
+          </view>
+          <view class="persistence">
+            已坚持记账 250 天
+          </view>
+        </view>
+      </view>
+      <view class="arrow-icon"><image src="../public/images/setting-right-arrow.png"></image></view>
+    </view>
+
+    <view class="three column">
+      <view>
+        <view><image src="../public/images/004-receipt.png"></image></view>
+        <view>超级账单</view>
+      </view>
+      <view>
+        <view><image src="../public/images/003-pie-chart.png"></image></view>
+        <view>消费报表</view>
+      </view>
+      <view>
+        <view><image src="../public/images/001-list-1.png"></image></view>
+        <view>预购清单</view>
+      </view>
+    </view>
+
+    <view class="setting-container">
+      <view>
+        <image src="../public/images/003-user.png"></image>
+        <text>多人记账</text>
+      </view>
+
+      <view>
+        <image src="../public/images/002-piggybank.png"></image>
+        <text>梦想存钱罐</text>
+      </view>
+
+      <view>
+        <image src="../public/images/001-calculator.png"></image>
+        <text>欲望计算器</text>
+      </view>
+    </view>
+
+    <view class="setting-container" style="margin: 12px 0">
+      <view wx:for="{{ menu }}">
+        <!-- <image src="../public/images/004-receipt.png"></image> -->
+        <text>{{ item.name }}</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from "../utils/api";
+  import tip from '../utils/tip'
+  import Session from '../utils/session'
+
+  export default class NewSetting extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的'
+    }
+    
+    data = {
+      menu: [
+        {
+          name: '资产类型分类'
+        },
+        {
+          name: '支出分类管理'
+        },
+        {
+          name: '收入分类管理'
+        },
+        {
+          name: '封面设置'
+        },
+        {
+          name: '清除缓存'
+        },
+        {
+          name: '反馈与建议'
+        },
+        {
+          name: '关于洁账'
+        },
+      ]
+    }
+
+  }
+</script>
+<style lang="scss" src="../public/styles/new_setting.scss"></style>

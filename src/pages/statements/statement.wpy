@@ -44,8 +44,8 @@
       </view>
 
       <view class="column location-column">
-        <text>地理位置</text>
-        <view>
+        <text style="flex: 1">地理位置</text>
+        <view style="flex: 2">
           <input name="location" type="text" value="{{ address }}"/>
           <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
 
