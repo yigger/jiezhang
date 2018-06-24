@@ -1,8 +1,12 @@
 <template>
   <view class="container">
-    <view class="item" wx:for="{{ avatars }}" @tap="setAvatar('{{ item.path }}')">
-      <view><image src="{{ item.path }}"></image></view>
-      <view>{{ item.name }} <text wx-if="{{ item.path == user.avatar }}">（当前封面）</text></view>
+    <view class="item" wx:for="{{ avatars }}" @tap="setAvatar('{{ item.val }}')">
+      <view><image src="{{ host }}{{ item.path }}"></image></view>
+      <radio-group class="radio-group" bindchange="radioChange">
+        <label class="radio">
+          <radio value="{{ item.val }}" checked="{{ item.path == user.bg_avatar_url }}"/>{{ item.name }}
+        </label>
+      </radio-group>
     </view>
   </view>
 </template>
@@ -11,6 +15,7 @@
   import wepy from 'wepy'
   import api from "../../utils/api"
   import tip from '../../utils/tip'
+  import { host } from '../../utils/host'
   export default class setCover extends wepy.page {
     config = {
       navigationBarTitleText: '设置封面'
@@ -31,10 +36,8 @@
         })
         const data = res.data
         if (data.status == 200) {
-          tip.success('设置成功')
-          wepy.navigateBack({
-            delta: 1
-          })
+          this.getUser()
+          this.$apply()
         } else {
           tip.error('设置失败')
         }
@@ -62,15 +65,21 @@
 </script>
 <style lang="less">
   .container {
-    background: #fefefe;
-    margin-top: 12px;
+    background: #EAEAEA;
   }
   .item {
-    width: 80%;
-    margin: 24px auto;
+    width: 50%;
+    float: left;
+    text-align: center;
+    margin: 12px 0;
+    font-size: 16px;
+    > view {
+      padding: 0 24px;
+    }
     image {
       width: 100%;
       height: 150px;
+      border:1px solid white;
     }
   }
 </style>
