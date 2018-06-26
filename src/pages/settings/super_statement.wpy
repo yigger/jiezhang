@@ -12,53 +12,23 @@
     <filter @paramsFilter.user="setParams"></filter>
 
     <view class="content">
-      <view class="column">
+      <view class="column" wx:for="{{ list }}">
         <view class="two-column">
           <view class="time align-right">
-            <text>06月</text>
-            <text>2018年</text>
+            <text>{{ item.month }}月</text>
+            <text>{{ item.year }}年</text>
           </view>
           <view class="amount">
-            <text class="income">流入： 500.00</text>
-            <text class="expend">流出： 20.00</text>
+            <text class="income">流入： {{ item.income_amount }}</text>
+            <text class="expend">流出： {{ item.expend_amount }}</text>
           </view>
         </view>
         <view class="left-amount align-right">
-          <text>3500.00</text>
+          <text>{{ item.surplus }}</text>
           <text>结余</text>
         </view>
       </view>
-
-      <view class="content">
-        
-      </view>
     </view>
-
-    <!-- <view id="all-assets">
-      <view class="asset category" wx:for="{{ list }}" wx:for-item="pst" @tap="showHidden('{{ index }}')">
-        <view class="detail">
-          <view class="title">
-            <view class="pull-left time align-column">
-              <view class="fs16">{{ pst.month }}月</view>
-              <view class="fs14 description">{{ pst.year }}</view>
-            </view>
-            <view class="pull-left align-column income-and-expend">
-              <view class="fs14 income">收入 {{ pst.income_amount }}</view>
-              <view class="fs14 expend">支出 {{ pst.expend_amount }}</view>
-            </view>
-            <view class="pull-right align-column left-money">
-              <view class="fs18">{{ pst.surplus }}</view>
-            </view>
-          </view>
-
-          <view class="content" hidden="{{ pst.hidden }}">
-            <repeat for="{{ pst.childs }}" key="index" index="index" item="item">
-              <single :item.sync="item"></single>
-            </repeat>
-          </view>
-        </view>
-      </view>
-    </view> -->
 
   </view>
 </template>
@@ -89,34 +59,24 @@
       params: {}
     }
 
-    onLoad () {
-      this.statements()
+    onShow () {
+      this.statement()
     }
 
     methods = {
-      showHidden(idx) {
-        let value = !this.list[idx].hidden
-        this.list[idx]['hidden'] = value
-			},
-      showStatement (id) {
-        wx.navigateTo({ url: `/pages/statements/detail?id=${id}` })
-      },
       setParams (params) {
         this.params = params
-        this.statements()
+        this.statement()
       }
     }
 
-    async statements () {
-      const res = (await api.StatementList({
-        query: this.params
-      })).data
+    async statement () {
+      const res = (await api.SuperStatementTime({ query: this.params })).data
       const data = res.data
-      this.list = data.statements
       this.header = data.header
+      this.list = data.time
       this.$apply()
     }
-
   }
 </script>
 <style lang="scss" src="../../public/styles/super_statement.scss"></style>

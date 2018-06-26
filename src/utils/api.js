@@ -3,7 +3,6 @@ import {
   wxRequest,
   wxUpload
 } from '../utils/wxRequest';
-import wepy from 'wepy';
 
 const apiUrl = Host.url
 // 获取首页数据
@@ -89,6 +88,9 @@ const BudgetUpdate = (params) => wxRequest(params, `${apiUrl}/budgets/0`);
 // 文件上传
 const Upload = (params) => wxUpload(params, `${apiUrl}/upload`);
 
+// 超级账单
+const SuperStatementTime = (params) => wxRequest(params, `${apiUrl}/super_statements/time`);
+
 module.exports = {
   host: Host.host,
   getIndexList,
@@ -125,5 +127,6 @@ module.exports = {
   guessAsset,
   Covers,
   SetCover,
-  updateUser
+  updateUser,
+  SuperStatementTime
 }
