@@ -1,0 +1,106 @@
+<template>
+  <view class="container">
+    <view class="scroll-header">
+      <scroll-view scroll-x class='months-scroll' style="width: 80%; margin: auto;overflow:hidden;" scroll-into-view="{{toView}}">
+        <view class="item" style="width: 20%"></view>
+        <view class="item" style="width: 20%"></view>
+        <view class="item" id="six-month">6月</view>
+        <view class="item" id="sevent-month">7月</view>
+        <view class="item" id="night-month">8月</view>
+        <view class="item">2018年</view>
+        <view class="item" style="width: 20%"></view>
+        <view class="item" style="width: 20%"></view>
+      </scroll-view>
+    </view>
+    <view class="chart-amount">
+      <view>
+        <view class="amount">80.00</view>
+        <view class="small-text">总支出</view>
+        <view class="percent-rise income">同期增长 10%</view>
+      </view>
+
+      <view>
+        <view class="amount">80.00</view>
+        <view class="small-text">总收入</view>
+        <view class="percent-rise expend">同期下降 10%</view>
+      </view>
+
+      <view>
+        <view class="amount">480.00</view>
+        <view class="small-text">结余</view>
+        <view class="percent-rise income">同期增长 30%</view>
+      </view>
+    </view>
+
+    <canvas canvas-id="pieCanvas" disable-scroll="true" class="piecanvas" style="width: 100%; height: 280px;" bindtouchstart="touchHandler"></canvas>
+
+    <view class="expend-bars">
+      <view class="item">
+        <view>
+          <view class="title">餐饮伙食<text class="percent">48.85%</text></view>
+          <view class="amount">512.00</view>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+
+      <view class="item" style="background-size: 80% 100%;">
+        <view>
+          <view class="title">餐饮伙食<text class="percent">48.85%</text></view>
+          <view class="amount">512.00</view>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+
+      <view class="item">
+        <view>
+          <view class="title">餐饮伙食<text class="percent">48.85%</text></view>
+          <view class="amount">512.00</view>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from "../../utils/api"
+  import tip from '../../utils/tip'
+  import { host } from '../../utils/host'
+  import wxCharts from '../../utils/wxchart.min.js'
+  export default class superChart extends wepy.page {
+    config = {
+      navigationBarTitleText: '消费报表'
+    }
+
+    data = {
+      chartData: [{
+        name: 'cat1',
+        data: 50,
+      }, {
+        name: 'cat2',
+        data: 30,
+      }],
+      toView: 'sevent-month'
+    }
+
+    onShow() {
+      this.initChart()
+    }
+
+    async initChart () {
+      const info = await wepy.getSystemInfo()
+      new wxCharts({
+        canvasId: 'pieCanvas',
+        type: 'pie',
+        series: this.chartData,
+        width: info.screenWidth,
+        height: 280,
+        legend: true,
+        dataLabel: true
+      });
+    }
+  }
+</script>
+<style lang="scss" src="../../public/styles/super_chart.scss"></style>

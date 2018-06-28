@@ -21,6 +21,7 @@ export default class extends wepy.app {
       "pages/budgets/child_budget",
       // 设置
       "pages/settings/feedback",
+      "pages/settings/super_chart",
       "pages/settings/user_info",
       "pages/settings/set_cover",
       "pages/settings/super_statement",

@@ -1,0 +1,68 @@
+.chart-amount {
+  display: flex;
+  height: 60px;
+  border-bottom: 1px solid #f4f4f4;
+  border-top: 1px solid #f4f4f4;
+  align-items: center;
+  > view {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align:center;
+    .amount {
+      font-size: 16px;
+    }
+    .small-text {
+      font-size: 14px;
+      color: #999;
+    }
+    .percent-rise {
+      font-size: 12px;
+    }
+  }
+}
+.piecanvas {
+  border-bottom: 1px solid #f4f4f4;
+}
+.expend-bars {
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+    color: black;
+    margin:12px 20px;
+    padding: 8px;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(#c1f5e7, #c1f5e7);
+    border-radius:4px;
+    .title {
+      font-size: 14px;
+    }
+    .amount {
+      margin-top: 4px;
+      font-size: 14px;
+      color: green;
+    }
+    .percent {
+      font-size: 12px;
+      margin-left: 12px;
+      color: #485357;
+    }
+  }
+  .zan-icon-arrow {
+    font-size: 14px;
+    color: #ccc;
+  }
+}
+.scroll-header {
+  width: 100%;
+  background: #fff;
+  white-space: nowrap;
+  .months-scroll .item{
+    width: 160rpx;
+    height: auto;
+    margin-right: 23rpx;
+    display: inline-block;
+  }
+}
