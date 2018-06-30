@@ -1,0 +1,21 @@
+@font-face {font-family: 'iconfont';
+	src:url(https://yiiiblog.com/fonts/iconfont.eot);
+  src:url(https://yiiiblog.com/fonts/iconfont.eot?#iefix) 
+  format('embedded-opentype'),url(https://yiiiblog.com/fonts/iconfont.woff) 
+  format('woff'),url(https://yiiiblog.com/fonts/iconfont.ttf) 
+  format('truetype')
+}
+
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+}
+
+.jz-icon-arrow-up:before { content: "\e660"; }
+
+.jz-icon-arrow-left:before { content: "\e6bc"; }
+
+.jz-icon-arrow-right:before { content: "\e6bd"; }
+
+.jz-icon-arrow-down:before { content: "\e6be"; }

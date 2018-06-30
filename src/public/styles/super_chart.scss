@@ -1,8 +1,28 @@
+@import './_variable.scss';
+.time-filter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: $secondaryBackgroundColor;
+  padding: 10px 12px;
+  font-size: 14px;
+  .month-filter {
+    display: flex;
+    align-items: center;
+    .iconfont {
+      color: $iconGrey;
+    }
+    .month{
+      color: $secondaryText;
+      padding: 0 32px;
+    }
+  }
+}
 .chart-amount {
   display: flex;
   height: 60px;
-  border-bottom: 1px solid #f4f4f4;
-  border-top: 1px solid #f4f4f4;
+  border-bottom: 1px solid $borderColor;
+  border-top: 1px solid $borderColor;
   align-items: center;
   > view {
     flex: 1;
@@ -15,7 +35,7 @@
     }
     .small-text {
       font-size: 14px;
-      color: #999;
+      color: $secondaryText;
     }
     .percent-rise {
       font-size: 12px;
@@ -23,14 +43,14 @@
   }
 }
 .piecanvas {
-  border-bottom: 1px solid #f4f4f4;
+  border-bottom: 1px solid $borderColor;
 }
 .expend-bars {
   .item {
     display: flex;
     justify-content: space-between;
     align-items:center;
-    color: black;
+    color: $primaryText;
     margin:12px 20px;
     padding: 8px;
     background-repeat: no-repeat;
@@ -42,12 +62,12 @@
     .amount {
       margin-top: 4px;
       font-size: 14px;
-      color: green;
+      color: $expendColor;
     }
     .percent {
       font-size: 12px;
       margin-left: 12px;
-      color: #485357;
+      color: $secondaryText;
     }
   }
   .zan-icon-arrow {

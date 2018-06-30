@@ -91,6 +91,9 @@ const Upload = (params) => wxUpload(params, `${apiUrl}/upload`);
 // 超级账单
 const SuperStatementTime = (params) => wxRequest(params, `${apiUrl}/super_statements/time`);
 
+// 图表分析
+const SuperChart = (params) => wxRequest(params, `${apiUrl}/super_chart`);
+
 module.exports = {
   host: Host.host,
   getIndexList,
@@ -128,5 +131,6 @@ module.exports = {
   Covers,
   SetCover,
   updateUser,
-  SuperStatementTime
+  SuperStatementTime,
+  SuperChart
 }

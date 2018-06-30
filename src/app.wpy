@@ -92,6 +92,7 @@ export default class extends wepy.app {
 }
 </script>
 <style lang="less">
+@import "/public/styles/iconfont.wxss";
 @import "/public/zan-ui/index.wxss";
 @import "/public/styles/common.less";
 </style>
