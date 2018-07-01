@@ -9,7 +9,8 @@ const KEY = {
 		statementAssets: "@asset_statement@",
 		list: "@asset_list@"
 	},
-	alreadyLogin: "@alreadyLogin@"
+	alreadyLogin: "@alreadyLogin@",
+	login: 'weapp_login_session'
 }
 
 module.exports = {

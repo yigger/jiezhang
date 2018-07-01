@@ -75,7 +75,7 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../utils/api"
+  import wxRequest from '@/utils/wxRequest'
   export default class Filter extends wepy.component {
     data = {
       list: [],
@@ -129,7 +129,7 @@
     }
 
     async getFilters () {
-      const res = (await api.StatementFilters()).data
+      const res = await wxRequest.Get('statements/filter')
       this.filter = res.filter
       this.$apply()
     }

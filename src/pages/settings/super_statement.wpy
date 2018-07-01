@@ -35,10 +35,9 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
-  import Single from '../../components/single'
-  import Filter from '../../components/filter'
+  import wxRequest from '@/utils/wxRequest'
+  import Single from '@/components/single'
+  import Filter from '@/components/filter'
   export default class SuperStatement extends wepy.page {
     config = {
       navigationBarTitleText: '超级账单'
@@ -71,8 +70,7 @@
     }
 
     async statement () {
-      const res = (await api.SuperStatementTime({ query: this.params })).data
-      const data = res.data
+      const data = (await wxRequest.Get('super_statements/time', this.params)).data
       this.header = data.header
       this.list = data.time
       this.$apply()

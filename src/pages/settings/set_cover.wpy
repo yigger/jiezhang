@@ -13,9 +13,9 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
-  import { host } from '../../utils/host'
+  import wxRequest from '@/utils/wxRequest'
+  import tip from '@/utils/tip'
+  import { host } from '@/utils/host'
   export default class setCover extends wepy.page {
     config = {
       navigationBarTitleText: '设置封面'
@@ -28,13 +28,7 @@
 
     methods = {
       async setAvatar (path) {
-        const res = await api.SetCover({
-          method: 'POST',
-          query: {
-            path: path
-          }
-        })
-        const data = res.data
+        const data = await wxRequest.Post('settings/set_cover', {path: path})
         if (data.status == 200) {
           this.getUser()
           this.$apply()
@@ -50,14 +44,14 @@
     }
     
     async getUser () {
-      const res = await api.User()
-      this.user = res.data
+      const data = await wxRequest.Get('users')
+      this.user = data
       this.$apply()
     }
 
     async getAvatars () {
-      const res = await api.Covers()
-      this.avatars = res.data.data
+      const data = await wxRequest.Get('settings/covers')
+      this.avatars = data.data
       this.$apply()
     }
 

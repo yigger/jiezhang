@@ -54,10 +54,10 @@
 
 <script>
 	import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
-  import Empty from '../../components/empty'
-  import Single from '../../components/single'
+  import wxRequest from '@/utils/wxRequest'
+  import tip from '@/utils/tip'
+  import Empty from '@/components/empty'
+  import Single from '@/components/single'
   
   export default class AssetDetail extends wepy.page {
     config = {
@@ -105,40 +105,25 @@
     }
 
     async information () {
-      const res = await api.AssetDetailInformation({
-        query: {
-          asset_id: this.asset_id
-        }
-      })
-      this.header = res.data
+      const data = await wxRequest.Get('wallet/information', {asset_id: this.asset_id})
+      this.header = data
       this.amount = this.header.surplus
       this.source_amount = this.header.source_surplus
       this.$apply()
     }
 
     async statements () {
-      const res = await api.AssetDetailList({
-        query: {
-          asset_id: this.asset_id
-        }
-      })
-      this.list = res.data
+      const data = await wxRequest.Get('wallet/detail', {asset_id: this.asset_id})
+      this.list = data
       this.$apply()
     }
 
 		async updateSurplus (amount) {
-      const res = await api.AssetSurplus({
-        method: "PUT",
-        query: {
-          asset_id: this.asset_id,
-          amount: amount
-        }
-      })
-
-      if (res.data.status == 200) {
+      const data = await wxRequest.Put('wallet/surplus', {asset_id: this.asset_id, amount: amount})
+      if (data.status == 200) {
         this.information()
       } else {
-        tip.error(res.data.msg)
+        tip.error(data.msg)
       }
     }
 
@@ -150,4 +135,4 @@
 
   }
 </script>
-<style lang="scss" src="../../public/styles/assets/asset_detail.scss"></style>
+<style lang="scss" src="@/public/styles/assets/asset_detail.scss"></style>

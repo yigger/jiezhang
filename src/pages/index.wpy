@@ -67,10 +67,11 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../utils/api"
-  import Empty from '../components/empty'
-  import IndexStatement from '../components/index/statement'
-  import IndexYearMonth from '../components/index/year_month'
+  import Api from "@/utils/api"
+  import wxRequest from '@/utils/wxRequest'
+  import Empty from '@/components/empty'
+  import IndexStatement from '@/components/index/statement'
+  import IndexYearMonth from '@/components/index/year_month'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '首页',
@@ -197,23 +198,23 @@
     }
 
     async getHeader () {
-      const res = await api.getIndexHeader()
-      this.header = res.data
+      const data = await wxRequest.Get(Api.IndexHeader)
+      this.header = data
       this.$apply()
     }
 
     async getList(options = {}) {
       this.showLoading = true
-      const res = await api.getIndexList({
-        query: {
+      const res = await wxRequest.Get(
+        Api.IndexList,
+        {
           scope: this.scope,
           page: this.curPage,
           per_page: this.per_page
-        }
-      })
-      const data = res.data.list
-      this.tabHeader = res.data.header
-      if(res.data.status != 405) {
+        })
+      const data = res.list
+      this.tabHeader = res.header
+      if(res.status != 405) {
         if (this.scope == 'year' || this.scope == 'month') {
           this.dealWithYear(data)
         } else {
@@ -222,23 +223,11 @@
         this.noMoreData = false
       }
 
-      if (options.from == 'reachBottom' && ((data != undefined && data.length == 0) || res.data.status == 405)) {
+      if (options.from == 'reachBottom' && ((data != undefined && data.length == 0) || res.status == 405)) {
         this.noMoreData = true
       }
       
       this.showLoading = false
-      this.$apply()
-    }
-
-    async getStatementById(obj, id) {
-      const res = await api.getIndexStatement(id)
-      Object.assign(obj, res.data)
-      this.$apply()
-    }
-
-    async addStatementById(id) {
-      const res = await api.getIndexStatement(id)
-      this.list = [res.data].concat(this.list)
       this.$apply()
     }
 

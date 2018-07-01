@@ -6,8 +6,6 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
 
   export default class Message extends wepy.page {
     config = {
@@ -23,17 +21,10 @@
     }
     
     methods = {
-      redirect (url) {
-        wepy.navigateTo({
-          url: url
-        })
-      }
     }
 
     async getData () {
-      const res = await api.Settings()
-      this.user = res.data
-      this.$apply()
+
     }
   }
 </script>

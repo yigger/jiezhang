@@ -14,10 +14,10 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
+  import wxRequest from '@/utils/wxRequest'
+  import tip from '@/utils/tip'
   
-  export default class Setting extends wepy.page {
+  export default class BudgetForm extends wepy.page {
     config = {
       navigationBarTitleText: '预算设置'
     }
@@ -46,13 +46,7 @@
     }
 
     async updateRootBudget(amount) {
-      const res = (await api.BudgetUpdate({
-        method: "PUT",
-        query: {
-          type: 'user',
-          amount: amount
-        }
-      })).data
+      const res = await wxRequest.Put('budgets/0', { type: 'user', amount: amount})
       if (res.status === 200) {
         wepy.navigateBack({
           delta: 1
@@ -63,14 +57,12 @@
     }
     
     async updateCategoryBudget (amount) {
-      const res = (await api.BudgetUpdate({
-        method: "PUT",
-        query: {
+      const res = await wxRequest.Put('budgets/0',
+        {
           type: 'category',
           category_id: this.category_id,
           amount: amount
-        }
-      })).data
+        })
       if (res.status == 200) {
          const pages = getCurrentPages()
          const prevPage = pages[pages.length - 2]
@@ -85,4 +77,4 @@
 
   }
 </script>
-<style lang="scss" src="../../public/styles/statement/statement.scss"></style>
+<style lang="scss" src="@/public/styles/statement/statement.scss"></style>

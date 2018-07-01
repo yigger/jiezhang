@@ -29,9 +29,8 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
-  import Category from '../../components/category_item'
+  import wxRequest from '@/utils/wxRequest'
+  import Category from '@/components/category_item'
   export default class choseCategory extends wepy.page {
     data = {
       frequent: [],
@@ -65,10 +64,7 @@
     }
 
     async getCategory () {
-      const res = await api.StatementCategories({
-        query: { type: this.type }
-      })
-      const data = res.data
+      const data = await wxRequest.Get('statements/categories', { type: this.type })
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories

@@ -16,7 +16,7 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
+  import wxRequest from '@/utils/wxRequest'
   import tip from '../../utils/tip'
 
   export default class Feedback extends wepy.page {
@@ -38,21 +38,18 @@
         this.type = e.detail.value
       },
       async submit () {
-        const res = await api.Feedback({
-          method: 'POST',
-          query: {
+        const data = await wxRequest.Post('settings/feedback', {
             content: this.content,
             type: this.type
-          }
-        })
-        if (res.data.status == 200) {
+          })
+        if (data.status == 200) {
           tip.success('提交成功!')
           this.content = ''
           wepy.navigateBack({
             delta: 1
           })
         } else {
-          tip.error(res.data.msg)
+          tip.error(data.msg)
         }
         this.$apply()
       },

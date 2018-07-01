@@ -14,10 +14,8 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api";
-  import tip from '../../utils/tip'
-  
-  export default class Setting extends wepy.page {
+  import wxRequest from '@/utils/wxRequest'
+  export default class AssetForm extends wepy.page {
     config = {
       navigationBarTitleText: '余额设置'
     }
@@ -35,12 +33,10 @@
     methods = {
       async formSubmit (e) {
         let amount = e.detail.value.amount
-        const res = await api.AssetSurplus({
-          method: "PUT",
-          query: {
-            asset_id: this.asset_id,
-            amount: amount
-          }
+        await wxRequest.Put('wallet/surplus', 
+        {
+          asset_id: this.asset_id,
+          amount: amount
         })
         wepy.navigateBack({
           delta: 1
@@ -49,4 +45,4 @@
     }
   }
 </script>
-<style lang="scss" src="../../public/styles/statement/statement.scss"></style>
+<style lang="scss" src="@/public/styles/statement/statement.scss"></style>

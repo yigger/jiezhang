@@ -73,7 +73,7 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
+  import wxRequest from '@/utils/wxRequest'
   import tip from '../../utils/tip'
   export default class StatementDetail extends wepy.page {
     config = {
@@ -103,7 +103,7 @@
       },
       async del () {
         await tip.confirm('是否删除该条账单？', {}, '提示')
-        const res = await api.Statement({method: 'DELETE'}, this.id);
+        await wxRequest.Destroy(`statements/${this.id}`)
         wepy.navigateBack({
           delta: 1
         })
@@ -111,10 +111,8 @@
     }
 
     async getStatement () {
-      const result = await api.StatementDetail({ 
-        query: { id: this.id }
-      })
-      this.statement = result.data
+      const data = await wxRequest.Get('statements/detail', { id: this.id })
+      this.statement = data
       this.$apply()
     }
     

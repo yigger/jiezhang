@@ -44,10 +44,10 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
-  import { host } from '../../utils/host'
-  import wxCharts from '../../utils/wxchart.min.js'
+  import Api from "@/utils/api"
+  import wxRequest from '@/utils/wxRequest'
+  import wxCharts from '@/utils/wxchart.min.js'
+
   export default class superChart extends wepy.page {
     config = {
       navigationBarTitleText: '消费报表'
@@ -99,12 +99,12 @@
     }
 
     async getChartData () {
-      const data = (await api.SuperChart({
-        query: {
+      const data = await wxRequest.Get(
+        Api.SuperChart, {
           year: this.year,
           month: this.month
-        }
-      })).data
+        })
+      console.log(data)
       this.header = data.header
       this.chartData = data.charts
       if (data.wx_charts.length != 0) this.initChart(data.wx_charts)

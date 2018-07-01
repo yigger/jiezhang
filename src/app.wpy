@@ -80,14 +80,19 @@ export default class extends wepy.app {
     debug: true
   }
 
-  onLaunch () {
-    // console.log('小程序第一次启动，此处应当获取版本号')
-  }
-
   constructor () {
     super()
     this.use('requestfix')
-    this.use('promisify');
+    this.use('promisify')
+    
+    this.intercept('request', {
+      config (p) {
+        return p;
+      },
+      success (p) {
+        return p.data;
+      }
+    });
   }
 }
 </script>

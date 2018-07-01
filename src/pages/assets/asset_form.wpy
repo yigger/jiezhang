@@ -65,9 +65,10 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
-  import Session from '../../utils/session'
+  import wxRequest from '@/utils/wxRequest'
+  import Host from '@/utils/host'
+  import tip from '@/utils/tip'
+  import Session from '@/utils/session'
   export default class AssetList extends wepy.page {
     config = {
       navigationBarTitleText: '资产设置'
@@ -128,16 +129,14 @@
       },
       async del () {
         await tip.confirm('删除后，所属该分类的账单也将一并删除！', {}, '警告')
-        const res = await api.Asset({
-          method: 'DELETE'
-        }, this.wallet.id)
-        if (res.data.status == 200) {
+        const data = await wxRequest.Destroy(`assets/${this.wallet.id}`)
+        if (data.status == 200) {
           Session.clearByKey('asset')
           wepy.navigateBack({
             delta: 1
           })
         } else {
-          tip.error(res.data.msg)
+          tip.error(data.msg)
         }
       },
       async submit () {
@@ -152,28 +151,26 @@
           this.wallet.amount = 0
         }
 
-        const res = await api.Asset({
-          showLoading: true,
-          method: method,
-          query: {
-            wallet: this.wallet
-          }
-        }, cId);
-
-        if (res.statusCode == 200 && res.data.status == 200) {
+        let res = null
+        if(method == 'POST' ) {
+          res = await wxRequest.Post('assets', {wallet: this.wallet})
+        } else {
+          res = await wxRequest.Put(`assets/${cId}`, {wallet: this.wallet})
+        }
+        if (res.status == 200) {
           Session.clearByKey('asset')
           wepy.navigateBack({
             delta: 1
           })
         } else {
-          tip.error(res.data.msg)
+          tip.error(res.msg)
         }
       }
     }
 
     computed = {
       host () {
-        return api.host;
+        return Host.host;
       }
     }
 
@@ -188,8 +185,8 @@
     }
 
     async getWallet (id) {
-      const res = await api.Asset({ showLoading: true }, id)
-      this.wallet = res.data
+      const data = await wxRequest.Get(`assets/${id}`)
+      this.wallet = data
       if (this.wallet.type == 'debt') this.typeIndex = 1
       if (this.wallet.parent_id != 0) {
         this.updateCurrentIndex()
@@ -200,8 +197,8 @@
     }
 
     async getParent() {
-      const json = await api.AssetParent()
-      this.parents = json.data
+      const data = await wxRequest.Get('assets/parent')
+      this.parents = data
       if (this.parents.length > 0 && !this.isParentLevel && this.wallet.id == 0) {
         this.wallet.parent_id = this.parents[0]['id']
       }
@@ -209,8 +206,8 @@
     }
 
     async getIcons () {
-      const res = await api.AssetIcon()
-      this.icons = res.data
+      const data = await wxRequest.Get('icons/assets')
+      this.icons = data
       this.$apply()
     }
 
