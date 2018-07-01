@@ -74,7 +74,7 @@
 <script>
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
-  import tip from '../../utils/tip'
+  import tip from '@/utils/tip'
   export default class StatementDetail extends wepy.page {
     config = {
       navigationBarTitleText: '账单详情'

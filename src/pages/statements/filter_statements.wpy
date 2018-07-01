@@ -1,0 +1,29 @@
+<template lang="wxml">
+  <view class="container">
+    
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '@/utils/wxRequest'
+  export default class FilterStatement extends wepy.page {
+    config = {
+      navigationBarTitleText: '账单列表'
+    }
+
+    data = {
+      
+    }
+
+    onLoad (options) {
+      
+    }
+
+    methods = {
+      
+    }
+    
+  }
+</script>
+<style lang="scss" src="@/public/styles/filter_statements.scss"></style>
