@@ -36,11 +36,11 @@
         <view><image src="../public/images/004-receipt.png"></image></view>
         <view>超级账单</view>
       </view>
-      <view>
+      <view @tap="redirect('/pages/settings/super_chart')">
         <view><image src="../public/images/003-pie-chart.png"></image></view>
         <view>消费报表</view>
       </view>
-      <view>
+      <view @tap="developing()">
         <view><image src="../public/images/001-list-1.png"></image></view>
         <view>预购清单</view>
       </view>
@@ -55,7 +55,7 @@
         <view class="zan-icon zan-icon-arrow"></view>
       </view>
 
-      <view>
+      <view @tap="developing()">
         <view>
           <image src="../public/images/003-user.png"></image>
           <text>多人记账</text>
@@ -63,7 +63,7 @@
         <view class="zan-icon zan-icon-arrow"></view>
       </view>
 
-      <view>
+      <view @tap="developing()">
         <view>
           <image src="../public/images/002-piggybank.png"></image>
           <text>梦想存钱罐</text>
@@ -164,6 +164,9 @@
         let key = Session.key.alreadyLogin
         Session.clear(key)
         this.alreadyLogin = false
+      },
+      developing () {
+        tip.toast('开发中，敬请期待')
       }
     }
 
