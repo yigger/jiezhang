@@ -12,30 +12,37 @@
     <filter @paramsFilter.user="setParams"></filter>
 
     <view class="content">
-      <view class="column" wx:for="{{ list }}">
-        <view class="two-column">
-          <view class="time align-right">
-            <text>{{ item.month }}月</text>
-            <text>{{ item.year }}年</text>
+      <view wx:for="{{ list }}">
+        <!-- header -->
+        <view class="column" @tap="getList('{{ item.year }}', '{{ item.month }}', '{{ index }}')">
+          <view class="two-column">
+            <view class="time align-right">
+              <text>{{ item.month }}月</text>
+              <text>{{ item.year }}年</text>
+            </view>
+            <view class="amount">
+              <text class="income">流入： {{ item.income_amount }}</text>
+              <text class="expend">流出： {{ item.expend_amount }}</text>
+            </view>
           </view>
-          <view class="amount">
-            <text class="income">流入： {{ item.income_amount }}</text>
-            <text class="expend">流出： {{ item.expend_amount }}</text>
+          <view class="left-amount align-right">
+            <text>{{ item.surplus }}</text>
+            <text>结余</text>
           </view>
         </view>
-        <view class="left-amount align-right">
-          <text>{{ item.surplus }}</text>
-          <text>结余</text>
-        </view>
+        <!-- list -->
+        <repeat for="{{ item.childs }}" key="index" index="index" item="item">
+          <statement :statement.sync="item"></statement>
+        </repeat>
       </view>
     </view>
-
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
+  import IndexStatement from '@/components/index/statement'
   import Single from '@/components/single'
   import Filter from '@/components/filter'
   export default class SuperStatement extends wepy.page {
@@ -45,7 +52,8 @@
 
     components = {
       filter: Filter,
-      single: Single
+      single: Single,
+      statement: IndexStatement
     }
 
     data = {
@@ -55,24 +63,59 @@
         left: 0
       },
       list: [],
-      params: {}
+      params: {},
+      statements: [],
+      cacheStatement: {}
     }
 
     onShow () {
-      this.statement()
+      this.getMonths()
     }
 
     methods = {
       setParams (params) {
         this.params = params
-        this.statement()
+        this.getMonths()
+      },
+      getList (year, month, index) {
+        // 隐藏其它展开的
+        // 展开当前点击的
+        for(let item of this.list) {
+          if(!item.hidden) {
+            item.hidden = true
+          }
+        }
+        this.list[index].hidden = false
+        try {
+          this.statements = this.cacheStatement[year][month]
+        } catch(e) {
+          this.statement(year, month, index)
+        }
       }
     }
 
-    async statement () {
+    async getMonths () {
       const data = (await wxRequest.Get('super_statements/time', this.params)).data
       this.header = data.header
       this.list = data.time
+      this.$apply()
+    }
+
+    async statement (year, month, index) {
+      let params = {
+        year: year,
+        month: month
+      }
+      params = Object.assign(params, this.params)
+      const data = (await wxRequest.Get('super_statements/list', params)).data
+      // try {
+      //   this.cacheStatement[year][month] = data
+      // } catch {
+      //   this.cacheStatement[year] = new Array()
+      //   this.cacheStatement[year][month] = data
+      // }
+      // this.statements = data
+      this.list[index].childs = data
       this.$apply()
     }
   }

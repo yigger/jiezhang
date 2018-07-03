@@ -33,11 +33,11 @@
   justify-content: space-between;
   font-size: 14px;
   padding: 8px 14px;
-  border-bottom: 1px dashed #ccc;
+  border-bottom: 1px dashed $borderColor;
 }
 .content {
   .column {
-    border-bottom: 1px solid #f4f4f5;
+    border-bottom: 1px solid $borderColor;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -46,6 +46,7 @@
   }
   .two-column {
     display: flex;
+    color: $secondaryText;
   }
   .time, .amount, .left-amount {
     display: flex;
@@ -59,6 +60,6 @@
     text-align: right;
   }
   .left-amount > text:last-child {
-    color: #999;
+    color: $secondaryText;
   }
 }
