@@ -31,8 +31,8 @@
           </view>
         </view>
         <!-- list -->
-        <repeat for="{{ item.childs }}" key="index" index="index" item="item">
-          <statement :statement.sync="item"></statement>
+        <repeat for="{{ item.childs }}" key="index" index="index" item="st" wx:if="{{ !item.hidden }}">
+          <statement :statement.sync="st"></statement>
         </repeat>
       </view>
     </view>
@@ -78,19 +78,13 @@
         this.getMonths()
       },
       getList (year, month, index) {
-        // 隐藏其它展开的
-        // 展开当前点击的
-        for(let item of this.list) {
-          if(!item.hidden) {
-            item.hidden = true
-          }
-        }
-        this.list[index].hidden = false
-        try {
-          this.statements = this.cacheStatement[year][month]
-        } catch(e) {
-          this.statement(year, month, index)
-        }
+        let value = !this.list[index].hidden
+        this.list[index]['hidden'] = value
+        // try {
+        //   this.statements = this.cacheStatement[year][month]
+        // } catch(e) {
+        this.statement(year, month, index)
+        // }
       }
     }
 
@@ -108,16 +102,9 @@
       }
       params = Object.assign(params, this.params)
       const data = (await wxRequest.Get('super_statements/list', params)).data
-      // try {
-      //   this.cacheStatement[year][month] = data
-      // } catch {
-      //   this.cacheStatement[year] = new Array()
-      //   this.cacheStatement[year][month] = data
-      // }
-      // this.statements = data
       this.list[index].childs = data
       this.$apply()
     }
   }
 </script>
-<style lang="scss" src="../../public/styles/super_statement.scss"></style>
+<style lang="scss" src="@/public/styles/super_statement.scss"></style>

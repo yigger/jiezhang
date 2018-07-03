@@ -31,7 +31,7 @@
     <canvas canvas-id="pieCanvas" disable-scroll="true" class="piecanvas" style="width: 100%; height: 280px;" bindtouchstart="touchHandler"></canvas>
 
     <view class="expend-bars">
-      <view class="item" wx:for="{{ chartData }}" style="background-size: {{ item.percent * 2 }}% 100%;">
+      <view class="item" wx:for="{{ chartData }}" style="background-size: {{ item.percent * 2 }}% 100%;" @tap="redirectTo('{{ item.category_id }}')">
         <view>
           <view class="title">{{ item.name }}<text class="percent">{{ item.percent }}%</text></view>
           <view class="amount">{{ item.format_amount }}</view>
@@ -78,6 +78,11 @@
           }
         }
         this.getChartData()
+      },
+      redirectTo (category_id) {
+        wepy.navigateTo({
+          url: `/pages/statements/filter_statements?year=${this.year}&month=${this.month}&category_id=${category_id}`
+        })
       }
     }
 
@@ -113,4 +118,4 @@
 
   }
 </script>
-<style lang="scss" src="../../public/styles/super_chart.scss"></style>
+<style lang="scss" src="@/public/styles/super_chart.scss"></style>
