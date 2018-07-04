@@ -1,0 +1,29 @@
+@import './_variable.scss';
+.header {
+  background: #fafafa;
+  color: $primaryText;
+  height: 64rpx;
+  line-height: 64rpx;
+  padding: 0 24rpx;
+}
+.column {
+  width: 20%;
+  float: left;
+  margin: 18rpx 0;
+  .category {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .category-name {
+      font-size: 24rpx;
+      padding: 8rpx 0;
+      color: $secondaryText;
+    }
+  }
+  .ljt-icon {
+    width: 60rpx;
+    height: 60rpx;
+    margin-right: 12rpx;
+  }
+}

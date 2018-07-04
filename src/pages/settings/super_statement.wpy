@@ -80,18 +80,14 @@
       getList (year, month, index) {
         let value = !this.list[index].hidden
         this.list[index]['hidden'] = value
-        // try {
-        //   this.statements = this.cacheStatement[year][month]
-        // } catch(e) {
         this.statement(year, month, index)
-        // }
       }
     }
 
     async getMonths () {
       const data = (await wxRequest.Get('super_statements/time', this.params)).data
       this.header = data.header
-      this.list = data.time
+      this.list = data.statements
       this.$apply()
     }
 

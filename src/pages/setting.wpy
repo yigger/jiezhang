@@ -9,7 +9,7 @@
         <view class="user-info">
           <view>
             <text class="user-name">{{ user.name }}</text>
-            <text class="designation">记账达人</text>
+            <text class="designation" style="background: {{ user.vip.color }}">{{ user.vip.name }}</text>
           </view>
           <view class="persistence">
             已坚持记账 {{ user.persist }} 天

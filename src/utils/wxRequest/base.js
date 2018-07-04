@@ -23,8 +23,17 @@ const getOpenId = async () => {
   return loginResult.session
 }
 
-const doRequest = async (url, method, params) => {
+const doRequest = async (url, method, params, options = {}) => {
   try {
+    // 是否可以命中缓存
+    // if(options.cache) {
+    //   if (cacheExist(options.cacheKey)) {
+    //     return getByCache(options.cacheKey)
+    //   } else {
+
+    //   }
+    // }
+
     const result = await wepy.request({
       url: url,
       method: method,
@@ -61,6 +70,21 @@ const wxUpload = async (url, params = {}) => {
     name: 'file'
   })
   return uploadResult
+}
+
+// 获取缓存
+const getByCache = (cacheKey) => {
+
+}
+
+// 设置缓存
+const setByCache = (cacheKey, cacheVal, expire = 3600) => {
+
+}
+
+// 缓存是否存在
+const cacheExist = (cacheKey) => {
+
 }
 
 export default {

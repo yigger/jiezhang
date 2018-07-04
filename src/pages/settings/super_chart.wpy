@@ -3,10 +3,11 @@
     <view class="time-filter">
       <view class="month-filter">
         <view class="iconfont jz-icon-arrow-left" @tap="setParams('prev')"></view>
-        <view class="month">{{ month }}月</view>
+        <view class="month" wx:if="{{ month != -1 }}">{{ month }}月</view>
+        <view class="year" wx:else>{{ year }}年</view>
         <view class="iconfont jz-icon-arrow-right-copy" @tap="setParams('next')"></view>
       </view>
-      <!-- <view>filter</view> -->
+      <!-- <view></view> -->
     </view>
     <view class="chart-amount">
       <view>
@@ -65,16 +66,26 @@
         if (type == 'next') {
           if (this.month == 12) {
             this.year += 1
-            this.month = 1
+            this.month = -1
           } else {
-            this.month += 1
+            if(this.month == -1) {
+              this.year += 1
+              this.month = 1
+            } else {
+              this.month += 1
+            }
           }
         } else {
           if (this.month == 1) {
             this.year -= 1
-            this.month = 12
+            this.month = -1
           } else {
-            this.month -= 1
+            if(this.month == -1) {
+              this.month = 12
+              this.year -= 1
+            } else {
+              this.month -= 1
+            }
           }
         }
         this.getChartData()

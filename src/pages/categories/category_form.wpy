@@ -47,8 +47,8 @@
       <view class="bill-btn save" @tap="submit">保存</view>
     </view>
     
-    <view wx:else>
-      <button class="zan-btn zan-btn--danger" @tap="submit">保存</button>
+    <view class="zan-btns" wx:else>
+      <button class="zan-btn jz-btn btn-shadow" style="background: #2196F3; color: white;" @tap="submit">保存</button>
     </view>
   </view>
 </template>
