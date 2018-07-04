@@ -267,12 +267,12 @@
       },
       bgImage () {
         let avatar = this.header.bg_avatar
-        if (avatar == null) {
-          avatar = "../public/images/default-2.jpeg"
+        if (avatar == null || avatar == '') {
+          avatar = "../public/images/default-3.jpeg"
         }
         return avatar
       }
     }
   }
 </script>
-<style lang="scss" src="../public/styles/index.scss"></style>
+<style lang="scss" src="@/public/styles/index.scss"></style>

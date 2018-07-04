@@ -4,7 +4,7 @@
       <view class="month-filter">
         <view class="iconfont jz-icon-arrow-left" @tap="setParams('prev')"></view>
         <view class="month">{{ month }}月</view>
-        <view class="iconfont jz-icon-arrow-right" @tap="setParams('next')"></view>
+        <view class="iconfont jz-icon-arrow-right-copy" @tap="setParams('next')"></view>
       </view>
       <!-- <view>filter</view> -->
     </view>

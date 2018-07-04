@@ -62,7 +62,9 @@
         <input class="remark" type="text" name="description"  value="{{ description }}" placeholder="本笔账单的简单说明"/>
       </view>
 
-      <button class="zan-btn ljt-btn" formType="submit" @tap="submit">保存</button>
+      <view class="zan-btns">
+        <button class="zan-btn ljt-btn" formType="submit" @tap="submit">保存</button>
+      </view>
       <input hidden type="text" name="type" value="{{ type }}"/>
     </view>
 
@@ -103,9 +105,9 @@
 <script>
 	import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
-  import { mapKey } from '../../utils/host'
-  import Session from '../../utils/session'
-  import QQMapWX from '../../utils/qqmap-wx-jssdk.js'
+  import { mapKey } from '@/utils/host'
+  import Session from '@/utils/session'
+  import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
   export default class NewStatement extends wepy.page {
     config = {
       navigationBarTitleText: '记一笔'
@@ -344,30 +346,37 @@
       this.$apply()
     }
 
-    async setLocation () {
+    setLocation () {
       this.qqmapSDK = new QQMapWX({
         key: mapKey
       });
       try {
-        const result = await wepy.getLocation()
-        this.qqmapSDK.reverseGeocoder({
-          location: {
-            latitude: result.latitude,
-            longitude: result.longitude
-          },
-          success: (addressRes) => {
-            let address_component = addressRes.result.address_component
-            console.log(address_component)
-            this.nation = address_component.nation
-            this.province = address_component.province
-            this.city = address_component.city
-            this.district = address_component.district
-            this.street = address_component.street
-            this.address = addressRes.result.address
-            this.$apply()
+        console.log('start get location')
+        wx.getLocation({
+          type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+          success: (res) => {
+            console.log('location: ', result)
+            this.qqmapSDK.reverseGeocoder({
+              location: {
+                latitude: result.latitude,
+                longitude: result.longitude
+              },
+              success: (addressRes) => {
+                let address_component = addressRes.result.address_component
+                console.log(address_component)
+                this.nation = address_component.nation
+                this.province = address_component.province
+                this.city = address_component.city
+                this.district = address_component.district
+                this.street = address_component.street
+                this.address = addressRes.result.address
+                this.$apply()
+              }
+            })
           }
         })
       } catch (e) {
+        console.log('errorMsg', e)
         Session.set('getLocationSwitch', false)
         this.switchCheck = false
         this.$apply()
