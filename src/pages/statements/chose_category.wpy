@@ -65,7 +65,12 @@
     }
 
     async getCategory () {
-      const data = await wxRequest.Get('statements/categories', { type: this.type })
+      const data = await wxRequest.Get(
+        'statements/categories', 
+        { type: this.type }, 
+        {
+          cacheKey: 'chose_category'
+        })
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories
@@ -81,11 +86,7 @@
 </script>
 <style lang="scss" src="@/public/styles/chose_category.scss"></style>
 <style lang="scss">
-  page {
-    background: #efefef;
-  }
   .category-component {
-    // @import "@/public/styles/chose_category.scss";
     > view {
       overflow: hidden;
     }

@@ -80,10 +80,9 @@
         <view class="zan-icon zan-icon-arrow"></view>
       </view>
 
-      <!-- <view class="about-jz" @tap="cleanSession">
+      <view class="about-jz" @tap="cleanSession">
         <text>清除缓存</text>
-        <text class="version">1.2M</text>
-      </view> -->
+      </view>
 
       <view class="about-jz">
         <text>关于洁账</text>

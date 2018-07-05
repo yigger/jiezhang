@@ -3,8 +3,9 @@
 .wallet-header {
   height:360rpx;
   position:relative;
-  background:linear-gradient(to right,rgba(33,150,243,1),rgba(33,150,243,0.85));
-  // background: $primaryColor;
+  // background:linear-gradient(to right,$darkPrimaryColor, $primaryColor);
+  // background: $darkPrimaryColor;
+  background: $darkPrimaryColor;
   box-shadow:0 0 20rpx $divideText;
   .assets {
     height:220rpx;

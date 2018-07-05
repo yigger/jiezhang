@@ -1,10 +1,13 @@
 @import './_variable.scss';
 .header {
-  background: #fafafa;
+  // background: #fafafa;
   color: $primaryText;
+  border-bottom: 1px solid $borderColor;
   height: 64rpx;
   line-height: 64rpx;
   padding: 0 24rpx;
+  margin: 0 12rpx;
+  font-weight: bold;
 }
 .column {
   width: 20%;

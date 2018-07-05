@@ -3,12 +3,19 @@
     <view class="time-filter">
       <view class="month-filter">
         <view class="iconfont jz-icon-arrow-left" @tap="setParams('prev')"></view>
-        <view class="month" wx:if="{{ month != -1 }}">{{ month }}月</view>
-        <view class="year" wx:else>{{ year }}年</view>
+        <view class="month" wx:if="{{ type == 'month' }}">{{ year }} - {{ month }}</view>
+        <view class="month" wx:if="{{ type == 'year' }}">{{ year }}</view>
+        <view class="month" wx:if="{{ type == 'all' }}">所有</view>
         <view class="iconfont jz-icon-arrow-right-copy" @tap="setParams('next')"></view>
       </view>
-      <!-- <view></view> -->
+
+      <view class="chart-filter">
+        <view @tap="setType('month')">按月</view>
+        <view @tap="setType('year')">按年</view>
+        <view @tap="setType('all')">全部</view>
+      </view>
     </view>
+
     <view class="chart-amount">
       <view>
         <view class="amount">{{ header.expend_count }}</view>
@@ -40,6 +47,9 @@
         <view class="zan-icon zan-icon-arrow"></view>
       </view>
     </view>
+
+    <empty wx:if="{{ chartData.length == 0 }}" :title.sync="emptyTitle"></empty>
+
   </view>
 </template>
 
@@ -48,6 +58,7 @@
   import Api from "@/utils/api"
   import wxRequest from '@/utils/wxRequest'
   import wxCharts from '@/utils/wxchart.min.js'
+  import Empty from '@/components/empty'
 
   export default class superChart extends wepy.page {
     config = {
@@ -57,36 +68,25 @@
     data = {
       chartData: [],
       header: {},
+      type: 'month',
       year: new Date().getFullYear(),
-      month: new Date().getMonth() + 1
+      month: new Date().getMonth() + 1,
+      emptyTitle: '找不到数据呢~试试其它'
     }
+
+    components = {
+      empty: Empty
+		}
 
     methods = {
       setParams (type) {
+        if (type == 'all') return false
         if (type == 'next') {
-          if (this.month == 12) {
-            this.year += 1
-            this.month = -1
-          } else {
-            if(this.month == -1) {
-              this.year += 1
-              this.month = 1
-            } else {
-              this.month += 1
-            }
-          }
+          if(this.type == 'month') this.nextMonth()
+          if(this.type == 'year') this.year += 1
         } else {
-          if (this.month == 1) {
-            this.year -= 1
-            this.month = -1
-          } else {
-            if(this.month == -1) {
-              this.month = 12
-              this.year -= 1
-            } else {
-              this.month -= 1
-            }
-          }
+          if(this.type == 'month') this.prevMonth()
+          if(this.type == 'year') this.year -= 1
         }
         this.getChartData()
       },
@@ -94,11 +94,33 @@
         wepy.navigateTo({
           url: `/pages/statements/filter_statements?year=${this.year}&month=${this.month}&category_id=${category_id}`
         })
+      },
+      setType (type) {
+        this.type = type
+        this.getChartData()
       }
     }
 
     onShow() {
       this.getChartData()
+    }
+
+    nextMonth () {
+      if (this.month == 12) {
+        this.year += 1
+        this.month = 1
+      } else {
+        this.month += 1
+      }
+    }
+
+    prevMonth () {
+      if (this.month == 1) {
+        this.year -= 1
+        this.month = 12
+      } else {
+        this.month -= 1
+      }
     }
 
     async initChart (data) {
@@ -117,10 +139,11 @@
     async getChartData () {
       const data = await wxRequest.Get(
         Api.SuperChart, {
+          type: this.type,
           year: this.year,
           month: this.month
         })
-      console.log(data)
+      // console.log(data)
       this.header = data.header
       this.chartData = data.charts
       if (data.wx_charts.length != 0) this.initChart(data.wx_charts)

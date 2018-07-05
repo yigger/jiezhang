@@ -107,6 +107,7 @@
   import wxRequest from '@/utils/wxRequest'
   import { mapKey } from '@/utils/host'
   import Session from '@/utils/session'
+  import tip from '@/utils/tip'
   import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
   export default class NewStatement extends wepy.page {
     config = {

@@ -76,11 +76,7 @@
 </script>
 <style lang="scss" src="@/public/styles/chose_category.scss"></style>
 <style lang="scss">
-  page {
-    background: #efefef;
-  }
   .category-component {
-    // @import "@/public/styles/chose_category.scss";
     > view {
       overflow: hidden;
     }

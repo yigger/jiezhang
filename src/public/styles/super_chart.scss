@@ -3,8 +3,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: $secondaryBackgroundColor;
-  padding: 10px 12px;
+  // background: $secondaryBackgroundColor;
+  padding: 4px 12px;
   font-size: 14px;
   .month-filter {
     display: flex;
@@ -14,7 +14,16 @@
     }
     .month{
       color: $secondaryText;
-      padding: 0 32px;
+      padding: 0 12px;
+    }
+  }
+}
+.chart-filter {
+  display: flex;
+  > view {
+    padding: 6px 12px;
+    &.active {
+      background: $primaryColor;
     }
   }
 }

@@ -5,40 +5,37 @@ import Session from '@/utils/session'
 // 登录凭证键值
 const loginKey = Session.key.login
 
-// 登录凭证值
-const SessionLoginVal = Session.get(loginKey)
-
 // 获取 openid
 const getOpenId = async () => {
-  if (SessionLoginVal !== null) {
-    return SessionLoginVal
+  if (Session.get(loginKey) !== null) {
+    return Session.get(loginKey)
   }
+
   const wxLogin = await wepy.login();
 	const loginResult = await wepy.request({
 		url: Host.check_openid,
 		method: 'POST',
 		header: { 'X-WX-Code': wxLogin.code }
   })
-  Session.set(loginKey, loginResult.session)
   return loginResult.session
 }
 
 const doRequest = async (url, method, params, options = {}) => {
   try {
     // 是否可以命中缓存
-    // if(options.cache) {
-    //   if (cacheExist(options.cacheKey)) {
-    //     return getByCache(options.cacheKey)
-    //   } else {
+    if(options.cacheKey) {
+      const cache = getByCache(options.cacheKey)
+      if (cache) {
+        return cache
+      }
+    }
 
-    //   }
-    // }
-
+    const thirdSession = await getOpenId()
     const result = await wepy.request({
       url: url,
       method: method,
       data: params,
-      header: { 'Content-Type': 'application/json', 'X-WX-Skey': await getOpenId() },
+      header: { 'Content-Type': 'application/json', 'X-WX-Skey': thirdSession },
     })
 
     // key 过期尝试重连
@@ -47,7 +44,8 @@ const doRequest = async (url, method, params, options = {}) => {
       doRequest(url, method, params)
       return false
     }
-
+    Session.set(loginKey, thirdSession)
+    setByCache(options.cacheKey, result)
     return result
   } catch (e) {
     wx.showToast({
@@ -72,19 +70,29 @@ const wxUpload = async (url, params = {}) => {
   return uploadResult
 }
 
-// 获取缓存
+// 获取缓存,默认缓存 3600秒
 const getByCache = (cacheKey) => {
+  const expireTime = 5
+  const cacheTime = Date.parse(new Date()) - expireTime
+  const cacheValue = Session.get(cacheKey)
+  console.log(cacheValue)
+  if (cacheValue === null) {
+    return false
+  } else if (cacheTime < cacheValue.createTime) {
+    return false
+  }
 
+  return cacheValue.value
 }
 
 // 设置缓存
-const setByCache = (cacheKey, cacheVal, expire = 3600) => {
-
-}
-
-// 缓存是否存在
-const cacheExist = (cacheKey) => {
-
+const setByCache = (cacheKey, cacheVal) => {
+  if(typeof cacheKey !== 'undefined') {
+    Session.set(cacheKey, {
+      createTime: Date.parse(new Date()),
+      value: cacheVal
+    })
+  }
 }
 
 export default {
