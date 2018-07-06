@@ -69,7 +69,7 @@
         'statements/categories', 
         { type: this.type }, 
         {
-          cacheKey: 'chose_category'
+          cacheKey: ['category', this.type == 'expend' ? 'statementExpendList' : 'statementIncomeList']
         })
       this.frequent = data.frequent
       this.last = data.last

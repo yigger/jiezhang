@@ -29,3 +29,7 @@ $backgroundColor: #f4f4f4;
 $secondaryBackgroundColor: #f1f1f1;
 
 $iconGrey: #bcbcbc;
+
+@function toRpx($number) {
+  @return $number * 2;
+}

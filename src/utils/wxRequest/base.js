@@ -22,12 +22,12 @@ const getOpenId = async () => {
 
 const doRequest = async (url, method, params, options = {}) => {
   try {
+    let cacheKey = ''
     // 是否可以命中缓存
     if(options.cacheKey) {
-      const cache = getByCache(options.cacheKey)
-      if (cache) {
-        return cache
-      }
+      cacheKey = Session.key[options.cacheKey[0]][options.cacheKey[1]]
+      const cache = getByCache(cacheKey)
+      if (cache) return cache
     }
 
     const thirdSession = await getOpenId()
@@ -44,8 +44,9 @@ const doRequest = async (url, method, params, options = {}) => {
       doRequest(url, method, params)
       return false
     }
+
     Session.set(loginKey, thirdSession)
-    setByCache(options.cacheKey, result)
+    if(cacheKey != '') setByCache(cacheKey, result)
     return result
   } catch (e) {
     wx.showToast({
@@ -75,7 +76,6 @@ const getByCache = (cacheKey) => {
   const expireTime = 5
   const cacheTime = Date.parse(new Date()) - expireTime
   const cacheValue = Session.get(cacheKey)
-  console.log(cacheValue)
   if (cacheValue === null) {
     return false
   } else if (cacheTime < cacheValue.createTime) {
