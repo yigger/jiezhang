@@ -1,0 +1,97 @@
+@import './_variable.scss';
+.time-filter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  // background: $secondaryBackgroundColor;
+  padding: 4px 12px;
+  font-size: 14px;
+  .month-filter {
+    display: flex;
+    align-items: center;
+    .iconfont {
+      color: $iconGrey;
+    }
+    .month{
+      color: $secondaryText;
+      padding: 0 12px;
+    }
+  }
+}
+.chart-filter {
+  display: flex;
+  > view {
+    padding: 6px 12px;
+    &.active {
+      background: $primaryColor;
+    }
+  }
+}
+.chart-amount {
+  display: flex;
+  height: 60px;
+  border-bottom: 1px solid $borderColor;
+  border-top: 1px solid $borderColor;
+  align-items: center;
+  > view {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align:center;
+    .amount {
+      font-size: 16px;
+    }
+    .small-text {
+      font-size: 14px;
+      color: $secondaryText;
+    }
+    .percent-rise {
+      font-size: 12px;
+    }
+  }
+}
+.piecanvas {
+  border-bottom: 1px solid $borderColor;
+}
+.expend-bars {
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+    color: $primaryText;
+    margin:12px 20px;
+    padding: 8px;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(#c1f5e7, #c1f5e7);
+    border-radius:4px;
+    .title {
+      font-size: 14px;
+    }
+    .amount {
+      margin-top: 4px;
+      font-size: 14px;
+      color: $expendColor;
+    }
+    .percent {
+      font-size: 12px;
+      margin-left: 12px;
+      color: $secondaryText;
+    }
+  }
+  .zan-icon-arrow {
+    font-size: 14px;
+    color: #ccc;
+  }
+}
+.scroll-header {
+  width: 100%;
+  background: #fff;
+  white-space: nowrap;
+  .months-scroll .item{
+    width: 160rpx;
+    height: auto;
+    margin-right: 23rpx;
+    display: inline-block;
+  }
+}

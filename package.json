@@ -1,5 +1,5 @@
 {
-  "name": "jieZhang",
+  "name": "JieZhang",
   "version": "0.0.1",
   "description": "A WePY project",
   "main": "dist/app.js",
@@ -17,7 +17,7 @@
   "author": "young <21738331@qq.com>",
   "license": "MIT",
   "dependencies": {
-    "wepy": "^1.7.1",
+    "wepy": "^1.7.2",
     "wepy-async-function": "^1.4.4",
     "wepy-com-toast": "^1.0.2"
   },

@@ -1,0 +1,113 @@
+@import './_variable.scss';
+.header {
+  background: $darkPrimaryColor;
+  height: 75px;
+  color: white;
+  padding: 0 14px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  .amount {
+    font-size: 21px;
+  }
+  .subtitle {
+    font-size: 14px;
+  }
+  &:after {
+    content: '';
+    width: 0;
+    height: 0;
+    position: absolute;
+    bottom: 0;
+    left: 80px;
+    border: 10px solid;
+    border-bottom-color: white;
+    border-top: none;
+    border-left-color: transparent;
+    border-right-color: transparent;
+  }
+}
+.surplus {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 8px 14px;
+  border-bottom: 1px dashed $borderColor;
+}
+.content {
+  .column {
+    border-bottom: 1px solid $borderColor;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    padding:10px 14px;
+  }
+  .two-column {
+    display: flex;
+    color: $secondaryText;
+  }
+  .time, .amount, .left-amount {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .amount {
+    margin-left: 14px;
+  }
+  .align-right {
+    text-align: right;
+  }
+  .left-amount > text:last-child {
+    color: $secondaryText;
+  }
+  .statement {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin:0 32rpx;
+    border-bottom: 2rpx solid #efefef;
+    padding:16rpx 0;
+    .information {
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+    .icon {
+      margin-right: 16rpx;
+      display: flex;
+      align-items: center;
+      image {
+        width: 70rpx;
+        height: 70rpx;
+        border-radius: 50%;
+        border: 1px solid #efefef;
+      }
+    }
+    .st-title {
+      > view {
+        margin-bottom: 4rpx;
+      }
+      .title {
+        font-size: 28rpx;
+      }
+      .description {
+        color: #999;
+        font-size: 24rpx;
+      }
+      .time {
+        color: #999;
+        font-size: 24rpx;
+      }
+    }
+    .transfer-icon {
+      margin-right: 16rpx;
+      display: flex;
+      align-items: center;
+      width: 70rpx;
+      height: 70rpx;
+      border-radius: 50%;
+    }
+  }
+}

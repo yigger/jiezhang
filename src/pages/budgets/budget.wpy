@@ -46,8 +46,8 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
+  import wxRequest from '@/utils/wxRequest'
+  import tip from '@/utils/tip'
   export default class Budget extends wepy.page {
     config = {
       navigationBarTitleText: '预算设置'
@@ -77,30 +77,28 @@
     }
     
     async getHeaderData() {
-      const res = await api.Budget()
-      this.header = res.data
+      const data = await wxRequest.Get('budgets')
+      this.header = data
       this.amount = this.header.amount
       this.source_amount = this.header.source_amount
       this.$apply()
     }
 
     async getParentBudget() {
-      const res = await api.BudgetParent()
-      this.list = res.data
+      const data = await wxRequest.Get('budgets/parent')
+      this.list = data
       this.$apply()
     }
 
     async updateBudget (amount) {
-      const res = await api.BudgetUpdate({
-        method: "PUT",
-        query: {
+      const data = await wxRequest.Put('budgets/0',
+        {
           type: 'user',
           amount: amount
-        }
-      })
+        })
       this.getHeaderData()
-      if (res.data.status != 200) {
-        tip.error(res.data.msg)
+      if (data.status != 200) {
+        tip.error(data.msg)
       }
     }
   }

@@ -1,10 +1,4 @@
-$darkPrimaryColor: #1976D2;
-$primaryColor: #2196F3;
-$primaryText: #212121;
-$secondaryText: #757575;
-$divideText: #BDBDBD;
-$expendColor: green;
-$incomeColor: red;
+@import '../_variable.scss';
 
 .container {
 	height:100%;

@@ -24,6 +24,4 @@
     }
   }
 </script>
-<style lang="less">
-  @import "../public/styles/chose_category.less";
-</style>
+<style lang="scss" src="@/public/styles/chose_category.scss"></style>

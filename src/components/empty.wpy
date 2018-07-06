@@ -20,8 +20,8 @@
 .empty {
   text-align: center;
   image {
-    width: 100px;
-    height: 100px;
+    width:250rpx;
+    height:250rpx;
   }
   .title {
     color: #999;

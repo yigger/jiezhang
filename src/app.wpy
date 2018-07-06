@@ -8,28 +8,36 @@ export default class extends wepy.app {
       "pages/chart",
       "pages/asset",
       "pages/setting",
+
       // 记一笔
       "pages/statements/statement",
       "pages/statements/detail",
       "pages/statements/chose_category",
       "pages/statements/chose_asset",
+      "pages/statements/filter_statements",
+
       // 余额设置
       "pages/forms/asset_form",
       "pages/forms/budget_form",
+
       // 预算
       "pages/budgets/budget",
       "pages/budgets/child_budget",
+
       // 设置
       "pages/settings/feedback",
+      "pages/settings/super_chart",
       "pages/settings/user_info",
       "pages/settings/set_cover",
       "pages/settings/super_statement",
+      
       // 编辑账单类型分类/资产分类
       "pages/categories/list",
       "pages/categories/category_form",
       "pages/assets/list",
       "pages/assets/asset_form",
       "pages/assets/asset_detail",
+      
       // 消息
       "pages/message/message"
     ],
@@ -79,18 +87,24 @@ export default class extends wepy.app {
     debug: true
   }
 
-  onLaunch () {
-    // console.log('小程序第一次启动，此处应当获取版本号')
-  }
-
   constructor () {
     super()
     this.use('requestfix')
-    this.use('promisify');
+    this.use('promisify')
+    
+    this.intercept('request', {
+      config (p) {
+        return p;
+      },
+      success (p) {
+        return p.data;
+      }
+    });
   }
 }
 </script>
 <style lang="less">
+@import "/public/styles/iconfont.wxss";
 @import "/public/zan-ui/index.wxss";
 @import "/public/styles/common.less";
 </style>

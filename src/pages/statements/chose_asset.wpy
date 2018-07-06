@@ -1,9 +1,9 @@
 <template lang="wxml">
   <view class="category-component">
-    <view wx:if="{{ !showLast }}">
+    <!-- <view wx:if="{{ !showLast }}">
       <view class="header fs14">上次使用</view>
       <category :category.sync="last" @choseItem.user="setAsset"></category>
-    </view>
+    </view> -->
 
     <view wx:if="{{ frequent.length > 0 }}">
       <view class="header fs14">常用</view>
@@ -31,8 +31,7 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
+  import wxRequest from '@/utils/wxRequest'
   import Category from '../../components/category_item'
   export default class choseAsset extends wepy.page {
     data = {
@@ -61,8 +60,7 @@
     }
 
     async getAsset () {
-      const res = await api.getStatementAssets({showLoading: true})
-      const data = res.data
+      const data = await wxRequest.Get('statements/assets', {}, {cacheKey: ['asset', 'statementAssets']})
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories
@@ -76,12 +74,12 @@
     }
   }
 </script>
-<style lang="less">
-  page {
-    background: #efefef;
-  }
+<style lang="scss" src="@/public/styles/chose_category.scss"></style>
+<style lang="scss">
   .category-component {
-    @import "../../public/styles/chose_category.less";
+    > view {
+      overflow: hidden;
+    }
   }
   .add-wallet {
     display:flex;

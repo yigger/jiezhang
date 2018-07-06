@@ -1,0 +1,35 @@
+// 主题色（深色）
+$darkPrimaryColor: #1976D2;
+
+// 主题色（浅色）
+$primaryColor: #2196F3;
+
+// 文本颜色
+$primaryText: #212121;
+
+// 二级文本颜色
+$secondaryText: #757575;
+
+// 分隔符颜色
+$divideText: #BDBDBD;
+
+// 金额支出颜色
+$expendColor: green;
+
+// 金额收入颜色
+$incomeColor: red;
+
+// 边框颜色
+$borderColor: #f4f4f4;
+
+// 背景色
+$backgroundColor: #f4f4f4;
+
+// 分隔符背景色
+$secondaryBackgroundColor: #f1f1f1;
+
+$iconGrey: #bcbcbc;
+
+@function toRpx($number) {
+  @return $number * 2;
+}

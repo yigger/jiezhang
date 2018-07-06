@@ -44,8 +44,8 @@
       </view>
 
       <view class="column location-column">
-        <text>地理位置</text>
-        <view>
+        <text style="flex: 1">地理位置</text>
+        <view style="flex: 2">
           <input name="location" type="text" value="{{ address }}"/>
           <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
 
@@ -62,7 +62,9 @@
         <input class="remark" type="text" name="description"  value="{{ description }}" placeholder="本笔账单的简单说明"/>
       </view>
 
-      <button class="zan-btn ljt-btn" formType="submit" @tap="submit">保存</button>
+      <view class="zan-btns">
+        <button class="zan-btn ljt-btn" formType="submit" @tap="submit">保存</button>
+      </view>
       <input hidden type="text" name="type" value="{{ type }}"/>
     </view>
 
@@ -102,11 +104,11 @@
 
 <script>
 	import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
-  import { mapKey } from '../../utils/host'
-  import Session from '../../utils/session'
-  import QQMapWX from '../../utils/qqmap-wx-jssdk.js'
+  import wxRequest from '@/utils/wxRequest'
+  import { mapKey } from '@/utils/host'
+  import Session from '@/utils/session'
+  import tip from '@/utils/tip'
+  import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
   export default class NewStatement extends wepy.page {
     config = {
       navigationBarTitleText: '记一笔'
@@ -214,14 +216,13 @@
           this.statement_id = this.asset_log_id
         }
         
-        const res = await api.Statement({
-          showLoading: true,
-          method: this.method,
-          query: {
-            statement: statement
-          }
-        }, this.statement_id);
-        const result = res.data
+        let result = null
+        if (this.method == 'POST') {
+          result = await wxRequest.Post(`statements`, {statement: statement})
+        } else {
+          result = await wxRequest.Put(`statements/${this.statement_id}`, {statement: statement})
+        }
+        
         if (result.status == 200) {
           wepy.navigateBack({
             delta: 1
@@ -289,8 +290,7 @@
     }
 
     async getStatement (id) {
-      const res = await api.Statement({showLoading: true}, id);
-      const statement = res.data
+      const statement = await wxRequest.Get(`statements/${id}`)
       if (statement.status != undefined && statement.status != 200) {
         wepy.navigateBack({
           delta: 1
@@ -313,8 +313,7 @@
     async getTransfer (id) {
       // 获取转账信息
       this.type = 'transfer'
-      const res = await api.TransferInfo({}, id);
-      const data = res.data
+      const data = await wxRequest.Get(`transfer/${id}`)
       this.method = 'PUT'
       this.asset_log_id = data.id
       this.amount = data.amount
@@ -328,13 +327,7 @@
     }
 
     async getLastUsed() {
-      const res = await api.LastUsed({
-        showLoading: true,
-        query: {
-          type: this.type
-        }
-      });
-      const result = res.data
+      const result = await wxRequest.Get('statements/frequent_used', { type: this.type })
       this.category_id = result.category_id
       this.asset_id = result.asset_id
       this.category_name = result.category_name
@@ -343,45 +336,48 @@
     }
 
     async guessCategory () {
-      const res = await api.guessCategory({
-        query: {
-          type: this.type
-        }
-      });
-      this.categories_label = res.data
+      const data = await wxRequest.Get('statements/category_frequent', { type: this.type })
+      this.categories_label = data
       this.$apply()
     }
 
     async guessAsset () {
-      const res = await api.guessAsset();
-      this.assets_label = res.data
+      const data = await wxRequest.Get('statements/asset_frequent', { type: this.type })
+      this.assets_label = data
       this.$apply()
     }
 
-    async setLocation () {
+    setLocation () {
       this.qqmapSDK = new QQMapWX({
         key: mapKey
       });
       try {
-        const result = await wepy.getLocation()
-        this.qqmapSDK.reverseGeocoder({
-          location: {
-            latitude: result.latitude,
-            longitude: result.longitude
-          },
-          success: (addressRes) => {
-            let address_component = addressRes.result.address_component
-            console.log(address_component)
-            this.nation = address_component.nation
-            this.province = address_component.province
-            this.city = address_component.city
-            this.district = address_component.district
-            this.street = address_component.street
-            this.address = addressRes.result.address
-            this.$apply()
+        console.log('start get location')
+        wx.getLocation({
+          type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+          success: (res) => {
+            console.log('location: ', result)
+            this.qqmapSDK.reverseGeocoder({
+              location: {
+                latitude: result.latitude,
+                longitude: result.longitude
+              },
+              success: (addressRes) => {
+                let address_component = addressRes.result.address_component
+                console.log(address_component)
+                this.nation = address_component.nation
+                this.province = address_component.province
+                this.city = address_component.city
+                this.district = address_component.district
+                this.street = address_component.street
+                this.address = addressRes.result.address
+                this.$apply()
+              }
+            })
           }
         })
       } catch (e) {
+        console.log('errorMsg', e)
         Session.set('getLocationSwitch', false)
         this.switchCheck = false
         this.$apply()

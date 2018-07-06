@@ -44,8 +44,8 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
+  import wxRequest from '@/utils/wxRequest'
+  import tip from '@/utils/tip'
 
   export default class ChildBudget extends wepy.page {
     config = {
@@ -74,13 +74,13 @@
     }
 
     async getData(id) {
-      const res = await api.BudgetDetail({showLoading: true}, id)
-      this.budget = res.data.root
+      const data = await wxRequest.Get(`budgets/${id}`)
+      this.budget = data.root
       this.amount = this.budget.amount
       this.source_amount = this.budget.source_amount
-      this.childs = res.data.childs
+      this.childs = data.childs
       this.$apply()
     }
   }
 </script>
-<style lang="scss" src="../../public/styles/budgets/child_budget.scss"></style>
+<style lang="scss" src="@/public/styles/budgets/child_budget.scss"></style>

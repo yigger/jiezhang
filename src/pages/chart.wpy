@@ -82,10 +82,11 @@
 
 <script>
 	import wepy from 'wepy'
-  import api from "../utils/api"
-  import tip from '../utils/tip'
-	import Empty from '../components/empty'
-	import singleColumn from '../components/chart_column'
+	import Api from "@/utils/api"
+  import wxRequest from '@/utils/wxRequest'
+  import tip from '@/utils/tip'
+	import Empty from '@/components/empty'
+	import singleColumn from '@/components/chart_column'
 	const NowDate = new Date()
   export default class Chart extends wepy.page {
     config = {
@@ -298,13 +299,11 @@
         query.start_time = this.startDate
         query.end_time = this.endDate
       }
-			const res = await api.Chart({
-				query: query
-			});
-      if (res.data.status == 200) {
-				this.singleData = res.data.single
+			const res = await wxRequest.Get(Api.Chart, query);
+      if (res.status == 200) {
+				this.singleData = res.single
 				this.singleList = this.singleData.list
-			  this.mutipleData = res.data.mutiple
+			  this.mutipleData = res.mutiple
       } else {
 				this.singleData = []
 				this.singleList = []

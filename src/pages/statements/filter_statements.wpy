@@ -1,0 +1,42 @@
+<template lang="wxml">
+  <view class="container">
+    <repeat for="{{ list }}" key="index" index="index" item="st">
+      <statement :statement.sync="st"></statement>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '@/utils/wxRequest'
+  import IndexStatement from '@/components/index/statement'
+  export default class FilterStatement extends wepy.page {
+    config = {
+      navigationBarTitleText: '账单列表'
+    }
+
+    components = {
+      statement: IndexStatement
+    }
+
+    data = {
+      list: []
+    }
+
+    onLoad (options) {
+      this.statements(options.year, options.month, options.category_id)
+    }
+    
+    async statements (year, month, category_id) {
+      let params = {
+        year: year,
+        month: month,
+        category_id: category_id
+      }
+      const data = (await wxRequest.Get('super_statements/list', params)).data
+      this.list = data
+      this.$apply()
+    }
+  }
+</script>
+<style lang="scss" src="@/public/styles/filter_statements.scss"></style>

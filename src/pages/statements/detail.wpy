@@ -11,7 +11,7 @@
 
       <view class="column">
         <view>
-          <image class="icon" src="../../public/images/icons/category.png"></image>
+          <view class="iconfont jz-icon-fenlei"></view>
           <text>分类</text>
         </view>
         <text>{{ statement.category }}</text>
@@ -19,7 +19,8 @@
 
       <view class="column">
         <view>
-          <image class="icon" src="../../public/images/icons/zican.png"></image>
+          <view class="iconfont jz-icon-qianbao"></view>
+          <!-- <image class="icon" src="../../public/images/icons/zican.png"></image> -->
           <text>账户</text>
         </view>
         <text>{{ statement.asset }}</text>
@@ -27,7 +28,8 @@
 
       <view class="column">
         <view>
-          <image class="icon" src="../../public/images/icons/money.png"></image>
+          <view class="iconfont jz-icon-50"></view>
+          <!-- <image class="icon" src="../../public/images/icons/money.png"></image> -->
           <text>使用后账户余额</text>
         </view>
         <text>{{ statement.residue }}</text>
@@ -35,7 +37,8 @@
 
       <view class="column">
         <view>
-          <image class="icon" src="../../public/images/icons/time.png"></image>
+          <view class="iconfont jz-icon-shijian"></view>
+          <!-- <image class="icon" src="../../public/images/icons/time.png"></image> -->
           <text>时间</text>
         </view>
         <text>{{ statement.time }}</text>
@@ -43,7 +46,8 @@
 
       <view class="column" wx:if="{{ statement.location != null && statement.location != '' }}">
         <view>
-          <image class="icon" src="../../public/images/icons/location.png"></image>
+          <view class="iconfont jz-icon-address"></view>
+          <!-- <image class="icon" src="../../public/images/icons/location.png"></image> -->
           <text>坐标</text>
         </view>
         <text>{{ statement.location }}</text>
@@ -51,7 +55,8 @@
 
       <view class="column" wx:if="{{ statement.description != null && statement.description != '' }}">
         <view>
-          <image class="icon" src="../../public/images/icons/remark.png"></image>
+          <view class="iconfont jz-icon-remark"></view>
+          <!-- <image class="icon" src="../../public/images/icons/remark.png"></image> -->
           <text>描述</text>
         </view>
         <text>{{ statement.description }}</text>
@@ -60,11 +65,13 @@
 
     <view class="button-groups">
       <view class="delete-button" @tap="del">
-        <image class="icon" src="../../public/images/icons/delete.png"></image>
+        <view class="iconfont jz-icon-delete"></view>
+        <!-- <image class="icon" src="../../public/images/icons/delete.png"></image> -->
         <text>删除</text>
       </view>
       <view class="edit-button" @tap="edit">
-        <image class="icon" src="../../public/images/icons/edit.png"></image>
+        <view class="iconfont jz-icon-edit"></view>
+        <!-- <image class="icon" src="../../public/images/icons/edit.png"></image> -->
         <text>编辑</text>
       </view>
     </view>
@@ -73,8 +80,8 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
+  import wxRequest from '@/utils/wxRequest'
+  import tip from '@/utils/tip'
   export default class StatementDetail extends wepy.page {
     config = {
       navigationBarTitleText: '账单详情'
@@ -103,7 +110,7 @@
       },
       async del () {
         await tip.confirm('是否删除该条账单？', {}, '提示')
-        const res = await api.Statement({method: 'DELETE'}, this.id);
+        await wxRequest.Destroy(`statements/${this.id}`)
         wepy.navigateBack({
           delta: 1
         })
@@ -111,10 +118,8 @@
     }
 
     async getStatement () {
-      const result = await api.StatementDetail({ 
-        query: { id: this.id }
-      })
-      this.statement = result.data
+      const data = await wxRequest.Get('statements/detail', { id: this.id })
+      this.statement = data
       this.$apply()
     }
     

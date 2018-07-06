@@ -1,61 +1,50 @@
 <template>
   <view class="container">
-    <view id="wallet-header">
-      <view class="surplus">
-        <view class="surplus-amount fs24" @tap="showAmountModal">
-          <text>{{ header.left }}</text>
-        </view>
-        <view class="fs14">结余</view>
-      </view>
-      <view class="bottom">
-        <view>
-          <view class="fs22">{{ header.income }}</view>
-          <view class="fs14">收入</view>
-        </view>
-        <view>
-          <view class="fs22">{{ header.expend }}</view>
-          <view class="fs14">支出</view>
-        </view>
-      </view>
+    <view class="header">
+      <view class="amount">{{ header.left }}</view>
+      <view class="subtitle">结余</view>
     </view>
-    
+    <view class="surplus">
+      <view class="all-income income">总收入： {{ header.income }}</view>
+      <view class="all-expend expend">总支出： {{ header.expend }}</view>
+    </view>
+
     <filter @paramsFilter.user="setParams"></filter>
 
-    <view id="all-assets">
-      <view class="asset category" wx:for="{{ list }}" wx:for-item="pst" @tap="showHidden('{{ index }}')">
-        <view class="detail">
-          <view class="title">
-            <view class="pull-left time align-column">
-              <view class="fs16">{{ pst.month }}月</view>
-              <view class="fs14 description">{{ pst.year }}</view>
+    <view class="content">
+      <view wx:for="{{ list }}">
+        <!-- header -->
+        <view class="column" @tap="getList('{{ item.year }}', '{{ item.month }}', '{{ index }}')">
+          <view class="two-column">
+            <view class="time align-right">
+              <text>{{ item.month }}月</text>
+              <text>{{ item.year }}年</text>
             </view>
-            <view class="pull-left align-column income-and-expend">
-              <view class="fs14 income">收入 {{ pst.income_amount }}</view>
-              <view class="fs14 expend">支出 {{ pst.expend_amount }}</view>
-            </view>
-            <view class="pull-right align-column left-money">
-              <view class="fs18">{{ pst.surplus }}</view>
+            <view class="amount">
+              <text class="income">流入： {{ item.income_amount }}</text>
+              <text class="expend">流出： {{ item.expend_amount }}</text>
             </view>
           </view>
-
-          <view class="content" hidden="{{ pst.hidden }}">
-            <repeat for="{{ pst.childs }}" key="index" index="index" item="item">
-              <single :item.sync="item"></single>
-            </repeat>
+          <view class="left-amount align-right">
+            <text>{{ item.surplus }}</text>
+            <text>结余</text>
           </view>
         </view>
+        <!-- list -->
+        <repeat for="{{ item.childs }}" key="index" index="index" item="st" wx:if="{{ !item.hidden }}">
+          <statement :statement.sync="st"></statement>
+        </repeat>
       </view>
     </view>
-
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
-  import Single from '../../components/single'
-  import Filter from '../../components/filter'
+  import wxRequest from '@/utils/wxRequest'
+  import IndexStatement from '@/components/index/statement'
+  import Single from '@/components/single'
+  import Filter from '@/components/filter'
   export default class SuperStatement extends wepy.page {
     config = {
       navigationBarTitleText: '超级账单'
@@ -63,7 +52,8 @@
 
     components = {
       filter: Filter,
-      single: Single
+      single: Single,
+      statement: IndexStatement
     }
 
     data = {
@@ -73,88 +63,44 @@
         left: 0
       },
       list: [],
-      params: {}
+      params: {},
+      statements: [],
+      cacheStatement: {}
     }
 
-    onLoad () {
-      this.statements()
+    onShow () {
+      this.getMonths()
     }
 
     methods = {
-      showHidden(idx) {
-        let value = !this.list[idx].hidden
-        this.list[idx]['hidden'] = value
-			},
-      showStatement (id) {
-        wx.navigateTo({ url: `/pages/statements/detail?id=${id}` })
-      },
       setParams (params) {
         this.params = params
-        this.statements()
+        this.getMonths()
+      },
+      getList (year, month, index) {
+        let value = !this.list[index].hidden
+        this.list[index]['hidden'] = value
+        this.statement(year, month, index)
       }
     }
 
-    async statements () {
-      const res = (await api.StatementList({
-        query: this.params
-      })).data
-      const data = res.data
-      this.list = data.statements
+    async getMonths () {
+      const data = (await wxRequest.Get('super_statements/time', this.params)).data
       this.header = data.header
+      this.list = data.statements
       this.$apply()
     }
 
+    async statement (year, month, index) {
+      let params = {
+        year: year,
+        month: month
+      }
+      params = Object.assign(params, this.params)
+      const data = (await wxRequest.Get('super_statements/list', params)).data
+      this.list[index].childs = data
+      this.$apply()
+    }
   }
 </script>
-<style lang="scss" src="../../public/styles/assets/asset_detail.scss"></style>
-<style lang="scss">
-  $darkPrimaryColor: #1976D2;
-  $primaryColor: #2196F3;
-  $primaryText: #212121;
-  $secondaryText: #757575;
-  $divideText: #BDBDBD;
-  $expendColor: green;
-  $incomeColor: red;
-  #wallet-header {
-    position:relative;
-    height:300rpx;
-    background: $primaryColor;
-    box-shadow:0 0 20rpx $divideText;
-    color:white;
-    .surplus {
-      color:white;
-      padding: 48rpx 0;
-      text-align:center;
-      color: white;
-    }
-    .bottom {
-      position: absolute;
-      bottom: 0;
-      padding: 10rpx 0;
-      width: 100%;
-      border-top:1px solid #448aff;
-      & > view {
-        width:50%;
-        text-align: center;
-        display: inline-block;
-        &:first-child {
-          box-shadow: 1px 0 0 #448aff;
-        }
-      }
-    }
-    .edit-icon {
-      width:40rpx;
-      height:40rpx;
-      margin-left:16rpx;
-    }
-    .surplus-amount {
-      overflow:hidden;
-      image {
-        margin-top:8rpx;
-      } 
-    }
-  }
-  .left-money {
-    color: $secondaryText;
-  }
-</style>
+<style lang="scss" src="@/public/styles/super_statement.scss"></style>

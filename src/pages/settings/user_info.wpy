@@ -39,7 +39,7 @@
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
+  import wxRequest from '@/utils/wxRequest'
   import tip from '../../utils/tip'
   export default class UserInfo extends wepy.page {
     config = {
@@ -66,19 +66,14 @@
           sizeType: ['compressed'],
           sourceType: ['album']
         })
-        await api.Upload(
-          {
-            file_path: choseImages.tempFilePaths[0],
-            query: {
-              type: 'user_avatar'
-            }
-          })
+
+        // await wxRequest.Upload('',
+        //   {
+        //     file_path: choseImages.tempFilePaths[0],
+        //     type: 'user_avatar'
+        //   })
         this.getUser()
       }
-    }
-
-    onUnload () {
-      // this.updateUser()
     }
 
     onShow () {
@@ -86,19 +81,9 @@
     }
     
     async getUser () {
-      const res = await api.User()
-      this.user = res.data
+      const data = await wxRequest.Get('users')
+      this.user = data
       this.$apply()
-    }
-
-    async updateUser () {
-      const res = await api.updateUser({
-        delCache: 'user-info',
-        method: 'PUT',
-        query: {
-          user: this.user
-        }
-      })
     }
   }
 </script>

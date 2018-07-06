@@ -47,17 +47,18 @@
       <view class="bill-btn save" @tap="submit">保存</view>
     </view>
     
-    <view wx:else>
-      <button class="zan-btn zan-btn--danger" @tap="submit">保存</button>
+    <view class="zan-btns" wx:else>
+      <button class="zan-btn jz-btn btn-shadow" style="background: #2196F3; color: white;" @tap="submit">保存</button>
     </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
-  import api from "../../utils/api"
-  import tip from '../../utils/tip'
-  import Session from '../../utils/session'
+  import wxRequest from '@/utils/wxRequest'
+  import Host from '@/utils/host'
+  import tip from '@/utils/tip'
+  import Session from '@/utils/session'
   export default class CategoryForm extends wepy.page {
     data = {
       category: {
@@ -96,16 +97,14 @@
       },
       async del () {
         await tip.confirm('删除后，所属该分类的账单也将一并删除！', {}, '警告')
-        const res = await api.Category({
-          method: 'DELETE'
-        }, this.category.id)
-        if (res.data.status == 200) {
+        const res = await wxRequest.Destroy(`categories/${this.category.id}`)
+        if (res.status == 200) {
           Session.clearByKey('category')
           wepy.navigateBack({
             delta: 1
           })
         } else {
-          tip.error(res.data.msg)
+          tip.error(res.msg)
         }
       },
       async submit () {
@@ -116,21 +115,20 @@
           cId = this.category.id
         }
         
-        const res = await api.Category({
-          showLoading: true,
-          method: method,
-          query: { 
-            category: this.category
-          }
-        }, cId);
+        let res = null
+        if (method == 'POST') {
+          res = await wxRequest.Post(`categories`, {category: this.category})
+        } else {
+          res = await wxRequest.Put(`categories/${cId}`, {category: this.category})
+        }
 
-        if (res.data.status == 200) {
+        if (res.status == 200) {
           Session.clearByKey('category')
           wepy.navigateBack({
             delta: 1
           })
         } else {
-          tip.error(res.data.msg)
+          tip.error(res.msg)
         }
       }
     }
@@ -146,24 +144,19 @@
 
     computed = {
       host () {
-        return api.host;
+        return Host.host;
       }
     }
 
     async getIcons () {
-      const res = await api.CategoryIcon();
-      this.icons = res.data
+      const data = await wxRequest.Get('icons/categories')
+      this.icons = data
       this.$apply()
     }
 
     async getCategory(id) {
-      const res = await api.Category({
-        showLoading: true,
-        query: {
-          type: this.category.type
-        }
-      }, id);
-      this.category = res.data
+      const data = await wxRequest.Get(`categories/${id}`,{ type: this.category.type })
+      this.category = data
       if (this.category.parent_id != 0) {
         this.updateCurrentIndex()
       } else {
@@ -173,12 +166,8 @@
     }
 
     async getParentCategories() {
-      let res = await api.CategoryParent({
-        query: { 
-          type: this.category.type
-        }
-      });
-      this.parentCategories = res.data
+      const data = await wxRequest.Get('categories/parent', {type: this.category.type})
+      this.parentCategories = data
 
       if (this.parentCategories.length > 0 && !this.isParentLevel && this.category.id == 0) {
         this.category.parent_id = this.parentCategories[0]['id']
