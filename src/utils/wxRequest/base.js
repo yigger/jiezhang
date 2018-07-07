@@ -2,6 +2,9 @@ import wepy from 'wepy'
 import Host from '@/utils/host'
 import Session from '@/utils/session'
 
+// 登录重试次数
+let retryCount = 0
+
 // 登录凭证键值
 const loginKey = Session.key.login
 
@@ -37,12 +40,12 @@ const doRequest = async (url, method, params, options = {}) => {
       data: params,
       header: { 'Content-Type': 'application/json', 'X-WX-Skey': thirdSession },
     })
-
+    
     // key 过期尝试重连
-    if (result.status === 301) {
+    if (result.status === 301 && retryCount <= 3) {
       Session.clear(loginKey)
-      doRequest(url, method, params)
-      return false
+      retryCount += 1
+      return doRequest(url, method, params)
     }
 
     Session.set(loginKey, thirdSession)

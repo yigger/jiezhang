@@ -9,38 +9,24 @@
     <view class="zan-panel">
       <view class="zan-cell">
         <view class="zan-cell__bd">头像</view>
-        <view class="zan-cell__ft" @tap="uploadImage"><image class="my-avatar" src="{{ user.avatar_url }}"></image></view>
+        <view class="zan-cell__ft"><image class="my-avatar" src="{{ user.avatar_url }}"></image></view>
       </view>
       
       <view class="zan-cell">
         <view class="zan-cell__bd">昵称</view>
         <view class="zan-cell__ft">
-          <input type="text" value="{{ user.nickname }}" bindinput="_nicknameChange"/>
+          {{ user.nickname }}
         </view>
       </view>
-
-      <!-- <view class="zan-cell">
-        <view class="zan-cell__bd">邮箱</view>
-        <view class="zan-cell__ft">
-          <input type="text" value="{{ user.email }}" bindinput="_emailChange"/>
-        </view>
-      </view>
-
-      <view class="zan-cell">
-        <view class="zan-cell__bd">手机号码</view>
-        <view class="zan-cell__ft">
-          <input type="text" value="{{ user.phone }}" bindinput="_phoneChange" />
-        </view> 
-      </view> -->
-
     </view>
+    <view @tap="logout" class="logout">退出登录</view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
-  import tip from '../../utils/tip'
+  import Session from '@/utils/session'
   export default class UserInfo extends wepy.page {
     config = {
       navigationBarTitleText: '个人信息'
@@ -51,28 +37,21 @@
     }
 
     methods = {
-      _nicknameChange (e) {
-        this.user.nickname = e.detail.value
-      },
-      _emailChange (e) {
-        this.user.email = e.detail.value
-      },
-      _phoneChange (e) {
-        this.user.phone = e.detail.value
-      },
       async uploadImage() {
         const choseImages = await wepy.chooseImage({
           count: 1,
           sizeType: ['compressed'],
           sourceType: ['album']
         })
-
-        // await wxRequest.Upload('',
-        //   {
-        //     file_path: choseImages.tempFilePaths[0],
-        //     type: 'user_avatar'
-        //   })
         this.getUser()
+      },
+      logout () {
+        let key = Session.key.alreadyLogin
+        Session.clear(key)
+        this.alreadyLogin = false
+        wx.navigateBack({
+          delta: 1
+        })
       }
     }
 
@@ -95,5 +74,16 @@
     width:100rpx;
     height:100rpx;
   }
-
+  .logout {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: red;
+  }
 </style>

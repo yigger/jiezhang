@@ -2,7 +2,7 @@
   <view class="container">
     <view class="header">
       <!-- header -->
-      <view class="user" wx:if="{{ alreadyLogin }}">
+      <view class="user" wx:if="{{ alreadyLogin }}" @tap="redirect('/pages/settings/user_info')">
         <view class="user-avatar">
           <image src="{{ user.avatar_url }}"></image>
         </view>
@@ -28,7 +28,7 @@
           </view>
         </view>
       </view>
-      <!-- <view class="arrow-icon"><image src="../public/images/setting-right-arrow.png"></image></view> -->
+      <view class="iconfont jz-icon-arrow-right-copy user-detail-arrow" wx:if="{{ alreadyLogin }}" @tap="redirect('/pages/settings/user_info')"></view>
     </view>
 
     <view class="three column">
@@ -133,6 +133,7 @@
     }
 
     onShow () {
+      this.alreadyLogin = this.loginStatus()
 			this.getData()
     }
     
@@ -156,11 +157,6 @@
         this.getData()
         this.alreadyLogin = true
         this.$apply()
-      },
-      logout () {
-        let key = Session.key.alreadyLogin
-        Session.clear(key)
-        this.alreadyLogin = false
       },
       developing () {
         wx.showToast({

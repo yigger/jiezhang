@@ -214,7 +214,7 @@
         })
       const data = res.list
       this.tabHeader = res.header
-      if(res.status != 405) {
+      if(res.status != 405 && res.status != 301) {
         if (this.scope == 'year' || this.scope == 'month') {
           this.dealWithYear(data)
         } else {

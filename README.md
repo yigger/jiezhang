@@ -32,7 +32,7 @@ npm run build // 发布时执行
 5、其它问题请查看 wepy 官网或者查询 Issue
 
 ### 相关截图
-![首页](https://github.com/yigger/jiezhang/raw/master/screenshots/index.png)  ![图表](https://github.com/yigger/jiezhang/raw/master/screenshots/chart.png)  ![记一笔](https://github.com/yigger/jiezhang/raw/master/screenshots/remark.png)  ![资产详情](https://github.com/yigger/jiezhang/raw/master/screenshots/asset.png)
+![首页](https://github.com/yigger/jiezhang/raw/master/screenshots/01.png)
 
 ### 如需帮助
 联系邮箱 b21738331@163.com

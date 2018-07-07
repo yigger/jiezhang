@@ -355,7 +355,7 @@
         console.log('start get location')
         wx.getLocation({
           type: 'gcj02', //返回可以用于wx.openLocation的经纬度
-          success: (res) => {
+          success: (result) => {
             console.log('location: ', result)
             this.qqmapSDK.reverseGeocoder({
               location: {
