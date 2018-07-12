@@ -45,6 +45,11 @@
         <view class="title">{{ item.name }}</view>
       </view>
     </view>
+
+    <view class="zan-loadmore" hidden="{{ wallets.length > 0 }}">
+      <view class="zan-loading"></view>
+      <view class="zan-loadmore__tips">加载中...</view>
+    </view>
   </view>
 
 </view>
@@ -61,12 +66,12 @@
     
 		data = {
     	wallets: [],
-			netWorth: 0,
-			totalAssets: 0,
-			totalDebt: 0,
-			yesterdayAmount: 0,
-			seventAmount: 0,
-			monthAmount: 0
+			netWorth: '0.00',
+			totalAssets: '0.00',
+			totalDebt: '0.00',
+			yesterdayAmount: '0.00',
+			seventAmount: '0.00',
+			monthAmount: '0.00',
     }
 
     methods = {

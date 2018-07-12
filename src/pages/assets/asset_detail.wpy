@@ -1,47 +1,49 @@
 <template>
 <view class="container">
-  <view id="wallet-header">
-    <view class="surplus">
-      <view class="surplus-amount fs24" @tap="showAmountModal">
+  <view class="header">
+    <view class="amount">
+      <text @tap="showAmountModal">
         <text>{{ amount }}</text>
-        <image class="edit-icon" src="../../public/images/edit.png"></image>
-      </view>
-      <view class="fs14">总额</view>
+        <text class="iconfont jz-icon-edit"></text>
+      </text>
+      <view class="btn transfer-btn">转账</view>
     </view>
-    <view class="bottom">
-      <view>
-        <view class="fs22">{{ header.income }}</view>
-        <view class="fs14">收入</view>
-      </view>
-      <view>
-        <view class="fs22">{{ header.expend }}</view>
-        <view class="fs14">支出</view>
-      </view>
-    </view>
+    <view class="subtitle">余额</view>
+  </view>
+  <view class="surplus">
+    <view class="all-income income">收入： {{ header.income }}</view>
+    <view class="all-expend expend">支出： {{ header.expend }}</view>
   </view>
 
-  <view id="all-assets" wx:if="{{ !showEmpty }}">
-    <view class="asset category" wx:for="{{ list }}" wx:for-item="pst" bindtap="showHidden('{{ index }}')">
-      <view class="detail">
-        <view class="title">
-          <view class="pull-left time align-column">
-            <view class="fs16">{{ pst.month }}月</view>
-            <view class="fs14 description">{{ pst.year }}</view>
-          </view>
-          <view class="pull-left align-column income-and-expend">
-            <view class="fs14 income">收入 {{ pst.income_amount }}</view>
-            <view class="fs14 expend">支出 {{ pst.expend_amount }}</view>
-          </view>
-          <view class="pull-right align-column left-money">
-            <view class="fs18">{{ pst.surplus }}</view>
-          </view>
-        </view>
 
-        <view class="content" hidden="{{ pst.hidden }}">
-          <repeat for="{{ pst.childs }}" key="index" index="index" item="item">
-            <single :item.sync="item"></single>
-          </repeat>
+  <view id="all-assets" wx:if="{{ !showEmpty }}">
+    <view class="content">
+      <view wx:for="{{ list }}">
+        <!-- header -->
+        <view class="column" @tap="getList('{{ item.year }}', '{{ item.month }}', '{{ index }}')">
+          <view class="two-column">
+            <view class="time align-right">
+              <text>{{ item.month }}月</text>
+              <text>{{ item.year }}年</text>
+            </view>
+            <view class="amount">
+              <text class="income">流入： {{ item.income_amount }}</text>
+              <text class="expend">流出： {{ item.expend_amount }}</text>
+            </view>
+          </view>
+          <view class="left-amount align-right">
+            <view>
+              <view>{{ item.surplus }}</view>
+              <view>结余</view>
+            </view>
+            <text class="iconfont jz-icon-arrow-down-copy" wx:if="{{ item.hidden }}"></text>
+            <text class="iconfont jz-icon-arrow-up" wx:else></text>
+          </view>
         </view>
+        <!-- list -->
+        <repeat for="{{ item.childs }}" key="index" index="index" item="st" wx:if="{{ !item.hidden }}">
+          <statement :statement.sync="st"></statement>
+        </repeat>
       </view>
     </view>
   </view>
@@ -57,6 +59,7 @@
   import wxRequest from '@/utils/wxRequest'
   import tip from '@/utils/tip'
   import Empty from '@/components/empty'
+  import IndexStatement from '@/components/index/statement'
   import Single from '@/components/single'
   
   export default class AssetDetail extends wepy.page {
@@ -66,7 +69,8 @@
 
     components = {
       empty: Empty,
-      single: Single
+      single: Single,
+      statement: IndexStatement
     }
 
 		data = {
@@ -77,9 +81,7 @@
         surplus: '0.00'
       },
       list: [], 
-      already_load: false,
-      amount: '0.00',
-      source_amount: 0
+      amount: '0.00'
     }
     
     methods = {
@@ -92,6 +94,11 @@
       },
       showAmountModal () {
         wx.navigateTo({ url: `/pages/forms/asset_form?id=${this.asset_id}&amount=${this.source_amount}` })
+      },
+      getList (year, month, index) {
+        let value = !this.list[index].hidden
+        this.list[index]['hidden'] = value
+        this.statements(year, month, index)
       }
     }
 
@@ -101,7 +108,7 @@
 
     onShow () {
       this.information()
-      this.statements()
+      this.times()
     }
 
     async information () {
@@ -112,19 +119,21 @@
       this.$apply()
     }
 
-    async statements () {
-      const data = await wxRequest.Get('wallet/detail', {asset_id: this.asset_id})
-      this.list = data
+    async times () {
+      const data = (await wxRequest.Get('super_statements/time', { asset_id: this.asset_id })).data
+      this.list = data.statements
       this.$apply()
     }
 
-		async updateSurplus (amount) {
-      const data = await wxRequest.Put('wallet/surplus', {asset_id: this.asset_id, amount: amount})
-      if (data.status == 200) {
-        this.information()
-      } else {
-        tip.error(data.msg)
+    async statements (year, month, index) {
+      let params = {
+        year: year,
+        month: month,
+        asset_id: this.asset_id
       }
+      const data = (await wxRequest.Get('super_statements/list', params)).data
+      this.list[index].childs = data
+      this.$apply()
     }
 
     computed = {

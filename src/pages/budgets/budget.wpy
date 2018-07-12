@@ -103,4 +103,4 @@
     }
   }
 </script>
-<style lang="scss" src="../../public/styles/budgets/budget.scss"></style>
+<style lang="scss" src="@/public/styles/budgets/budget.scss"></style>
