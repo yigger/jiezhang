@@ -1,6 +1,34 @@
 <template>
   <view class="container">
+    <view class="header">
+      <view class="{{ current == 0 ? 'active' : '' }}" @tap="switchTab('system')">系统消息</view>
+      <view class="{{ current == 1 ? 'active' : '' }}" @tap="switchTab('friend')">好友消息</view>
+    </view>
 
+    <view class="content">
+      <swiper indicator-dots="{{indicatorDots}}" current="{{ current }}" duration="{{duration}}" bindchange="swiperChange">
+        <swiper-item>
+          <view class="item">
+            <image src="../../public/images/default-3.jpeg"></image>
+            <view class="message-info">
+              <view>您有新的好友请求</view>
+              <view class="time">2018-07-13 16:00</view>
+            </view>
+          </view>
+        </swiper-item>
+
+        <swiper-item>
+          <view class="item">
+            <image src="../../public/images/default-3.jpeg"></image>
+            <view class="message-info">
+              <view>young</view>
+              <view>你好呀</view>
+              <view class="time">2018-07-13 16:00</view>
+            </view>
+          </view>
+        </swiper-item>
+      </swiper>
+    </view>
   </view>
 </template>
 
@@ -13,14 +41,30 @@
     }
 
     data = {
+      indicatorDots: false,
+      autoplay: false,
+      duration: 300,
+      current: 0,
+      activeItem: 'system',
       user: {}
     }
 
+    async onLoad () {
+      const systemInfo = await wepy.getSystemInfo()
+      
+    }
+
     onShow () {
-			
+
     }
     
     methods = {
+      switchTab (type) {
+        this.current = (type === 'system') ? 0 : 1
+      },
+      swiperChange (e) {
+        this.current = e.detail.current
+      }
     }
 
     async getData () {
@@ -28,36 +72,4 @@
     }
   }
 </script>
-<style lang="less">
-.header {
-  padding:12px;
-  background: white;
-}
-.header image {
-  width: 50px; 
-  height: 50px; 
-  display: block;
-  margin-right: 8px;
-  border-radius: 50%;
-}
-.user-info {
-  font-size: 14px;
-}
-.remark-day {
-  line-height:45px;
-  font-size: 14px;
-  color: #999;
-}
-.cell-list {
-  margin-bottom: 12px;
-}
-.cell-list:last-child {
-  margin: 0;
-}
-.weui-cells {
-  font-size:15px;
-}
-.weui-cell {
-  padding:15px !important;
-}
-</style>
+<style lang="scss" src="@/public/styles/message.scss"></style>

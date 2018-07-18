@@ -39,7 +39,11 @@ export default class extends wepy.app {
       "pages/assets/asset_detail",
       
       // 消息
-      "pages/message/message"
+      "pages/message/message",
+
+      // 好友
+      "pages/friends/index",
+      "pages/friends/search"
     ],
     window: {
       backgroundColor: "#efefef",

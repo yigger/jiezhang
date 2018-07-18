@@ -55,7 +55,7 @@
         <view class="zan-icon zan-icon-arrow"></view>
       </view>
 
-      <view @tap="developing()">
+      <view @tap="redirect('/pages/friends/index')">
         <view>
           <image src="../public/images/003-user.png"></image>
           <text>多人记账</text>

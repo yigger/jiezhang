@@ -14,6 +14,7 @@
           <navigator url="/pages/budgets/budget"><view class="pull-right fs14">预算剩余 {{ header.budget }}</view></navigator>
         </view>
       </view>
+      <navigator url="/pages/message/message"><view class="iconfont jz-icon-xiaoxi"></view></navigator>
     </view>
     
     <view class="zan-btns">

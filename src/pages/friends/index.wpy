@@ -1,0 +1,57 @@
+<template>
+  <view class="container">
+    <navigator url="/pages/friends/search">
+      <view class="search">
+        <input placeholder="添加好友一起记账" disabled="true"/>
+      </view>
+    </navigator>
+    <view class="title">
+      我的好友(2)
+    </view>
+    <view class="friends">
+      <view class="column"> 
+        <view class="left-side">
+          <view class="user-avatar"><image src="../../public/images/default-3.jpeg"></image></view>
+          <view class="user-info">
+            <view class="username">youngiii</view>
+            <view class="remark">家人</view>
+          </view>
+        </view>
+        <view class="iconfont jz-icon-arrow-right-copy"></view>
+      </view>
+
+      <view class="column"> 
+        <view class="left-side">
+          <view class="user-avatar"><image src="../../public/images/default-3.jpeg"></image></view>
+          <view class="user-info">
+            <view class="username">jie</view>
+            <view class="remark">家人</view>
+          </view>
+        </view>
+        <view class="iconfont jz-icon-arrow-right-copy"></view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  export default class FriendIndex extends wepy.page {
+    config = {
+      navigationBarTitleText: '多人记账'
+    }
+
+    data = {
+      
+    }
+
+    onLoad () {
+      
+    }
+    
+    methods = {
+      
+    }
+
+  }
+</script>
+<style lang="scss" src="@/public/styles/friends/index.scss"></style>

@@ -1,0 +1,59 @@
+@import '../_variable.scss';
+page {
+  height: 100%;
+  background: $backgroundColor;
+}
+.search {
+  font-size: 28rpx;
+  background: white;
+  display: flex;
+  input {
+    padding: 12rpx 24rpx;
+  }
+}
+.title {
+  font-size: 28rpx;
+  margin: 24rpx;
+}
+.friends {
+  .column {
+    margin: 24rpx;
+    padding: 12rpx;
+    background: white;
+    border-radius: 4rpx;
+    display: flex;
+    justify-content: space-between;
+    .left-side {
+      display: flex;
+      flex: 1;
+    }
+    .user-avatar {
+      display: flex;
+      align-items: center;
+    }
+    image {
+      width: 80rpx;
+      height: 80rpx;
+      margin: auto;
+      border-radius: 50%;
+    }
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin: 16rpx;
+      .username {
+        font-size: 28rpx;
+      }
+      .remark {
+        font-size: 24rpx;
+        color: $secondaryText;
+      }
+    }
+    .iconfont {
+      display: flex;
+      align-items: center;
+      color: $secondaryText;
+    }
+  }
+}
