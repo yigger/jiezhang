@@ -1,0 +1,56 @@
+<template>
+  <view class="container">
+    <view class="list">
+      <view wx:for="{{ goods }}" @tap="toEdit('{{ item.id }}')">
+        <image src="../../public/images/prepare_buy.png"></image>
+        <view class="goods">
+          <view class="title">{{ item.name }} (<text class="expend">{{ item.amount }}</text>)</view>
+          <view class="description">{{ item.remark }}</view>
+          <view class="time-and-money">
+            <text>{{ item.created_at }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <navigator url="/pages/forms/prepare_buy_form?type=new" class="footer">
+      新增预购商品
+    </navigator>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '@/utils/wxRequest'
+  import tip from '@/utils/tip'
+  export default class prepareBuy extends wepy.page {
+    config = {
+      navigationBarTitleText: '预购清单'
+    }
+
+    data = {
+      goods: []
+    }
+
+    methods = {
+      toEdit (id) {
+        wepy.navigateTo({
+          url: `/pages/forms/prepare_buy_form?id=${id}`
+        })
+      }
+    }
+
+    onShow () {
+      this.getGoods()
+    }
+    
+    async getGoods() {
+      const result = await wxRequest.Get('pre_order')
+      this.goods = result
+      this.$apply()
+    }
+
+
+  }
+</script>
+<style lang="scss" src="@/public/styles/prepareBuy.scss"></style>

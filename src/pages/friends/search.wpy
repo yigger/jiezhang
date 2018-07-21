@@ -1,6 +1,10 @@
 <template>
   <view class="container">
-    搜索好友
+    <view class="search">
+      <input placeholder="输入好友UID查找好友"/>
+    </view>
+
+
   </view>
 </template>
 <script>
@@ -24,4 +28,4 @@
 
   }
 </script>
-<style lang="scss" src="@/public/styles/friends/index.scss"></style>
+<style lang="scss" src="@/public/styles/friends/search.scss"></style>

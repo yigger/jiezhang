@@ -19,6 +19,7 @@ export default class extends wepy.app {
       // 余额设置
       "pages/forms/asset_form",
       "pages/forms/budget_form",
+      "pages/forms/prepare_buy_form",
 
       // 预算
       "pages/budgets/budget",
@@ -29,6 +30,7 @@ export default class extends wepy.app {
       "pages/settings/super_chart",
       "pages/settings/user_info",
       "pages/settings/set_cover",
+      "pages/settings/prepare_buy",
       "pages/settings/super_statement",
       
       // 编辑账单类型分类/资产分类
