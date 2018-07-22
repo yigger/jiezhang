@@ -55,7 +55,8 @@
     }
 
     async getAsset () {
-      const data = await wxRequest.Get('statements/assets', {}, {cacheKey: ['asset', 'statementAssets']})
+      // const data = await wxRequest.Get('statements/assets', {}, {cacheKey: ['asset', 'statementAssets']})
+      const data = await wxRequest.Get('statements/assets')
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories

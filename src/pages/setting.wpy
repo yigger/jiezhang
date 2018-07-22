@@ -7,9 +7,13 @@
           <image src="{{ user.avatar_url }}"></image>
         </view>
         <view class="user-info">
-          <view>
+          <view class="user-detail">
             <text class="user-name">{{ user.name }}</text>
-            <text class="designation" style="background: {{ user.vip.color }}">{{ user.vip.name }}</text>
+            <!-- <text class="designation" style="background: {{ user.vip.color }}">{{ user.vip.name }}</text> -->
+          </view>
+          <view class="diamond-vip" wx:if="{{ user.show_diamond }}">
+            <image class="diamond-img" src="../public/images/diamond.png"></image>
+            <text>钻石会员</text>
           </view>
           <view class="persistence">
             已坚持记账 {{ user.persist }} 天

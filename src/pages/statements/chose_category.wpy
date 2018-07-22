@@ -60,12 +60,13 @@
     }
 
     async getCategory () {
-      const data = await wxRequest.Get(
-        'statements/categories', 
-        { type: this.type }, 
-        {
-          cacheKey: ['category', this.type == 'expend' ? 'statementExpendList' : 'statementIncomeList']
-        })
+      // const data = await wxRequest.Get(
+      //   'statements/categories', 
+      //   { type: this.type }, 
+      //   {
+      //     cacheKey: ['category', this.type == 'expend' ? 'statementExpendList' : 'statementIncomeList']
+      //   })
+      const data = await wxRequest.Get('statements/categories', { type: this.type })
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories
