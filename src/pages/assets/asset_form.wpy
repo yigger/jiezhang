@@ -31,20 +31,12 @@
         </picker>
       </view>
 
-      <view class="item">
-        <view class="item-name pull-left"> <text>图标</text> </view>
+      <navigator url="/pages/forms/icons_chose?url=assets" class="item">
+        <view class="item-name pull-left">
+          <text>图标</text>
+        </view>
         <image class="icon-image" src="{{ host }}{{ wallet.icon_path }}"></image>
-      </view>
-
-      <swiper indicator-dots="{{ true }}">
-        <swiper-item wx:for="{{icons}}">
-          <view class="category-flex">
-            <view wx:for="{{item}}" @tap="choseIcon('{{ item }}')">
-              <image src="{{ host }}{{ item }}"></image>
-            </view>
-          </view>
-        </swiper-item>
-      </swiper>
+      </navigator>
 
       <view>
         <textarea placeholder-class="place-class" bindinput="bindKeyRemark" value="{{ wallet.remark }}" placeholder="备注" />
@@ -85,7 +77,6 @@
       mehotd: '',
       parents: [],
       parentIndex: 0,
-      icons: [],
       assetTypes: [
         { name: '存款账户', key: 'deposit' },
         { name: '负债账户', key: 'debt' }
@@ -180,7 +171,6 @@
       if (options.id != undefined) {
         this.getWallet(options.id)
       }
-      this.getIcons()
     }
 
     async getWallet (id) {
@@ -204,12 +194,6 @@
       this.$apply()
     }
 
-    async getIcons () {
-      const data = await wxRequest.Get('icons/assets')
-      this.icons = data
-      this.$apply()
-    }
-
     updateCurrentIndex () {
       for (let index in this.parents) {
         if (this.parents[index]['id'] == this.wallet.parent_id) {
@@ -217,6 +201,11 @@
           return false
         }
       }
+    }
+
+    setIcon (e) {
+      this.category.icon_path = e.icon
+      this.$apply()
     }
   }
 </script>
@@ -248,31 +237,6 @@
 .item input {
 	padding-top:12rpx;
 	text-align:right;
-}
-swiper {
-	height:730rpx;
-	border-bottom:2rpx solid #F4F4F4;
-}
-.category-flex {
-	overflow:hidden;
-}
-.category-flex image {
-	width:60rpx;
-	height:60rpx;
-}
-.category-flex > view {
-	width:20%;
-	float:left;
-	text-align:center;
-	margin-top:16rpx;
-}
-.category-flex .image {
-	height:60rpx;
-}
-.category-flex .name {
-	color:#999;
-	font-size:24rpx;
-	margin-top:4rpx;
 }
 .icon-image {
 	margin-top:10rpx;

@@ -36,7 +36,7 @@
       </view>
     </view>
 
-    <swiper style="width: 100%; height: 280px;">
+    <swiper style="width: 100%; height: 300px;" indicator-dots="true">
       <swiper-item>
         <canvas canvas-id="pieCanvas" disable-scroll="true" class="piecanvas" style="width: 100%; height: 280px;"></canvas>
       </swiper-item>
@@ -178,10 +178,17 @@
         categories: data.months,
         series: [{
             name: '收入',
-            data: data.incomes
+            data: data.incomes,
+            color: '#FF0000'
         }, {
             name: '支出',
-            data:  data.expends
+            data:  data.expends,
+            color: '#008000'
+        },
+        {
+            name: '结余',
+            data:  data.surplus,
+            color: '#cccccc'
         }],
         yAxis: {
             title: '金额',

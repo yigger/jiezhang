@@ -20,6 +20,7 @@ export default class extends wepy.app {
       "pages/forms/asset_form",
       "pages/forms/budget_form",
       "pages/forms/prepare_buy_form",
+      "pages/forms/icons_chose",
 
       // 预算
       "pages/budgets/budget",

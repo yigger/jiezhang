@@ -1,10 +1,5 @@
 <template lang="wxml">
   <view class="category-component">
-    <!-- <view wx:if="{{ !showLast }}">
-      <view class="header fs14">上次使用</view>
-      <category :category.sync="last" @choseItem.user="setAsset"></category>
-    </view> -->
-
     <view wx:if="{{ frequent.length > 0 }}">
       <view class="header fs14">常用</view>
       <repeat for="{{frequent}}" key="index" index="index" item="child">
