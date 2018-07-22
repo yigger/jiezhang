@@ -54,7 +54,8 @@ const doRequest = async (url, method, params, options = {}) => {
   } catch (e) {
     wx.showToast({
       title: e.errMsg,
-      icon: 'none'
+      icon: 'none',
+      duration: 2000
     })
   }
 }

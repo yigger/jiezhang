@@ -54,7 +54,7 @@
         </view>
         <view class="zan-icon zan-icon-arrow"></view>
       </view>
-
+      
       <!-- <view @tap="redirect('/pages/friends/index')">
         <view>
           <image src="../public/images/003-user.png"></image>

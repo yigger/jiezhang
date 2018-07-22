@@ -97,7 +97,7 @@
 			cur_year: NowDate.getFullYear(),
 			cur_month: NowDate.getMonth() + 1,
 			cur_today: NowDate.getDate(),
-			tabActive: 'category',
+			tabActive: 'single',
 			prevSelectedIndex: -1,
 			picker_value: [],
 			picker_year: [],

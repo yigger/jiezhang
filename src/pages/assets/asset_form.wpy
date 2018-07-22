@@ -68,7 +68,7 @@
       wallet: {
         id: 0,
         name: '',
-        amount: '',
+        amount: 0,
         parent_id: 0,
         icon_path: '',
         remark: '',
@@ -204,7 +204,7 @@
     }
 
     setIcon (e) {
-      this.category.icon_path = e.icon
+      this.wallet.icon_path = e.icon
       this.$apply()
     }
   }
