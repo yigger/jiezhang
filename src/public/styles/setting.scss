@@ -43,10 +43,9 @@ page {
       }
       .designation {
         margin-left: 8px;
-        padding: 0px 2px;
+        padding: 0px 4px;
         font-size: 14px;
         border-radius: 1px;
-        // background: #FF9C0B;
       }
     }
     .get-user-btn {
@@ -72,6 +71,19 @@ page {
   .user-detail-arrow {
     color: white;
     font-size: 21px;
+  }
+  .user-detail {
+    display: flex;
+    align-items: center;
+  }
+  .diamond-vip {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+  }
+  .diamond-img {
+    width: 20px;
+    height: 20px;
   }
 }
 

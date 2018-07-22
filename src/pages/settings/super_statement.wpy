@@ -26,8 +26,12 @@
             </view>
           </view>
           <view class="left-amount align-right">
-            <text>{{ item.surplus }}</text>
-            <text>结余</text>
+            <view>
+              <view>{{ item.surplus }}</view>
+              <view>结余</view>
+            </view>
+            <text class="iconfont jz-icon-arrow-down-copy" wx:if="{{ item.hidden }}"></text>
+            <text class="iconfont jz-icon-arrow-up" wx:else></text>
           </view>
         </view>
         <!-- list -->

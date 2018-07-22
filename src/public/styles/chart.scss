@@ -46,12 +46,16 @@
 	$tmHeight: 100rpx;
 	// 分类查看的样式
 	.mutiple {
-		> .header {
-			height: $tmHeight;
-			line-height: $tmHeight;
-			border-bottom: 1px solid #efefef;
-			padding:0 24rpx;
-			background:#FAFAFC;
+		.parent-node {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			background: $backgroundColor;
+			border-bottom: 1px solid #d1d1d1;
+			padding: 24rpx 24rpx;
+			.title {
+				font-size: 32rpx;
+			}
 		}
 	}
 }

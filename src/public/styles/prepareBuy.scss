@@ -1,0 +1,49 @@
+@import './_variable.scss';
+.footer {
+  position: fixed;
+  height: 100rpx;
+  line-height: 100rpx;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  width: 100%;
+  background: $backgroundColor;
+  border-top: 1px solid $secondaryBackgroundColor;
+  color: $secondaryText;
+  font-size: 32rpx;
+}
+.list {
+  margin-bottom: 100rpx;
+  > view {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid $borderColor;
+    padding: 16rpx 28rpx;
+    font-size: 32rpx;
+    .goods {
+      flex: 1;
+      .title {
+        color: $primaryText;
+        margin-bottom: 8rpx;
+      }
+      .description {
+        color: $secondaryText;
+        margin-bottom: 8rpx;
+      }
+      .time-and-money > text {
+        margin-right: 8rpx;
+        color: $secondaryText;
+        font-size: 28rpx;
+      }
+    }
+    image {
+      width: 80rpx;
+      height: 80rpx;
+      margin-right: 16rpx;
+    }
+  }
+  .tips {
+    font-size: 28rpx;
+    color: $secondaryText;
+  }
+}

@@ -63,7 +63,7 @@
       </view>
 
       <view class="zan-btns">
-        <button class="zan-btn ljt-btn" formType="submit" @tap="submit">保存</button>
+        <button class="zan-btn ljt-btn" disabled="{{ submiting }}" formType="submit" @tap="submit">保存</button>
       </view>
       <input hidden type="text" name="type" value="{{ type }}"/>
     </view>
@@ -95,7 +95,7 @@
       </view>
 
       <view class="zan-btns">
-        <button class="zan-btn ljt-btn" formType="submit" @tap="submit">保存</button>
+        <button class="zan-btn ljt-btn" formType="submit" disabled="{{ submiting }}" @tap="submit">保存</button>
       </view>
     </view>
 
@@ -141,7 +141,8 @@
       province: '',
       city: '',
       district: '',
-      street: ''
+      street: '',
+      submiting: false
     }
 
     async onLoad(options) {
@@ -165,6 +166,12 @@
       if (this.switchCheck) {
         // 初始化地理位置信息
         this.setLocation()
+      }
+
+      if (options.type) {
+        this.type = options.type
+        this.from = options.asset_id
+        this.source = options.source
       }
 
       this.guessCategory()
@@ -217,6 +224,7 @@
         }
         
         let result = null
+        this.submiting = true
         if (this.method == 'POST') {
           result = await wxRequest.Post(`statements`, {statement: statement})
         } else {
@@ -232,6 +240,7 @@
         } else {
           tip.error(result.msg)
         }
+        this.submiting = false
       },
       dateChange(e) {
         this.date = e.detail.value

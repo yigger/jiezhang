@@ -36,7 +36,17 @@
       </view>
     </view>
 
-    <canvas canvas-id="pieCanvas" disable-scroll="true" class="piecanvas" style="width: 100%; height: 280px;"></canvas>
+    <swiper style="width: 100%; height: 300px;" indicator-dots="true">
+      <swiper-item>
+        <canvas canvas-id="pieCanvas" disable-scroll="true" class="piecanvas" style="width: 100%; height: 280px;"></canvas>
+      </swiper-item>
+
+      <swiper-item>
+        <canvas canvas-id="lineCanvas" disable-scroll="true" class="lineCanvas" style="width: 100%; height: 280px;"></canvas>
+      </swiper-item>
+    </swiper>
+
+    
 
     <view class="expend-bars" wx:if="{{ chartData.length > 0 }}">
       <view class="item" wx:for="{{ chartData }}" style="background-size: {{ item.percent * 2 }}% 100%;" @tap="redirectTo('{{ item.category_id }}')">
@@ -59,7 +69,7 @@
   import wxRequest from '@/utils/wxRequest'
   import wxCharts from '@/utils/wxchart.min.js'
   import Empty from '@/components/empty'
-
+  
   export default class superChart extends wepy.page {
     config = {
       navigationBarTitleText: '消费报表'
@@ -68,6 +78,7 @@
     data = {
       chartData: [],
       header: {},
+      info: {},
       type: 'month',
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
@@ -89,6 +100,7 @@
           if(this.type == 'year') this.year -= 1
         }
         this.getChartData()
+        this.getLineChartData()
       },
       redirectTo (category_id) {
         wepy.navigateTo({
@@ -101,8 +113,10 @@
       }
     }
 
-    onShow() {
+    async onShow() {
+      this.info = await wepy.getSystemInfo()
       this.getChartData()
+      this.getLineChartData()
     }
 
     nextMonth () {
@@ -124,12 +138,11 @@
     }
 
     async initChart (data) {
-      const info = await wepy.getSystemInfo()
       new wxCharts({
         canvasId: 'pieCanvas',
         type: 'pie',
         series: data,
-        width: info.screenWidth,
+        width: this.info.screenWidth,
         height: 280,
         legend: true,
         dataLabel: true
@@ -143,11 +156,47 @@
           year: this.year,
           month: this.month
         })
-      // console.log(data)
       this.header = data.header
       this.chartData = data.charts
       if (data.wx_charts.length != 0) this.initChart(data.wx_charts)
       this.$apply()
+    }
+
+    async getLineChartData () {
+      const data = await wxRequest.Get('super_chart/line_chart', {year: this.year})
+      try {
+        if(data.months.length > 0) this.initLineChart(data)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    async initLineChart (data) {
+      new wxCharts({
+        canvasId: 'lineCanvas',
+        type: 'line',
+        categories: data.months,
+        series: [{
+            name: '收入',
+            data: data.incomes,
+            color: '#FF0000'
+        }, {
+            name: '支出',
+            data:  data.expends,
+            color: '#008000'
+        },
+        {
+            name: '结余',
+            data:  data.surplus,
+            color: '#cccccc'
+        }],
+        yAxis: {
+            title: '金额',
+            min: 0
+        },
+        width: this.info.screenWidth,
+        height: 280
+     });
     }
 
   }

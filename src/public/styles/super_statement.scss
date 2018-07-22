@@ -48,10 +48,25 @@
     display: flex;
     color: $secondaryText;
   }
-  .time, .amount, .left-amount {
+  .time, .amount {
     display: flex;
     justify-content: center;
     flex-direction: column;
+  }
+  .left-amount {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    > view {
+      color: $secondaryText;
+    }
+  }
+  .jz-icon-arrow-down-copy, .jz-icon-arrow-up {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $iconGrey;
+    padding-left:8px;
   }
   .amount {
     margin-left: 14px;

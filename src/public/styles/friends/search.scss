@@ -1,0 +1,13 @@
+@import '../_variable.scss';
+page {
+  height: 100%;
+  background: $backgroundColor;
+}
+.search {
+  font-size: 28rpx;
+  background: white;
+  display: flex;
+  input {
+    padding: 12rpx 24rpx;
+  }
+}

@@ -10,12 +10,6 @@
           </picker>
           <image src="../public/images/down-white.png"></image>
         </view>
-        <!-- <view class="pull-right select-type">
-          <image src="../public/images/filter.png"></image>
-          <picker bindchange="bindFilterChange" value="{{filterIndex}}" range="{{filterArray}}">
-              范围选择
-          </picker>
-        </view> -->
       </view>
 
       <view class="weeks box box-lr box-pack-center box-align-center">
@@ -64,15 +58,17 @@
     </view>
 
 		<view class="mutiple" hidden="{{ tabActive == 'single' || mutipleData.length == 0 }}">
-			<repeat for="{{ mutipleData }}" key="index" index="index" item="item">
-				<view class="header fs16" @tap="showHidden('{{index}}')">
-					<view class="pull-left">{{ item.category_name }}</view>
-					<view class="pull-right {{ item.type }}">{{ item.total }}</view>
+			<view wx:for="{{ mutipleData }}" @tap="getCategoryList('{{ item.id }}', '{{ index }}')">
+				<view class="parent-node">
+					<view class="title">{{ item.name }}</view>
+					<view class="iconfont jz-icon-arrow-down-copy" wx:if="{{ item.hidden }}"></view>
+					<view class="iconfont jz-icon-arrow-up" wx:else></view>
 				</view>
-				<view class="list" hidden="{{ item.hidden }}">
-					<singleColumn :obj.sync="item"></singleColumn>
-				</view>
-			</repeat>	
+
+				<repeat for="{{ item.childs }}" key="index" index="index" item="st" wx:if="{{ !item.hidden }}">
+          <statement :statement.sync="st"></statement>
+        </repeat>
+			</view>
 		</view>
 
 		<empty title="这天还没有记账呢~" hidden="{{ singleList.length > 0 }}"></empty>
@@ -87,6 +83,8 @@
   import tip from '@/utils/tip'
 	import Empty from '@/components/empty'
 	import singleColumn from '@/components/chart_column'
+	import IndexStatement from '@/components/index/statement'
+
 	const NowDate = new Date()
   export default class Chart extends wepy.page {
     config = {
@@ -115,13 +113,13 @@
       startDate: null,
       endDate: null,
       dateParams: [],
-      filterIndex: 1,
-      filterArray: ['按天选择', '按范围选择']
+      filterIndex: 1
     };
 
 		components = {
 			empty: Empty,
-			singleColumn: singleColumn
+			singleColumn: singleColumn,
+			statement: IndexStatement
     };
     
 		methods = {
@@ -217,6 +215,23 @@
 				wepy.navigateTo({
           url: `/pages/statements/detail?id=${id}`
         })
+			},
+			async getCategoryList (id, index) {
+				let query = {}
+				if (this.dateParams.length == 0) {
+					query.start_time = `${this.cur_year}-${this.cur_month}-${this.cur_today}`
+				} else if (this.dateParams.length == 1) {
+					query.start_time = this.startDate
+				} else {
+					query.start_time = this.startDate
+					query.end_time = this.endDate
+				}
+				query.id = id
+				const data = await wxRequest.Get('chart/spread', query)
+				let value = !this.mutipleData[index].hidden
+				this.mutipleData[index]['hidden'] = value
+				this.mutipleData[index].childs = data
+				this.$apply()
 			}
 		}
 
@@ -299,16 +314,10 @@
         query.start_time = this.startDate
         query.end_time = this.endDate
       }
-			const res = await wxRequest.Get(Api.Chart, query);
-      if (res.status == 200) {
-				this.singleData = res.single
-				this.singleList = this.singleData.list
-			  this.mutipleData = res.mutiple
-      } else {
-				this.singleData = []
-				this.singleList = []
-			  this.mutipleData = []
-      }
+			const res = await wxRequest.Get(Api.Chart, query)
+			this.singleData = res.single
+			this.singleList = this.singleData.list
+			this.mutipleData = res.categories
 			this.$apply()
 		}
 
@@ -393,4 +402,4 @@
 		}
   }
 </script>
-<style lang="scss" src="../public/styles/chart.scss"></style>
+<style lang="scss" src="@/public/styles/chart.scss"></style>

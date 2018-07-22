@@ -1,0 +1,73 @@
+<template>
+  <view class="container">
+    <view class="category-flex" wx:for="{{ icons }}">
+      <view wx:for="{{item}}" @tap="choseIcon('{{ item }}')">
+        <image src="{{ host }}{{ item }}"></image>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Host from '@/utils/host'
+  import wxRequest from '@/utils/wxRequest'
+  export default class IconsChose extends wepy.page {
+    config = {
+      navigationBarTitleText: '图标选择'
+    }
+
+    data = {
+      icons: []
+    }
+
+    computed = {
+      host () {
+        return Host.host;
+      }
+    }
+
+    onLoad (options) {
+      this.getIcons(options.url)
+    }
+
+    methods = {
+      choseIcon (icon) {
+        const pages = getCurrentPages()
+        const prevPage = pages[pages.length - 2]
+        prevPage.setIcon({icon: icon})
+        wepy.navigateBack({
+          delta: 1
+        })
+      }
+    }
+    async getIcons (url) {
+      const data = await wxRequest.Get(`icons/${url}`)
+      this.icons = data
+      this.$apply()
+    }
+  }
+</script>
+<style lang="css">
+.category-flex {
+	overflow:hidden;
+}
+.category-flex image {
+	width:60rpx;
+	height:60rpx;
+}
+.category-flex > view {
+	width:20%;
+	float:left;
+	text-align:center;
+	margin-top:16rpx;
+}
+.category-flex .image {
+	height:60rpx;
+}
+.category-flex .name {
+	color:#999;
+	font-size:24rpx;
+	margin-top:4rpx;
+}
+</style>

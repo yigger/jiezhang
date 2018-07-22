@@ -23,24 +23,12 @@
       </view>
     </view>
 
-      <view class="item">
-        <view class="item-name pull-left">
-          <text>图标</text>
-        </view>
-        <image class="icon-image" src="{{ host }}{{ category.icon_path }}"></image>
+    <navigator url="/pages/forms/icons_chose?url=categories" class="item">
+      <view class="item-name pull-left">
+        <text>图标</text>
       </view>
-      
-      <swiper indicator-dots="{{ true }}">
-        <swiper-item wx:for="{{ icons }}">
-          <view class="category-flex">
-            <view wx:for="{{item}}" @tap="choseIcon('{{ item }}')">
-              <image src="{{ host }}{{ item }}"></image>
-            </view>
-          </view>
-        </swiper-item>
-      </swiper>
-
-      
+      <image class="icon-image" src="{{ host }}{{ category.icon_path }}"></image>
+    </navigator>
 
     <view class="save-btn" wx:if="{{ category.id != 0 }}">
       <view class="bill-btn" @tap="del">删除</view>
@@ -68,7 +56,6 @@
         type: '',
         parent_id: 0
       },
-      icons: [],
       parentCategories: [],
       curIndex: 0,
       isParentLevel: false
@@ -139,19 +126,12 @@
       if (options.id != undefined) {
         this.getCategory(options.id)
       }
-      this.getIcons()
     }
 
     computed = {
       host () {
         return Host.host;
       }
-    }
-
-    async getIcons () {
-      const data = await wxRequest.Get('icons/categories')
-      this.icons = data
-      this.$apply()
     }
 
     async getCategory(id) {
@@ -184,6 +164,11 @@
       }
     }
 
+    setIcon (e) {
+      this.category.icon_path = e.icon
+      this.$apply()
+    }
+
   }
 </script>
 <style lang="less">
@@ -213,31 +198,6 @@
 .item input {
 	padding-top:12rpx;
 	text-align:right;
-}
-swiper {
-	height:730rpx;
-	border-bottom:2rpx solid #F4F4F4;
-}
-.category-flex {
-	overflow:hidden;
-}
-.category-flex image {
-	width:60rpx;
-	height:60rpx;
-}
-.category-flex > view {
-	width:20%;
-	float:left;
-	text-align:center;
-	margin-top:16rpx;
-}
-.category-flex .image {
-	height:60rpx;
-}
-.category-flex .name {
-	color:#999;
-	font-size:24rpx;
-	margin-top:4rpx;
 }
 .icon-image {
 	margin-top:10rpx;

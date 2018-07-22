@@ -1,0 +1,41 @@
+@import './_variable.scss';
+.header {
+  display: flex;
+  border-bottom: 1px solid $borderColor;
+  > view {
+    flex: 1;
+    text-align: center;
+    display: inline-block;
+    padding: 12rpx 24rpx;
+    font-size: 32rpx;
+    &.active {
+      color: $primaryColor;
+      border-bottom: 2px solid $primaryColor;
+    }
+  }
+}
+.content {
+  swiper {
+    min-height: 400px;
+  }
+  .item {
+    display: flex;
+    border-bottom: 1px solid $borderColor;
+    padding: 12rpx 24rpx;
+    image {
+      width: 120rpx;
+      height: 120rpx;
+    }
+    .message-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0 12rpx;
+      font-size: 32rpx;
+      .time {
+        color: $secondaryText;
+        font-size: 24rpx;
+      }
+    }
+  }
+}

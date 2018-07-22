@@ -129,7 +129,7 @@
     }
 
     async getFilters () {
-      const res = await wxRequest.Get('statements/filter')
+      const res = await wxRequest.Get('super_statements/filter')
       this.filter = res.filter
       this.$apply()
     }

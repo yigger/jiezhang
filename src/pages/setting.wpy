@@ -7,9 +7,13 @@
           <image src="{{ user.avatar_url }}"></image>
         </view>
         <view class="user-info">
-          <view>
+          <view class="user-detail">
             <text class="user-name">{{ user.name }}</text>
-            <text class="designation" style="background: {{ user.vip.color }}">{{ user.vip.name }}</text>
+            <!-- <text class="designation" style="background: {{ user.vip.color }}">{{ user.vip.name }}</text> -->
+          </view>
+          <view class="diamond-vip" wx:if="{{ user.show_diamond }}">
+            <image class="diamond-img" src="../public/images/diamond.png"></image>
+            <text>钻石会员</text>
           </view>
           <view class="persistence">
             已坚持记账 {{ user.persist }} 天
@@ -40,7 +44,7 @@
         <view><image src="../public/images/003-pie-chart.png"></image></view>
         <view>消费报表</view>
       </view>
-      <view @tap="developing()">
+      <view @tap="redirect('/pages/settings/prepare_buy')">
         <view><image src="../public/images/001-list-1.png"></image></view>
         <view>预购清单</view>
       </view>
@@ -54,8 +58,8 @@
         </view>
         <view class="zan-icon zan-icon-arrow"></view>
       </view>
-
-      <view @tap="developing()">
+      
+      <!-- <view @tap="redirect('/pages/friends/index')">
         <view>
           <image src="../public/images/003-user.png"></image>
           <text>多人记账</text>
@@ -69,7 +73,7 @@
           <text>梦想存钱罐</text>
         </view>
         <view class="zan-icon zan-icon-arrow"></view>
-      </view>
+      </view> -->
     </view>
 
     <view class="setting-container" style="margin: 12px 0">

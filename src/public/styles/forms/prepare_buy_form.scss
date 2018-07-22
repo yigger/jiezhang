@@ -1,0 +1,23 @@
+@import '../_variable.scss';
+.container {
+  padding:0 24rpx;
+  > .column {
+    height: 120rpx;
+    border-bottom: 1px solid #efefef;
+    font-size: 32rpx;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    input {
+      text-align: right;
+    }
+  }
+  .textarea {
+    font-size: 14px;
+    border-bottom: 1px solid $borderColor;
+  }
+  textarea {
+    width: 100%;
+  }
+}

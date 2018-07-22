@@ -1,0 +1,31 @@
+<template>
+  <view class="container">
+    <view class="search">
+      <input placeholder="输入好友UID查找好友"/>
+    </view>
+
+
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  export default class FriendsSearch extends wepy.page {
+    config = {
+      navigationBarTitleText: '搜索好友'
+    }
+
+    data = {
+      
+    }
+
+    onLoad () {
+      
+    }
+    
+    methods = {
+      
+    }
+
+  }
+</script>
+<style lang="scss" src="@/public/styles/friends/search.scss"></style>

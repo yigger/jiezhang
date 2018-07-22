@@ -54,7 +54,8 @@ const doRequest = async (url, method, params, options = {}) => {
   } catch (e) {
     wx.showToast({
       title: e.errMsg,
-      icon: 'none'
+      icon: 'none',
+      duration: 2000
     })
   }
 }
@@ -91,6 +92,7 @@ const getByCache = (cacheKey) => {
 // 设置缓存
 const setByCache = (cacheKey, cacheVal) => {
   if(typeof cacheKey !== 'undefined') {
+    if (Array.isArray(cacheVal) && cacheVal.length == 0) return false
     Session.set(cacheKey, {
       createTime: Date.parse(new Date()),
       value: cacheVal

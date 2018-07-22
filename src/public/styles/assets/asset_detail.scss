@@ -1,72 +1,23 @@
 @import '../_variable.scss';
-#wallet-header {
-  position:relative;
-  height:300rpx;
-  background: $primaryColor;
-  box-shadow:0 0 20rpx $divideText;
-  color:white;
-  .surplus {
-    color:white;
-    padding: 48rpx 0;
-    text-align:center;
-    color: white;
-  }
-  .bottom {
-    position: absolute;
-    bottom: 0;
-    padding: 10rpx 0;
-    width: 100%;
-    border-top:1px solid #448aff;
-    & > view {
-      width:50%;
-      text-align: center;
-      display: inline-block;
-      &:first-child {
-        box-shadow: 1px 0 0 #448aff;
-      }
+@import '../super_statement.scss';
+.header {
+  .amount {
+    display: flex;
+    justify-content: space-between;
+    > text {
+      font-size: 21px;
+    }
+    .btn.transfer-btn {
+      font-size: 14px;
+      background: $primaryColor;
+      border: 1px solid $primaryColor;
+      color: white;
+      padding: 4px 8px;
     }
   }
-  .edit-icon {
-    width:40rpx;
-    height:40rpx;
-    margin-left:16rpx;
-  }
-  .surplus-amount {
-    overflow:hidden;
-    image {
-      margin-top:8rpx;
-    } 
-  }
-}
-
-#all-assets {
-  height: 100%;
-  .col999 {
-    color: #999;
-  }
-  .category {
-    .detail > .title {
-      overflow-y:hidden;
-      padding:0 24rpx;
-      height: 120rpx;
-      border-bottom:2rpx solid #efefef;
-      > .time {
-        height: 100%;
-        text-align:center;
-      }
-      .align-column {
-        display:flex;
-        justify-content:center;
-        flex-direction:column;
-        height: 100%;
-      }
-      .income-and-expend {
-        margin-left:16rpx;
-      }
-      .left-money {
-        color:#999;
-        text-align:right;
-      }
-    }
+  .jz-icon-edit {
+    font-size: 21px;
+    margin-left: 4px;
+    color: $iconGrey;
   }
 }
