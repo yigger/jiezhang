@@ -10,12 +10,6 @@
           </picker>
           <image src="../public/images/down-white.png"></image>
         </view>
-        <!-- <view class="pull-right select-type">
-          <image src="../public/images/filter.png"></image>
-          <picker bindchange="bindFilterChange" value="{{filterIndex}}" range="{{filterArray}}">
-              范围选择
-          </picker>
-        </view> -->
       </view>
 
       <view class="weeks box box-lr box-pack-center box-align-center">
@@ -64,8 +58,16 @@
     </view>
 
 		<view class="mutiple" hidden="{{ tabActive == 'single' || mutipleData.length == 0 }}">
-			<view wx:for="{{ mutipleData }}">
-				{{ item.name }}
+			<view wx:for="{{ mutipleData }}" @tap="getCategoryList('{{ item.id }}', '{{ index }}')">
+				<view class="parent-node">
+					<view class="title">{{ item.name }}</view>
+					<view class="iconfont jz-icon-arrow-down-copy" wx:if="{{ item.hidden }}"></view>
+					<view class="iconfont jz-icon-arrow-up" wx:else></view>
+				</view>
+
+				<repeat for="{{ item.childs }}" key="index" index="index" item="st" wx:if="{{ !item.hidden }}">
+          <statement :statement.sync="st"></statement>
+        </repeat>
 			</view>
 		</view>
 
@@ -81,6 +83,8 @@
   import tip from '@/utils/tip'
 	import Empty from '@/components/empty'
 	import singleColumn from '@/components/chart_column'
+	import IndexStatement from '@/components/index/statement'
+
 	const NowDate = new Date()
   export default class Chart extends wepy.page {
     config = {
@@ -93,7 +97,7 @@
 			cur_year: NowDate.getFullYear(),
 			cur_month: NowDate.getMonth() + 1,
 			cur_today: NowDate.getDate(),
-			tabActive: 'single',
+			tabActive: 'category',
 			prevSelectedIndex: -1,
 			picker_value: [],
 			picker_year: [],
@@ -109,13 +113,13 @@
       startDate: null,
       endDate: null,
       dateParams: [],
-      filterIndex: 1,
-      filterArray: ['按天选择', '按范围选择']
+      filterIndex: 1
     };
 
 		components = {
 			empty: Empty,
-			singleColumn: singleColumn
+			singleColumn: singleColumn,
+			statement: IndexStatement
     };
     
 		methods = {
@@ -211,6 +215,23 @@
 				wepy.navigateTo({
           url: `/pages/statements/detail?id=${id}`
         })
+			},
+			async getCategoryList (id, index) {
+				let query = {}
+				if (this.dateParams.length == 0) {
+					query.start_time = `${this.cur_year}-${this.cur_month}-${this.cur_today}`
+				} else if (this.dateParams.length == 1) {
+					query.start_time = this.startDate
+				} else {
+					query.start_time = this.startDate
+					query.end_time = this.endDate
+				}
+				query.id = id
+				const data = await wxRequest.Get('chart/spread', query)
+				let value = !this.mutipleData[index].hidden
+				this.mutipleData[index]['hidden'] = value
+				this.mutipleData[index].childs = data
+				this.$apply()
 			}
 		}
 

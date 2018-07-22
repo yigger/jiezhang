@@ -11,6 +11,10 @@
           </view>
         </view>
       </view>
+
+      <view class="tips" wx:if="{{ goods.length == 0 }}">
+        你可以把你需要购买的商品添加到这里哦，点击下方体验一下吧
+      </view>
     </view>
 
     <navigator url="/pages/forms/prepare_buy_form?type=new" class="footer">
