@@ -1,6 +1,9 @@
 # 记账小程序
 > 基于 wepy 开发的一款记账小程序
 
+### 服务端地址
+https://github.com/yigger/jiezhang-back
+
 ### 演示地址
 ![演示地址](https://github.com/yigger/jiezhang/raw/master/screenshots/qrcode.jpg)
 
@@ -46,4 +49,4 @@ https://github.com/dyq086/wepy-mall
 
 
 ### License
-RubyWord is licensed under [The MIT License](LICENSE)
+JieZhang is licensed under [The MIT License](LICENSE)
