@@ -10,7 +10,8 @@ const KEY = {
 		list: "@asset_list@"
 	},
 	alreadyLogin: "@alreadyLogin@",
-	login: 'weapp_login_session'
+	login: 'weapp_login_session',
+	bgImageKey: '@user_index_bg@'
 }
 
 module.exports = {

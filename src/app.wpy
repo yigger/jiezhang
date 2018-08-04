@@ -43,6 +43,7 @@ export default class extends wepy.app {
       
       // 消息
       "pages/message/message",
+      "pages/message/message_detail",
 
       // 好友
       "pages/friends/index",

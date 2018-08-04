@@ -14,7 +14,7 @@
           <navigator url="/pages/budgets/budget"><view class="pull-right fs14">预算剩余 {{ header.budget }}</view></navigator>
         </view>
       </view>
-      <!-- <navigator url="/pages/message/message"><view class="iconfont jz-icon-xiaoxi"></view></navigator> -->
+      <navigator url="/pages/message/message"><view class="iconfont jz-icon-xiaoxi {{ header.has_no_read ? 'no-read-msg' : '' }}"></view></navigator>
     </view>
     
     <view class="zan-btns">
@@ -70,6 +70,7 @@
   import wepy from 'wepy'
   import Api from "@/utils/api"
   import wxRequest from '@/utils/wxRequest'
+  import Session from '@/utils/session'
   import Empty from '@/components/empty'
   import IndexStatement from '@/components/index/statement'
   import IndexYearMonth from '@/components/index/year_month'
@@ -268,9 +269,16 @@
       },
       bgImage () {
         let avatar = this.header.bg_avatar
+        let bg_images_key = Session.key.bgImageKey
+        let cacheImage = Session.get(bg_images_key)
+        if(cacheImage) return cacheImage
+        
         if (avatar == null || avatar == '') {
-          avatar = "../public/images/default-3.jpeg"
+          avatar = "../public/images/covers/default-8.jpeg"
+        } else {
+          Session.set(bg_images_key, avatar)
         }
+        
         return avatar
       }
     }

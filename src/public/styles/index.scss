@@ -23,6 +23,16 @@
       padding:0 24rpx;
     }
   }
+  .no-read-msg:after {
+    content: '';
+    position: absolute;
+    width: 16rpx;
+    height: 16rpx;
+    top: 0;
+    right: 0;
+    border-radius: 50%;
+    background: #FF0000;
+  }
   .pay-num {
     background:rgb(32,86,174);
     margin:0 4rpx;

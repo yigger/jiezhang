@@ -1,0 +1,15 @@
+<template>
+  <view class="container">
+    
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class MonthsIndex extends wepy.page {
+    config = {
+      navigationBarTitleText: '消息中心'
+    }
+  }
+</script>

@@ -23,7 +23,6 @@
 
       <view class="user" wx:else>
         <view class="user-avatar iconfont jz-icon-yonghu">
-          <!-- <image src="../public/images/default-user.png"></image> -->
         </view>
         <view class="user-info">
           <button class="get-user-btn" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击登录</button>

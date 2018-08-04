@@ -1,6 +1,7 @@
 <template lang="wxml">
   <view class="empty">
-    <image src="../public/images/empty.png"></image>
+    <!-- <image src="../public/images/empty.png"></image> -->
+    <view class="iconfont jz-icon-nomoredata empty-no-more"></view>
     <view class="title fs14">{{ title }}</view>
   </view>
 </template>
@@ -19,6 +20,10 @@
 <style lang="less">
 .empty {
   text-align: center;
+  .empty-no-more {
+    font-size: 240rpx;
+    color: #1976D2;
+  }
   image {
     width:250rpx;
     height:250rpx;
