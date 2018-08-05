@@ -1,15 +1,201 @@
 <template>
   <view class="container">
-    
+    <view class="top-title">
+      2018 年 7 月
+    </view>
+
+    <!-- 总览 -->
+    <view class="border-bottom">
+      <view class="header-big">总览</view>
+      <view>
+        <view class="color-block">
+          <view class="text bg-block income-bg-block">收入</view>
+          <view class="progress income-bg" style="background-size: 80% 100%;">
+            3,000 <text>（比上月增长 20%）</text>
+          </view>
+        </view>
+
+        <view class="color-block">
+          <view class="text bg-block expend-bg-block">支出</view>
+          <view class="progress expend-bg" style="background-size: 60% 100%;">
+            3,000 <text>（比上月增长 20%）</text>
+          </view>
+        </view>
+
+        <view class="color-block">
+          <view class="text bg-block afford-bg-block">负债</view>
+          <view class="progress afford-bg" style="background-size: 50% 100%;">
+            3,000 <text>（比上月增长 20%）</text>
+          </view>
+        </view>
+
+        <view class="color-block">
+          <view class="text bg-block surplus-bg-block">结余</view>
+          <view class="progress surplus-bg" style="background-size: 70% 100%;">
+            3,000 <text>（比上月增长 20%）</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 消费类型 -->
+    <view class="border-bottom">
+      <view class="header-big">消费类型</view>
+      <view class="type-rank">
+        <view class="header-small">消费类型排行</view>
+        <view class="type-rank-row">
+          <view class="flex-between">
+            <view>
+              <text style="margin-right: 4px;">1</text>
+              <text>餐饮</text>
+            </view>
+            <view>3500</view>
+          </view>
+
+          <view class="flex-between">
+            <view>
+              <text style="margin-right: 4px;">2</text>
+              <text>餐饮</text>
+            </view>
+            <view>250</view>
+          </view>
+        </view>
+
+        <view class="header-small">单笔消费排行</view>
+        <view class="type-rank">
+          <view class="type-rank-row">
+            <view class="flex-between">
+              <view>
+                <text style="margin-right: 4px;">1</text>
+                <text>餐饮</text>
+              </view>
+              <view>3500</view>
+            </view>
+
+            <view class="flex-between">
+              <view>
+                <text style="margin-right: 4px;">2</text>
+                <text>餐饮</text>
+              </view>
+              <view>250</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="header-small">消费最多的一周</view>
+        <view class="text">
+          <view>时间： 7.21 - 7.28</view>
+          <view>共消费 258.00, 占月支出 20%</view>
+          <view class="most-expend-week">
+            <view class="flex-between">
+              <view>房租</view>
+              <view>2500</view>
+            </view>
+            <view class="flex-between">
+              <view>餐饮</view>
+              <view>250</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="header-small">消费最多的一天</view>
+        <view class="text">
+          <view>时间： 7.21，周六，共消费 258.00</view>
+          <view class="flex-between">
+            <view>早午晚餐</view>
+            <view>400</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 支出类型使用情况 -->
+    <view class="border-bottom">
+      <view class="header-big">支出类型使用情况</view>
+      <view class="text">
+        <view class="flex-between">
+          <view>支出类型</view>
+          <view>使用次数</view>
+        </view>
+
+        <view>
+          <view class="flex-between">
+            <view>早午晚餐</view>
+            <view>8</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 转账情况 -->
+    <view class="border-bottom">
+      <view class="header-big">转账情况</view>
+      <view class="text">
+        <view class="flex-between">
+          <view>银行卡 -> 现金</view>
+          <view>9000</view>
+          <view>2018-08-07</view>
+        </view>
+
+        <view class="flex-between">
+          <view>银行卡 -> 现金</view>
+          <view>9000</view>
+          <view>2018-08-07</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 备注的消费 -->
+    <view class="border-bottom">
+      <view class="header-big">备注的消费</view>
+      <view class="text">
+        <view class="has-remarks">
+          <view class="flex-between">
+            <view>餐饮</view>
+            <view>9000</view>
+            <view>2018-08-07</view>
+          </view>
+          <view class="text-grey">备注： 特别贵的一顿饭</view>
+        </view>
+      </view>
+    </view>
+
+     <!-- 预算使用情况 -->
+    <view class="border-bottom">
+      <view class="header-big">预算使用情况</view>
+      <view class="text">
+        <view>超出预算的类型</view>
+        <view>
+          <view class="flex-between">
+            <view>类型</view>
+            <view>预算额度</view>
+            <view>超出金额</view>
+          </view>
+          <view class="flex-between">
+            <view>餐饮</view>
+            <view>2500</view>
+            <view>300</view>
+          </view>
+        </view>
+
+        <view>预算超出总金额： 3500</view>
+      </view>
+    </view>
+
+    <view>建议</view>
+
+
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
-
+  import Api from "@/utils/api"
+  import wxRequest from '@/utils/wxRequest'
   export default class MonthsIndex extends wepy.page {
     config = {
-      navigationBarTitleText: '消息中心'
+      navigationBarTitleText: '月账单'
     }
   }
 </script>
+<style lang="scss" src="@/public/styles/months/index.scss"></style>

@@ -45,6 +45,9 @@ export default class extends wepy.app {
       "pages/message/message",
       "pages/message/message_detail",
 
+      // 月账单
+      "pages/months/index",
+
       // 好友
       "pages/friends/index",
       "pages/friends/search"

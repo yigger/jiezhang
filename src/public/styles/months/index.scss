@@ -1,0 +1,133 @@
+@import '../_variable.scss';
+.container {
+  height: 100%;
+  padding: 16rpx 24rpx;
+  color: $primaryText;
+  // background: #f4f4f4;
+}
+.top-title {
+  font-size: 42rpx;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.border-bottom {
+  padding: 18px 0;
+  border-bottom: 1px dashed #ccc;
+}
+
+.text-grey {
+  color: $secondaryText;
+  font-size: 14px;
+}
+
+.header-big {
+  font-size: 38rpx;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.header-middle {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+.header-small {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin: 8px 0;
+}
+.text {
+  font-size: 16px;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+// 总览的样式
+.color-block {
+  color: $secondaryText;
+  .income-bg {
+    background-repeat: no-repeat;
+    background-image: linear-gradient(#F0474F, #F0474F);
+  }
+  .expend-bg {
+    background-repeat: no-repeat;
+    background-image: linear-gradient(#36AE35, #36AE35);
+  }
+  .afford-bg {
+    background-repeat: no-repeat;
+    background-image: linear-gradient(#A4814E, #A4814E);
+  }
+  .surplus-bg {
+    background-repeat: no-repeat;
+    background-image: linear-gradient(#4C63E6, #4C63E6);
+  }
+  .bg-block {
+    position: relative;
+    padding-left: 18px;
+  }
+  .income-bg-block:before {
+    position: absolute;
+    content: '';
+    top: 5px;
+    left: 0;
+    width: 13px;
+    height: 13px;
+    background: #F0474F;
+  }
+  .expend-bg-block:before {
+    position: absolute;
+    content: '';
+    top: 5px;
+    left: 0;
+    width: 13px;
+    height: 13px;
+    background: #36AE35;
+  }
+  .afford-bg-block:before {
+    position: absolute;
+    content: '';
+    top: 5px;
+    left: 0;
+    width: 13px;
+    height: 13px;
+    background: #A4814E;
+  }
+  .surplus-bg-block:before {
+    position: absolute;
+    content: '';
+    top: 5px;
+    left: 0;
+    width: 13px;
+    height: 13px;
+    background: #4C63E6;
+  }
+  .progress {
+    font-size: 16px;
+    color: white;
+    height: 34px;
+    line-height: 34px;
+    padding-left: 12px;
+    margin-top: 6px;
+  }
+}
+
+// 消费排行
+.type-rank {
+  .type-rank-row > view {
+    margin-bottom: 8px; 
+    font-size: 16px;
+  }
+}
+.most-expend-week {
+  > view {
+    margin: 4px 0;
+  }
+}
+.has-remarks {
+  margin-bottom: 6px;
+  > .flex-between > div {
+    width: 33%;
+  }
+}

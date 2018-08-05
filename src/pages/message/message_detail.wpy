@@ -51,12 +51,10 @@
 
   }
 </script>
+<style lang="scss" src="@/public/styles/months/index.scss"></style>
 <style lang="less">
-  page {
-    height: 100%;
-  }
   .container {
-    background: #f8f8f8;
+    // background: #f8f8f8;
     height: 100%;
     padding: 12px 24px;
     > .title {
