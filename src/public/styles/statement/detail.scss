@@ -1,0 +1,74 @@
+page {
+  background: #F4F4F4;
+  height: 100%;
+}
+.container {
+  padding: 24rpx;
+  background: #fff;
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2rpx dashed #999;
+    padding: 16rpx 0 40rpx 0;
+    > view {
+      display: flex;
+      align-items: center;
+    }
+    .icon {
+      width: 60rpx;
+      height: 60rpx;
+    }
+  }
+  
+  .column {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 16rpx 0;
+    color: #999;
+    font-size: 14px;
+    > view {
+      display: flex;
+      flex: 2;
+      align-items: center;
+      text {
+        margin-left: 8rpx;  
+      }
+    }
+    > text {
+      flex: 3;
+      text-align: right;
+    }
+    .icon {
+      width: 30rpx;
+      height: 30rpx;
+    }
+  }
+}
+
+.button-groups {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: #fff;
+  width: 100%;
+  height: 100rpx;
+  line-height: 100rpx;
+  display: flex;
+  > view {
+    flex: 1;
+    font-size: 28rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .delete-button {
+    border-right: 1px solid #f8f8f8;
+  }
+  .icon {
+    width: 35rpx;
+    height: 35rpx;
+    margin-right: 8rpx;
+  }
+}

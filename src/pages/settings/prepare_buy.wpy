@@ -1,10 +1,13 @@
 <template>
   <view class="container">
     <view class="list">
-      <view wx:for="{{ goods }}" @tap="toEdit('{{ item.id }}')">
+      <view class="preorder-item" wx:for="{{ goods }}" @tap="getGood('{{ item.id }}')">
         <image src="../../public/images/prepare_buy.png"></image>
         <view class="goods">
-          <view class="title">{{ item.name }} (<text class="expend">{{ item.amount }}</text>)</view>
+          <view class="title">
+            <text>{{ item.name }}</text>
+            <text class="expend">{{ item.amount }}</text>
+          </view>
           <view class="description">{{ item.remark }}</view>
           <view class="time-and-money">
             <text>{{ item.created_at }}</text>
@@ -15,11 +18,15 @@
       <view class="tips" wx:if="{{ goods.length == 0 }}">
         你可以把你需要购买的商品添加到这里哦，点击下方体验一下吧
       </view>
+
+      <view class="total-tips" wx:if="{{ goods.length > 0 }}">共 {{ goods.length }} 件预购商品</view>
     </view>
 
-    <navigator url="/pages/forms/prepare_buy_form?type=new" class="footer">
+    <view @tap="showCreateModal()" class="footer">
       新增预购商品
-    </navigator>
+    </view>
+
+    <Item :showModal.sync="showModal" :good.sync="good" @submit.user="submit"></Item>
   </view>
 </template>
 
@@ -27,21 +34,43 @@
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
   import tip from '@/utils/tip'
+  import Item from '@/components/prepare_buy_item'
   export default class prepareBuy extends wepy.page {
     config = {
       navigationBarTitleText: '预购清单'
     }
 
     data = {
-      goods: []
+      goods: [],
+      good: {},
+      showModal: false
     }
 
     methods = {
-      toEdit (id) {
-        wepy.navigateTo({
-          url: `/pages/forms/prepare_buy_form?id=${id}`
-        })
+      submit (e) {
+        let value = e.detail.value
+        console.log(value)
+        console.log(value.id)
+        if(typeof value.id == undefined || value.id == '') {
+          this.createGood(value)
+        } else {
+          this.updateGood(value.id, value)
+        }
+      },
+      async getGood (id) {
+        const result = await wxRequest.Get(`pre_order/${id}`)
+        this.good = result
+        this.showModal = true
+        this.$apply()
+      },
+      showCreateModal() {
+        this.good = {}
+        this.showModal = true
       }
+    }
+
+    components = {
+      Item
     }
 
     onShow () {
@@ -54,6 +83,27 @@
       this.$apply()
     }
 
+    async createGood (params) {
+      const result = await wxRequest.Post('pre_order', params)
+      if(result.status != 200) {
+        tip.error(result.msg)
+      } else {
+        this.showModal = false
+        this.getGoods()
+      }
+    }
+
+    async updateGood (id, params) {
+      const result = await wxRequest.Put(`pre_order/${id}`, params)
+      if(result.status != 200) {
+        tip.error(result.msg)
+      } else {
+        this.showModal = false
+        this.getGoods()
+      }
+    }
+
+    
 
   }
 </script>

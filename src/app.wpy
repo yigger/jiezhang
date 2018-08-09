@@ -19,7 +19,6 @@ export default class extends wepy.app {
       // 余额设置
       "pages/forms/asset_form",
       "pages/forms/budget_form",
-      "pages/forms/prepare_buy_form",
       "pages/forms/icons_chose",
 
       // 预算

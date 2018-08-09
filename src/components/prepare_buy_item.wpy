@@ -1,0 +1,124 @@
+<template lang="wxml">
+  <view class="prepare_buy_item" catchtap="hideForm()" wx:if="{{ showModal }}">
+    <form bindsubmit="formSubmit">
+      <view class="form" catchtap="captchEvent()">
+        <view class="item">
+          <view>商品名称</view>
+          <input class="pull-right" placeholder="商品名称" value="{{ good.name }}" name="name" />
+        </view>
+
+        <view class="item">
+          <view>金额</view>
+          <input placeholder="0.00" value="{{ good.amount }}" name="amount" type="digit" />
+        </view>
+
+        <view class="item">
+          <view>地址</view>
+          <input class="pull-right" placeholder="购买地址" value="{{ good.address }}" name="address" />
+        </view>
+
+        <view class="textarea">
+          <textarea placeholder="填写备注" value="{{ good.remark }}" name="remark"/>
+        </view>
+
+        <view class="zan-btns btn-groups">
+          <button class="zan-btn ljt-btn save" formType="submit">保存</button>
+        </view>
+
+        <input hidden value="{{ good.id }}" name="id" />
+      </view>
+    </form>
+    <view class="close-tips">点击空白处关闭</view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class PrepareBuyItem extends wepy.component {
+    props = {
+      showModal: {
+        type: Boolean,
+        default: true,
+        twoWay: true
+      },
+      id: {
+        type: Number,
+        default: null
+      },
+      good: {
+        type: Object,
+        default: {}
+      }
+    }
+
+    data = {
+      
+    };
+
+    methods = {
+      hideForm () {
+        this.showModal = false
+      },
+      captchEvent () {
+        return false
+      },
+      formSubmit (e) {
+        this.$emit('submit', e);
+      }
+    }
+
+    
+}
+</script>
+
+<style lang="less">
+  .prepare_buy_item {
+    background: rgba(0,0,0, 0.7);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    .form {
+      width: 80%;
+      background: white;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      margin: auto;
+      margin-top: 20px;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 16px;
+      > .item {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #f4f4f4;
+        padding: 8px 0;
+        margin: 0 12px;
+        > view:first-child {
+          color: #757575;
+        }
+        input {
+          text-align: right;
+        }
+      }
+      .textarea {
+        padding: 12px;
+      }
+      textarea {
+        width: 100%;
+        height: 100px;
+      }
+    }
+    .close-tips {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      bottom: 80px;
+      color: #f4f4f4;
+      font-size: 16px;
+    }
+  }
+</style>

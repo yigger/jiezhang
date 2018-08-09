@@ -1,20 +1,20 @@
 @import './_variable.scss';
 .footer {
   position: fixed;
-  height: 100rpx;
-  line-height: 100rpx;
+  height: 90rpx;
+  line-height: 90rpx;
   bottom: 0;
   left: 0;
   text-align: center;
   width: 100%;
-  background: $backgroundColor;
+  background: $primaryColor;
   border-top: 1px solid $secondaryBackgroundColor;
-  color: $secondaryText;
+  color: white;
   font-size: 32rpx;
 }
 .list {
   margin-bottom: 100rpx;
-  > view {
+  > .preorder-item {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid $borderColor;
@@ -23,12 +23,15 @@
     .goods {
       flex: 1;
       .title {
+        display: flex;
+        justify-content: space-between;
         color: $primaryText;
         margin-bottom: 8rpx;
       }
       .description {
         color: $secondaryText;
         margin-bottom: 8rpx;
+        font-size: 14px;
       }
       .time-and-money > text {
         margin-right: 8rpx;
@@ -44,6 +47,12 @@
   }
   .tips {
     font-size: 28rpx;
+    color: $secondaryText;
+  }
+  .total-tips {
+    font-size: 14px;
+    text-align: center;
+    margin:12px 0;
     color: $secondaryText;
   }
 }
