@@ -190,7 +190,6 @@
 
 <script>
   import wepy from 'wepy'
-  import Api from "@/utils/api"
   import wxRequest from '@/utils/wxRequest'
   export default class MonthsIndex extends wepy.page {
     config = {

@@ -78,7 +78,6 @@
 
 <script>
 	import wepy from 'wepy'
-	import Api from "@/utils/api"
   import wxRequest from '@/utils/wxRequest'
   import tip from '@/utils/tip'
 	import Empty from '@/components/empty'
@@ -314,7 +313,7 @@
         query.start_time = this.startDate
         query.end_time = this.endDate
       }
-			const res = await wxRequest.Get(Api.Chart, query)
+			const res = await wxRequest.Get('chart', query)
 			this.singleData = res.single
 			this.singleList = this.singleData.list
 			this.mutipleData = res.categories

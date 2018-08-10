@@ -23,31 +23,11 @@
       </navigator>
     </view>
 
-    <view class="scope {{ tabFixed }}">
-      <view class="today {{ tabActive == 'today' ? 'active' : '' }}" @tap="choseTab('today')">今天</view>
-      <view class="week {{ tabActive == 'week' ? 'active' : '' }}" @tap="choseTab('week')">本周</view>
-      <view class="month {{ tabActive == 'month' ? 'active' : '' }}" @tap="choseTab('month')">本月</view>
-      <view class="year {{ tabActive == 'year' ? 'active' : '' }}" @tap="choseTab('year')">本年</view>
-    </view>
-
     <view class="statement-list">
-      <view class="surplus" hidden="{{ scope == 'today' }}">
-        <text class="income">收入 {{ tabHeader.income }}</text>
-        <text class="expend">支出 {{ tabHeader.expend }}</text>
-        <text>结余 {{ tabHeader.surplus }}</text>
-      </view>
-
-      <!-- 本年/本月渲染的视图 -->
-      <view wx:if="{{ scope == 'year' || scope == 'month' }}">
-        <index-year-month :list.sync="list"></index-year-month>
-      </view>
-
       <!-- 今天/本周渲染的视图 -->
-      <view wx:else>
-        <repeat for="{{ list }}" key="index" index="index" item="item">
-          <index-statement :statement.sync="item"></index-statement>
-        </repeat>
-      </view>
+      <repeat for="{{ list }}" key="index" index="index" item="item">
+        <StatementItem :statement.sync="item"></StatementItem>
+      </repeat>
 
       <view class="zan-loadmore" hidden="{{ !showLoading }}">
         <view class="zan-loading"></view>
@@ -68,12 +48,10 @@
 
 <script>
   import wepy from 'wepy'
-  import Api from "@/utils/api"
   import wxRequest from '@/utils/wxRequest'
   import Session from '@/utils/session'
   import Empty from '@/components/empty'
-  import IndexStatement from '@/components/index/statement'
-  import IndexYearMonth from '@/components/index/year_month'
+  import StatementItem from '@/components/index/statement'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '首页',
@@ -81,191 +59,62 @@
     }
 
     data = {
-      tabActive: 'today',
-      scope: 'today',
-      emptyTitle: '今天还没有记账呢~',
-      tabHeader: {
-        surplus: 0,
-        income: 0,
-        expend: 0
-      },
+      emptyTitle: '本周还没有开始记账哦~',
       list: [],
-      curPage: 1,
-      per_page: 20,
-      tabFixed: '',
       header: {
         today_pay: '0.00',
         budget: '未设置预算',
         pay_num: 0,
         bg_avatar: null
       },
-      statementMonth: [],
       noMoreData: false,
-      stopRequest: false,
-      preventRepeatReuqest: false,
-      showLoading: false,
-      isLoaded: false
+      showLoading: false
     }
 
     components = {
       empty: Empty,
-      'index-statement': IndexStatement,
-      'index-year-month': IndexYearMonth
+      StatementItem
 		}
-
-    methods = {
-      async setAvatar () {
-        const choseImages = await wepy.chooseImage({
-          count: 1,
-          sizeType: ['compressed'],
-          sourceType: ['album']
-        })
-        const uploadResult = await api.Upload(
-          {
-            file_path: choseImages.tempFilePaths[0],
-            query: {
-              type: 'bg_avatar'
-            }
-          })
-        this.getHeader()
-      },
-      async choseTab (item) {
-        this.tabActive = item
-        this.curPage = 1
-        if (item == 'today') {
-          this.emptyTitle = '你今天还没记账呢~'
-        } else {
-          this.emptyTitle = '没找到记账数据呢~'
-        }
-        
-        if (this.scope != item) {
-          this.scope = item
-          this.noMoreData = false
-          this.statementMonth = []
-          let cacheList = wx.getStorageSync(`list-${item}`) || null
-          let cacheHeader = wx.getStorageSync(`header-${item}`) || null
-          if (cacheList !== null || cacheHeader !== null) {
-            this.list = cacheList
-            this.tabHeader = cacheHeader
-          } else {
-            this.list = []
-            await this.getList()
-          }
-        }
-      },
-      // 吸顶
-      onPageScroll: function (event) {
-        let scrollTop = event.scrollTop
-        if (scrollTop >= 250) {
-          this.tabFixed = 'tab-fix'
-        } else {
-          this.tabFixed = ''
-        }
-      }
-    }
-    
-    onHide () {
-      this.deleteCache()
-    }
 
     onPullDownRefresh () {
       wx.stopPullDownRefresh()
       this.getHeader()
-      this.curPage = 1
-      this.list = []
-      this.stopRequest = false
       this.getList()
     }
 
-    async onLoad () {
-      await this.getList()
+    onLoad () {
+      this.updateStatement()
+    }
+
+    // 此方法用于 statement.wpy 表单提交后触发的更新调用
+    // FIXME: 应全局维护同一个 statements 数据域
+    async updateStatement () {
       await this.getHeader()
-    }
-
-    // onShow () {
-    //   this.getHeader()
-    // }
-
-    // 此函数用于 statement.wpy 里更新后调用
-    updateStatement () {
-      this.curPage = 1
-      this.list = []
-      this.getHeader()
-      this.getList()
-    }
-
-    async onReachBottom () {
-      this.curPage ++
-      await this.getList({from: 'reachBottom'})
+      await this.getList()
     }
 
     async getHeader () {
-      const data = await wxRequest.Get(Api.IndexHeader)
+      const data = await wxRequest.Get('header')
       this.header = data
       this.$apply()
     }
 
     async getList(options = {}) {
       this.showLoading = true
-      const res = await wxRequest.Get(
-        Api.IndexList,
-        {
-          scope: this.scope,
-          page: this.curPage,
-          per_page: this.per_page
-        })
-      const data = res.list
-      this.tabHeader = res.header
-      if(res.status != 405 && res.status != 301) {
-        if (this.scope == 'year' || this.scope == 'month') {
-          this.dealWithYear(data)
-        } else {
-          this.list = Array.from(new Set([...this.list, ...data]))
-        }
+      const res = await wxRequest.Get('index')
+      if (res.status == 405 || res.status == 301) {
+        this.noMoreData = true
+      } else {
+        this.list = res
         this.noMoreData = false
       }
-
-      if (options.from == 'reachBottom' && ((data != undefined && data.length == 0) || res.status == 405)) {
-        this.noMoreData = true
-      }
-      
       this.showLoading = false
       this.$apply()
-    }
-
-    // 分组分页。周/月/年 Tab选项。需改进
-    // 追加后端返回的信息到对应的分组
-    dealWithYear (data) {
-      let set1 = new Set(this.statementMonth)
-      for(let i = 0, length = data.length; i < length; ++i) {
-        if (set1.has(data[i].header.index)) {
-          data[i].header = null
-        }
-      }
-      this.list = Array.from(new Set([...this.list, ...data]))
-      for(let item of data) {
-        if (item.header !== null) this.statementMonth.push(item.header.index)
-      }
-    }
-
-    deleteCache () {
-      for(let item of ['today', 'week', 'month', 'year']) {
-        wx.removeStorageSync(`header-${item}`)
-        wx.removeStorageSync(`list-${item}`)
-      }
     }
 
     computed = {
       showEmpty () {
         return this.list.length <= 0
-      },
-      todayMonthDay () {
-        const NowDate = new Date()
-        let month = NowDate.getMonth() + 1
-        let day = NowDate.getDate()
-        if (month < 10) month = "0" + month
-        if (day < 10) day = "0" + day
-        return  month + "-" + day
       },
       bgImage () {
         let avatar = this.header.bg_avatar

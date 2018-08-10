@@ -57,7 +57,6 @@
 
 <script>
 	import wepy from 'wepy'
-  import Api from "@/utils/api"
   import wxRequest from '@/utils/wxRequest'
   export default class Wallet extends wepy.page {
     config = {
@@ -85,7 +84,7 @@
 		}
     
 		async getAssets() {
-      const data = await wxRequest.Get(Api.Wallet);
+      const data = await wxRequest.Get('wallet');
       let list = data.list
       let header = data.header
       this.netWorth = header.net_worth,

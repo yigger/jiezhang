@@ -97,7 +97,6 @@
 
 <script>
   import wepy from 'wepy'
-  import Api from "@/utils/api"
   import wxRequest from '@/utils/wxRequest'
   import tip from '@/utils/tip'
   import Session from '@/utils/session'
@@ -154,7 +153,7 @@
         if(e.detail.errMsg != 'getUserInfo:ok') return false
         
         let userInfo = e.detail.userInfo
-        await wxRequest.Put(Api.UpdateUser, { user: userInfo })
+        await wxRequest.Put('users/update_user', { user: userInfo })
         let key = Session.key.alreadyLogin
         Session.set(key, true)
         this.getData()
@@ -175,7 +174,7 @@
     }
 
     async getData () {
-      const data = await wxRequest.Get(Api.Setting)
+      const data = await wxRequest.Get('settings')
       this.user = data.user
       this.version = data.version
       this.$apply()

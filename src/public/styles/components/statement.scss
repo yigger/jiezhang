@@ -1,0 +1,50 @@
+@import '../_variable.scss';
+.statement {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin:0 32rpx;
+  border-bottom: 2rpx solid $borderColor;
+  padding:16rpx 0;
+  color: $primaryText;
+  .information {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  .icon {
+    margin-right: 16rpx;
+    display: flex;
+    align-items: center;
+    image {
+      width: 70rpx;
+      height: 70rpx;
+      border-radius: 50%;
+      // border: 1px solid $borderColor;
+    }
+  }
+  .st-title {
+    > view {
+      margin-bottom: 4rpx;
+    }
+    .title {
+      font-size: 28rpx;
+    }
+    .description {
+      color: $secondaryText;
+      font-size: 24rpx;
+    }
+    .time {
+      color: $secondaryText;
+      font-size: 24rpx;
+    }
+  }
+  .transfer-icon {
+    margin-right: 16rpx;
+    display: flex;
+    align-items: center;
+    width: 70rpx;
+    height: 70rpx;
+    border-radius: 50%;
+  }
+}

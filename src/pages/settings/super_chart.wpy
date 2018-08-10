@@ -65,7 +65,6 @@
 
 <script>
   import wepy from 'wepy'
-  import Api from "@/utils/api"
   import wxRequest from '@/utils/wxRequest'
   import wxCharts from '@/utils/wxchart.min.js'
   import Empty from '@/components/empty'
@@ -150,8 +149,7 @@
     }
 
     async getChartData () {
-      const data = await wxRequest.Get(
-        Api.SuperChart, {
+      const data = await wxRequest.Get('super_chart', {
           type: this.type,
           year: this.year,
           month: this.month
