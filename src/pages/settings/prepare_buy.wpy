@@ -1,21 +1,9 @@
 <template>
   <view class="container">
     <view class="list">
-      <view class="preorder-item" wx:for="{{ goods }}" @tap="getGood('{{ item.id }}')">
-        <image src="{{ item.header_image_url }}"></image>
-        <view class="goods">
-          <view class="title {{ item.state == 'bought' ? 'line-through' : '' }}">
-            <text>{{ item.name }}</text>
-            <text class="expend">{{ item.amount }}</text>
-          </view>
-          <view class="description">{{ item.remark }}</view>
-          <view class="address" wx:if="{{ item.address != null && item.address != '' }}">
-            <view class="iconfont jz-icon-address"></view>{{ item.address }}</view>
-          <view class="time-and-money">
-            <text>{{ item.created_at }}</text>
-          </view>
-        </view>
-      </view>
+      <repeat for="{{ goods }}" key="index" index="index" item="item">
+        <orderItem :good="item" @getGood.user="getGood"></orderItem>
+      </repeat>
 
       <view class="tips" wx:if="{{ goods.length == 0 }}">
         你可以把你需要购买的商品添加到这里哦，点击下方体验一下吧
@@ -40,6 +28,7 @@
   import wxRequest from '@/utils/wxRequest'
   import tip from '@/utils/tip'
   import Item from '@/components/prepare_buy_item'
+  import orderItem from '@/components/prepare_order_item'
   export default class prepareBuy extends wepy.page {
     config = {
       navigationBarTitleText: '预购清单'
@@ -81,7 +70,8 @@
     }
 
     components = {
-      Item
+      Item,
+      orderItem
     }
 
     onShow () {

@@ -3,7 +3,7 @@
     <view class="container">
       <view class="column money">
         <text>余额</text>
-        <input class="pull-right money-input expend" placeholder="0.00" value="{{amount }}" name="amount" type="digit" />
+        <input class="pull-right money-input expend" placeholder="0.00" value="{{amount }}" name="amount" type="text" />
       </view>
       <view class="zan-btns">
         <button class="zan-btn ljt-btn" formType="submit">保存</button>

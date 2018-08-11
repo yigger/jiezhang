@@ -1,0 +1,83 @@
+<template lang="wxml">
+  <view class="preorder-item" @tap="getGood('{{ good.id }}')">
+    <image src="{{ good.header_image_url }}"></image>
+      <view class="goods">
+        <view class="title {{ good.state == 'bought' ? 'line-through' : '' }}">
+          <text>{{ good.name }}</text>
+          <text class="expend">{{ good.amount }}</text>
+        </view>
+        <view class="description">{{ good.remark }}</view>
+        <view class="address" wx:if="{{ good.address != null && good.address != '' }}">
+          <view class="iconfont jz-icon-address"></view>{{ good.address }}</view>
+        <view class="time-and-money">
+          <text>{{ good.created_at }}</text>
+        </view>
+      </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class PrepareOrderItem extends wepy.component {
+  props = {
+    good: {
+      type: Object,
+      default: {}
+    }
+  }
+  
+  methods = {
+    getGood (id) {
+      this.$emit('getGood', id)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  @import '../public/styles/_variable.scss';
+  .preorder-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid $borderColor;
+    padding: 16rpx 28rpx;
+    font-size: 32rpx;
+    .goods {
+      flex: 1;
+      .title {
+        display: flex;
+        justify-content: space-between;
+        color: $primaryText;
+        margin-bottom: 8rpx;
+        &.line-through {
+          color: $secondaryText;
+          text-decoration: line-through;
+        }
+      }
+      .description {
+        color: $secondaryText;
+        margin-bottom: 8rpx;
+        font-size: 24rpx;
+      }
+      .iconfont {
+        display: inline;
+        font-size: 12px;
+      }
+      .address {
+        font-size: 24rpx;
+      }
+      .time-and-money > text {
+        margin-right: 8rpx;
+        color: $secondaryText;
+        font-size: 24rpx;
+      }
+    }
+    image {
+      width: 80rpx;
+      height: 80rpx;
+      margin-right: 16rpx;
+      border-radius: 50%;
+    }
+  }
+</style>
+

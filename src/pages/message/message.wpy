@@ -42,7 +42,7 @@
       indicatorDots: false,
       autoplay: false,
       duration: 300,
-      swiperHeight: 200,
+      swiperHeight: 400,
       current: 0,
       activeItem: 'system',
       user: {},

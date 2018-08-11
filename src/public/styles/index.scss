@@ -1,4 +1,15 @@
 @import './_variable.scss';
+page, .container{
+  height: 100%;
+}
+.container {
+  display:flex;
+  flex-direction: column;
+  > view {
+    width: 100%;
+    display: block;
+  }
+}
 .header {
 	position:relative;
 	color:white;
@@ -58,55 +69,16 @@
     right: 36rpx;
   }
 }
-.zan-btns {
+
+.zan-btns.new-record {
+  margin: 0;
   .jz-btn {
     background: $primaryColor;
     color: white;
+    margin:15px;
   }
 }
-.today {
-	background-size:cover;
-	background-position:10rpx -170rpx;
-}
-.cur-month-progress {
-	padding:0 40rpx;
-}
-.new-record-btn {
-	margin-bottom:16rpx;
-	position:relative;
-	display:block;
-	margin-left:auto;
-	margin-right:auto;
-	padding-left:28rpx;
-	padding-right:28rpx;
-	box-sizing:border-box;
-	font-size:36rpx;
-	text-align:center;
-	text-decoration:none;
-	line-height:2;
-	border-radius:6rpx;
-	-webkit-tap-highlight-color:transparent;
-	overflow:hidden;
-	color:white;
-	background-color:#48C4FE;
-}
-.current-day {
-	background: orange !important;
-	color:white !important;
-}
-.set-avatar {
-  position:absolute;
-  right:8rpx;
-  top:40rpx;
-  width:160rpx;
-  text-align:center;
-  height:60rpx;
-  line-height:64rpx;
-  background:rgba(0, 0, 0, 0.5);
-  font-size:24rpx;
-  border-radius:32rpx;
-  color:#ccc;
-}
+
 .statement-list {
   margin-bottom: 40rpx;
   > .surplus {
@@ -127,27 +99,6 @@
     }
   }
 }
-
-.date-category {
-  height: 60rpx;
-  padding: 0 12rpx;
-  display: flex;
-  align-items: center;
-  margin:28rpx 32rpx 0 32rpx;
-  justify-content: space-between;
-  border-bottom:1px solid #fafafa;
-  .name {
-    display: inline-block;
-  }
-  .total {
-    > text {
-      font-size: 12px;
-      &:first-child {
-        padding-right: 16rpx;
-      }
-    }
-  }
-}
 .no-more-data {
   text-align: center;
   color: #999;
@@ -157,13 +108,46 @@
   font-size: 28rpx;
 }
 .scope {
-  text-align: left;
-  margin: 0 28rpx 8rpx 28rpx;
+  text-align: center;
+  // margin: 0 28rpx 8rpx 28rpx;
   font-size: 28rpx;
-  color: $secondaryText;
   > view {
     display: inline;
-    margin-right: 12rpx;
+    margin-right: 24rpx;
     padding: 8rpx 0;
   }
+  .the-week {
+    &.active {
+      color: seagreen;
+      border-bottom: 2px solid seagreen;
+    }
+  }
+
+  .preorder {
+    position: relative;
+    font-size: 27rpx;
+    &.active {
+      color: $darkPrimaryColor;
+      border-bottom: 2px solid $darkPrimaryColor;
+    }
+    &.noread:before {
+      content: '';
+      position: absolute;
+      width: 12rpx;
+      height: 12rpx;
+      top: 10rpx;
+      right: -6rpx;
+      border-radius: 50%;
+      background: #FF0000;
+    }
+  }
+}
+.add-preorder {
+  text-align: center;
+  font-size: 26rpx;
+  color: $linkColor;
+  margin: 12rpx 0;
+}
+swiper-item {
+  overflow-y: scroll;
 }

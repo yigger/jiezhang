@@ -14,49 +14,6 @@
 }
 .list {
   margin-bottom: 100rpx;
-  > .preorder-item {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid $borderColor;
-    padding: 16rpx 28rpx;
-    font-size: 32rpx;
-    .goods {
-      flex: 1;
-      .title {
-        display: flex;
-        justify-content: space-between;
-        color: $primaryText;
-        margin-bottom: 8rpx;
-        &.line-through {
-          color: $secondaryText;
-          text-decoration: line-through;
-        }
-      }
-      .description {
-        color: $secondaryText;
-        margin-bottom: 8rpx;
-        font-size: 24rpx;
-      }
-      .iconfont {
-        display: inline;
-        font-size: 12px;
-      }
-      .address {
-        font-size: 24rpx;
-      }
-      .time-and-money > text {
-        margin-right: 8rpx;
-        color: $secondaryText;
-        font-size: 24rpx;
-      }
-    }
-    image {
-      width: 80rpx;
-      height: 80rpx;
-      margin-right: 16rpx;
-      border-radius: 50%;
-    }
-  }
   .tips {
     font-size: 28rpx;
     color: $secondaryText;

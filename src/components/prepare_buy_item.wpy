@@ -65,7 +65,6 @@ export default class PrepareBuyItem extends wepy.component {
       formSubmit (e) {
         this.$emit('submit', e);
       },
-
       alreadyBuy () {
         this.showModal = false
         this.$emit('markbuy', this.good.id)
