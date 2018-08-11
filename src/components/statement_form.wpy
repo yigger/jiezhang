@@ -1,0 +1,195 @@
+<template lang="wxml">
+  <form bindsubmit="formSubmit">
+    <view class="container">
+      <view class="column money">
+        <text>金额</text>
+        <input class="money-input {{ type }}" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ statement.amount }}"/>
+      </view>
+
+      <view class="column" @tap="redirectChoseCategory()">
+        <text>分类</text>
+        <text type="digit">{{ statement.category_name }}</text>
+        <input hidden name="category_id" value="{{ statement.category_id }}" type="number"/>
+      </view>
+
+      <view class="frequent-use" wx:if="{{ categories_label.length > 0 }}">
+        <text>猜你想用：</text>
+        <text class="label" wx:for="{{ categories_label }}" wx:key="unique" @tap="tabCategory({{item}})">{{ item.name }}</text>
+      </view>
+
+      <view class="column" @tap="redirectChoseAsset()">
+        <text>账户</text>
+        <text>{{ statement.asset_name }}</text>
+        <input hidden name="asset_id" value="{{ statement.asset_id }}" type="number"/>
+      </view>
+
+      <view class="frequent-use" wx:if="{{ assets_label.length > 0 }}">
+        <text>猜你想用：</text>
+        <text class="label" wx:for="{{ assets_label }}" wx:key="unique" @tap="tabAsset({{item}})">{{ item.name }}</text>
+      </view>
+      
+      <view class="column">
+        <text>日期</text>
+        <picker mode="date" start="2017-01-01" bindchange="dateChange">
+          <text>{{ statement.date }}</text>
+      </picker>
+        <input hidden name="date" value="{{ statement.date }}" type="number"/>
+      </view>
+
+      <!-- <view class="column location-column">
+        <text style="flex: 1">地理位置</text>
+        <view style="flex: 2">
+          <input name="location" type="text" value="{{ address }}"/>
+          <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
+
+          <input class="input-hidden" name="nation" value="{{ nation }}"/>
+          <input class="input-hidden" name="province" value="{{ province }}"/>
+          <input class="input-hidden" name="city" value="{{ city }}"/>
+          <input class="input-hidden" name="district" value="{{ district }}"/>
+          <input class="input-hidden" name="street" value="{{ street }}"/>
+        </view>
+      </view> -->
+      
+      <view class="column">
+        <text>备注</text>
+        <input class="remark" type="text" name="description"  value="{{ statement.description }}" placeholder="本笔账单的简单说明"/>
+      </view>
+
+      <view class="zan-btns">
+        <button class="zan-btn ljt-btn" disabled="{{ submiting }}" formType="submit" @tap="submit">保存</button>
+      </view>
+      <input hidden type="text" name="type" value="{{ type }}"/>
+    </view>
+  </form>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '@/utils/wxRequest'
+  export default class StatementForm extends wepy.component {
+    props = {
+      statement: {
+        type: Object,
+        default: {
+          category_name: '请选择分类',
+          asset_name: '请选择账户'
+        }
+      },
+      type: {
+        type: String,
+        default: 'expend'
+      }
+    };
+
+    data = {
+      assets_label: [],
+      categories_label: []
+    }
+
+    onLoad () {
+      
+      this.guessAsset()
+      if (this.isEmpty(this.statement)) {
+        this.getLastUsed()
+      }
+      this.initialize_date()
+    }
+
+    methods = {
+      redirectChoseAsset () {
+        wx.navigateTo({ url: `/pages/statements/chose_asset?type=${this.type}` })
+      },
+      redirectChoseCategory () {
+        wx.navigateTo({ url: `/pages/statements/chose_category?type=${this.type}` })
+      },
+      async formSubmit (e) {
+        let statement = e.detail.value
+        
+      },
+      tabCategory (category) {
+        this.statement.category_id = category.id
+        this.statement.category_name = category.name
+      },
+      tabAsset (asset) {
+        this.statement.asset_id = asset.id
+        this.statement.asset_name = asset.name
+      },
+      dateChange(e) {
+        this.statement.date = e.detail.value
+      }
+    }
+
+    initialize_date () {
+      const myDate = new Date()
+      let year = myDate.getFullYear()
+      let month = myDate.getMonth() + 1
+      let day = myDate.getDate()
+      if (month < 10) month = `0${month}`
+      if (day < 10) day = `0${day}`
+      this.statement.date = [year, month, day].join('-')
+    }
+
+    async getLastUsed() {
+      const result = await wxRequest.Get('statements/frequent_used', { type: this.type })
+      if (result.status == 404) {
+        if (this.statement.category_id == null) {
+          this.statement.category_name = '请选择分类'
+        } 
+        if (this.statement.asset_id == null) {
+          this.statement.asset_name = '请选择账户'
+        }
+      }
+      this.$apply()
+    }
+    
+    async guessAsset () {
+      const data = await wxRequest.Get('statements/asset_frequent', { type: this.type })
+      this.assets_label = data
+      this.$apply()
+    }
+
+    async guessCategory () {
+      const data = await wxRequest.Get('statements/category_frequent', { type: this.type })
+      this.categories_label = data
+      this.$apply()
+    }
+
+    setCategory (category) {
+      console.log(category)
+      this.statement.category_id = category.id
+      this.statement.category_name = category.name
+      console.log(this.statement)
+      this.$apply()
+    }
+
+    setAsset (asset) {
+      this.statement.asset_id = asset.id
+      this.statement.asset_name = asset.name
+    }
+
+    isEmpty(obj) {
+        // null and undefined are "empty"
+        if (obj == null) return true;
+
+        // Assume if it has a length property with a non-zero value
+        // that that property is correct.
+        if (obj.length > 0)    return false;
+        if (obj.length === 0)  return true;
+
+        // If it isn't an object at this point
+        // it is empty, but it can't be anything *but* empty
+        // Is it empty?  Depends on your application.
+        if (typeof obj !== "object") return true;
+
+        // Otherwise, does it have any properties of its own?
+        // Note that this doesn't handle
+        // toString and valueOf enumeration bugs in IE < 9
+        for (var key in obj) {
+            if (hasOwnProperty.call(obj, key)) return false;
+        }
+
+        return true;
+    }
+  }
+</script>
+<style lang="scss" src="@/public/styles/statement/statement.scss" scoped></style>

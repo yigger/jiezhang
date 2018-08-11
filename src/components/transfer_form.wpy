@@ -1,0 +1,74 @@
+<template lang="wxml">
+  <form bindsubmit="formSubmit">
+    <!-- 转账 -->
+    <view class="container">
+      <view class="column money">
+        <text>金额</text>
+        <input class="money-input expend" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
+      </view>
+
+      <view class="column transfer-type">
+        <view @tap="assetFrom">{{ source }}</view>
+        <image @tap="exchangeAsset" class="transfer-icon" src="/public/images/transfer.png"></image>
+        <view @tap="assetTo">{{ target }}</view>
+      </view>
+
+      <view class="column">
+        <text>日期</text>
+        <picker mode="date" start="2017-01-01" bindchange="dateChange">
+          <text>{{ date }}</text>
+      </picker>
+        <input hidden name="date" value="{{ date }}" type="number"/>
+      </view>
+
+      <view class="column">
+        <text>备注</text>
+        <input class="pull-right remark" type="text" name="description"  value="{{ description }}" placeholder="本笔账单的简单说明"/>
+      </view>
+
+      <view class="zan-btns">
+        <button class="zan-btn ljt-btn" formType="submit" disabled="{{ submiting }}" @tap="submit">保存</button>
+      </view>
+    </view>
+  </form>
+</template>
+
+<script>
+	import wepy from 'wepy'
+  export default class TransferForm extends wepy.component {
+    props = {
+      
+    };
+    methods = {
+      exchangeAsset () {
+        let tmp1 = this.source
+        this.source = this.target
+        this.target = tmp1
+
+        let tmp2 = this.from
+        this.from = this.to
+        this.to = tmp2
+      },
+      assetFrom () {
+        this.transferType = 1
+        wx.navigateTo({ url: "/pages/statements/chose_asset" })
+      },
+      assetTo () {
+        this.transferType = 2
+        wx.navigateTo({ url: "/pages/statements/chose_asset" })
+      },
+    }
+
+    setAsset (asset) {
+      if (this.transferType == 1) {
+        this.source = asset.name
+        this.from = asset.id
+      } else {
+        this.target = asset.name
+        this.to = asset.id
+      }
+    }
+    
+  }
+</script>
+<style lang="scss" src="@/public/styles/statement/statement.scss" scoped></style>

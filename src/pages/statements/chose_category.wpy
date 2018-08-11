@@ -30,10 +30,8 @@
   export default class choseCategory extends wepy.page {
     data = {
       frequent: [],
-      last: null,
       list: [],
-      type: 'expend',
-      already_load: false
+      type: 'expend'
     }
 
     components = {
@@ -52,6 +50,7 @@
       setCategory (category) {
         const pages = getCurrentPages()
         const prevPage = pages[pages.length - 2]
+        console.log(prevPage)
         prevPage.setCategory(category)
         wepy.navigateBack({
           delta: 1
@@ -68,15 +67,8 @@
       //   })
       const data = await wxRequest.Get('statements/categories', { type: this.type })
       this.frequent = data.frequent
-      this.last = data.last
       this.list = data.categories
       this.$apply()
-    } 
-
-    computed = {
-      showLast () {
-        return this.last == null
-      }
     }
   }
 </script>

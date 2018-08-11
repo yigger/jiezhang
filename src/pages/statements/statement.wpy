@@ -1,105 +1,22 @@
 <template lang="wxml">
   <view class="tab" wx:if="{{ !(type == 'transfer' && method == 'PUT') }}">
-    <view class="{{ type == 'expend' ? 'active' : '' }}" @tap="choseTab('expend')">支出</view>
-    <view class="{{ type == 'income' ? 'active' : '' }}" @tap="choseTab('income')">收入</view>
-    <view class="{{ type == 'transfer' ? 'active' : '' }}" @tap="choseTab('transfer')">转账</view>
+    <view class="{{ current == 0 ? 'active' : '' }}" @tap="choseTab(0)">支出</view>
+    <view class="{{ current == 1 ? 'active' : '' }}" @tap="choseTab(1)">收入</view>
+    <view class="{{ current == 2 ? 'active' : '' }}" @tap="choseTab(2)">转账</view>
   </view>
-  <form bindsubmit="formSubmit">
-    <!-- 收入/支出 -->
-    <view class="container" wx:if="{{type == 'expend' || type == 'income'}}">
-      <view class="column money">
-        <text>金额</text>
-        <input class="money-input {{ type }}" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
-      </view>
-
-      <view class="column" @tap="redirectChoseCategory">
-        <text>分类</text>
-        <text type="digit">{{ category_name }}</text>
-        <input hidden name="category_id" value="{{ category_id }}" type="number"/>
-      </view>
-
-      <view class="frequent-use" wx:if="{{ categories_label.length > 0 }}">
-        <text>猜你想用：</text>
-        <text class="label" wx:for="{{ categories_label }}" @tap="tabCategory({{item}})">{{ item.name }}</text>
-      </view>
-
-      <view class="column" @tap="redirectChoseAsset">
-        <!-- 默认选中最常用的 -->
-        <text>账户</text>
-        <text>{{ asset_name }}</text>
-        <input hidden name="asset_id" value="{{ asset_id }}" type="number"/>
-      </view>
-
-      <view class="frequent-use" wx:if="{{ assets_label.length > 0 }}">
-        <text>猜你想用：</text>
-        <text class="label" wx:for="{{ assets_label }}" @tap="tabAsset({{item}})">{{ item.name }}</text>
-      </view>
+    <swiper indicator-dots="{{indicatorDots}}" current="{{ current }}" style="height: {{ swiperHeight }}px;" bindchange="swiperChange">
+      <swiper-item>
+        <expend-statement :statement="statement" type="expend"></expend-statement>
+      </swiper-item>
       
-      <view class="column">
-        <text>日期</text>
-        <picker mode="date" start="2017-01-01" bindchange="dateChange">
-          <text>{{ date }}</text>
-       </picker>
-        <input hidden name="date" value="{{ date }}" type="number"/>
-      </view>
+      <swiper-item>
+        <income-statement :statement="statement" type="income"></income-statement>
+      </swiper-item>
 
-      <view class="column location-column">
-        <text style="flex: 1">地理位置</text>
-        <view style="flex: 2">
-          <input name="location" type="text" value="{{ address }}"/>
-          <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
-
-          <input class="input-hidden" name="nation" value="{{ nation }}"/>
-          <input class="input-hidden" name="province" value="{{ province }}"/>
-          <input class="input-hidden" name="city" value="{{ city }}"/>
-          <input class="input-hidden" name="district" value="{{ district }}"/>
-          <input class="input-hidden" name="street" value="{{ street }}"/>
-        </view>
-      </view>
-      
-      <view class="column">
-        <text>备注</text>
-        <input class="remark" type="text" name="description"  value="{{ description }}" placeholder="本笔账单的简单说明"/>
-      </view>
-
-      <view class="zan-btns">
-        <button class="zan-btn ljt-btn" disabled="{{ submiting }}" formType="submit" @tap="submit">保存</button>
-      </view>
-      <input hidden type="text" name="type" value="{{ type }}"/>
-    </view>
-
-    <!-- 转账 -->
-    <view class="container" wx:if="{{ type == 'transfer' }}">
-      <view class="column money">
-        <text>金额</text>
-        <input class="money-input expend" placeholder="0.00" placeholder-class="{{ type }}" name="amount" type="digit" value="{{ amount }}"/>
-      </view>
-
-      <view class="column transfer-type">
-        <view @tap="assetFrom">{{ source }}</view>
-        <image @tap="exchangeAsset" class="transfer-icon" src="/public/images/transfer.png"></image>
-        <view @tap="assetTo">{{ target }}</view>
-      </view>
-
-      <view class="column">
-        <text>日期</text>
-        <picker mode="date" start="2017-01-01" bindchange="dateChange">
-          <text>{{ date }}</text>
-       </picker>
-        <input hidden name="date" value="{{ date }}" type="number"/>
-      </view>
-
-      <view class="column">
-        <text>备注</text>
-        <input class="pull-right remark" type="text" name="description"  value="{{ description }}" placeholder="本笔账单的简单说明"/>
-      </view>
-
-      <view class="zan-btns">
-        <button class="zan-btn ljt-btn" formType="submit" disabled="{{ submiting }}" @tap="submit">保存</button>
-      </view>
-    </view>
-
-  </form>
+      <swiper-item>
+        <TransferForm :type="type"></TransferForm>
+      </swiper-item>
+    </swiper>
 </template>
 
 <script>
@@ -109,6 +26,8 @@
   import Session from '@/utils/session'
   import tip from '@/utils/tip'
   import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
+  import StatementForm from '@/components/statement_form'
+  import TransferForm from '@/components/transfer_form'
   export default class NewStatement extends wepy.page {
     config = {
       navigationBarTitleText: '记一笔'
@@ -116,6 +35,9 @@
 
 		data = {
       method: 'POST',
+      current: 0,
+      indicatorDots: false,
+      statement: {},
       statement_id: 0,
       type: 'expend',
       amount: '',
@@ -142,26 +64,23 @@
       city: '',
       district: '',
       street: '',
-      submiting: false
+      submiting: false,
+      swiperHeight: 400
     }
 
     async onLoad(options) {
-      const myDate = new Date()
-      let year = myDate.getFullYear()
-      let month = myDate.getMonth() + 1
-      let day = myDate.getDate()
-      if (month < 10) month = `0${month}`
-      if (day < 10) day = `0${day}`
-      this.date = [year, month, day].join('-')
+      wx.getSystemInfo({
+        success: (res) => {
+          this.swiperHeight = res.windowHeight - 40
+          this.$apply()
+        }
+      })
 
       if (options.id != undefined) {
         this.getStatement(options.id)
       } else if (options.asset_log_id != undefined) {
         this.getTransfer(options.asset_log_id)
-      } else {
-        // 获取上次使用的分类和账户
-        this.getLastUsed()
-      }
+      } 
 
       if (this.switchCheck) {
         // 初始化地理位置信息
@@ -173,9 +92,12 @@
         this.from = options.asset_id
         this.source = options.source
       }
+    }
 
-      this.guessCategory()
-      this.guessAsset()
+    components = {
+      'expend-statement': StatementForm,
+      'income-statement': StatementForm,
+      TransferForm
     }
 
     computed = {
@@ -242,48 +164,11 @@
         }
         this.submiting = false
       },
-      dateChange(e) {
-        this.date = e.detail.value
+      choseTab (current) {
+        this.current = current
       },
-      choseTab (type) {
-        if (this.type != type) {
-          this.category_id = 0
-          this.category_name = '请选择分类'
-        }
-        this.type = type
-        this.guessCategory()
-        this.guessAsset()
-      },
-      tabAsset (asset) {
-        this.asset_id = asset.id
-        this.asset_name = asset.name
-      },
-      tabCategory (category) {
-        this.category_id = category.id
-        this.category_name = category.name
-      },
-      assetFrom () {
-        this.transferType = 1
-        wx.navigateTo({ url: "/pages/statements/chose_asset" })
-      },
-      assetTo () {
-        this.transferType = 2
-        wx.navigateTo({ url: "/pages/statements/chose_asset" })
-      },
-      exchangeAsset () {
-        let tmp1 = this.source
-        this.source = this.target
-        this.target = tmp1
-
-        let tmp2 = this.from
-        this.from = this.to
-        this.to = tmp2
-      },
-      redirectChoseAsset () {
-        wx.navigateTo({ url: "/pages/statements/chose_asset" })
-      },
-      redirectChoseCategory () {
-        wx.navigateTo({ url: `/pages/statements/chose_category?type=${this.type}` })
+      swiperChange (e) {
+        this.current = e.detail.current
       },
       getLocation (e) {
         let locationSwitch = e.detail.value
@@ -335,37 +220,14 @@
       this.$apply()
     }
 
-    async getLastUsed() {
-      const result = await wxRequest.Get('statements/frequent_used', { type: this.type })
-      this.category_id = result.category_id
-      this.asset_id = result.asset_id
-      this.category_name = result.category_name
-      this.asset_name = result.asset_name
-      this.$apply()
-    }
-
-    async guessCategory () {
-      const data = await wxRequest.Get('statements/category_frequent', { type: this.type })
-      this.categories_label = data
-      this.$apply()
-    }
-
-    async guessAsset () {
-      const data = await wxRequest.Get('statements/asset_frequent', { type: this.type })
-      this.assets_label = data
-      this.$apply()
-    }
-
     setLocation () {
       this.qqmapSDK = new QQMapWX({
         key: mapKey
       });
       try {
-        console.log('start get location')
         wx.getLocation({
           type: 'gcj02', //返回可以用于wx.openLocation的经纬度
           success: (result) => {
-            console.log('location: ', result)
             this.qqmapSDK.reverseGeocoder({
               location: {
                 latitude: result.latitude,
@@ -373,7 +235,6 @@
               },
               success: (addressRes) => {
                 let address_component = addressRes.result.address_component
-                console.log(address_component)
                 this.nation = address_component.nation
                 this.province = address_component.province
                 this.city = address_component.city
@@ -393,34 +254,22 @@
       }
     }
 
+    // 接受 chose_category 选择后的回调函数
+    // setCategoryCallback () {
+
+    // }
+
+    // setAssetCategoryCallback () {
+
+    // }
+
+    // FIXME: 应该全局维护同一个
     updatePrevPage() {
       const pages = getCurrentPages()
       const prevPage = pages[pages.length - 2]
       const path = prevPage.route
       if (path == 'pages/index') {
-        prevPage.list = []
-        prevPage.curPage = 1
         prevPage.updateStatement()
-      }
-    }
-
-    setCategory (category) {
-      this.category_id = category.id
-      this.category_name = category.name
-    }
-
-    setAsset (asset) {
-      if (this.type != 'transfer') {
-        this.asset_id = asset.id
-        this.asset_name = asset.name
-      } else {
-        if (this.transferType == 1) {
-          this.source = asset.name
-          this.from = asset.id
-        } else {
-          this.target = asset.name
-          this.to = asset.id
-        }
       }
     }
 
