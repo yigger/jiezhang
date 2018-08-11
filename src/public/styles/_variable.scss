@@ -30,6 +30,8 @@ $secondaryBackgroundColor: #f1f1f1;
 
 $iconGrey: #bcbcbc;
 
+$linkColor: #537c8d;
+
 @function toRpx($number) {
   @return $number * 2;
 }

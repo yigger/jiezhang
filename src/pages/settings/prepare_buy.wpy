@@ -2,13 +2,15 @@
   <view class="container">
     <view class="list">
       <view class="preorder-item" wx:for="{{ goods }}" @tap="getGood('{{ item.id }}')">
-        <image src="../../public/images/prepare_buy.png"></image>
+        <image src="{{ item.header_image_url }}"></image>
         <view class="goods">
-          <view class="title">
+          <view class="title {{ item.state == 'bought' ? 'line-through' : '' }}">
             <text>{{ item.name }}</text>
             <text class="expend">{{ item.amount }}</text>
           </view>
           <view class="description">{{ item.remark }}</view>
+          <view class="address" wx:if="{{ item.address != null && item.address != '' }}">
+            <view class="iconfont jz-icon-address"></view>{{ item.address }}</view>
           <view class="time-and-money">
             <text>{{ item.created_at }}</text>
           </view>
@@ -26,7 +28,10 @@
       新增预购商品
     </view>
 
-    <Item :showModal.sync="showModal" :good.sync="good" @submit.user="submit"></Item>
+    <Item :showModal.sync="showModal" 
+          :good.sync="good" @submit.user="submit"
+          @del.user="del"
+          @markbuy.user="markBuy"></Item>
   </view>
 </template>
 
@@ -49,8 +54,6 @@
     methods = {
       submit (e) {
         let value = e.detail.value
-        console.log(value)
-        console.log(value.id)
         if(typeof value.id == undefined || value.id == '') {
           this.createGood(value)
         } else {
@@ -66,6 +69,14 @@
       showCreateModal() {
         this.good = {}
         this.showModal = true
+      },
+      async markBuy (id) {
+        await wxRequest.Put(`pre_order/${id}/mark`)
+        this.getGoods()
+      },
+      async del (id) {
+        await wxRequest.Destroy(`pre_order/${id}`)
+        this.getGoods()
       }
     }
 
@@ -102,9 +113,6 @@
         this.getGoods()
       }
     }
-
-    
-
   }
 </script>
 <style lang="scss" src="@/public/styles/prepareBuy.scss"></style>
