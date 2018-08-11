@@ -157,34 +157,13 @@
   font-size: 28rpx;
 }
 .scope {
-  text-align: center;
-  margin-bottom: 24rpx;
+  text-align: left;
+  margin: 0 28rpx 8rpx 28rpx;
+  font-size: 28rpx;
+  color: $secondaryText;
   > view {
     display: inline;
-    font-size: 32rpx;
-    padding: 12rpx 24rpx;
-  }
-  .today.active {
-    color: $darkPrimaryColor;
-    border-bottom: 4rpx solid $darkPrimaryColor;
-  }
-  .week.active {
-    color: green;
-    border-bottom: 4rpx solid green;
-  }
-  .month.active {
-    color: orange;
-    border-bottom: 4rpx solid orange;
-  }
-  .year.active {
-    color: #A52A2A;
-    border-bottom: 4rpx solid #A52A2A;
-  }
-  &.tab-fix {
-    position:fixed;
-    top:0;
-    width:100%;
-    height:70rpx;
-    background: white;
+    margin-right: 12rpx;
+    padding: 8rpx 0;
   }
 }

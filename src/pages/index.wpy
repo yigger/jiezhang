@@ -23,8 +23,11 @@
       </navigator>
     </view>
 
+    <view class="scope">
+      <view class="the-week">近一周消费</view>
+    </view>
+
     <view class="statement-list">
-      <!-- 今天/本周渲染的视图 -->
       <repeat for="{{ list }}" key="index" index="index" item="item">
         <StatementItem :statement.sync="item"></StatementItem>
       </repeat>
