@@ -3,8 +3,7 @@
 .header {
   position:relative;
   height:300rpx;
-  background: $primaryColor;
-  box-shadow:0 0 20rpx $divideText;
+  background: $darkPrimaryColor;
   color:white;
   .surplus {
     color:white;
@@ -17,7 +16,7 @@
     bottom: 0;
     padding: 10rpx 0;
     width: 100%;
-    border-top:1px solid #448aff;
+    border-top:1px solid $darkPrimaryColor;
     & > view {
       width:50%;
       text-align: center;

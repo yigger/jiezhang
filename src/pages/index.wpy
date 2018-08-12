@@ -25,7 +25,7 @@
 
     <view class="scope">
       <view class="the-week {{ current == 0 ? 'active' : '' }}" @tap="switchScope(0)">近一周消费</view>
-      <view class="preorder noread {{ current == 1 ? 'active' : '' }}" @tap="switchScope(1)">预购清单</view>
+      <view class="preorder {{ current == 1 ? 'active' : '' }}" @tap="switchScope(1)">预购清单</view>
     </view>
     
     <swiper current="{{ current }}" style="flex: 1;margin-top: 24rpx;" bindchange="swiperChange">

@@ -50,8 +50,8 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			background: $backgroundColor;
-			border-bottom: 1px solid #d1d1d1;
+			background: #fefefe;
+			border-bottom: 1px solid $borderColor;
 			padding: 24rpx 24rpx;
 			.title {
 				font-size: 32rpx;
@@ -192,4 +192,41 @@
       border-radius: 50%;
     }
   }
+}
+$tmHeight: 120rpx;
+.tiaomu {
+	display: flex;
+	justify-content: space-between;
+	border-bottom:2rpx solid $borderColor;
+	padding: 16rpx;
+	.money {
+		display:flex;
+		justify-content:center;
+		flex-direction:column;
+	}
+	.date-time {
+		width:84rpx;
+		height: $tmHeight;
+		display:flex;
+		justify-content:center;
+		flex-direction:column;
+		text-align:center;
+	}
+	.information {
+		display: flex;
+		flex: 1;
+		.description {
+			color:$secondaryText;
+			margin: 8rpx 0;
+		}
+		.title {
+			flex: 1;
+			margin: 0 12rpx;
+		}
+		image {
+			width: 70rpx;
+			height: 70rpx;
+			margin-top: 8rpx;
+		}
+	}
 }

@@ -39,7 +39,7 @@
         <text>日期</text>
         <picker mode="date" start="2017-01-01" bindchange="dateChange">
           <text>{{ date }}</text>
-       </picker>
+        </picker>
         <input hidden name="date" value="{{ date }}" type="number"/>
       </view>
 

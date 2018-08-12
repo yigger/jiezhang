@@ -60,7 +60,7 @@ export default class PrepareBuyItem extends wepy.component {
         this.showModal = false
       },
       captchEvent () {
-        return false
+        // return false
       },
       formSubmit (e) {
         this.$emit('submit', e);

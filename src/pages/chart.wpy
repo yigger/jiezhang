@@ -33,27 +33,23 @@
 
   <view class="assets">
     <view hidden="{{ tabActive == 'category' || singleList.length == 0 }}">
-			<!-- 单条 -->
 			<view class="left-amount">
 				<text class="income income-border">收入: {{ singleData.surplus.income }}</text>
 				<text class="expend expend-border">支出: {{ singleData.surplus.expend }}</text>
 				<text class="surplus surplus-border">结余: {{ singleData.surplus.surplus }}</text>
 			</view>
 
-			<view class="tiaomu" wx:for="{{singleData.list }}" @tap="showStatement('{{ item.id }}')">
-				<view class="pull-left col999 date-time">
-					<view class="fs14">{{ item.day }}</view>
-					<view class="fs12">{{ item.detail_day }}</view>
-				</view>
-				<view class="pull-right fs16 money {{ item.type }}">{{ item.amount }}</view>
+			<view class="tiaomu" wx:for="{{ singleData.list }}" @tap="showStatement('{{ item.id }}')">
 				<view class="information">
-					<view class="pull-left icon"><image src="{{ item.category_icon }}"></image></view>
-					<view class="pull-left title">
+					<image src="{{ item.category_icon }}"></image>
+					<view class="title">
 						<view class="fs14">{{ item.category }}</view>
 						<view class="fs12 description" wx:if="{{ item.description != null }}">{{ item.description }}</view>
-						<view class="col999 fs12">{{ item.time }} · {{ item.wallet }}</view>
+						<view class="col999 fs12">{{ item.created_at }} · {{ item.wallet }}</view>
 					</view>
 				</view>
+
+				<view class="money {{ item.type }}">{{ item.amount }}</view>
 			</view>
     </view>
 
@@ -96,11 +92,8 @@
 			cur_year: NowDate.getFullYear(),
 			cur_month: NowDate.getMonth() + 1,
 			cur_today: NowDate.getDate(),
-			tabActive: 'single',
+			tabActive: 'category',
 			prevSelectedIndex: -1,
-			picker_value: [],
-			picker_year: [],
-			picker_month: [],
 			days: [],
 			mutipleData: [],
 			singleData: [],
