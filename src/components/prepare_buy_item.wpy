@@ -3,18 +3,18 @@
     <form bindsubmit="formSubmit">
       <view class="form" catchtap="captchEvent()">
         <view class="item">
-          <view>商品名称</view>
-          <input class="pull-right" placeholder="商品名称" value="{{ good.name }}" name="name" />
+          <view class="title">商品名称</view>
+          <input placeholder="商品名称" value="{{ good.name }}" name="name" />
         </view>
 
         <view class="item">
-          <view>金额</view>
+          <view class="title">金额</view>
           <input placeholder="0.00" value="{{ good.amount }}" name="amount" type="digit" />
         </view>
 
         <view class="item">
-          <view>地址</view>
-          <input class="pull-right" placeholder="购买地址" value="{{ good.address }}" name="address" />
+          <view class="title">地址</view>
+          <input placeholder="购买地址" value="{{ good.address }}" name="address" />
         </view>
 
         <view class="textarea">
@@ -30,13 +30,13 @@
             <text wx:if="{{ good.state == 'pending' }}">已购</text>
             <text wx:else>重置状态</text>
           </button>
-          <button class="zan-btn ljt-btn delete" @tap="deleteItem()">删除</button>
+          <button wx:if="{{ showDelteBtn }}" class="zan-btn ljt-btn delete" @tap="deleteItem()">删除</button>
         </view>
 
         <input hidden value="{{ good.id }}" name="id" />
       </view>
     </form>
-    <view class="close-tips">点击空白处关闭</view>
+    <!-- <view class="close-tips">点击空白处关闭</view> -->
   </view>
 </template>
 
@@ -52,6 +52,10 @@ export default class PrepareBuyItem extends wepy.component {
       good: {
         type: Object,
         default: {}
+      },
+      showDelteBtn: {
+        type: Boolean,
+        default: true
       }
     }
 

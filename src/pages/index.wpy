@@ -1,7 +1,7 @@
 <template>
   <view class="container">
     <view class="header">
-      <image class="bg" src="{{ bgImage }}"></image>
+      <image class="bg" src="{{ header.bg_avatar }}"></image>
       <view class="level-2">
         <view class="fs14">
           <text>今日支出</text>
@@ -28,6 +28,8 @@
       <view class="preorder {{ current == 1 ? 'active' : '' }}" @tap="switchScope(1)">预购清单</view>
     </view>
     
+    <view wx:if="{{ current == 1 && prepareOrders.length > 0 }}" class="create-preorder" @tap="showCreateModal()">+ 新增预购商品</view>
+
     <swiper current="{{ current }}" style="flex: 1;margin-top: 24rpx;" bindchange="swiperChange">
       <swiper-item>
         <view class="statement-list">
@@ -41,9 +43,9 @@
           </view>
         </view>
 
-        <view class="zan-loadmore zan-loadmore--nodata" hidden="{{ !noMoreData }}">
+        <!-- <view class="zan-loadmore zan-loadmore--nodata" hidden="{{ !noMoreData }}">
           <view class="zan-loadmore__tips">没有更多了</view>
-        </view>
+        </view> -->
 
         <view wx:if="{{ list.length == 0 && !showLoading }}">
           <empty :title.sync="emptyTitle"></empty>
@@ -64,7 +66,8 @@
 
     <preorderForm 
       :showModal.sync="showModal" 
-      :good.sync="preOrder" 
+      :good.sync="preOrder"
+      :showDelteBtn.sync="showDelteBtn"
       @submit.user="createPrepareOrder"
       @del.user="delPrepareOrder"
       @markbuy.user="markBuy">
@@ -97,13 +100,13 @@
         pay_num: 0,
         bg_avatar: null
       },
-      swiperHeight: 400,
       current: 0,
       noMoreData: false,
       showLoading: false,
       prepareOrders: [],
       showModal: false,
-      preOrder: {}
+      preOrder: {},
+      showDelteBtn: false
     }
 
     components = {
@@ -120,15 +123,10 @@
       this.getList()
     }
 
-    onLoad () {
-      this.updateStatement()
-      this.getPreOrders()
-      wx.getSystemInfo({
-        success: (res) => {
-          this.swiperHeight = res.windowHeight - 315
-          this.$apply()
-        }
-      })
+    async onShow () {
+      this.bgImage()
+      await this.updateStatement()
+      await this.getPreOrders()
     }
 
     methods = {
@@ -174,7 +172,11 @@
 
     async getHeader () {
       const data = await wxRequest.Get('header')
+      let bg_images_key = Session.key.bgImageKey
       this.header = data
+      if (typeof data != undefined) {
+        Session.set(bg_images_key, data.bg_avatar)
+      }
       this.$apply()
     }
 
@@ -217,23 +219,22 @@
       }
     }
 
+    bgImage () {
+      let bg_images_key = Session.key.bgImageKey
+      let cacheImage = Session.get(bg_images_key)
+      if(cacheImage) {
+        this.header.bg_avatar = cacheImage
+        return false
+      }
+      let avatar = this.header.bg_avatar
+      if (avatar == null || avatar == '') {
+        this.header.bg_avatar = "../public/images/covers/default-10.jpeg"
+      }
+    }
+
     computed = {
       showEmpty () {
         return this.list.length <= 0
-      },
-      bgImage () {
-        let avatar = this.header.bg_avatar
-        let bg_images_key = Session.key.bgImageKey
-        let cacheImage = Session.get(bg_images_key)
-        if(cacheImage) return cacheImage
-        
-        if (avatar == null || avatar == '') {
-          avatar = "../public/images/covers/default-8.jpeg"
-        } else {
-          Session.set(bg_images_key, avatar)
-        }
-        
-        return avatar
       }
     }
   }

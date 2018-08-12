@@ -63,10 +63,10 @@ page, .container{
     }
   }
   .jz-icon-xiaoxi {
-    font-size: 48rpx;
+    font-size: 54rpx;
     position: absolute;
-    top: 24rpx;
-    right: 36rpx;
+    top: 32rpx;
+    right: 48rpx;
   }
 }
 
@@ -147,6 +147,12 @@ page, .container{
   font-size: 26rpx;
   color: $linkColor;
   margin: 12rpx 0;
+}
+.create-preorder {
+  text-align: left;
+  font-size: 24rpx;
+  color: $linkColor;
+  padding-right: 6px;
 }
 swiper-item {
   overflow-y: scroll;

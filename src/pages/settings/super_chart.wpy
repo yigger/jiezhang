@@ -36,17 +36,9 @@
       </view>
     </view>
 
-    <swiper style="width: 100%; height: 300px;" indicator-dots="true">
-      <swiper-item>
-        <canvas canvas-id="pieCanvas" disable-scroll="true" class="piecanvas" style="width: 100%; height: 280px;"></canvas>
-      </swiper-item>
+    <canvas canvas-id="pieCanvas" disable-scroll="true" class="piecanvas" style="width: 100%; height: 280px;"></canvas>
 
-      <swiper-item>
-        <canvas canvas-id="lineCanvas" disable-scroll="true" class="lineCanvas" style="width: 100%; height: 280px;"></canvas>
-      </swiper-item>
-    </swiper>
-
-    
+    <canvas canvas-id="lineCanvas" disable-scroll="true" class="lineCanvas" style="width: 100%; height: 280px;"></canvas>
 
     <view class="expend-bars" wx:if="{{ chartData.length > 0 }}">
       <view class="item" wx:for="{{ chartData }}" style="background-size: {{ item.percent * 2 }}% 100%;" @tap="redirectTo('{{ item.category_id }}')">

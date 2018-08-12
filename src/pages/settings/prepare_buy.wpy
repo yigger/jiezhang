@@ -17,7 +17,8 @@
     </view>
 
     <Item :showModal.sync="showModal" 
-          :good.sync="good" @submit.user="submit"
+          :good.sync="good"
+          @submit.user="submit"
           @del.user="del"
           @markbuy.user="markBuy"></Item>
   </view>

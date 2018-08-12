@@ -49,7 +49,7 @@
       </view>
     </view>
 
-    <view class="setting-container">
+    <!-- <view class="setting-container">
       <view @tap="redirect('/pages/budgets/budget')">
         <view>
           <image src="../public/images/001-calculator.png"></image>
@@ -58,7 +58,7 @@
         <view class="zan-icon zan-icon-arrow"></view>
       </view>
       
-      <!-- <view @tap="redirect('/pages/friends/index')">
+      <view @tap="redirect('/pages/friends/index')">
         <view>
           <image src="../public/images/003-user.png"></image>
           <text>多人记账</text>
@@ -72,13 +72,41 @@
           <text>梦想存钱罐</text>
         </view>
         <view class="zan-icon zan-icon-arrow"></view>
-      </view> -->
-    </view>
+      </view>
+    </view> -->
 
     <view class="setting-container" style="margin: 12px 0">
-      <view wx:for="{{ menu }}" @tap="redirect('{{ item.url }}')">
+      <view @tap="redirect('/pages/assets/list')">
         <view>
-          <text>{{ item.name }}</text>
+          <text>资产类型分类</text>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+
+      <view @tap="redirect('/pages/categories/list?type=expend')">
+        <view>
+          <text>支出分类管理</text>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+
+      <view @tap="redirect('/pages/categories/list?type=income')">
+        <view>
+          <text>收入分类管理</text>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+
+      <view @tap="redirect('/pages/settings/set_cover')">
+        <view>
+          <text>封面设置</text>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+
+      <view @tap="redirect('/pages/settings/feedback')">
+        <view>
+          <text>反馈与建议</text>
         </view>
         <view class="zan-icon zan-icon-arrow"></view>
       </view>
@@ -107,28 +135,6 @@
     }
     
     data = {
-      menu: [
-        {
-          name: '资产类型分类',
-          url: '/pages/assets/list'
-        },
-        {
-          name: '支出分类管理',
-          url: '/pages/categories/list?type=expend'
-        },
-        {
-          name: '收入分类管理',
-          url: '/pages/categories/list?type=income'
-        },
-        {
-          name: '封面设置',
-          url: '/pages/settings/set_cover'
-        },
-        {
-          name: '反馈与建议',
-          url: '/pages/settings/feedback'
-        }
-      ],
       user: {},
       version: '',
       alreadyLogin: this.loginStatus()
