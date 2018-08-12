@@ -36,13 +36,13 @@
           <repeat for="{{ list }}" key="index" index="index" item="item">
             <StatementItem :statement.sync="item"></StatementItem>
           </repeat>
-
-          <view class="zan-loadmore" hidden="{{ !showLoading }}">
-            <view class="zan-loading"></view>
-            <view class="zan-loadmore__tips">加载中...</view>
-          </view>
         </view>
 
+        <view class="zan-loadmore" wx:if="{{ showLoading }}">
+          <view class="zan-loading"></view>
+          <view class="zan-loadmore__tips">加载中...</view>
+        </view>
+        
         <!-- <view class="zan-loadmore zan-loadmore--nodata" hidden="{{ !noMoreData }}">
           <view class="zan-loadmore__tips">没有更多了</view>
         </view> -->
@@ -166,6 +166,7 @@
     // 此方法用于 statement.wpy 表单提交后触发的更新调用
     // FIXME: 应全局维护同一个 statements 数据域
     async updateStatement () {
+      this.showLoading = true
       await this.getHeader()
       await this.getList()
     }
@@ -173,6 +174,9 @@
     async getHeader () {
       const data = await wxRequest.Get('header')
       let bg_images_key = Session.key.bgImageKey
+      if (typeof data == undefined || data.bg_avatar == '') {
+        data.bg_avatar = this.header.bg_avatar
+      }
       this.header = data
       if (typeof data != undefined) {
         Session.set(bg_images_key, data.bg_avatar)
@@ -181,7 +185,6 @@
     }
 
     async getList(options = {}) {
-      this.showLoading = true
       const res = await wxRequest.Get('index')
       if (res.status == 405 || res.status == 301) {
         this.noMoreData = true

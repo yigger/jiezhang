@@ -10,7 +10,7 @@
     <view class="section">
       <textarea placeholder="感谢您的建议，我们将不断改进"  bindinput="bindKeyRemark" value="{{ content }}" auto-focus maxlength="-1" />
     </view>
-    <button class="zan-btn zan-btn--danger" style="margin: 18rpx 24rpx" @tap="submit">提交</button>
+    <button class="zan-btn" style="margin: 18rpx 24rpx; background: #2196F3; color: white;" @tap="submit">提交</button>
   </view>
 </template>
 
