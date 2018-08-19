@@ -1,0 +1,7 @@
+export const GETLIST = 'GETLIST'
+
+export const ADDSTATEMENT = 'ADDSTATEMENT'
+
+export const MODIFYSTATEMENT = 'MODIFYSTATEMENT'
+
+export const DELSTATEMENT = 'DELSTATEMENT'

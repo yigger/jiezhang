@@ -75,6 +75,9 @@
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
   import tip from '@/utils/tip'
+  import { getStore } from 'wepy-redux'
+  import { delStatement } from '@/store/actions'
+
   export default class StatementDetail extends wepy.page {
     config = {
       navigationBarTitleText: '账单详情'
@@ -92,6 +95,9 @@
           delta: 1
         })
       }
+    }
+
+    onShow() {
       this.getStatement()
     }
 
@@ -104,6 +110,8 @@
       async del () {
         await tip.confirm('是否删除该条账单？', {}, '提示')
         await wxRequest.Destroy(`statements/${this.id}`)
+        const store = getStore()
+        store.dispatch(delStatement(this.id))
         wepy.navigateBack({
           delta: 1
         })

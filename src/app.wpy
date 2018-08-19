@@ -1,6 +1,12 @@
 <script>
 import wepy from 'wepy'
 import 'wepy-async-function'
+
+import { setStore, getStore } from 'wepy-redux'
+import configStore from './store'
+import { asyncList } from '@/store/actions'
+setStore(configStore())
+
 export default class extends wepy.app {
   config = {
     pages: [
@@ -95,6 +101,10 @@ export default class extends wepy.app {
       downloadFile: 10000
     },
     debug: true
+  }
+
+  onLaunch () {
+    
   }
 
   constructor () {

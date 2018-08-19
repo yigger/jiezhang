@@ -109,6 +109,8 @@
   import Session from '@/utils/session'
   import tip from '@/utils/tip'
   import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
+  import { getStore } from 'wepy-redux'
+  import { addStatement, modifyStatement } from '@/store/actions'
   export default class NewStatement extends wepy.page {
     config = {
       navigationBarTitleText: '记一笔'
@@ -232,11 +234,11 @@
         }
         
         if (result.status == 200) {
+          const store = getStore()
+          store.dispatch(this.method == 'POST' ? addStatement(result.data) : modifyStatement(result.data))
           wepy.navigateBack({
             delta: 1
           })
-          // 保存成功后更新上个页面的数据
-          this.updatePrevPage()
         } else {
           tip.error(result.msg)
         }
@@ -390,17 +392,6 @@
         Session.set('getLocationSwitch', false)
         this.switchCheck = false
         this.$apply()
-      }
-    }
-
-    updatePrevPage() {
-      const pages = getCurrentPages()
-      const prevPage = pages[pages.length - 2]
-      const path = prevPage.route
-      if (path == 'pages/index') {
-        prevPage.list = []
-        prevPage.curPage = 1
-        prevPage.updateStatement()
       }
     }
 

@@ -84,6 +84,8 @@
   import StatementItem from '@/components/index/statement'
   import orderItem from '@/components/prepare_order_item'
   import preorderForm from '@/components/prepare_buy_item'
+  import { getStore } from 'wepy-redux'
+  import { asyncList } from '@/store/actions'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '首页'
@@ -117,16 +119,14 @@
       preorderForm
 		}
 
-    onPullDownRefresh () {
-      wx.stopPullDownRefresh()
-      this.getHeader()
+    onLoad () {
       this.getList()
     }
 
-    async onShow () {
+    onShow () {
+      this.getHeader()
+      this.getPreOrders()
       this.bgImage()
-      await this.updateStatement()
-      await this.getPreOrders()
     }
 
     methods = {
@@ -163,14 +163,6 @@
       }
     }
 
-    // 此方法用于 statement.wpy 表单提交后触发的更新调用
-    // FIXME: 应全局维护同一个 statements 数据域
-    async updateStatement () {
-      this.showLoading = true
-      await this.getHeader()
-      await this.getList()
-    }
-
     async getHeader () {
       const data = await wxRequest.Get('header')
       let bg_images_key = Session.key.bgImageKey
@@ -184,15 +176,20 @@
       this.$apply()
     }
 
-    async getList(options = {}) {
-      const res = await wxRequest.Get('index')
+    async getList() {
+      const store = getStore()
+      await store.dispatch(asyncList())
+      const res = store.getState().statement.statements
+      // const filted = res.filter((e) => {
+      //   return e.id == 1140
+      // })
+      // console.log(filted)
       if (res.status == 405 || res.status == 301) {
         this.noMoreData = true
       } else {
         this.list = res
         this.noMoreData = false
       }
-      this.showLoading = false
       this.$apply()
     }
 
