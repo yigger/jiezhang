@@ -75,17 +75,16 @@ const wxUpload = async (url, params = {}) => {
   return uploadResult
 }
 
-// 获取缓存,默认缓存 3600秒
+// 获取缓存,默认缓存时长 1 天
 const getByCache = (cacheKey) => {
-  const expireTime = 5
-  const cacheTime = Date.parse(new Date()) - expireTime
   const cacheValue = Session.get(cacheKey)
+  const onday = 86400
+  // console.log((new Date().getTime() - Number.parseInt(cacheValue.createTime))/1000)
   if (cacheValue === null) {
     return false
-  } else if (cacheTime < cacheValue.createTime) {
+  } else if ((new Date().getTime() - Number.parseInt(cacheValue.createTime))/1000 > onday) {
     return false
   }
-
   return cacheValue.value
 }
 
@@ -93,8 +92,10 @@ const getByCache = (cacheKey) => {
 const setByCache = (cacheKey, cacheVal) => {
   if(typeof cacheKey !== 'undefined') {
     if (Array.isArray(cacheVal) && cacheVal.length == 0) return false
+    let localTime = new Date().getTime()
+    // console.log('localtime', localTime)
     Session.set(cacheKey, {
-      createTime: Date.parse(new Date()),
+      createTime: localTime,
       value: cacheVal
     })
   }
