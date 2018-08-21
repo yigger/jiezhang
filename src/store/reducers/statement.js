@@ -10,7 +10,11 @@ export default handleActions({
     }
   },
   [ADDSTATEMENT](state, res) {
-    state.statements.unshift(res.payload)
+    if (state.status === 405) {
+      state.statements = [res.payload]
+    } else {
+      state.statements.unshift(res.payload)
+    }
     return {
       ...state
     }
