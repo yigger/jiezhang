@@ -38,7 +38,8 @@ npm run build // 发布时执行
 ![首页](https://github.com/yigger/jiezhang/raw/master/screenshots/01.png)
 
 ### 如需帮助
-联系邮箱 b21738331@163.com
++ 提交 ISSUE
++ 联系邮箱 b21738331@163.com
 
 ### 更新日志
 [Change Log](CHANGELOG.md)
