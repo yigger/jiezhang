@@ -1,19 +1,5 @@
 <template lang="wxml">
-  <view class="statement" @tap="statement('asset_log_id', '{{ statement.id }}')" wx:if="{{ statement.type == 'transfer' }}">
-    <view class="information">
-      <image class="transfer-icon" src="/public/images/transfer-icon.png"></image>
-      <view class="st-title">
-        <view class="title">{{ statement.source }} -> {{ statement.target }}</view>
-        <view class="description" wx:if="{{statement.description}}">{{ statement.description }}</view>
-        <view class="time">{{ statement.timeStr }} · 转账</view>
-      </view>
-    </view>
-    <view class="amount expend">
-      {{ statement.money }}
-    </view>
-  </view>
-
-  <view class="statement" @tap="statement('id', '{{ statement.id }}')" wx:else>
+  <view class="statement" @tap="statement('id', '{{ statement.id }}')">
     <view class="information">
       <view class="icon">
         <image src="{{ statement.icon_path }}"></image>
@@ -42,7 +28,6 @@
 
     methods = {
       statement (key, id) {
-        if (key == 'asset_log_id') return false;
         wepy.navigateTo({
           url: `/pages/statements/detail?${key}=${id}`
         })

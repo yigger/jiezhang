@@ -158,8 +158,6 @@
 
       if (options.id != undefined) {
         this.getStatement(options.id)
-      } else if (options.asset_log_id != undefined) {
-        this.getTransfer(options.asset_log_id)
       } else {
         // 获取上次使用的分类和账户
         this.getLastUsed()
@@ -221,10 +219,6 @@
         const localDate = new Date();
         statement.time = [localDate.getHours(), localDate.getMinutes(), localDate.getSeconds()].join(':')
         statement.asset_log_id = this.asset_log_id
-        if (this.type == 'transfer' && this.method == 'PUT') {
-          this.statement_id = this.asset_log_id
-        }
-        
         let result = null
         this.submiting = true
         if (this.method == 'POST') {
@@ -308,6 +302,14 @@
         })
         tip.error('无效的账单')
       }
+      
+      if (statement.type == 'transfer') {
+        this.from = statement.asset_id
+        this.to = statement.target_asset_id
+        this.source = statement.asset_name
+        this.target = statement.target_asset_name
+      }
+
       this.method = 'PUT'
       this.statement_id = statement.id
       this.type = statement.type
@@ -318,22 +320,6 @@
       this.date = statement.date
       this.category_name = statement.category_name
       this.asset_name = statement.asset_name
-      this.$apply()
-    }
-
-    async getTransfer (id) {
-      // 获取转账信息
-      this.type = 'transfer'
-      const data = await wxRequest.Get(`transfer/${id}`)
-      this.method = 'PUT'
-      this.asset_log_id = data.id
-      this.amount = data.amount
-      this.from = data.from
-      this.to = data.to
-      this.description = data.description
-      this.date = data.date
-      this.source = data.source
-      this.target = data.target
       this.$apply()
     }
 
