@@ -18,7 +18,7 @@ const getOpenId = async () => {
 	const loginResult = await wepy.request({
 		url: Host.check_openid,
 		method: 'POST',
-		header: { 'X-WX-Code': wxLogin.code }
+		header: { 'X-WX-Code': wxLogin.code, 'X-WX-APP-ID': Host.appid }
   })
   return loginResult.session
 }
@@ -38,7 +38,7 @@ const doRequest = async (url, method, params, options = {}) => {
       url: url,
       method: method,
       data: params,
-      header: { 'Content-Type': 'application/json', 'X-WX-Skey': thirdSession },
+      header: { 'Content-Type': 'application/json', 'X-WX-Skey': thirdSession, 'X-WX-APP-ID': Host.appid },
     })
     
     // key 过期尝试重连
