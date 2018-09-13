@@ -33,12 +33,25 @@ const doRequest = async (url, method, params, options = {}) => {
       if (cache) return cache
     }
 
+    let pageRoutes = []
+    const pages = getCurrentPages()
+    if (pages.length > 0) {
+      for(let p of pages) {
+        pageRoutes.push(p.route)
+      }
+    }
+
     const thirdSession = await getOpenId()
     const result = await wepy.request({
       url: url,
       method: method,
       data: params,
-      header: { 'Content-Type': 'application/json', 'X-WX-Skey': thirdSession, 'X-WX-APP-ID': Host.appid },
+      header: { 
+        'Content-Type': 'application/json',
+        'X-WX-Skey': thirdSession,
+        'X-WX-APP-ID': Host.appid,
+        'X-WX-PAGES': pageRoutes.join(',')
+      },
     })
     
     // key 过期尝试重连
@@ -103,7 +116,8 @@ const setByCache = (cacheKey, cacheVal) => {
 
 export default {
   doRequest,
-  wxUpload
+  wxUpload,
+  getOpenId
 }
 
 

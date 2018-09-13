@@ -1,7 +1,7 @@
 <script>
 import wepy from 'wepy'
 import 'wepy-async-function'
-
+import Base from '@/utils/wxRequest/base.js'
 import { setStore, getStore } from 'wepy-redux'
 import configStore from './store'
 import { asyncList } from '@/store/actions'
@@ -103,8 +103,8 @@ export default class extends wepy.app {
     debug: true
   }
 
-  onLaunch () {
-    
+  async onLaunch () {
+    await Base.getOpenId()
   }
 
   constructor () {
