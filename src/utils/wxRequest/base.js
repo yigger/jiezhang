@@ -7,6 +7,7 @@ let retryCount = 0
 
 // 登录凭证键值
 const loginKey = Session.key.login
+let getAuthPromise = null
 
 // 获取 openid
 const getOpenId = async () => {
@@ -14,13 +15,21 @@ const getOpenId = async () => {
     return Session.get(loginKey)
   }
 
-  const wxLogin = await wepy.login();
-	const loginResult = await wepy.request({
-		url: Host.check_openid,
-		method: 'POST',
-		header: { 'X-WX-Code': wxLogin.code, 'X-WX-APP-ID': Host.appid }
+  // 防止并发请求 openid
+  if (getAuthPromise) {
+    return getAuthPromise
+  }
+
+  return getAuthPromise = new Promise(async (resolve, reject) => {
+    const wxLogin = await wepy.login()
+    const data = await wepy.request({
+      url: Host.check_openid,
+      method: 'POST',
+      header: { 'X-WX-Code': wxLogin.code, 'X-WX-APP-ID': Host.appid }
+    })
+    // console.log(data)
+    resolve(data.session)
   })
-  return loginResult.session
 }
 
 const doRequest = async (url, method, params, options = {}) => {
@@ -116,8 +125,7 @@ const setByCache = (cacheKey, cacheVal) => {
 
 export default {
   doRequest,
-  wxUpload,
-  getOpenId
+  wxUpload
 }
 
 
