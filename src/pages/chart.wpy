@@ -1,6 +1,19 @@
 <template>
 <view class="container">
-  <view class="flex box box-tb box-align-center header" id="calendar">
+	<view class="calendar">
+		<calendar
+			show-more-days="{{true}}"
+			lunar="{{ false }}"
+			weeks-type="cn" 
+			cell-size="30" 
+			calendar-style="calendar-main"
+			header-style="calendar-header" 
+			board-style="calendar-board" 
+			days-color="{{days_style}}"
+			binddayClick="dayClick" />
+	</view>
+
+  <!-- <view class="flex box box-tb box-align-center header" id="calendar">
     <view class="calendar box box-tb">
 
       <view class="calendar-header">
@@ -24,7 +37,7 @@
       </view>
     </view>
   </view>
-	
+	 -->
 	<view class="ljt-tab fs16">
 		<view class="time">{{ monthAndDay }}</view>
 		<view class="{{ tabActive == 'single' ? 'active' : '' }}" @tap="changeTab('single')">单笔明细</view>
@@ -81,13 +94,18 @@
 	import IndexStatement from '@/components/index/statement'
 
 	const NowDate = new Date()
+	const today = NowDate.getDate()
   export default class Chart extends wepy.page {
     config = {
-      navigationBarTitleText: '收支统计'
+			navigationBarTitleText: '收支统计',
+			"usingComponents": {
+				"calendar": "plugin://calendar/calendar"
+			}
     }
 
 		data = {
 			hasEmptyGrid: false,
+			days_style: [],
 			today: NowDate.getDate(),
 			cur_year: NowDate.getFullYear(),
 			cur_month: NowDate.getMonth() + 1,
@@ -113,8 +131,54 @@
 			singleColumn: singleColumn,
 			statement: IndexStatement
     };
-    
+		
 		methods = {
+			dayClick: function (event) {
+				let detail = event.detail
+				let dataLen = this.days_style.length
+				if (dataLen == 1) {
+					this.days_style.push({month: detail.month, day: detail.day, color: 'white', background: '#FF7F00'})
+				} else if (dataLen == 2) {
+					let start = this.days_style[1]
+					let startDate = new Date(`${start.year}-${start.month}-${start.day}`)
+					let choseDate = new Date(`${detail.year}-${detail.month}-${detail.day}`)
+					let dateObj = { year: detail.year, month: detail.month, day: detail.day, color: 'white', background: '#8B8B83' }
+					if (startDate < choseDate) {
+						this.days_style.push(dateObj)
+					} else {
+						this.days_style.splice(1, 0, dateObj)
+					}
+				} else {
+
+				}
+
+
+				// let days = this.days
+
+				// let endDate = null
+				// if (days[idx].start) {
+				// 	endDate = new Date(Date.parse(this.startDate))
+				// } else {
+				// 	endDate = new Date(Date.parse(this.endDate))
+				// }
+				
+				// if (endDate != null && this.cur_year == endDate.getFullYear() && this.cur_month == endDate.getMonth()+1 && days[idx].day == endDate.getDate()) {
+				// 	this.startDate = `${this.cur_year}-${this.cur_month}-${days[idx].day}`
+				// 	this.dateParams = [this.startDate, this.startDate]
+				// 	this.refreshCalendarTab()
+				// }
+				
+				// if (this.prevSelectedIndex != -1) {
+        //   days[this.prevSelectedIndex].choosed = false
+				// }
+
+				// days[idx].choosed = !days[idx].choosed
+				// this.prevSelectedIndex = idx
+				// this.days = days
+				// this.cur_today = days[idx].day
+        // if(this.filterIndex == 1) this.setDateQuery()
+				// this.getChart()
+			},
 			handleCalendar(e) {
 				const handle = e.currentTarget.dataset.handle;
 				const cur_year = this.cur_year;
@@ -234,7 +298,8 @@
 			this.calculateDays(cur_year, cur_month)
 		}
 
-		onShow () {
+		onLoad () {
+			this.days_style.push({month: 9, day: today, color: 'white', background: '#2196F3'})
 			this.getChart()
 		}
 
@@ -262,8 +327,6 @@
         }
       } else {
         if(this.compareTime(this.startDate, date)) {
-          // 选择的日期在起始日期之前
-          // this.endDate = this.startDate
           this.startDate = date
         } else {
           // 选择的日期在起始日期之后
