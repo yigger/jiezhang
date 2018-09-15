@@ -27,7 +27,6 @@ const getOpenId = async () => {
       method: 'POST',
       header: { 'X-WX-Code': wxLogin.code, 'X-WX-APP-ID': Host.appid }
     })
-    // console.log(data)
     resolve(data.session)
   })
 }

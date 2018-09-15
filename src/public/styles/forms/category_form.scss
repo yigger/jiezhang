@@ -1,0 +1,88 @@
+@import '../_variable.scss';
+.container {
+	font-size:28rpx;
+}
+.grid {
+	background:#fff;
+	border-bottom:2rpx solid $backgroundColor;
+}
+.item {
+	height:72rpx;
+	line-height:72rpx;
+	padding:12rpx 32rpx 12rpx 24rpx;
+	border-bottom:2rpx solid $backgroundColor;
+}
+.grid .item:last-child {
+	border-bottom:none;
+}
+.item image {
+	width:50rpx;
+	height:50rpx;
+}
+.item-name {
+	margin-left:24rpx;
+}
+.item input {
+	padding-top:12rpx;
+	text-align:right;
+}
+.icon-image {
+	margin-top:10rpx;
+	float:right;
+}
+.picker .name {
+	float:right;
+}
+.picker .picker-type {
+	margin-left:24rpx;
+}
+textarea {
+	height:180rpx;
+	padding-left:32rpx;
+	padding-top:20rpx;
+}
+.bill-btn-single {
+	border:2rpx solid $primaryColor;
+	display:block;
+	padding:8rpx 0;
+	color:white;
+	text-align:center;
+	font-size:36rpx;
+	background:$primaryColor;
+	margin:24rpx 16rpx;
+}
+.delete-btn {
+	border:2rpx solid $primaryColor;
+	padding:8rpx 0;
+	color:$primaryColor;
+	text-align:center;
+	font-size:36rpx;
+	margin:24rpx 16rpx;
+}
+.pull-left {
+	float:left;
+}
+.pull-right {
+	float:right;
+}
+.save-btn {
+	width:100%;
+	text-align:center;
+	margin:24rpx 0;
+}
+.save-btn > .bill-btn {
+	margin:0 4%;
+}
+.bill-btn {
+	border:2rpx solid $primaryColor;
+	display:inline-block;
+	padding:8rpx 0;
+	width:40%;
+	color:$primaryColor;
+	text-align:center;
+	font-size:36rpx;
+}
+.save {
+	background:$primaryColor;
+	color:white !important;
+}
