@@ -1,30 +1,20 @@
 <template>
 <view class="container">
-  <view class="flex box box-tb box-align-center header" id="calendar">
-    <view class="calendar box box-tb">
+	<view class="calendar">
+		<calendar
+			show-more-days="{{ false }}"
+			lunar="{{ false }}"
+			weeks-type="cn" 
+			cell-size="30" 
+			calendar-style="calendar-main"
+			header-style="calendar-header" 
+			board-style="calendar-board" 
+			days-color="{{daySelect}}"
+			bindprevMonth="monthChange"
+			bindnextMonth="monthChange"
+			binddayClick="dayClick" />
+	</view>
 
-      <view class="calendar-header">
-        <view class="selectDate">
-          <picker class="cur-month" mode="date" value="{{curYearMonth}}" bindchange="bindDateChange">
-            {{ curYearMonth }}
-          </picker>
-          <image src="../public/images/down-white.png"></image>
-        </view>
-      </view>
-
-      <view class="weeks box box-lr box-pack-center box-align-center">
-        <view class="flex week fs12" wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
-      </view>
-      <view class="days box box-lr box-wrap">
-        <view wx:if="{{hasEmptyGrid}}" class="grid white-color box box-align-center box-pack-center" wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
-        </view>
-        <view class="grid white-color box box-align-center box-pack-center" wx:for="{{days}}" wx:key="{{index}}" data-idx="{{index}}" bindtap="tapDayItem">
-          <view class="day {{item.start ? 'border-radius start-bg' : ''}} {{item.end ? 'border-radius end-bg' : ''}} {{item.choosed ? 'border-radius selected-bg' : ''}} {{ today == item.day ? 'border-radius today' : '' }} box box-align-center box-pack-center">{{item.day}}</view>
-        </view>
-      </view>
-    </view>
-  </view>
-	
 	<view class="ljt-tab fs16">
 		<view class="time">{{ monthAndDay }}</view>
 		<view class="{{ tabActive == 'single' ? 'active' : '' }}" @tap="changeTab('single')">单笔明细</view>
@@ -83,141 +73,96 @@
 	const NowDate = new Date()
   export default class Chart extends wepy.page {
     config = {
-      navigationBarTitleText: '收支统计'
+			navigationBarTitleText: '日历统计',
+			"usingComponents": {
+				"calendar": "plugin://calendar/calendar"
+			}
     }
 
 		data = {
-			hasEmptyGrid: false,
 			today: NowDate.getDate(),
-			cur_year: NowDate.getFullYear(),
-			cur_month: NowDate.getMonth() + 1,
-			cur_today: NowDate.getDate(),
 			tabActive: 'single',
-			prevSelectedIndex: -1,
+			startColor: '#FF7F00',
+			endColor: '#8B8B83',
 			days: [],
 			mutipleData: [],
 			singleData: [],
 			singleList: [],
-			empytGrids: [],
-			curYearMonth: this.getNowFormatDate('.'),
-			weeks_ch: ['日', '一', '二', '三', '四', '五', '六'],
-      // 选择起始与结束日期参数
-      startDate: null,
-      endDate: null,
-      dateParams: [],
-      filterIndex: 1
-    };
+			daySelect: []
+		};
+		
+		onLoad () {
+			this.daySelect.push(this.daySelectObject(NowDate.getFullYear(), NowDate.getMonth() + 1, this.today, '#2196F3'))
+			this.getChart()
+		}
 
-		components = {
-			empty: Empty,
-			singleColumn: singleColumn,
-			statement: IndexStatement
-    };
-    
 		methods = {
-			handleCalendar(e) {
-				const handle = e.currentTarget.dataset.handle;
-				const cur_year = this.cur_year;
-				const cur_month = this.cur_month;
-				if (handle === 'prev') {
-					let newMonth = cur_month - 1;
-					let newYear = cur_year;
-					if (newMonth < 1) {
-						newYear = cur_year - 1;
-						newMonth = 12;
+			dayClick: function (event) {
+				let detail = event.detail
+				let dataLen = this.daySelect.length
+				let curObj = this.daySelectObject(detail.year, detail.month, detail.day, '')
+				if (dataLen == 1) {
+					// 插入起始日期
+					curObj.background = this.startColor
+					this.daySelect.push(curObj)
+				} else if (dataLen == 2) {
+					// 插入结束日期
+					let start = this.daySelect[1]
+					let startDate = new Date(`${start.year}-${start.mon}-${start.day}`)
+					let choseDate = new Date(`${detail.year}-${detail.month}-${detail.day}`)
+					if (startDate < choseDate) {
+						curObj.background = this.endColor
+						this.daySelect.push(curObj)
+					} else {
+						this.daySelect[1].background = this.endColor
+						curObj.background = this.startColor
+						this.daySelect.splice(1, 0, curObj)
 					}
-					this.calculateDays(newYear, newMonth);
-					this.calculateEmptyGrids(newYear, newMonth);
 				} else {
-					let newMonth = cur_month + 1;
-					let newYear = cur_year;
-					if (newMonth > 12) {
-						newYear = cur_year + 1;
-						newMonth = 1;
+					// 起始日期和结束日期存在的情况下插入..
+					let start = this.daySelect[1]
+					let end = this.daySelect[2]
+					let startDate = new Date(`${start.year}-${start.mon}-${start.day}`)
+					let endDate = new Date(`${end.year}-${end.mon}-${end.day}`)
+					let curDate = new Date(`${detail.year}-${detail.month}-${detail.day}`)
+					if (curDate > endDate) {
+						curObj.background = this.endColor
+						this.daySelect[2] = curObj
+					} else if (curDate.getTime() == endDate.getTime()) {
+						this.daySelect.splice(1, 1)
+					} else if (curDate.getTime() == startDate.getTime()) {
+						this.daySelect.splice(2, 1)
+					} else {
+						curObj.background = this.startColor
+						this.daySelect[1] = curObj
 					}
-
-					this.calculateDays(newYear, newMonth);
-					this.calculateEmptyGrids(newYear, newMonth);
 				}
-				this.cur_year = newYear
-				this.cur_month = newMonth
-			},
-			tapDayItem(e) {
-				let idx = e.currentTarget.dataset.idx
-				let days = this.days
-
-				let endDate = null
-				if (days[idx].start) {
-					endDate = new Date(Date.parse(this.startDate))
-				} else {
-					endDate = new Date(Date.parse(this.endDate))
-				}
-				
-				if (endDate != null && this.cur_year == endDate.getFullYear() && this.cur_month == endDate.getMonth()+1 && days[idx].day == endDate.getDate()) {
-					this.startDate = `${this.cur_year}-${this.cur_month}-${days[idx].day}`
-					this.dateParams = [this.startDate, this.startDate]
-					this.refreshCalendarTab()
-				}
-				
-				if (this.prevSelectedIndex != -1) {
-          days[this.prevSelectedIndex].choosed = false
-				}
-
-				days[idx].choosed = !days[idx].choosed
-				this.prevSelectedIndex = idx
-				this.days = days
-				this.cur_today = days[idx].day
-        if(this.filterIndex == 1) this.setDateQuery()
 				this.getChart()
 			},
-			bindDateChange(e) {
-				let choseDateArr = e.detail.value.split('-');
-				let choose_year = choseDateArr[0] * 1;
-				let choose_month = choseDateArr[1] * 1;
-				this.cur_year = choose_year;
-				this.cur_month = choose_month;
-				this.curYearMonth = e.detail.value.replace(/-/g, '.');
-				this.calculateEmptyGrids(choose_year, choose_month)
-				this.calculateDays(choose_year, choose_month)
-				this.getChart()
-        this.refreshCalendarTab()
-			},
-      bindFilterChange (e) {
-        let idx = e.detail.value
-        if (idx == 0) {
-          this.startDate = null
-          this.endDate = null
-          this.dateParams = []
-          for(let item of this.days) {
-            item.end = false
-            item.start = false
-          }
-        }
-        this.filterIndex = idx
-      },
+	
 			changeTab(item) {
 				this.tabActive = item
 			},
-			showHidden(idx) {
-				let value = !this.mutipleData[idx].hidden
-				this.mutipleData[idx]['hidden'] = value
-				this.$apply()
+			
+			monthChange (event) {
+				let detail = event.detail
+				for(let i = 0, len = this.daySelect.length; i < len; ++i) {
+					if (this.daySelect[i].mon == detail.currentMonth) {
+						this.daySelect[i].month = 'current'
+					} else {
+						this.daySelect[i].month = null
+					}
+				}
 			},
+
 			showStatement (id) {
 				wepy.navigateTo({
           url: `/pages/statements/detail?id=${id}`
         })
 			},
+
 			async getCategoryList (id, index) {
-				let query = {}
-				if (this.dateParams.length == 0) {
-					query.start_time = `${this.cur_year}-${this.cur_month}-${this.cur_today}`
-				} else if (this.dateParams.length == 1) {
-					query.start_time = this.startDate
-				} else {
-					query.start_time = this.startDate
-					query.end_time = this.endDate
-				}
+				let query = this.timeParams()
 				query.id = id
 				const data = await wxRequest.Get('chart/spread', query)
 				let value = !this.mutipleData[index].hidden
@@ -227,171 +172,74 @@
 			}
 		}
 
-		onLoad () {
-			let cur_year = NowDate.getFullYear()
-			let cur_month = NowDate.getMonth() + 1
-			this.calculateEmptyGrids(cur_year, cur_month)
-			this.calculateDays(cur_year, cur_month)
-		}
-
-		onShow () {
-			this.getChart()
-		}
-
-    compareTime (time1, time2) {
-      const d1 = new Date(Date.parse(time1))
-      const d2 = new Date(Date.parse(time2))
-      return d1 > d2
-    }
-
-    setDateQuery () {
-      // 起始与结束日期的选择
-      let year = this.cur_year
-      let month = this.cur_month
-      let day = this.cur_today
-      let date = `${year}-${month}-${day}`
-      if (this.dateParams.length == 0) {
-        this.startDate = date
-        this.dateParams.push(date)
-      } else if (this.dateParams.length == 1) {
-        this.dateParams.push(date)
-        this.endDate = date
-        if (this.compareTime(this.startDate, date)) {
-          this.endDate = this.startDate
-          this.startDate = date
-        }
-      } else {
-        if(this.compareTime(this.startDate, date)) {
-          // 选择的日期在起始日期之前
-          // this.endDate = this.startDate
-          this.startDate = date
-        } else {
-          // 选择的日期在起始日期之后
-          this.endDate = date
-        }
-        this.dateParams = [this.startDate, this.endDate]
-      }
-      this.refreshCalendarTab()
-    }
-
-    refreshCalendarTab () {
-      if (this.dateParams.length == 0) return false
-      for(let item of this.days) {
-        item.end = false
-        item.start = false
-      }
-
-      if (this.startDate != null) {
-        let start = new Date(Date.parse(this.startDate))
-        if(start.getFullYear() == this.cur_year && start.getMonth() + 1 == this.cur_month) {
-          this.days[start.getDate() - 1].start = true
-        }
-      }
-
-      if (this.endDate != null) {
-        let end = new Date(Date.parse(this.endDate))
-        if(end.getFullYear() == this.cur_year && end.getMonth() + 1 == this.cur_month) {
-          this.days[end.getDate() - 1].end = true
-        }
-      }
-    }
-
 		async getChart() {
-      let query = {}
-      if (this.dateParams.length == 0) {
-        query.start_time = `${this.cur_year}-${this.cur_month}-${this.cur_today}`
-      } else if (this.dateParams.length == 1) {
-        query.start_time = this.startDate
-      } else {
-        query.start_time = this.startDate
-        query.end_time = this.endDate
-      }
-			const res = await wxRequest.Get('chart', query)
+			const res = await wxRequest.Get('chart', this.timeParams())
 			this.singleData = res.single
 			this.singleList = this.singleData.list
 			this.mutipleData = res.categories
 			this.$apply()
 		}
 
-		getNowFormatDate(spilt) {
-			var date = new Date();
-			var year = date.getFullYear();
-			var month = date.getMonth() + 1;
-			var strDate = date.getDate();
-			if (month >= 1 && month <= 9) {
-				month = "0" + month;
+		/**
+		 * 时间参数组装
+		 * 默认取 daySelect 数组
+		 * 	daySelect[0] 当前日期
+		 * 	daySelect[1] 起始日期
+		 *  daySelect[2] 结束日期
+		*/
+		timeParams () {
+			let query = {}
+			let length = this.daySelect.length
+			if (length == 0) {
+				return query
 			}
-			if (strDate >= 0 && strDate <= 9) {
-				strDate = "0" + strDate;
+
+			if (length <= 2) {
+				let start = this.daySelect[length - 1]
+        query.start_time = `${start.year}-${start.mon}-${start.day}`
+      } else {
+				let start = this.daySelect[1]
+				let end = this.daySelect[2]
+        query.start_time = `${start.year}-${start.mon}-${start.day}`
+        query.end_time = `${end.year}-${end.mon}-${end.day}`
 			}
-			return year + spilt + month + spilt + strDate;
+			return query
 		}
 
-		calculateEmptyGrids(year, month) {
-			const firstDayOfWeek = this.getFirstDayOfWeek(year, month);
-			let empytGrids = [];
-			if (firstDayOfWeek > 0) {
-				for (let i = 0; i < firstDayOfWeek; i++) {
-					empytGrids.push(i);
-				}
-				this.hasEmptyGrid = true
-				this.empytGrids = empytGrids
-			} else {
-				this.hasEmptyGrid = false
-				this.empytGrids = []
+		daySelectObject (year, month, day, bgColor) {
+			return {
+				year: year,
+				mon: month,
+				day: day,
+				background: bgColor,
+				month: 'current',
+				color: 'white'
 			}
 		}
-
-		calculateDays(year, month) {
-			let days = [];
-			const thisMonthDays = this.getThisMonthDays(year, month);
-			for (let i = 1; i <= thisMonthDays; i++) {
-				days.push({
-					day: i,
-					choosed: false
-				});
-			}
-			this.days = days
-		}
-
-		getThisMonthDays(year, month) {
-			return new Date(year, month, 0).getDate();
-		}
-		
-		getFirstDayOfWeek(year, month) {
-			return new Date(Date.UTC(year, month - 1, 1)).getDay();
-		}
-
-    formatMonthDay (month, day) {
-      if (month < 10) {
-        month = `0${month}`
-      }
-      if (day < 10) {
-        day = `0${day}`
-      }
-      return `${month}-${day}`
-    }
 
 		computed = {
 			monthAndDay() {
-        if(this.dateParams.length < 2) {
-          let month = this.cur_month
-          let today = this.cur_today
-          if (this.startDate != null) {
-            let date = new Date(Date.parse(this.startDate));
-            month = date.getMonth() + 1
-            today = date.getDate()
-          }
-          return this.formatMonthDay(month, today)
-        } else {
-          let date1 = new Date(Date.parse(this.startDate))
-          let date2 = new Date(Date.parse(this.endDate))
-          let start = this.formatMonthDay(date1.getMonth()+1, date1.getDate())
-          let end = this.formatMonthDay(date2.getMonth()+1, date2.getDate())
-          return `${start} ~ ${end}`
-        }
+				let str = ''
+				let query = this.timeParams()
+				if (typeof query.start_time != 'undefined') {
+					let startArray = query.start_time.split('-')
+					str = startArray[1] + '-' + startArray[2]
+				}
+				if (typeof query.end_time != 'undefined') {
+					let endArray = query.end_time.split('-')
+					str += ' ~ '
+					str += endArray[1] + '-' + endArray[2]
+				}
+				return str
       }
 		}
+
+		components = {
+			empty: Empty,
+			singleColumn: singleColumn,
+			statement: IndexStatement
+		};
+		
   }
 </script>
 <style lang="scss" src="@/public/styles/chart.scss"></style>

@@ -2,6 +2,23 @@
 .container {
 	background:#f2f2f2;
 }
+.calendar {
+	// padding: 12px;
+}
+.calendar-main {
+	background-color: white;
+	// border-radius: 8px;
+}
+.calendar-header {
+	font-size: large;
+	color: $primaryColor;
+	padding:8px 0;
+	margin:0 !important;
+}
+.calendar-board {
+
+}
+
 #calendar {
 	background:white;
 	margin-bottom:16rpx;
@@ -25,7 +42,8 @@
 	height: 80rpx;
 	line-height: 80rpx;
 	background: white;
-	border-bottom:2rpx solid #efefef;
+	border-bottom:1px solid #efefef;
+	border-top:1px solid #efefef;
 	.time {
 		border-right: 1px solid #f4f4f4;
 		color: #999;
