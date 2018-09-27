@@ -2,7 +2,7 @@
 <view class="container">
 	<view class="calendar">
 		<calendar
-			show-more-days="{{true}}"
+			show-more-days="{{ false }}"
 			lunar="{{ false }}"
 			weeks-type="cn" 
 			cell-size="30" 
@@ -145,7 +145,14 @@
 			},
 			
 			monthChange (event) {
-				
+				let detail = event.detail
+				for(let i = 0, len = this.daySelect.length; i < len; ++i) {
+					if (this.daySelect[i].mon == detail.currentMonth) {
+						this.daySelect[i].month = 'current'
+					} else {
+						this.daySelect[i].month = null
+					}
+				}
 			},
 
 			showStatement (id) {
@@ -183,6 +190,10 @@
 		timeParams () {
 			let query = {}
 			let length = this.daySelect.length
+			if (length == 0) {
+				return query
+			}
+
 			if (length <= 2) {
 				let start = this.daySelect[length - 1]
         query.start_time = `${start.year}-${start.mon}-${start.day}`
@@ -208,24 +219,18 @@
 
 		computed = {
 			monthAndDay() {
-				// let query = this.timeParams()
-				return '2018-08-08'
-        // if(this.dateParams.length < 2) {
-        //   let month = this.cur_month
-        //   let today = this.cur_today
-        //   if (this.startDate != null) {
-        //     let date = new Date(Date.parse(this.startDate));
-        //     month = date.getMonth() + 1
-        //     today = date.getDate()
-        //   }
-        //   return this.formatMonthDay(month, today)
-        // } else {
-        //   let date1 = new Date(Date.parse(this.startDate))
-        //   let date2 = new Date(Date.parse(this.endDate))
-        //   let start = this.formatMonthDay(date1.getMonth()+1, date1.getDate())
-        //   let end = this.formatMonthDay(date2.getMonth()+1, date2.getDate())
-        //   return `${start} ~ ${end}`
-        // }
+				let str = ''
+				let query = this.timeParams()
+				if (typeof query.start_time != 'undefined') {
+					let startArray = query.start_time.split('-')
+					str = startArray[1] + '-' + startArray[2]
+				}
+				if (typeof query.end_time != 'undefined') {
+					let endArray = query.end_time.split('-')
+					str += ' ~ '
+					str += endArray[1] + '-' + endArray[2]
+				}
+				return str
       }
 		}
 
