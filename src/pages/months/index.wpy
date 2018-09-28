@@ -4,14 +4,12 @@
       2018 年 7 月
     </view>
 
-    <view style="width: 100%;height: 300px;">
-      <canvas class="ec-canvas" style="width: 100%;height: 100%;" canvas-id="other" ></canvas>
-    </view>
+    <view class="block">
+      <view class="title">收支结余统计</view>
+      <view style="width: 100%;height: 300px;">
+        <canvas canvas-id="monthChart" disable-scroll="true" class="monthChart" style="width: 100%; height: 280px;"></canvas>
+      </view>
 
-
-    <!-- 总览 -->
-    <!-- <view class="border-bottom">
-      <view class="header-big">总览</view>
       <view>
         <view class="color-block">
           <view class="text bg-block income-bg-block">收入</view>
@@ -26,14 +24,7 @@
             3,000 <text>（比上月增长 20%）</text>
           </view>
         </view>
-
-        <view class="color-block">
-          <view class="text bg-block afford-bg-block">负债</view>
-          <view class="progress afford-bg" style="background-size: 50% 100%;">
-            3,000 <text>（比上月增长 20%）</text>
-          </view>
-        </view>
-
+        
         <view class="color-block">
           <view class="text bg-block surplus-bg-block">结余</view>
           <view class="progress surplus-bg" style="background-size: 70% 100%;">
@@ -41,153 +32,23 @@
           </view>
         </view>
       </view>
-    </view> -->
+    </view>
 
-    <!-- 消费类型 -->
-    <!-- <view class="border-bottom">
-      <view class="header-big">消费类型</view>
-      <view class="type-rank">
-        <view class="header-small">消费类型排行</view>
-        <view class="type-rank-row">
-          <view class="flex-between">
-            <view>
-              <text style="margin-right: 4px;">1</text>
-              <text>餐饮</text>
-            </view>
-            <view>3500</view>
-          </view>
-
-          <view class="flex-between">
-            <view>
-              <text style="margin-right: 4px;">2</text>
-              <text>餐饮</text>
-            </view>
-            <view>250</view>
-          </view>
-        </view>
-
-        <view class="header-small">单笔消费排行</view>
-        <view class="type-rank">
-          <view class="type-rank-row">
-            <view class="flex-between">
-              <view>
-                <text style="margin-right: 4px;">1</text>
-                <text>餐饮</text>
-              </view>
-              <view>3500</view>
-            </view>
-
-            <view class="flex-between">
-              <view>
-                <text style="margin-right: 4px;">2</text>
-                <text>餐饮</text>
-              </view>
-              <view>250</view>
-            </view>
-          </view>
-        </view>
-
-        <view class="header-small">消费最多的一周</view>
-        <view class="text">
-          <view>时间： 7.21 - 7.28</view>
-          <view>共消费 258.00, 占月支出 20%</view>
-          <view class="most-expend-week">
-            <view class="flex-between">
-              <view>房租</view>
-              <view>2500</view>
-            </view>
-            <view class="flex-between">
-              <view>餐饮</view>
-              <view>250</view>
-            </view>
-          </view>
-        </view>
-
-        <view class="header-small">消费最多的一天</view>
-        <view class="text">
-          <view>时间： 7.21，周六，共消费 258.00</view>
-          <view class="flex-between">
-            <view>早午晚餐</view>
-            <view>400</view>
-          </view>
-        </view>
+    <view class="block">
+      <view class="title">消费曲线</view>
+      <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
+        <swiper-item>
+          <view>全部</view>
+        </swiper-item>
+        <swiper-item>
+          <view>伙食交通</view>
+        </swiper-item>
+      </swiper>
+      <view>
+        <canvas canvas-id="expendChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
       </view>
-    </view> -->
+    </view>
 
-    <!-- 支出类型使用情况 -->
-    <!-- <view class="border-bottom">
-      <view class="header-big">支出类型使用情况</view>
-      <view class="text">
-        <view class="flex-between">
-          <view>支出类型</view>
-          <view>使用次数</view>
-        </view>
-
-        <view>
-          <view class="flex-between">
-            <view>早午晚餐</view>
-            <view>8</view>
-          </view>
-        </view>
-      </view>
-    </view> -->
-
-    <!-- 转账情况 -->
-    <!-- <view class="border-bottom">
-      <view class="header-big">转账情况</view>
-      <view class="text">
-        <view class="flex-between">
-          <view>银行卡 -> 现金</view>
-          <view>9000</view>
-          <view>2018-08-07</view>
-        </view>
-
-        <view class="flex-between">
-          <view>银行卡 -> 现金</view>
-          <view>9000</view>
-          <view>2018-08-07</view>
-        </view>
-      </view>
-    </view> -->
-
-    <!-- 备注的消费 -->
-    <!-- <view class="border-bottom">
-      <view class="header-big">备注的消费</view>
-      <view class="text">
-        <view class="has-remarks">
-          <view class="flex-between">
-            <view>餐饮</view>
-            <view>9000</view>
-            <view>2018-08-07</view>
-          </view>
-          <view class="text-grey">备注： 特别贵的一顿饭</view>
-        </view>
-      </view>
-    </view> -->
-
-     <!-- 预算使用情况 -->
-    <!-- <view class="border-bottom">
-      <view class="header-big">预算使用情况</view>
-      <view class="text">
-        <view>超出预算的类型</view>
-        <view>
-          <view class="flex-between">
-            <view>类型</view>
-            <view>预算额度</view>
-            <view>超出金额</view>
-          </view>
-          <view class="flex-between">
-            <view>餐饮</view>
-            <view>2500</view>
-            <view>300</view>
-          </view>
-        </view>
-
-        <view>预算超出总金额： 3500</view>
-      </view>
-    </view> -->
-
-    <!-- <view>建议</view> -->
 
 
   </view>
@@ -196,120 +57,68 @@
 <script>
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
-  import * as echarts from '@/public/ec-canvas/echarts'
-  import WxCanvas from '@/public/ec-canvas/wx-canvas'
-  
+  // import * as echarts from '@/public/ec-canvas/echarts'
+  // import WxCanvas from '@/public/ec-canvas/wx-canvas'
+  import wxCharts from '@/utils/wxchart.min.js'
+
   export default class MonthsIndex extends wepy.page {
     config = {
       navigationBarTitleText: '月账单'
     }
 
     data = {
+      info: {},
     }
 
-    onShow () {
-      this.init('other', { onInit: this.pipe })
+    async onShow () {
+      this.info = await wepy.getSystemInfo()
+      this.initMonthTotalChart()
+      this.initExpendChart()
     }
 
-    pipe (canvas, width, height) {
-      let chart = echarts.init(canvas, null, {
-        width: width,
-        height: height
-      });
-      canvas.setChart(chart);
-
-      let option = {
-        backgroundColor: "#ffffff",
-        color: ["#37A2DA", "#32C5E9", "#67E0E3"],
+    initMonthTotalChart () {
+      new wxCharts({
+        canvasId: 'monthChart',
+        type: 'pie',
         series: [{
-          label: {
-            normal: {
-              fontSize: 14
-            }
-          },
-          type: 'pie',
-          center: ['50%', '50%'],
-          radius: [0, '60%'],
-          data: [{
-            value: 55,
-            name: '北京'
-          }, {
-            value: 20,
-            name: '武汉'
-          }, {
-            value: 10,
-            name: '杭州'
-          }],
-          itemStyle: {
-            emphasis: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 2, 2, 0.3)'
-            }
-          }
-        }]
-      };
-      chart.setOption(option);
-      return chart;
+          name: 'cat1',
+          data: 50,
+        }, {
+          name: 'cat2',
+          data: 30,
+        }, {
+          name: 'cat3',
+          data: 1,
+        }],
+        width: this.info.screenWidth,
+        height: 280
+      });
     }
 
-    init (canvasId, ec) {
-      const version = wx.version.version.split('.').map(n => parseInt(n, 10))
-      const isValid = version[0] > 1 || (version[0] === 1 && version[1] >= 9) || (version[0] === 1 && version [1] === 9 && version[2] >= 91)
-      if (!isValid) {
-        console.error('This version of Wexin is not supported by ECharts. Please update Wexin with versions after 1.9.91')
-        return
-      }
-      const ctx = wx.createCanvasContext(canvasId, this.$wxpage)
- 
-      const canvas = new WxCanvas(ctx)
-      echarts.setCanvasCreator(() => {
-        return canvas
-      })
-      var query = wx.createSelectorQuery().in(this.$wxpage)
-      query.select('.ec-canvas').boundingClientRect(res => {
-        if (ec && ec.onInit) {
-          this.chart = ec.onInit(canvas, res.width, res.height)
-        }
-      }).exec()
+    initExpendChart () {
+      new wxCharts({
+        canvasId: 'expendChart',
+        type: 'column',
+        categories: ['饮食', '交通'],
+        series: [{
+            name: '上月',
+            data: [60, 20]
+        }, {
+            name: '当月',
+            data: [70, 40]
+        }],
+        yAxis: {
+          format: function (val) {
+            return val + '万';
+          }
+        },
+        width: this.info.screenWidth,
+        height: 200
+      });
     }
 
     methods = {
-      touchStart: function(e) {
-        if (this.chart && e.touches.length > 0) {
-          var touch = e.touches[0]
-          this.chart._zr.handler.dispatch('mousedown', {
-            zrX: touch.x,
-            zrY: touch.y
-          })
-          this.chart._zr.handler.dispatch('mousemove', {
-            zrX: touch.x,
-            zrY: touch.y
-          })
-        }
-      },
-      touchMove: function(e) {
-        if (this.chart && e.touches.length > 0) {
-          var touch = e.touches[0];
-          this.chart._zr.handler.dispatch('mousemove', {
-            zrX: touch.x,
-            zrY: touch.y
-          })
-        }
-      },
-      touchEnd: function (e) {
-        if (this.chart) {
-          var touch = e.changedTouches ? e.changedTouches[0] : {}
-          this.chart._zr.handler.dispatch('mouseup', {
-            zrX: touch.x,
-            zrY: touch.y
-          })
-          this.chart._zr.handler.dispatch('click', {
-            zrX: touch.x,
-            zrY: touch.y
-          })
-        }
-      }
+      
     }
   }
 </script>

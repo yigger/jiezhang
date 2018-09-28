@@ -3,7 +3,18 @@
   height: 100%;
   padding: 16rpx 24rpx;
   color: $primaryText;
-  // background: #f4f4f4;
+  background: #f4f4f4;
+}
+.block {
+  > .title {
+    display: inline-block;
+    padding-bottom: 6px;
+    font-size: 16px;
+    border-bottom: 2px dashed #ccc;
+  }
+  swiper {
+    // display: inline-block;
+  }
 }
 .top-title {
   font-size: 42rpx;

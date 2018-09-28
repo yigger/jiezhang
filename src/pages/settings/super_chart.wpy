@@ -186,7 +186,7 @@
         },
         width: this.info.screenWidth,
         height: 280
-     });
+      });
     }
 
   }
