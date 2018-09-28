@@ -1,8 +1,10 @@
 <template>
   <view class="container">
-    <view class="top-title">
-      2018 年 7 月
-    </view>
+    <!-- <view class="block user-information" style="height: {{info.screenHeight - 100}}px;">
+      <view class="user-avatar"><image src="../../public/images/covers/default-12.jpeg"></image></view>
+      <view class="user-name">Hi, Young！别来无恙啊</view>
+      <view class="statement-title">为您送上 七月 消费汇总</view>
+    </view> -->
 
     <view class="block">
       <view class="title">收支结余统计</view>
@@ -10,46 +12,124 @@
         <canvas canvas-id="monthChart" disable-scroll="true" class="monthChart" style="width: 100%; height: 280px;"></canvas>
       </view>
 
-      <view>
-        <view class="color-block">
-          <view class="text bg-block income-bg-block">收入</view>
-          <view class="progress income-bg" style="background-size: 80% 100%;">
-            3,000 <text>（比上月增长 20%）</text>
+      <view class="column-process">
+        <view>
+          <text class="title">收入</text>
+          <view class="row">
+            <view class="cle"></view>
           </view>
+          <view class="money">4500</view>
         </view>
 
-        <view class="color-block">
-          <view class="text bg-block expend-bg-block">支出</view>
-          <view class="progress expend-bg" style="background-size: 60% 100%;">
-            3,000 <text>（比上月增长 20%）</text>
+        <view>
+          <text class="title">支出</text>
+          <view class="row">
+            <view class="cle"></view>
           </view>
+          <view class="money">4500</view>
         </view>
-        
-        <view class="color-block">
-          <view class="text bg-block surplus-bg-block">结余</view>
-          <view class="progress surplus-bg" style="background-size: 70% 100%;">
-            3,000 <text>（比上月增长 20%）</text>
+
+        <view>
+          <text class="title">结余</text>
+          <view class="row">
+            <view class="cle"></view>
           </view>
+          <view class="money">4500</view>
         </view>
+
       </view>
     </view>
 
     <view class="block">
-      <view class="title">消费曲线</view>
-      <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
+      <view class="title">消费对比</view>
+      <!-- <swiper display-multiple-items="{{2}}">
         <swiper-item>
           <view>全部</view>
         </swiper-item>
         <swiper-item>
           <view>伙食交通</view>
         </swiper-item>
-      </swiper>
+      </swiper> -->
       <view>
         <canvas canvas-id="expendChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
       </view>
     </view>
 
+    <view class="block">
+      <view class="title">周消费曲线</view>
+      <view>
+        <canvas canvas-id="weekChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
+      </view>
+    </view>
 
+    <view class="block">
+      <view class="title">日均消费曲线</view>
+      <view>
+        <!-- <canvas canvas-id="weekChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas> -->
+      </view>
+    </view>
+
+    <view class="block">
+      <view class="title">月均消费曲线</view>
+      <view>
+        <!-- <canvas canvas-id="weekChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas> -->
+      </view>
+    </view>
+
+    <view class="block">
+      <view class="title">消费最多的一天</view>
+      <view>
+        这天看起来不是很开心哦！
+      </view>
+    </view>
+
+    <view class="block">
+      <view class="title">当月消费排行前十</view>
+      <view>
+        
+      </view>
+    </view>
+
+    <view class="block">
+      <view class="title">超出预算的消费类型</view>
+      <view>
+        
+      </view>
+    </view>
+
+    <view class="block">
+      <view class="title">消费地图</view>
+      <view>
+        你一共在 N 个地方消费过
+      </view>
+    </view>
+
+    <view class="block">
+      <view class="title">资产汇总</view>
+      <!-- 
+        总资产
+        净资产
+        总负债 
+        图表 + 说明
+      -->
+      <view>
+        
+      </view>
+    </view>
+    
+    <view class="block">
+      <view class="title">当月结余</view>
+      <view>
+        8888
+      </view>
+    </view>
+
+    <view class="block">
+      <view class="title">寄语</view>
+      <view>
+        啦啦啦德玛西亚
+      </view>
+    </view>
 
   </view>
 </template>
@@ -57,8 +137,6 @@
 <script>
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
-  // import * as echarts from '@/public/ec-canvas/echarts'
-  // import WxCanvas from '@/public/ec-canvas/wx-canvas'
   import wxCharts from '@/utils/wxchart.min.js'
 
   export default class MonthsIndex extends wepy.page {
@@ -74,6 +152,7 @@
       this.info = await wepy.getSystemInfo()
       this.initMonthTotalChart()
       this.initExpendChart()
+      this.initWeekExpendChart()
     }
 
     initMonthTotalChart () {
@@ -81,13 +160,13 @@
         canvasId: 'monthChart',
         type: 'pie',
         series: [{
-          name: 'cat1',
+          name: '收入',
           data: 50,
         }, {
-          name: 'cat2',
+          name: '支出',
           data: 30,
         }, {
-          name: 'cat3',
+          name: '结余',
           data: 1,
         }],
         width: this.info.screenWidth,
@@ -117,9 +196,33 @@
       });
     }
 
-    methods = {
-      
+    initWeekExpendChart () {
+      new wxCharts({
+        canvasId: 'weekChart',
+        type: 'line',
+        categories: ['第一周', '第二周', '第三周', '第四周'],
+        series: [{
+          name: '成交量2',
+          data: [0.30, 0.37, 0.65, 0.78],
+          format: function (val) {
+              return val.toFixed(2) + '万';
+          }
+        }],
+        yAxis: {
+          title: '消费金额 (元)',
+          format: function (val) {
+            return val.toFixed(2);
+          },
+          min: 0
+        },
+        extra: {
+          lineStyle: 'curve'
+        },
+        width: 320,
+        height: 200
+      });
     }
+
   }
 </script>
 <style lang="scss" src="@/public/styles/months/index.scss"></style>

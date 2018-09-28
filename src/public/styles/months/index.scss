@@ -6,20 +6,69 @@
   background: #f4f4f4;
 }
 .block {
+  background: #fefefe;
+  box-shadow: -2px -3px 15px #ccc;
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 4px;
+  // 封页个人信息
+  &.user-information {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    .user-avatar {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      image {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+      }
+    }
+    .user-name, .statement-title {
+      font-size: 16px;
+      margin: 6px 0;
+    }
+  }
   > .title {
     display: inline-block;
     padding-bottom: 6px;
     font-size: 16px;
-    border-bottom: 2px dashed #ccc;
+    border-bottom: 2px dashed #f4f4f4;
   }
+  // 图表下的长度process
+  .column-process {
+    > view {
+      display: flex;
+      align-items:center;
+      font-size: 16px;
+      margin-bottom:6px;
+      .title, .money {
+        margin: 0 8px;
+        color: $secondaryText;
+      }
+      .row {
+        width:250px;
+      }
+      .cle {
+        height: 8px;
+        width: 80%;
+        border-radius: 10px;
+        background: aquamarine;
+      }
+    }
+  }
+
   swiper {
-    // display: inline-block;
+    display: flex;
+    height: 35px;
+    font-size: 16px;
+    // swiper-item {
+    //   width: 25px;
+    // }
   }
-}
-.top-title {
-  font-size: 42rpx;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #ccc;
 }
 
 .border-bottom {
