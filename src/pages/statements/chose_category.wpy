@@ -63,9 +63,7 @@
       const data = await wxRequest.Get(
         'statements/categories', 
         { type: this.type }, 
-        {
-          cacheKey: ['category', this.type == 'expend' ? 'statementExpendList' : 'statementIncomeList']
-        })
+        { cacheKey: ['category', this.type == 'expend' ? 'statementExpendList' : 'statementIncomeList']})
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories

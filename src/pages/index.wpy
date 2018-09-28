@@ -43,10 +43,6 @@
           <view class="zan-loadmore__tips">加载中...</view>
         </view>
         
-        <!-- <view class="zan-loadmore zan-loadmore--nodata" hidden="{{ !noMoreData }}">
-          <view class="zan-loadmore__tips">没有更多了</view>
-        </view> -->
-
         <view wx:if="{{ list.length == 0 && !showLoading }}">
           <empty :title.sync="emptyTitle"></empty>
         </view>
@@ -89,7 +85,6 @@
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '首页'
-      // enablePullDownRefresh: true // 与 swiper 下滑冲突
     }
 
     data = {
@@ -103,7 +98,6 @@
         bg_avatar: null
       },
       current: 0,
-      noMoreData: false,
       showLoading: false,
       prepareOrders: [],
       showModal: false,
@@ -119,12 +113,15 @@
       preorderForm
 		}
 
-    onLoad () {
-      this.getList()
-    }
-
     onShow () {
+      let start = new Date()
+      this.getList()
+      console.log("request list waste time(s)： " + (new Date()-start)/1000)
+
+      start = new Date()
       this.getHeader()
+      console.log("request header waste time(s)： " + (new Date()-start)/1000)
+
       this.getPreOrders()
       this.bgImage()
     }
@@ -180,16 +177,7 @@
       const store = getStore()
       await store.dispatch(asyncList())
       const res = store.getState().statement.statements
-      // const filted = res.filter((e) => {
-      //   return e.id == 1140
-      // })
-      // console.log(filted)
-      if (res.status == 405 || res.status == 301) {
-        this.noMoreData = true
-      } else {
-        this.list = res
-        this.noMoreData = false
-      }
+      this.list = res
       this.$apply()
     }
 

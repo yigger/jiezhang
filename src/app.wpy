@@ -99,7 +99,13 @@ export default class extends wepy.app {
       request: 10000,
       downloadFile: 10000
     },
-    debug: true
+    debug: true,
+    "plugins": {
+      "calendar": {
+        "version": "1.1.3",
+        "provider": "wx92c68dae5a8bb046"
+      }
+    }
   }
 
   constructor () {

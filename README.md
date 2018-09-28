@@ -47,7 +47,7 @@ npm run build // 发布时执行
 ### 感谢
 https://tencent.github.io/wepy/  
 https://github.com/dyq086/wepy-mall  
-
+https://github.com/czcaiwj/calendar  
 
 ### License
 JieZhang is licensed under [The MIT License](LICENSE)
