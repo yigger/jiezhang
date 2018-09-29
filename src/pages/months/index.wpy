@@ -36,22 +36,20 @@
           </view>
           <view class="money">4500</view>
         </view>
-
       </view>
     </view>
 
     <view class="block">
       <view class="title">消费对比</view>
-      <!-- <swiper display-multiple-items="{{2}}">
-        <swiper-item>
-          <view>全部</view>
-        </swiper-item>
-        <swiper-item>
-          <view>伙食交通</view>
-        </swiper-item>
-      </swiper> -->
       <view>
         <canvas canvas-id="expendChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
+      </view>
+    </view>
+
+    <view class="block">
+      <view class="title">日均消费曲线</view>
+      <view>
+        <canvas canvas-id="dayAvgChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
       </view>
     </view>
 
@@ -63,25 +61,26 @@
     </view>
 
     <view class="block">
-      <view class="title">日均消费曲线</view>
-      <view>
-        <!-- <canvas canvas-id="weekChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas> -->
-      </view>
-    </view>
-
-    <view class="block">
       <view class="title">月均消费曲线</view>
       <view>
-        <!-- <canvas canvas-id="weekChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas> -->
+        <canvas canvas-id="monthAvgChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
       </view>
     </view>
 
     <view class="block">
-      <view class="title">消费最多的一天</view>
+      <view class="title">月结余曲线</view>
       <view>
-        这天看起来不是很开心哦！
+        <canvas canvas-id="surplusChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
       </view>
     </view>
+
+    <view class="block">
+      <view class="title">预算使用情况</view>
+      <view>
+        <canvas canvas-id="budgetChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
+      </view>
+    </view>
+
 
     <view class="block">
       <view class="title">当月消费排行前十</view>
@@ -90,44 +89,44 @@
       </view>
     </view>
 
-    <view class="block">
-      <view class="title">超出预算的消费类型</view>
-      <view>
-        
-      </view>
-    </view>
-
-    <view class="block">
-      <view class="title">消费地图</view>
-      <view>
-        你一共在 N 个地方消费过
-      </view>
-    </view>
+    
 
     <view class="block">
       <view class="title">资产汇总</view>
-      <!-- 
-        总资产
-        净资产
-        总负债 
-        图表 + 说明
-      -->
       <view>
-        
+        <canvas canvas-id="assetAllChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 280px;"></canvas>
+      </view>
+      <view class="column-process">
+        <view>
+          <text class="title">总资产</text>
+          <view class="row">
+            <view class="cle"></view>
+          </view>
+          <view class="money">4500</view>
+        </view>
+
+        <view>
+          <text class="title">净资产</text>
+          <view class="row">
+            <view class="cle"></view>
+          </view>
+          <view class="money">4500</view>
+        </view>
+
+        <view>
+          <text class="title">总负债</text>
+          <view class="row">
+            <view class="cle"></view>
+          </view>
+          <view class="money">4500</view>
+        </view>
       </view>
     </view>
     
     <view class="block">
-      <view class="title">当月结余</view>
-      <view>
-        8888
-      </view>
-    </view>
-
-    <view class="block">
       <view class="title">寄语</view>
-      <view>
-        啦啦啦德玛西亚
+      <view class="ending">
+        我戴着用树叶做的帽子，穿着美丽的裙子，在树林里遨游着，与各种动物、植物和谐相处。四月的微风，与我一起在这片美丽的土地上翩翩起舞。
       </view>
     </view>
 
@@ -153,6 +152,11 @@
       this.initMonthTotalChart()
       this.initExpendChart()
       this.initWeekExpendChart()
+      this.initDayAvgChart()
+      this.initMonthAvgChart()
+      this.initAssetAllChart()
+      this.initSurplusChart()
+      this.initBudgetChart()
     }
 
     initMonthTotalChart () {
@@ -202,7 +206,7 @@
         type: 'line',
         categories: ['第一周', '第二周', '第三周', '第四周'],
         series: [{
-          name: '成交量2',
+          name: '每周消费金额',
           data: [0.30, 0.37, 0.65, 0.78],
           format: function (val) {
               return val.toFixed(2) + '万';
@@ -223,6 +227,138 @@
       });
     }
 
+    initDayAvgChart () {
+      new wxCharts({
+        canvasId: 'dayAvgChart',
+        type: 'line',
+        categories: ['第一周', '第二周', '第三周', '第四周'],
+        series: [{
+          name: '日均消费',
+          data: [0.30, 0.37, 0.65, 0.78],
+          format: function (val) {
+              return val.toFixed(2) + '万';
+          }
+        }],
+        yAxis: {
+          title: '消费金额 (元)',
+          format: function (val) {
+            return val.toFixed(2);
+          },
+          min: 0
+        },
+        extra: {
+          lineStyle: 'curve'
+        },
+        width: 320,
+        height: 200
+      });
+    }
+
+    initMonthAvgChart () {
+      new wxCharts({
+        canvasId: 'monthAvgChart',
+        type: 'line',
+        categories: ['第一周', '第二周', '第三周', '第四周'],
+        series: [{
+          name: '月均消费',
+          data: [0.30, 0.37, 0.65, 0.78],
+          format: function (val) {
+              return val.toFixed(2) + '万';
+          }
+        }],
+        yAxis: {
+          title: '消费金额 (元)',
+          format: function (val) {
+            return val.toFixed(2);
+          },
+          min: 0
+        },
+        extra: {
+          lineStyle: 'curve'
+        },
+        width: 320,
+        height: 200
+      });
+    }
+    
+    initSurplusChart () {
+      new wxCharts({
+        canvasId: 'surplusChart',
+        type: 'line',
+        categories: ['第一周', '第二周', '第三周', '第四周'],
+        series: [{
+          name: '月均消费',
+          data: [0.30, 0.37, 0.65, 0.78],
+          format: function (val) {
+              return val.toFixed(2) + '万';
+          }
+        }],
+        yAxis: {
+          title: '消费金额 (元)',
+          format: function (val) {
+            return val.toFixed(2);
+          },
+          min: 0
+        },
+        extra: {
+          lineStyle: 'curve'
+        },
+        width: 320,
+        height: 200
+      });
+    }
+
+    initAssetAllChart () {
+      new wxCharts({
+        canvasId: 'assetAllChart',
+        type: 'ring',
+        series: [{
+          name: '成交量1',
+          data: 15,
+        }, {
+          name: '成交量2',
+          data: 35,
+        }, {
+          name: '成交量3',
+          data: 78,
+        }, {
+          name: '成交量4',
+          data: 63,
+        }],
+        yAxis: {
+          title: '消费金额 (元)',
+          format: function (val) {
+            return val.toFixed(2);
+          },
+          min: 0
+        },
+        width: 320,
+        height: 280,
+        dataLabel: false
+      });
+    }
+
+    initBudgetChart () {
+      new wxCharts({
+        canvasId: 'budgetChart',
+        type: 'column',
+        categories: ['饮食', '交通'],
+        series: [{
+            name: '预算',
+            data: [60, 20]
+        }, {
+            name: '实际消费',
+            data: [70, 40]
+        }],
+        yAxis: {
+          format: function (val) {
+            return val + '万';
+          }
+        },
+        width: this.info.screenWidth,
+        height: 200
+      });
+    }
   }
 </script>
 <style lang="scss" src="@/public/styles/months/index.scss"></style>

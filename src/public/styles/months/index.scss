@@ -61,13 +61,10 @@
     }
   }
 
-  swiper {
-    display: flex;
-    height: 35px;
+  .ending {
     font-size: 16px;
-    // swiper-item {
-    //   width: 25px;
-    // }
+    color: $secondaryText;
+    line-height:26px;
   }
 }
 
