@@ -17,6 +17,8 @@
     flex-direction:column;
     align-items:center;
     justify-content:center;
+    font-size: 16px;
+    color: $secondaryText;
     .user-avatar {
       width: 65px;
       height: 65px;
@@ -27,8 +29,11 @@
         border-radius: 50%;
       }
     }
-    .user-name, .statement-title {
-      font-size: 16px;
+    .user-name {
+      margin-top:24px;
+      margin-bottom: 6px;
+    }
+    .statement-title {
       margin: 6px 0;
     }
   }
@@ -45,6 +50,9 @@
       align-items:center;
       font-size: 16px;
       margin-bottom:6px;
+      .title {
+        min-width: 60px;
+      }
       .title, .money {
         margin: 0 8px;
         color: $secondaryText;

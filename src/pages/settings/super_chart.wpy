@@ -148,7 +148,7 @@
         })
       this.header = data.header
       this.chartData = data.charts
-      if (data.wx_charts.length != 0) this.initChart(data.wx_charts)
+      if (data.wx_charts.length > 0) this.initChart(data.wx_charts)
       this.$apply()
     }
 

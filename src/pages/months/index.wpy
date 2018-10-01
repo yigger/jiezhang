@@ -1,10 +1,12 @@
 <template>
   <view class="container">
-    <!-- <view class="block user-information" style="height: {{info.screenHeight - 100}}px;">
-      <view class="user-avatar"><image src="../../public/images/covers/default-12.jpeg"></image></view>
-      <view class="user-name">Hi, Young！别来无恙啊</view>
-      <view class="statement-title">为您送上 七月 消费汇总</view>
-    </view> -->
+    <view class="block user-information" style="height: {{info.screenHeight - 105}}px;">
+      <view class="user-avatar"><image src="{{ userinfo.avatar_url }}"></image></view>
+      <view class="user-name">Hi, {{ userinfo.name }}</view>
+      <view class="statement-title">别来无恙啊</view>
+      <view class="statement-title" wx:if="{{ userinfo.begin_text && userinfo.begin_text != ''}}">{{ userinfo.begin_text }}</view>
+      <view class="statement-title">为您送上 {{ userinfo.month }} 消费汇总</view>
+    </view>
 
     <view class="block">
       <view class="title">收支结余统计</view>
@@ -18,7 +20,7 @@
           <view class="row">
             <view class="cle"></view>
           </view>
-          <view class="money">4500</view>
+          <view class="money">{{ dashboard.income }}</view>
         </view>
 
         <view>
@@ -26,7 +28,7 @@
           <view class="row">
             <view class="cle"></view>
           </view>
-          <view class="money">4500</view>
+          <view class="money">{{ dashboard.expend }}</view>
         </view>
 
         <view>
@@ -34,7 +36,7 @@
           <view class="row">
             <view class="cle"></view>
           </view>
-          <view class="money">4500</view>
+          <view class="money">{{ dashboard.surplus }}</view>
         </view>
       </view>
     </view>
@@ -47,54 +49,47 @@
     </view>
 
     <view class="block">
-      <view class="title">日均消费曲线</view>
+      <view class="title">日均消费（近六月）</view>
       <view>
-        <canvas canvas-id="dayAvgChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
+        <canvas canvas-id="dayAvgChart" disable-scroll="true" style="width: 100%; height: 200px;"></canvas>
       </view>
     </view>
 
     <view class="block">
       <view class="title">周消费曲线</view>
       <view>
-        <canvas canvas-id="weekChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
+        <canvas canvas-id="weekChart" disable-scroll="true" style="width: 100%; height: 200px;"></canvas>
       </view>
     </view>
 
     <view class="block">
-      <view class="title">月均消费曲线</view>
+      <view class="title">月结余曲线（近六月）</view>
       <view>
-        <canvas canvas-id="monthAvgChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
-      </view>
-    </view>
-
-    <view class="block">
-      <view class="title">月结余曲线</view>
-      <view>
-        <canvas canvas-id="surplusChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
+        <canvas canvas-id="surplusChart" disable-scroll="true" style="width: 100%; height: 200px;"></canvas>
       </view>
     </view>
 
     <view class="block">
       <view class="title">预算使用情况</view>
       <view>
-        <canvas canvas-id="budgetChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
+        <canvas canvas-id="budgetChart" disable-scroll="true" style="width: 100%; height: 200px;"></canvas>
       </view>
     </view>
 
 
-    <view class="block">
+    <!-- <view class="block">
       <view class="title">当月消费排行前十</view>
       <view>
-        
+        <view>
+          <view>icon</view>
+        </view>
       </view>
-    </view>
-
-    
+    </view> -->
 
     <view class="block">
       <view class="title">资产汇总</view>
       <view>
-        <canvas canvas-id="assetAllChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 280px;"></canvas>
+        <canvas canvas-id="assetAllChart" disable-scroll="true" style="width: 100%; height: 280px;"></canvas>
       </view>
       <view class="column-process">
         <view>
@@ -102,7 +97,7 @@
           <view class="row">
             <view class="cle"></view>
           </view>
-          <view class="money">4500</view>
+          <view class="money">{{ totalAsset.all_asset }}</view>
         </view>
 
         <view>
@@ -110,7 +105,7 @@
           <view class="row">
             <view class="cle"></view>
           </view>
-          <view class="money">4500</view>
+          <view class="money">{{ totalAsset.net_worth }}</view>
         </view>
 
         <view>
@@ -118,7 +113,7 @@
           <view class="row">
             <view class="cle"></view>
           </view>
-          <view class="money">4500</view>
+          <view class="money">{{ totalAsset.total_liability }}</view>
         </view>
       </view>
     </view>
@@ -126,7 +121,7 @@
     <view class="block">
       <view class="title">寄语</view>
       <view class="ending">
-        我戴着用树叶做的帽子，穿着美丽的裙子，在树林里遨游着，与各种动物、植物和谐相处。四月的微风，与我一起在这片美丽的土地上翩翩起舞。
+        {{ userinfo.end_text }}
       </view>
     </view>
 
@@ -145,54 +140,70 @@
 
     data = {
       info: {},
+      year: 0,
+      month: 0,
+      dashboard: {},
+      totalAsset: {},
+      userinfo: {}
     }
 
-    async onShow () {
+    async onLoad (options) {
+      this.year = options.year
+      this.month = options.month
       this.info = await wepy.getSystemInfo()
-      this.initMonthTotalChart()
+    }
+
+    onShow () {
+      this.information()
+      this.initDashboardChart()
       this.initExpendChart()
-      this.initWeekExpendChart()
       this.initDayAvgChart()
-      this.initMonthAvgChart()
-      this.initAssetAllChart()
+      this.initWeekAvgChart()
       this.initSurplusChart()
       this.initBudgetChart()
+      this.initAssetAllChart()
+      this.initLast10()
     }
 
-    initMonthTotalChart () {
-      new wxCharts({
-        canvasId: 'monthChart',
-        type: 'pie',
-        series: [{
-          name: '收入',
-          data: 50,
-        }, {
-          name: '支出',
-          data: 30,
-        }, {
-          name: '结余',
-          data: 1,
-        }],
-        width: this.info.screenWidth,
-        height: 280
-      });
+    async initDashboardChart () {
+      const data = await wxRequest.Get('super_chart/month_chart', {
+        type: 'dashboard_chart',
+        year: this.year,
+        month: this.month
+      })
+      this.dashboard = data
+      this.$apply()
+      if (data.data.length > 0) {
+        new wxCharts({
+          canvasId: 'monthChart',
+          type: 'pie',
+          series: data.data,
+          width: this.info.screenWidth,
+          height: 280
+        })
+      }
     }
 
-    initExpendChart () {
+    async initExpendChart () {
+      const data = await wxRequest.Get('super_chart/month_chart', {
+        type: 'expend_compare',
+        year: this.year,
+        month: this.month
+      })
       new wxCharts({
         canvasId: 'expendChart',
         type: 'column',
-        categories: ['饮食', '交通'],
+        categories: data.categories,
         series: [{
             name: '上月',
-            data: [60, 20]
+            data: data.last_month
         }, {
             name: '当月',
-            data: [70, 40]
+            data: data.current_month
         }],
         yAxis: {
           format: function (val) {
-            return val + '万';
+            return val + '元';
           }
         },
         width: this.info.screenWidth,
@@ -200,50 +211,22 @@
       });
     }
 
-    initWeekExpendChart () {
-      new wxCharts({
-        canvasId: 'weekChart',
-        type: 'line',
-        categories: ['第一周', '第二周', '第三周', '第四周'],
-        series: [{
-          name: '每周消费金额',
-          data: [0.30, 0.37, 0.65, 0.78],
-          format: function (val) {
-              return val.toFixed(2) + '万';
-          }
-        }],
-        yAxis: {
-          title: '消费金额 (元)',
-          format: function (val) {
-            return val.toFixed(2);
-          },
-          min: 0
-        },
-        extra: {
-          lineStyle: 'curve'
-        },
-        width: 320,
-        height: 200
-      });
-    }
-
-    initDayAvgChart () {
+    async initDayAvgChart () {
+      const data = await wxRequest.Get('super_chart/month_chart', {
+        type: 'day_avg_chart',
+        year: this.year,
+        month: this.month
+      })
       new wxCharts({
         canvasId: 'dayAvgChart',
         type: 'line',
-        categories: ['第一周', '第二周', '第三周', '第四周'],
+        categories: data.months,
         series: [{
           name: '日均消费',
-          data: [0.30, 0.37, 0.65, 0.78],
-          format: function (val) {
-              return val.toFixed(2) + '万';
-          }
+          data: data.data,
         }],
         yAxis: {
           title: '消费金额 (元)',
-          format: function (val) {
-            return val.toFixed(2);
-          },
           min: 0
         },
         extra: {
@@ -254,23 +237,22 @@
       });
     }
 
-    initMonthAvgChart () {
+    async initWeekAvgChart () {
+      const data = await wxRequest.Get('super_chart/month_chart', {
+        type: 'week_avg_chart',
+        year: this.year,
+        month: this.month
+      })
       new wxCharts({
-        canvasId: 'monthAvgChart',
+        canvasId: 'weekChart',
         type: 'line',
-        categories: ['第一周', '第二周', '第三周', '第四周'],
+        categories: data.weeks,
         series: [{
-          name: '月均消费',
-          data: [0.30, 0.37, 0.65, 0.78],
-          format: function (val) {
-              return val.toFixed(2) + '万';
-          }
+          name: '每周消费',
+          data: data.data,
         }],
         yAxis: {
           title: '消费金额 (元)',
-          format: function (val) {
-            return val.toFixed(2);
-          },
           min: 0
         },
         extra: {
@@ -280,24 +262,23 @@
         height: 200
       });
     }
-    
-    initSurplusChart () {
+
+    async initSurplusChart () {
+      const data = await wxRequest.Get('super_chart/month_chart', {
+        type: 'month_surplus_chart',
+        year: this.year,
+        month: this.month
+      })
       new wxCharts({
         canvasId: 'surplusChart',
         type: 'line',
-        categories: ['第一周', '第二周', '第三周', '第四周'],
+        categories: data.months,
         series: [{
           name: '月均消费',
-          data: [0.30, 0.37, 0.65, 0.78],
-          format: function (val) {
-              return val.toFixed(2) + '万';
-          }
+          data: data.data
         }],
         yAxis: {
           title: '消费金额 (元)',
-          format: function (val) {
-            return val.toFixed(2);
-          },
           min: 0
         },
         extra: {
@@ -308,28 +289,19 @@
       });
     }
 
-    initAssetAllChart () {
+    async initAssetAllChart () {
+      const data = await wxRequest.Get('super_chart/month_chart', {
+        type: 'asset_total_chart',
+        year: this.year,
+        month: this.month
+      })
+      this.totalAsset = data
       new wxCharts({
         canvasId: 'assetAllChart',
         type: 'ring',
-        series: [{
-          name: '成交量1',
-          data: 15,
-        }, {
-          name: '成交量2',
-          data: 35,
-        }, {
-          name: '成交量3',
-          data: 78,
-        }, {
-          name: '成交量4',
-          data: 63,
-        }],
+        series: data.data,
         yAxis: {
           title: '消费金额 (元)',
-          format: function (val) {
-            return val.toFixed(2);
-          },
           min: 0
         },
         width: 320,
@@ -338,26 +310,52 @@
       });
     }
 
-    initBudgetChart () {
-      new wxCharts({
-        canvasId: 'budgetChart',
-        type: 'column',
-        categories: ['饮食', '交通'],
-        series: [{
-            name: '预算',
-            data: [60, 20]
-        }, {
-            name: '实际消费',
-            data: [70, 40]
-        }],
-        yAxis: {
-          format: function (val) {
-            return val + '万';
-          }
-        },
-        width: this.info.screenWidth,
-        height: 200
-      });
+    async initBudgetChart () {
+      const data = await wxRequest.Get('super_chart/month_chart', {
+        type: 'budget_chart',
+        year: this.year,
+        month: this.month
+      })
+      if (data.categories.length > 0) {
+        new wxCharts({
+          canvasId: 'budgetChart',
+          type: 'column',
+          categories: data.categories,
+          series: [{
+              name: '预算',
+              data: data.budget
+          }, {
+              name: '实际消费',
+              data: data.amount
+          }],
+          yAxis: {
+            format: function (val) {
+              return val + '元';
+            }
+          },
+          width: this.info.screenWidth,
+          height: 200
+        })
+      }
+    }
+
+    async information () {
+      const data = await wxRequest.Get('super_chart/month_chart', {
+        type: 'information',
+        year: this.year,
+        month: this.month
+      })
+      this.userinfo = data
+      this.$apply()
+    }
+
+    async initLast10 () {
+      const data = await wxRequest.Get('super_chart/month_chart', {
+        type: 'month_last_10',
+        year: this.year,
+        month: this.month
+      })
+      
     }
   }
 </script>
