@@ -38,10 +38,26 @@
     }
   }
   > .title {
+    position: relative;
+    z-index: 998;
     display: inline-block;
-    padding-bottom: 6px;
-    font-size: 16px;
+    padding-bottom: 4px;
+    margin-bottom:12px;
+    font-size: 18px;
+    color: #40485B;
+    font-weight: bolder;
     border-bottom: 2px dashed #f4f4f4;
+    &:before {
+      content: '';
+      position: absolute;
+      background: #FFF3AC;
+      width: calc(100% + 16px);
+      height: 12px;
+      bottom: 0;
+      left: 0;
+      border-radius: 12px;
+      z-index: -1;
+    }
   }
   // 图表下的长度process
   .column-process {
@@ -62,7 +78,6 @@
       }
       .cle {
         height: 8px;
-        width: 80%;
         border-radius: 10px;
         background: aquamarine;
       }

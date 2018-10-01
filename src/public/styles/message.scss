@@ -24,8 +24,8 @@
     border-bottom: 1px solid $borderColor;
     padding: 12rpx 24rpx;
     image {
-      width: 120rpx;
-      height: 120rpx;
+      width: 150rpx;
+      height: 150rpx;
     }
     .grey-text {
       color: $secondaryText;
@@ -37,6 +37,10 @@
       flex: 1;
       padding: 0 12rpx;
       font-size: 32rpx;
+      .desc {
+        color: $secondaryText;
+        font-size: 28rpx;
+      }
       .time {
         color: $secondaryText;
         font-size: 24rpx;

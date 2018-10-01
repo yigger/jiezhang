@@ -11,6 +11,7 @@
           <view class="item" wx:for="{{ systemList }}" @tap="toPage('{{ item.page_url }}?id={{ item.id }}')">
             <view class="message-info">
               <view class="{{ item.already_read == 1 ? 'grey-text' : '' }}">{{ item.title }}</view>
+              <view class="desc {{ item.already_read == 1 ? 'grey-text' : '' }}" wx:if="{{ item.sub_title && item.sub_title != '' }}">{{ item.sub_title }}</view>
               <view class="time">{{ item.time }}</view>
             </view>
             <image src="{{ item.image_url }}"></image>

@@ -1,120 +1,148 @@
 <template>
   <view class="container">
-    <view class="block user-information" style="height: {{info.screenHeight - 105}}px;">
+    <view class="block user-information" style="height: {{info.screenHeight - 105}}px;background: url('{{ userinfo.cover }}')">
       <view class="user-avatar"><image src="{{ userinfo.avatar_url }}"></image></view>
       <view class="user-name">Hi, {{ userinfo.name }}</view>
       <view class="statement-title">别来无恙啊</view>
       <view class="statement-title" wx:if="{{ userinfo.begin_text && userinfo.begin_text != ''}}">{{ userinfo.begin_text }}</view>
-      <view class="statement-title">为您送上 {{ userinfo.month }} 消费汇总</view>
+      <view class="statement-title">为您送上 {{ userinfo.month }} 消费统计</view>
     </view>
 
     <view class="block">
       <view class="title">收支结余统计</view>
-      <view style="width: 100%;height: 300px;">
-        <canvas canvas-id="monthChart" disable-scroll="true" class="monthChart" style="width: 100%; height: 280px;"></canvas>
+      <view wx:if="{{ dashboard.data != null }}">
+        <view style="width: 100%;height: 300px;">
+          <canvas canvas-id="monthChart" disable-scroll="true" class="monthChart" style="width: 100%; height: 280px;"></canvas>
+        </view>
+
+        <view class="column-process">
+          <view>
+            <text class="title">收入</text>
+            <view class="row">
+              <view class="cle" style="width: {{incomePercent}}"></view>
+            </view>
+            <view class="money">{{ dashboard.income }}</view>
+          </view>
+
+          <view>
+            <text class="title">支出</text>
+            <view class="row">
+              <view class="cle" style="width: {{expendPercent}}"></view>
+            </view>
+            <view class="money">{{ dashboard.expend }}</view>
+          </view>
+
+          <view>
+            <text class="title">结余</text>
+            <view class="row">
+              <view class="cle" style="width: {{surplusPercent}}"></view>
+            </view>
+            <view class="money">{{ dashboard.surplus }}</view>
+          </view>
+        </view>
       </view>
-
-      <view class="column-process">
-        <view>
-          <text class="title">收入</text>
-          <view class="row">
-            <view class="cle"></view>
-          </view>
-          <view class="money">{{ dashboard.income }}</view>
-        </view>
-
-        <view>
-          <text class="title">支出</text>
-          <view class="row">
-            <view class="cle"></view>
-          </view>
-          <view class="money">{{ dashboard.expend }}</view>
-        </view>
-
-        <view>
-          <text class="title">结余</text>
-          <view class="row">
-            <view class="cle"></view>
-          </view>
-          <view class="money">{{ dashboard.surplus }}</view>
-        </view>
+      <view wx:else>
+        <Empty :title.sync="emptyTitle"></Empty>
       </view>
     </view>
 
     <view class="block">
       <view class="title">消费对比</view>
-      <view>
+      <view wx:if="{{ expendChart.categories.length > 0 }}">
         <canvas canvas-id="expendChart" disable-scroll="true" class="expendChart" style="width: 100%; height: 200px;"></canvas>
+      </view>
+      <view wx:else>
+        <Empty :title.sync="emptyTitle"></Empty>
       </view>
     </view>
 
     <view class="block">
-      <view class="title">日均消费（近六月）</view>
-      <view>
+      <view class="title">日均消费</view>
+      <view wx:if="{{ dayChart.months.length > 0 }}">
         <canvas canvas-id="dayAvgChart" disable-scroll="true" style="width: 100%; height: 200px;"></canvas>
+      </view>
+      <view wx:else>
+        <Empty :title.sync="emptyTitle"></Empty>
       </view>
     </view>
 
     <view class="block">
       <view class="title">周消费曲线</view>
-      <view>
+      <view wx:if="{{ weekChart.weeks.length > 0 }}">
         <canvas canvas-id="weekChart" disable-scroll="true" style="width: 100%; height: 200px;"></canvas>
+      </view>
+      <view wx:else>
+        <Empty :title.sync="emptyTitle"></Empty>
       </view>
     </view>
 
     <view class="block">
-      <view class="title">月结余曲线（近六月）</view>
-      <view>
+      <view class="title">月结余曲线</view>
+      <view wx:if="{{ surplusChart.months.length > 0 }}">
         <canvas canvas-id="surplusChart" disable-scroll="true" style="width: 100%; height: 200px;"></canvas>
+      </view>
+      <view wx:else>
+        <Empty :title.sync="emptyTitle"></Empty>
       </view>
     </view>
 
     <view class="block">
       <view class="title">预算使用情况</view>
-      <view>
+      <view wx:if="{{ budgetChart.categories.length > 0 }}">
         <canvas canvas-id="budgetChart" disable-scroll="true" style="width: 100%; height: 200px;"></canvas>
+      </view>
+      <view wx:else>
+        <Empty :title.sync="emptyTitle"></Empty>
       </view>
     </view>
 
 
-    <!-- <view class="block">
-      <view class="title">当月消费排行前十</view>
-      <view>
-        <view>
-          <view>icon</view>
-        </view>
+    <view class="block">
+      <view class="title">消费排行前十</view>
+      <view wx:if="{{ lastTen.length > 0 }}">
+        <repeat for="{{ lastTen }}" key="index" index="index" item="item">
+          <StatementItem :statement.sync="item"></StatementItem>
+        </repeat>
       </view>
-    </view> -->
+      <view wx:else>
+        <Empty :title.sync="emptyTitle"></Empty>
+      </view>
+    </view>
 
     <view class="block">
       <view class="title">资产汇总</view>
-      <view>
-        <canvas canvas-id="assetAllChart" disable-scroll="true" style="width: 100%; height: 280px;"></canvas>
+      <view wx:if="{{ totalAsset.data != null }}">
+        <view>
+          <canvas canvas-id="assetAllChart" disable-scroll="true" style="width: 100%; height: 280px;"></canvas>
+        </view>
+        <view class="column-process">
+          <view>
+            <text class="title">总资产</text>
+            <view class="row">
+              <view class="cle" style="width: {{assetPercent}}"></view>
+            </view>
+            <view class="money">{{ totalAsset.all_asset }}</view>
+          </view>
+
+          <view>
+            <text class="title">净资产</text>
+            <view class="row">
+              <view class="cle" style="width: {{netPercent}}"></view>
+            </view>
+            <view class="money">{{ totalAsset.net_worth }}</view>
+          </view>
+
+          <view>
+            <text class="title">总负债</text>
+            <view class="row">
+              <view class="cle" style="width: {{debtPercent}}"></view>
+            </view>
+            <view class="money">{{ totalAsset.total_liability }}</view>
+          </view>
+        </view>
       </view>
-      <view class="column-process">
-        <view>
-          <text class="title">总资产</text>
-          <view class="row">
-            <view class="cle"></view>
-          </view>
-          <view class="money">{{ totalAsset.all_asset }}</view>
-        </view>
-
-        <view>
-          <text class="title">净资产</text>
-          <view class="row">
-            <view class="cle"></view>
-          </view>
-          <view class="money">{{ totalAsset.net_worth }}</view>
-        </view>
-
-        <view>
-          <text class="title">总负债</text>
-          <view class="row">
-            <view class="cle"></view>
-          </view>
-          <view class="money">{{ totalAsset.total_liability }}</view>
-        </view>
+      <view wx:else>
+        <Empty :title.sync="emptyTitle"></Empty>
       </view>
     </view>
     
@@ -132,7 +160,8 @@
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
   import wxCharts from '@/utils/wxchart.min.js'
-
+  import StatementItem from '@/components/index/statement'
+  import Empty from '@/components/empty'
   export default class MonthsIndex extends wepy.page {
     config = {
       navigationBarTitleText: '月账单'
@@ -143,17 +172,20 @@
       year: 0,
       month: 0,
       dashboard: {},
+      expendChart: {},
+      dayChart: {},
+      weekChart: {},
+      surplusChart: {},
+      budgetChart: {},
       totalAsset: {},
-      userinfo: {}
+      userinfo: {},
+      lastTen: [],
+      emptyTitle: '找不到相关数据呢，请多记账吧：）'
     }
 
-    async onLoad (options) {
+    onLoad (options) {
       this.year = options.year
       this.month = options.month
-      this.info = await wepy.getSystemInfo()
-    }
-
-    onShow () {
       this.information()
       this.initDashboardChart()
       this.initExpendChart()
@@ -163,6 +195,11 @@
       this.initBudgetChart()
       this.initAssetAllChart()
       this.initLast10()
+      this.markRead(options.id)
+    }
+
+    async onShow () {
+      this.info = await wepy.getSystemInfo()
     }
 
     async initDashboardChart () {
@@ -173,7 +210,7 @@
       })
       this.dashboard = data
       this.$apply()
-      if (data.data.length > 0) {
+      if (data.data != null) {
         new wxCharts({
           canvasId: 'monthChart',
           type: 'pie',
@@ -190,25 +227,29 @@
         year: this.year,
         month: this.month
       })
-      new wxCharts({
-        canvasId: 'expendChart',
-        type: 'column',
-        categories: data.categories,
-        series: [{
-            name: '上月',
-            data: data.last_month
-        }, {
-            name: '当月',
-            data: data.current_month
-        }],
-        yAxis: {
-          format: function (val) {
-            return val + '元';
-          }
-        },
-        width: this.info.screenWidth,
-        height: 200
-      });
+      this.expendChart = data
+      this.$apply()
+      if (data.categories.length > 0) {
+        new wxCharts({
+          canvasId: 'expendChart',
+          type: 'column',
+          categories: data.categories,
+          series: [{
+              name: '上月',
+              data: data.last_month
+          }, {
+              name: '当月',
+              data: data.current_month
+          }],
+          yAxis: {
+            format: function (val) {
+              return val + '元';
+            }
+          },
+          width: this.info.screenWidth,
+          height: 200
+        });
+      }
     }
 
     async initDayAvgChart () {
@@ -217,24 +258,28 @@
         year: this.year,
         month: this.month
       })
-      new wxCharts({
-        canvasId: 'dayAvgChart',
-        type: 'line',
-        categories: data.months,
-        series: [{
-          name: '日均消费',
-          data: data.data,
-        }],
-        yAxis: {
-          title: '消费金额 (元)',
-          min: 0
-        },
-        extra: {
-          lineStyle: 'curve'
-        },
-        width: 320,
-        height: 200
-      });
+      this.dayChart = data
+      this.$apply()
+      if (data.months.length > 0) {
+        new wxCharts({
+          canvasId: 'dayAvgChart',
+          type: 'line',
+          categories: data.months,
+          series: [{
+            name: '日均消费',
+            data: data.data,
+          }],
+          yAxis: {
+            title: '消费金额 (元)',
+            min: 0
+          },
+          extra: {
+            lineStyle: 'curve'
+          },
+          width: 320,
+          height: 200
+        });
+      }
     }
 
     async initWeekAvgChart () {
@@ -243,24 +288,28 @@
         year: this.year,
         month: this.month
       })
-      new wxCharts({
-        canvasId: 'weekChart',
-        type: 'line',
-        categories: data.weeks,
-        series: [{
-          name: '每周消费',
-          data: data.data,
-        }],
-        yAxis: {
-          title: '消费金额 (元)',
-          min: 0
-        },
-        extra: {
-          lineStyle: 'curve'
-        },
-        width: 320,
-        height: 200
-      });
+      this.weekChart = data
+      this.$apply()
+      if (data.weeks.length > 0) {
+        new wxCharts({
+          canvasId: 'weekChart',
+          type: 'line',
+          categories: data.weeks,
+          series: [{
+            name: '每周消费',
+            data: data.data,
+          }],
+          yAxis: {
+            title: '消费金额 (元)',
+            min: 0
+          },
+          extra: {
+            lineStyle: 'curve'
+          },
+          width: 320,
+          height: 200
+        });
+      }
     }
 
     async initSurplusChart () {
@@ -269,24 +318,28 @@
         year: this.year,
         month: this.month
       })
-      new wxCharts({
-        canvasId: 'surplusChart',
-        type: 'line',
-        categories: data.months,
-        series: [{
-          name: '月均消费',
-          data: data.data
-        }],
-        yAxis: {
-          title: '消费金额 (元)',
-          min: 0
-        },
-        extra: {
-          lineStyle: 'curve'
-        },
-        width: 320,
-        height: 200
-      });
+      this.surplusChart = data
+      this.$apply()
+      if (data.months.length > 0) {
+        new wxCharts({
+          canvasId: 'surplusChart',
+          type: 'line',
+          categories: data.months,
+          series: [{
+            name: '月均消费',
+            data: data.data
+          }],
+          yAxis: {
+            title: '消费金额 (元)',
+            min: 0
+          },
+          extra: {
+            lineStyle: 'curve'
+          },
+          width: 320,
+          height: 200
+        });
+      }
     }
 
     async initAssetAllChart () {
@@ -296,18 +349,21 @@
         month: this.month
       })
       this.totalAsset = data
-      new wxCharts({
-        canvasId: 'assetAllChart',
-        type: 'ring',
-        series: data.data,
-        yAxis: {
-          title: '消费金额 (元)',
-          min: 0
-        },
-        width: 320,
-        height: 280,
-        dataLabel: false
-      });
+      this.$apply()
+      if (data.data != null) {
+        new wxCharts({
+          canvasId: 'assetAllChart',
+          type: 'ring',
+          series: data.data,
+          yAxis: {
+            title: '消费金额 (元)',
+            min: 0
+          },
+          width: 320,
+          height: 280,
+          dataLabel: false
+        });
+      }
     }
 
     async initBudgetChart () {
@@ -316,6 +372,8 @@
         year: this.year,
         month: this.month
       })
+      this.budgetChart = data
+      this.$apply()
       if (data.categories.length > 0) {
         new wxCharts({
           canvasId: 'budgetChart',
@@ -355,7 +413,74 @@
         year: this.year,
         month: this.month
       })
-      
+      this.lastTen = data
+      this.$apply()
+    }
+
+    async markRead(id) {
+      await wxRequest.Get(`message/${id}`, {})
+    }
+
+    components = {
+      StatementItem,
+      Empty
+    }
+    
+    computed = {
+      expendPercent () {
+        let data = this.dashboard.expend
+        let total = this.dashboard.income*1 + this.dashboard.expend*1 + Math.abs(this.dashboard.surplus*1)
+        if (total == 0 || data == 0) {
+          return '10%';
+        } else {
+          return `${(data * 100 / total)}%`
+        }
+      },
+      incomePercent () {
+        let data = this.dashboard.income
+        let total = this.dashboard.income*1 + this.dashboard.expend*1 + Math.abs(this.dashboard.surplus*1)
+        if (total == 0 || data == 0) {
+          return '10%';
+        } else {
+          return `${(data * 100 / total)}%`
+        }
+      },
+      surplusPercent () {
+        let data = Math.abs(this.dashboard.surplus*1)
+        let total = this.dashboard.income*1 + this.dashboard.expend*1 + Math.abs(this.dashboard.surplus*1)
+        if (total == 0 || data == 0) {
+          return '10%';
+        } else {
+          return `${(data * 100 / total)}%`
+        }
+      },
+      assetPercent () {
+        let data = this.totalAsset.all_asset * 1
+        let total = this.totalAsset.all_asset * 1 + this.totalAsset.net_worth * 1 + this.totalAsset.total_liability * 1
+        if (total == 0 || data == 0) {
+          return '10%';
+        } else {
+          return `${(data * 100 / total)}%`
+        }
+      },
+      netPercent () {
+        let data = this.totalAsset.net_worth * 1
+        let total = this.totalAsset.all_asset * 1 + this.totalAsset.net_worth * 1 + this.totalAsset.total_liability * 1
+        if (total == 0 || data == 0) {
+          return '10%';
+        } else {
+          return `${(data * 100 / total)}%`
+        }
+      },
+      debtPercent () {
+        let data = this.totalAsset.total_liability * 1
+        let total = this.totalAsset.all_asset * 1 + this.totalAsset.net_worth * 1 + this.totalAsset.total_liability * 1
+        if (total == 0 || data == 0) {
+          return '10%';
+        } else {
+          return `${(data * 100 / total)}%`
+        }
+      }
     }
   }
 </script>
