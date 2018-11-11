@@ -158,9 +158,9 @@
       async getUserInfo (e) {
         if(e.detail.errMsg != 'getUserInfo:ok') return false
         
-        let userInfo = e.detail.userInfo
+        const userInfo = e.detail.userInfo
         await wxRequest.Put('users/update_user', { user: userInfo })
-        let key = Session.key.alreadyLogin
+        const key = Session.key.alreadyLogin
         Session.set(key, true)
         this.getData()
         this.alreadyLogin = true
@@ -175,12 +175,20 @@
     }
 
     loginStatus () {
-      let key = Session.key.alreadyLogin
+      const key = Session.key.alreadyLogin
       return Session.get(key) == null ? false : true
     }
 
     async getData () {
+      const cacheData = Session.get('user_load_cache')
+      if (cacheData) {
+        this.user = cacheData.user
+        this.version = cacheData.version
+        this.$apply()  
+      }
+
       const data = await wxRequest.Get('settings')
+      Session.set('user_load_cache', data)
       this.user = data.user
       this.version = data.version
       this.$apply()

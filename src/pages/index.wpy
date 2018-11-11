@@ -154,6 +154,11 @@
     }
 
     async getHeader () {
+      if (Session.get('header_load_cache')) {
+        this.header = Session.get('header_load_cache')
+        this.$apply()
+      }
+
       const data = await wxRequest.Get('header')
       let bg_images_key = Session.key.bgImageKey
       if (typeof data == undefined || data.bg_avatar == '') {
@@ -163,14 +168,21 @@
       if (typeof data != undefined) {
         Session.set(bg_images_key, data.bg_avatar)
       }
+      Session.set('header_load_cache', this.header)
       this.$apply()
     }
 
     async getList() {
+      if (Session.get('index_load_cache')) {
+        this.list = Session.get('index_load_cache')
+        this.$apply()
+      }
+
       const store = getStore()
       await store.dispatch(asyncList())
       const res = store.getState().statement.statements
       this.list = res
+      Session.set('index_load_cache', res)
       this.$apply()
     }
 
