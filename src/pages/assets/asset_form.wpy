@@ -2,39 +2,36 @@
   <view class="container">
     <view class="grid">
       <view class="item">
-        <view class="item-name pull-left"> <text>账户名</text> </view>
-        <input class="pull-right" value="{{ wallet.name }}" bindinput="bindKeyName" maxlength="15" placeholder="请输入账户名" />
+        <view class="item-name">账户名</view>
+        <input value="{{ wallet.name }}" bindinput="bindKeyName" maxlength="15" placeholder="请输入账户名" />
       </view>
 
       <view class="item">
-        <view class="item-name pull-left"> <text>账户总额</text> </view>
-        <input class="pull-right" type="number" placeholder="0.00" value="{{ wallet.amount }}" bindinput="bindKeyAmount" maxlength="10" placeholder="请输入账户余额" />
+        <view class="item-name">账户总额</view>
+        <input type="number" placeholder="0.00" value="{{ wallet.amount }}" bindinput="bindKeyAmount" maxlength="10" placeholder="请输入账户余额" />
       </view>
 
       <view class="item">
-        <view class="item-name pull-left">
-          <text>是否顶级分类</text> </view>
-        <switch class="pull-right" checked="{{ isParentLevel }}" bindchange="changeSwitch" />
+        <view class="item-name">是否顶级分类</view>
+        <switch checked="{{ isParentLevel }}" bindchange="changeSwitch" />
       </view>
 
       <view class="item picker" hidden="{{ isParentLevel }}">
-        <text class="picker-type">所属类型</text>
+        <text class="picker-type item-name">所属类型</text>
         <picker range="{{ parents }}" range-key="name" bindchange="changeType">
           <view class="name">{{parents[parentIndex]['name']}}</view>
         </picker>
       </view>
 
       <view class="item picker">
-        <text class="picker-type">资产类型</text>
+        <text class="picker-type item-name">资产类型</text>
         <picker range="{{ assetTypes }}" range-key="name" bindchange="changeAssetType">
           <view class="name">{{assetTypes[typeIndex]['name']}}</view>
         </picker>
       </view>
 
       <navigator url="/pages/forms/icons_chose?url=assets" class="item">
-        <view class="item-name pull-left">
-          <text>图标</text>
-        </view>
+        <view class="item-name">图标</view>
         <image class="icon-image" src="{{ host }}{{ wallet.icon_path }}"></image>
       </navigator>
 

@@ -14,6 +14,7 @@
 	padding:12rpx 32rpx 12rpx 24rpx;
 	border-bottom:2rpx solid $backgroundColor;
 }
+
 .grid .item:last-child {
 	border-bottom:none;
 }
@@ -22,6 +23,7 @@
 	height:50rpx;
 }
 .item-name {
+	width: 180rpx;
 	margin-left:24rpx;
 }
 .item input {
