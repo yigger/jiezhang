@@ -7,6 +7,8 @@
 	border-bottom:2rpx solid $backgroundColor;
 }
 .item {
+	display: flex;
+	justify-content: space-between;
 	height:72rpx;
 	line-height:72rpx;
 	padding:12rpx 32rpx 12rpx 24rpx;

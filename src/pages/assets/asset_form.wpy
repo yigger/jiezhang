@@ -18,15 +18,15 @@
       </view>
 
       <view class="item picker" hidden="{{ isParentLevel }}">
+        <text class="picker-type">所属类型</text>
         <picker range="{{ parents }}" range-key="name" bindchange="changeType">
-          <text class="picker-type">所属类型</text>
           <view class="name">{{parents[parentIndex]['name']}}</view>
         </picker>
       </view>
 
       <view class="item picker">
+        <text class="picker-type">资产类型</text>
         <picker range="{{ assetTypes }}" range-key="name" bindchange="changeAssetType">
-          <text class="picker-type">资产类型</text>
           <view class="name">{{assetTypes[typeIndex]['name']}}</view>
         </picker>
       </view>

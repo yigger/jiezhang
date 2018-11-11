@@ -2,29 +2,29 @@
     <view class="container">
     <view class="grid">
       <view class="item">
-        <view class="item-name pull-left">
+        <view class="item-name">
           <text>分类名称</text>
         </view>
-        <input class="pull-right" value="{{ category.name }}" bindinput="bindKeyName" maxlength="15" placeholder="请输入分类名称" />
+        <input value="{{ category.name }}" bindinput="bindKeyName" maxlength="15" placeholder="请输入分类名称" />
       </view>
 
       <view class="item">
-        <view class="item-name pull-left">
+        <view class="item-name">
           <text>是否顶级分类</text>
         </view>
-        <switch class="pull-right" checked="{{ isParentLevel }}" bindchange="changeSwitch" />
+        <switch checked="{{ isParentLevel }}" bindchange="changeSwitch" />
       </view>
 
       <view class="item picker" hidden="{{ isParentLevel }}">
+        <text class="picker-type">所属分类</text>
         <picker range="{{ parentCategories }}" value="{{ curIndex }}" range-key="name" bindchange="changeCategory">
-          <text class="picker-type">所属分类</text>
           <view class="name">{{ parentCategories[curIndex]['name'] }}</view>
         </picker>
       </view>
     </view>
 
     <navigator url="/pages/forms/icons_chose?url=categories" class="item">
-      <view class="item-name pull-left">
+      <view class="item-name">
         <text>图标</text>
       </view>
       <image class="icon-image" src="{{ host }}{{ category.icon_path }}"></image>

@@ -33,7 +33,6 @@ const getOpenId = async () => {
 
 const doRequest = async (url, method, params, options = {}) => {
   try {
-    let start = new Date()
     let cacheKey = ''
     // 是否可以命中缓存
     if (options.cacheKey) {
@@ -41,7 +40,6 @@ const doRequest = async (url, method, params, options = {}) => {
       const cache = getByCache(cacheKey)
       if (cache) return cache
     }
-    console.log("marked 1: " + (new Date()-start)/1000)
 
     let pageRoutes = []
     const pages = getCurrentPages()
@@ -51,11 +49,7 @@ const doRequest = async (url, method, params, options = {}) => {
       }
     }
     
-    start = new Date()
     const thirdSession = await getOpenId()
-    console.log("marked 2: " + (new Date()-start)/1000)
-
-    start = new Date()
     const result = await wepy.request({
       url: url,
       method: method,
@@ -67,7 +61,6 @@ const doRequest = async (url, method, params, options = {}) => {
         'X-WX-PAGES': pageRoutes.join(',')
       },
     })
-    console.log("marked 3: " + (new Date()-start)/1000)
 
     // key 过期尝试重连
     if (result.status === 301 && retryCount <= 3) {

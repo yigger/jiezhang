@@ -114,14 +114,6 @@
 		}
 
     onShow () {
-      let start = new Date()
-      this.getList()
-      console.log("request list waste time(s)： " + (new Date()-start)/1000)
-
-      start = new Date()
-      this.getHeader()
-      console.log("request header waste time(s)： " + (new Date()-start)/1000)
-
       this.getPreOrders()
       this.bgImage()
     }
