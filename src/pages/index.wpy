@@ -114,6 +114,7 @@
 		}
 
     onShow () {
+      this.getHeader()
       this.getList()
       this.getPreOrders()
       this.bgImage()
