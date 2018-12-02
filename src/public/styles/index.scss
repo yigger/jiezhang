@@ -3,8 +3,6 @@ page, .container{
   height: 100%;
 }
 .container {
-  display:flex;
-  flex-direction: column;
   > view {
     width: 100%;
     display: block;
@@ -106,54 +104,4 @@ page, .container{
   height: 60rpx;
   line-height: 60rpx;
   font-size: 28rpx;
-}
-.scope {
-  text-align: center;
-  // margin: 0 28rpx 8rpx 28rpx;
-  font-size: 28rpx;
-  > view {
-    display: inline;
-    margin-right: 24rpx;
-    padding: 8rpx 0;
-  }
-  .the-week {
-    &.active {
-      color: seagreen;
-      border-bottom: 2px solid seagreen;
-    }
-  }
-
-  .preorder {
-    position: relative;
-    font-size: 27rpx;
-    &.active {
-      color: $darkPrimaryColor;
-      border-bottom: 2px solid $darkPrimaryColor;
-    }
-    &.noread:before {
-      content: '';
-      position: absolute;
-      width: 12rpx;
-      height: 12rpx;
-      top: 10rpx;
-      right: -6rpx;
-      border-radius: 50%;
-      background: #FF0000;
-    }
-  }
-}
-.add-preorder {
-  text-align: center;
-  font-size: 26rpx;
-  color: $linkColor;
-  margin: 12rpx 0;
-}
-.create-preorder {
-  text-align: left;
-  font-size: 24rpx;
-  color: $linkColor;
-  padding-right: 6px;
-}
-swiper-item {
-  overflow-y: scroll;
 }

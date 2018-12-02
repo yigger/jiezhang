@@ -23,52 +23,16 @@
       </navigator>
     </view>
 
-    <view class="scope">
-      <view class="the-week {{ current == 0 ? 'active' : '' }}" @tap="switchScope(0)">近一周消费</view>
-      <view class="preorder {{ current == 1 ? 'active' : '' }}" @tap="switchScope(1)">预购清单</view>
+    <view class="statement-list">
+      <repeat for="{{ list }}" key="index" index="index" item="item">
+        <StatementItem :statement.sync="item"></StatementItem>
+      </repeat>
     </view>
     
-    <view wx:if="{{ current == 1 && prepareOrders.length > 0 }}" class="create-preorder" @tap="showCreateModal()">+ 新增预购商品</view>
+    <view wx:if="{{ list.length == 0 }}">
+      <empty :title.sync="emptyTitle"></empty>
+    </view>
 
-    <swiper current="{{ current }}" style="flex: 1;margin-top: 24rpx;" bindchange="swiperChange">
-      <swiper-item>
-        <view class="statement-list">
-          <repeat for="{{ list }}" key="index" index="index" item="item">
-            <StatementItem :statement.sync="item"></StatementItem>
-          </repeat>
-        </view>
-
-        <view class="zan-loadmore" wx:if="{{ showLoading }}">
-          <view class="zan-loading"></view>
-          <view class="zan-loadmore__tips">加载中...</view>
-        </view>
-        
-        <view wx:if="{{ list.length == 0 && !showLoading }}">
-          <empty :title.sync="emptyTitle"></empty>
-        </view>
-      </swiper-item>
-
-      <swiper-item>
-        <repeat for="{{ prepareOrders }}" key="index" index="index" item="item">
-          <orderItem :good="item" @getGood.user="getGood"></orderItem>
-        </repeat>
-
-        <view wx:if="{{ prepareOrders.length == 0 }}">
-          <orderEmpty :title.sync="orderEmptyTitle"></orderEmpty>
-          <view class="add-preorder" @tap="showCreateModal()">+ 新增预购商品</view>
-        </view>
-      </swiper-item>
-    </swiper>
-
-    <preorderForm 
-      :showModal.sync="showModal" 
-      :good.sync="preOrder"
-      :showDelteBtn.sync="showDelteBtn"
-      @submit.user="createPrepareOrder"
-      @del.user="delPrepareOrder"
-      @markbuy.user="markBuy">
-    </preorderForm>
-    
   </view>
 </template>
 
@@ -78,8 +42,6 @@
   import Session from '@/utils/session'
   import Empty from '@/components/empty'
   import StatementItem from '@/components/index/statement'
-  import orderItem from '@/components/prepare_order_item'
-  import preorderForm from '@/components/prepare_buy_item'
   import { getStore } from 'wepy-redux'
   import { asyncList } from '@/store/actions'
   export default class Index extends wepy.page {
@@ -96,62 +58,19 @@
         budget: '未设置预算',
         pay_num: 0,
         bg_avatar: null
-      },
-      current: 0,
-      showLoading: false,
-      prepareOrders: [],
-      showModal: false,
-      preOrder: {},
-      showDelteBtn: false
+      }
     }
 
     components = {
       empty: Empty,
       orderEmpty: Empty,
-      StatementItem,
-      orderItem,
-      preorderForm
+      StatementItem
 		}
 
     onShow () {
       this.getHeader()
       this.getList()
-      this.getPreOrders()
       this.bgImage()
-    }
-
-    methods = {
-      createPrepareOrder (e) {
-        let value = e.detail.value
-        if(typeof value.id == undefined || value.id == '') {
-          this.createGood(value)
-        } else {
-          this.updateGood(value.id, value)
-        }
-      },
-      async markBuy (id) {
-        await wxRequest.Put(`pre_order/${id}/mark`)
-        this.getPreOrders()
-      },
-      async delPrepareOrder (id) {
-        await wxRequest.Destroy(`pre_order/${id}`)
-        this.getPreOrders()
-      },
-      async getGood (id) {
-        this.preOrder = await wxRequest.Get(`pre_order/${id}`)
-        this.showModal = true
-        this.$apply()
-      },
-      showCreateModal() {
-        this.preOrder = {}
-        this.showModal = true
-      },
-      swiperChange (e) {
-        this.current = e.detail.current
-      },
-      switchScope (current) {
-        this.current = current
-      }
     }
 
     async getHeader () {
@@ -185,32 +104,6 @@
       this.list = res
       Session.set('index_load_cache', res)
       this.$apply()
-    }
-
-    async getPreOrders() {
-      const data = await wxRequest.Get('pre_order')
-      this.prepareOrders = data
-      this.$apply()
-    }
-
-    async createGood (params) {
-      const result = await wxRequest.Post('pre_order', params)
-      if(result.status != 200) {
-        tip.error(result.msg)
-      } else {
-        this.showModal = false
-        this.getPreOrders()
-      }
-    }
-
-    async updateGood (id, params) {
-      const result = await wxRequest.Put(`pre_order/${id}`, params)
-      if(result.status != 200) {
-        tip.error(result.msg)
-      } else {
-        this.showModal = false
-        this.getPreOrders()
-      }
     }
 
     bgImage () {
