@@ -74,7 +74,7 @@ export default class extends wepy.app {
           pagePath: "pages/index",
           iconPath: "public/images/settings/statement.png",
           selectedIconPath: "public/images/settings/statement-active.png",
-          text: "账单"
+          text: "首页"
         },
         {
           pagePath: "pages/chart",
@@ -90,8 +90,8 @@ export default class extends wepy.app {
         },
         {
           pagePath: "pages/setting",
-          iconPath: "public/images/settings/user.png",
-          selectedIconPath: "public/images/settings/user-active.png",
+          iconPath: "public/images/settings/user_1.png",
+          selectedIconPath: "public/images/settings/user_1-active.png",
           text: "我的"
         }
       ]
