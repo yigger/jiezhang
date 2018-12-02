@@ -115,7 +115,7 @@
         <text>清除缓存</text>
       </view>
 
-      <view class="about-jz">
+      <view class="about-jz" @tap="redirect('/pages/settings/about')">
         <text>关于洁账</text>
         <text class="version">{{ version }}</text>
       </view>

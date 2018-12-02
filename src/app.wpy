@@ -37,6 +37,7 @@ export default class extends wepy.app {
       "pages/settings/set_cover",
       "pages/settings/prepare_buy",
       "pages/settings/super_statement",
+      "pages/settings/about",
       
       // 编辑账单类型分类/资产分类
       "pages/categories/list",

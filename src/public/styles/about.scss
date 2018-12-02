@@ -1,0 +1,37 @@
+@import './_variable.scss';
+
+page {
+  color: $secondaryText;
+}
+
+.logo-image {
+  text-align: center;
+  height: 150px;
+  image {
+    width: 150px;
+    height: 100%;
+  }
+}
+.app-info {
+  margin-top: -25px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.description {
+  padding:0 12px;
+  margin-top: 24px;
+  font-size: 16px;
+  color: $secondaryText;
+  > view {
+    margin-bottom: 8px;
+  }
+}
+
+.bottom {
+  font-size: 16px;
+  padding: 12px;
+  > view {
+    margin-bottom: 8px;
+  }
+}

@@ -1,0 +1,56 @@
+<template>
+  <view class="container">
+    <view class="logo-image">
+      <image mode='scaleToFill' src="../../public/images/logo.png"></image>
+    </view>
+
+    <view class="app-info">
+      <view>洁账 {{ version }}</view>
+    </view>
+
+    <view class="description">
+      <view>声明：此小程序是由个人单独开发，当初仅仅是为了满足自己的记账需求而已，完全是兴趣所驱，但由于这个小程序项目不是我的主要工作，我仅仅会在业余时间进行开发，所以更新的速度稍微会比较慢，还请大家谅解。</view>
+      <view>当然，有兴趣的朋友也可以加入一起讨论或者开发。此小程序的服务如无意外会一直开启，尚不需要担心作者会删库跑路，感谢大家的支持 ：）</view>
+    </view>
+
+    <view class="bottom">
+      <view>
+        <view>小程序源代码</view>
+        <view>https://github.com/yigger/jiezhang</view>
+      </view>
+
+      <view>
+        <view>联系作者</view>
+        <view>微信号： 88134089</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '@/utils/wxRequest'
+  import tip from '../../utils/tip'
+
+  export default class About extends wepy.page {
+    config = {
+      navigationBarTitleText: '关于洁账'
+    }
+    
+    data = {
+      version: ''
+    }
+
+    onShow () {
+      this.getVersion()
+    }
+
+    async getVersion () {
+      const data = await wxRequest.Get('settings')
+      this.version = data.version
+      this.$apply()
+    }
+    
+  }
+</script>
+<style lang="scss" src="@/public/styles/about.scss"></style>
