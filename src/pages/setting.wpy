@@ -34,7 +34,7 @@
       <view class="iconfont jz-icon-arrow-right-copy user-detail-arrow" wx:if="{{ alreadyLogin }}" @tap="redirect('/pages/settings/user_info')"></view>
     </view>
 
-    <view class="three column">
+    <!-- <view class="three column">
       <view @tap="redirect('/pages/settings/super_statement')">
         <view><image src="../public/images/004-receipt.png"></image></view>
         <view>超级账单</view>
@@ -47,79 +47,76 @@
         <view><image src="../public/images/001-list-1.png"></image></view>
         <view>预购清单</view>
       </view>
-    </view>
-
-    <!-- <view class="setting-container">
-      <view @tap="redirect('/pages/budgets/budget')">
-        <view>
-          <image src="../public/images/001-calculator.png"></image>
-          <text>预算设置</text>
-        </view>
-        <view class="zan-icon zan-icon-arrow"></view>
-      </view>
-      
-      <view @tap="redirect('/pages/friends/index')">
-        <view>
-          <image src="../public/images/003-user.png"></image>
-          <text>多人记账</text>
-        </view>
-        <view class="zan-icon zan-icon-arrow"></view>
-      </view>
-
-      <view @tap="developing()">
-        <view>
-          <image src="../public/images/002-piggybank.png"></image>
-          <text>梦想存钱罐</text>
-        </view>
-        <view class="zan-icon zan-icon-arrow"></view>
-      </view>
     </view> -->
+    
+    <view class="jz_grid">
+      <i-grid>
+        <i-row>
+          <i-grid-item @tap="redirect('/pages/settings/super_statement')">
+              <i-grid-icon>
+                <image src="../public/images/004-receipt.png"></image>
+              </i-grid-icon>
+              <i-grid-label>超级账单</i-grid-label>
+          </i-grid-item>
+          <i-grid-item @tap="redirect('/pages/settings/super_chart')">
+              <i-grid-icon>
+                <image src="../public/images/003-pie-chart.png"></image>
+              </i-grid-icon>
+              <i-grid-label>消费报表</i-grid-label>
+          </i-grid-item>
+          <i-grid-item @tap="redirect('/pages/settings/prepare_buy')">
+              <i-grid-icon>
+                <image src="../public/images/001-list-1.png"></image>
+              </i-grid-icon>
+              <i-grid-label>预购清单</i-grid-label>
+          </i-grid-item>
+        </i-row>
+      </i-grid>
+    </view>
 
     <view class="setting-container" style="margin: 12px 0">
-      <view @tap="redirect('/pages/assets/list')">
-        <view>
-          <text>资产类型分类</text>
-        </view>
-        <view class="zan-icon zan-icon-arrow"></view>
-      </view>
+      <i-cell-group>
+        <i-cell 
+          title="资产类型分类" 
+          is-link url="/pages/assets/list">
+        </i-cell>
+        
+        <i-cell 
+          title="支出分类管理" 
+          is-link url="/pages/categories/list?type=expend">
+        </i-cell>
+        
+        <i-cell 
+          title="收入分类管理" 
+          is-link url="/pages/categories/list?type=income">
+        </i-cell>
 
-      <view @tap="redirect('/pages/categories/list?type=expend')">
-        <view>
-          <text>支出分类管理</text>
-        </view>
-        <view class="zan-icon zan-icon-arrow"></view>
-      </view>
+        <i-cell 
+          title="封面设置" 
+          is-link url="/pages/settings/set_cover">
+        </i-cell>
 
-      <view @tap="redirect('/pages/categories/list?type=income')">
-        <view>
-          <text>收入分类管理</text>
-        </view>
-        <view class="zan-icon zan-icon-arrow"></view>
-      </view>
+        <i-cell 
+          title="反馈与建议" 
+          is-link url="/pages/settings/feedback">
+        </i-cell>
+        
+        <!-- 清除缓存放到关于里面吧 -->
+        <!-- <i-cell 
+          title="清除缓存" 
+          is-link url="/pages/index/index">
+        </i-cell> -->
 
-      <view @tap="redirect('/pages/settings/set_cover')">
-        <view>
-          <text>封面设置</text>
-        </view>
-        <view class="zan-icon zan-icon-arrow"></view>
-      </view>
-
-      <view @tap="redirect('/pages/settings/feedback')">
-        <view>
-          <text>反馈与建议</text>
-        </view>
-        <view class="zan-icon zan-icon-arrow"></view>
-      </view>
-
-      <view class="about-jz" @tap="cleanSession">
-        <text>清除缓存</text>
-      </view>
-
-      <view class="about-jz" @tap="redirect('/pages/settings/about')">
-        <text>关于洁账</text>
-        <text class="version">{{ version }}</text>
-      </view>
+        <i-cell 
+          title="关于洁账" 
+          is-link url="/pages/settings/about"
+          value="{{ version }}">
+        </i-cell>
+      </i-cell-group>
     </view>
+
+    <i-load-more tip="喵喵喵~" loading="{{ false }}" />
+
   </view>
 </template>
 
@@ -131,7 +128,17 @@
 
   export default class Setting extends wepy.page {
     config = {
-      navigationBarTitleText: '我的'
+      navigationBarTitleText: '我的',
+      "usingComponents": {
+        "i-cell-group": "../public/iview/cell-group/index",
+        "i-cell": "../public/iview/cell/index",
+        "i-load-more": "../public/iview/load-more/index",
+        "i-grid": "../public/iview/grid/index",
+        "i-grid-item": "../public/iview/grid-item/index",
+        "i-grid-icon": "../public/iview/grid-icon/index",
+        "i-grid-label": "../public/iview/grid-label/index",
+         "i-icon": "../public/iview/icon/index",
+      }
     }
     
     data = {

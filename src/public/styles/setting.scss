@@ -86,25 +86,9 @@ page {
   }
 }
 
-.three.column {
-  background: white;
-  height: 70px;
-  display: flex;
-  border-bottom: 1px solid #EAEAEA;
-  > view {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction:column;
-    font-size: 14px;
-    border-right: 1px solid #EAEAEA;
-    margin:12px 0;
-    image {
-      width: 30px;
-      height: 30px;
-    }
-  }
+.jz_grid {
+  margin-bottom: 16px;
+  background:white;
 }
 
 .setting-container {
@@ -112,35 +96,4 @@ page {
   background: white;
   margin: 16px 0;
   border-bottom: 1px solid #EAEAEA;
-  > view {
-    display: flex;
-    border-bottom: 1px solid #EAEAEA;
-    font-size: 16px;
-    padding: 12px 6px;
-    justify-content: space-between;
-    align-items:center;
-    > view {
-      display: flex;
-    }
-    &:last-child {
-      border-bottom: none;
-    }
-    image {
-      width: 25px;
-      height: 25px;
-      margin-right: 8px;
-    }
-  }
-  .about-jz {
-    display: flex;
-    justify-content: space-between;
-    .version {
-      color: #999;
-    }
-  }
-  .zan-icon.zan-icon-arrow {
-    color: #999;
-    font-size:14px;
-
-  }
 }
