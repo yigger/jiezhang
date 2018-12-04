@@ -1,0 +1,27 @@
+@import '../_variable.scss';
+
+.header {
+	position:relative;
+	color:white;
+	height:380rpx;
+	.bg {
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    z-index:-1;
+  }
+  .level-2 {
+    position:absolute;
+    bottom:32rpx;
+    width:100%;
+    .today-expend {
+      font-size:64rpx;
+      margin-bottom:24rpx;
+    }
+    > view {
+      padding:0 24rpx;
+    }
+  }
+}

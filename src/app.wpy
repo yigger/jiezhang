@@ -32,6 +32,7 @@ export default class extends wepy.app {
 
       // 设置
       "pages/settings/feedback",
+      "pages/settings/header",
       "pages/settings/super_chart",
       "pages/settings/user_info",
       "pages/settings/set_cover",

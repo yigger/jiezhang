@@ -1,0 +1,63 @@
+<template>
+  <view class="container">
+    <view class="header">
+      <image class="bg" src="../../public/images/covers/default-5.jpeg"></image>
+      <view class="level-2">
+        <view class="fs14">
+          <text>今日支出</text>
+          <text>5</text>
+          <text>笔，共</text>
+        </view>
+        <view class="fs21 today-expend">0.00</view>
+        <view class="overflow-hide">
+          <view class="pull-left fs14">本月支出 3000</view>
+          <navigator url="/pages/budgets/budget"><view class="pull-right fs14">预算剩余 4888</view></navigator>
+        </view>
+      </view>
+    </view>
+
+    <view class="select-section">
+      <view>
+        <view>
+          <text>封面设置</text>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+
+      <view class="select-mode">
+        
+      </view>
+
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '@/utils/wxRequest'
+  import tip from '@/utils/tip'
+  import Session from '@/utils/session'
+  import { host } from '@/utils/host'
+
+  export default class SettingHeader extends wepy.page {
+    config = {
+      navigationBarTitleText: '首页看板设置'
+    }
+
+    data = {
+      user: {},
+      avatars: []
+    }
+
+    methods = {
+      
+    }
+
+    onShow () {
+
+    }
+    
+   
+  }
+</script>
+<style lang="scss" src="@/public/styles/settings/header.scss"></style>
