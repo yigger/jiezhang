@@ -3,86 +3,142 @@ page {
   height: 100%;
   background: #F4F4F4;
 }
+// .header222 {
+//   height: 260rpx;
+//   background-color: #1976D2;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   padding:0 24px;
+//   background-repeat:no-repeat;
+//   background-size:100% 100%;
+//   .user {
+//     display: flex;
+//     .user-avatar {
+//       width: 60px;
+//       height: 60px;
+//       background-color: #37AAFF;
+//       border: 1px solid white;
+//       border-radius: 50%;
+//       display:flex;
+//       align-items:center;
+//       justify-content:center;
+//       font-size:46px;
+//       color: white;
+//       image {
+//         width: 100%;
+//         height: 100%;
+//         border-radius: 50%;
+//       }
+//     }
+//     .user-info {
+//       display: inline-block;
+//       font-size: 16px;
+//       color: white;
+//       margin-left: 8px;
+//       padding-top: 4px;
+//       > view {
+//         margin-bottom: 6px;
+//       }
+//       .designation {
+//         margin-left: 8px;
+//         padding: 0px 4px;
+//         font-size: 14px;
+//         border-radius: 1px;
+//       }
+//     }
+//     .get-user-btn {
+//       border: none;
+//       display: inline;
+//       background-color: transparent;
+//       line-height: 0;
+//       padding: 0;
+//       color: white;
+//     }
+//     button::after {
+//       border: 0;
+//     }
+//   }
+//   .arrow-icon{
+//     width: 35px;
+//     height: 35px;
+//     image{
+//       width: 100%;
+//       height: 100%;
+//     }
+//   } 
+//   .user-detail-arrow {
+//     color: white;
+//     font-size: 21px;
+//   }
+//   .user-detail {
+//     display: flex;
+//     align-items: center;
+//   }
+//   .diamond-vip {
+//     display: flex;
+//     align-items: center;
+//     font-size: 14px;
+//   }
+//   .diamond-img {
+//     width: 20px;
+//     height: 20px;
+//   }
+// }
+
 .header {
-  height: 260rpx;
-  background-color: #1976D2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding:0 24px;
-  background-repeat:no-repeat;
-  background-size:100% 100%;
-  .user {
+  position: relative;
+  font-size:14px;
+  height:240px;
+  z-index: 88;
+  .background-img {
+    height:140px;
+    overflow-y:hidden;
+    image {
+      width: 100%;
+    }
+  }
+  .main-container {
+    background:white;
+    padding:0 8px;
+    margin: -80px 6px 12px 6px;
+    border-radius:4px;
+    position:relative;
+    z-index:99;
+
+  }
+  .user-section {
     display: flex;
-    .user-avatar {
-      width: 60px;
-      height: 60px;
-      background-color: #37AAFF;
-      border: 1px solid white;
-      border-radius: 50%;
-      display:flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:12px 0;
+    border-bottom:1px dashed #f1f1f1;
+    .user {
+      display: flex;
       align-items:center;
-      justify-content:center;
-      font-size:46px;
-      color: white;
       image {
-        width: 100%;
-        height: 100%;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
       }
     }
     .user-info {
-      display: inline-block;
-      font-size: 16px;
-      color: white;
-      margin-left: 8px;
-      padding-top: 4px;
-      > view {
-        margin-bottom: 6px;
-      }
-      .designation {
-        margin-left: 8px;
-        padding: 0px 4px;
-        font-size: 14px;
-        border-radius: 1px;
-      }
-    }
-    .get-user-btn {
-      border: none;
-      display: inline;
-      background-color: transparent;
-      line-height: 0;
-      padding: 0;
-      color: white;
-    }
-    button::after {
-      border: 0;
+      margin-left:12px;
     }
   }
-  .arrow-icon{
-    width: 35px;
-    height: 35px;
-    image{
-      width: 100%;
-      height: 100%;
-    }
-  } 
-  .user-detail-arrow {
-    color: white;
-    font-size: 21px;
-  }
-  .user-detail {
+  .header-bottom {
     display: flex;
     align-items: center;
-  }
-  .diamond-vip {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-  }
-  .diamond-img {
-    width: 20px;
-    height: 20px;
+    justify-items: center;
+    padding:18px 0;
+    > view {
+      flex: 1;
+      text-align:center;
+      image {
+        width: 25px;
+        height: 25px;
+      }
+    }
   }
 }
 
@@ -94,6 +150,5 @@ page {
 .setting-container {
   padding: 0px 20px;
   background: white;
-  margin: 16px 0;
   border-bottom: 1px solid #EAEAEA;
 }

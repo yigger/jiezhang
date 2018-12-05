@@ -1,7 +1,6 @@
 <template>
   <view class="container">
-    <view class="header">
-      <!-- header -->
+    <!-- <view class="header">
       <view class="user" wx:if="{{ alreadyLogin }}" @tap="redirect('/pages/settings/user_info')">
         <view class="user-avatar">
           <image src="{{ user.avatar_url }}"></image>
@@ -9,7 +8,6 @@
         <view class="user-info">
           <view class="user-detail">
             <text class="user-name">{{ user.name }}</text>
-            <!-- <text class="designation" style="background: {{ user.vip.color }}">{{ user.vip.name }}</text> -->
           </view>
           <view class="diamond-vip" wx:if="{{ user.show_diamond }}">
             <image class="diamond-img" src="../public/images/diamond.png"></image>
@@ -32,7 +30,7 @@
         </view>
       </view>
       <view class="iconfont jz-icon-arrow-right-copy user-detail-arrow" wx:if="{{ alreadyLogin }}" @tap="redirect('/pages/settings/user_info')"></view>
-    </view>
+    </view> -->
 
     <!-- <view class="three column">
       <view @tap="redirect('/pages/settings/super_statement')">
@@ -49,7 +47,7 @@
       </view>
     </view> -->
     
-    <view class="jz_grid">
+    <!-- <view class="jz_grid">
       <i-grid>
         <i-row>
           <i-grid-item @tap="redirect('/pages/settings/super_statement')">
@@ -72,9 +70,61 @@
           </i-grid-item>
         </i-row>
       </i-grid>
+    </view> -->
+
+    <view class="header">
+      <view class="background-img">
+        <image src="../public/images/pexels-photo-965967.jpeg"></image>
+      </view>
+
+      <view class="main-container">
+        <view class="user-section" @tap="redirect('/pages/settings/user_info')">
+          <view class="user">
+            <view>
+              <image src="../public/images/avatar.jpg"></image>
+            </view>
+
+            <view class="user-info">
+              <view>youngiii_m</view>
+              <view>早上好</view>
+            </view>
+          </view>
+          <view>记力值 98.4</view>
+        </view>
+
+        <view class="header-bottom">
+          <view>
+            <view>
+              <image src="../public/images/002-piggybank.png"></image>
+            </view>
+            <view>签到</view>
+          </view>
+
+          <view @tap="redirect('/pages/settings/super_statement')">
+            <view>
+              <image src="../public/images/004-receipt.png"></image>
+            </view>
+            <view>超级账单</view>
+          </view>
+
+          <view @tap="redirect('/pages/settings/super_chart')">
+            <view>
+              <image src="../public/images/003-pie-chart.png"></image>
+            </view>
+            <view>消费报表</view>
+          </view>
+
+          <view @tap="redirect('/pages/settings/prepare_buy')">
+            <view>
+              <image src="../public/images/001-list-1.png"></image>
+            </view>
+            <view>预购清单</view>
+          </view>
+        </view>
+      </view>
     </view>
 
-    <view class="setting-container" style="margin: 12px 0">
+    <view class="setting-container">
       <i-cell-group>
         <i-cell 
           title="资产类型分类" 
