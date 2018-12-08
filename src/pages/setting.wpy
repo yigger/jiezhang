@@ -1,101 +1,29 @@
 <template>
   <view class="container">
-    <!-- <view class="header">
-      <view class="user" wx:if="{{ alreadyLogin }}" @tap="redirect('/pages/settings/user_info')">
-        <view class="user-avatar">
-          <image src="{{ user.avatar_url }}"></image>
-        </view>
-        <view class="user-info">
-          <view class="user-detail">
-            <text class="user-name">{{ user.name }}</text>
-          </view>
-          <view class="diamond-vip" wx:if="{{ user.show_diamond }}">
-            <image class="diamond-img" src="../public/images/diamond.png"></image>
-            <text>钻石会员</text>
-          </view>
-          <view class="persistence">
-            已坚持记账 {{ user.persist }} 天
-          </view>
-        </view>
-      </view>
-
-      <view class="user" wx:else>
-        <view class="user-avatar iconfont jz-icon-yonghu">
-        </view>
-        <view class="user-info">
-          <button class="get-user-btn" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击登录</button>
-          <view class="persistence" style="font-size: 14px; margin-top: 6px">
-            登录后开启记账之旅
-          </view>
-        </view>
-      </view>
-      <view class="iconfont jz-icon-arrow-right-copy user-detail-arrow" wx:if="{{ alreadyLogin }}" @tap="redirect('/pages/settings/user_info')"></view>
-    </view> -->
-
-    <!-- <view class="three column">
-      <view @tap="redirect('/pages/settings/super_statement')">
-        <view><image src="../public/images/004-receipt.png"></image></view>
-        <view>超级账单</view>
-      </view>
-      <view @tap="redirect('/pages/settings/super_chart')">
-        <view><image src="../public/images/003-pie-chart.png"></image></view>
-        <view>消费报表</view>
-      </view>
-      <view @tap="redirect('/pages/settings/prepare_buy')">
-        <view><image src="../public/images/001-list-1.png"></image></view>
-        <view>预购清单</view>
-      </view>
-    </view> -->
-    
-    <!-- <view class="jz_grid">
-      <i-grid>
-        <i-row>
-          <i-grid-item @tap="redirect('/pages/settings/super_statement')">
-              <i-grid-icon>
-                <image src="../public/images/004-receipt.png"></image>
-              </i-grid-icon>
-              <i-grid-label>超级账单</i-grid-label>
-          </i-grid-item>
-          <i-grid-item @tap="redirect('/pages/settings/super_chart')">
-              <i-grid-icon>
-                <image src="../public/images/003-pie-chart.png"></image>
-              </i-grid-icon>
-              <i-grid-label>消费报表</i-grid-label>
-          </i-grid-item>
-          <i-grid-item @tap="redirect('/pages/settings/prepare_buy')">
-              <i-grid-icon>
-                <image src="../public/images/001-list-1.png"></image>
-              </i-grid-icon>
-              <i-grid-label>预购清单</i-grid-label>
-          </i-grid-item>
-        </i-row>
-      </i-grid>
-    </view> -->
-
-    <view class="header">
-      <view class="background-img">
-        <image src="../public/images/pexels-photo-965967.jpeg"></image>
+    <view class="header" :class="{'no-login': !alreadyLogin}">
+      <view class="background-img" 
+            style="background: url('{{ user.avatar_url }}') no-repeat;background-size:100% 100%;">
       </view>
 
       <view class="main-container">
         <view class="user-section" @tap="redirect('/pages/settings/user_info')">
           <view class="user">
             <view>
-              <image src="../public/images/avatar.jpg"></image>
+              <image src="{{ user.avatar_url }}"></image>
             </view>
 
             <view class="user-info">
-              <view>youngiii_m</view>
-              <view>早上好</view>
+              <view style="font-size: 16px">{{ user.name }}</view>
+              <view class="text-grey">{{ sayHello }}</view>
             </view>
           </view>
-          <view>记力值 98.4</view>
+          <view class="bonus">记力值 {{ user.bonus_points }}</view>
         </view>
 
         <view class="header-bottom">
-          <view>
+          <view @tap="developing()">
             <view>
-              <image src="../public/images/002-piggybank.png"></image>
+              <image src="../public/images/cunqian.png"></image>
             </view>
             <view>签到</view>
           </view>
@@ -124,8 +52,22 @@
       </view>
     </view>
 
+    <view class="login-message" wx:if="{{ !alreadyLogin }}">
+      <view>
+        <button class="get-user-btn" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击登录</button>
+        <view class="continue" style="font-size: 14px; margin-top: 6px">
+          登录后开启记账之旅
+        </view>
+      </view>
+    </view>
+
     <view class="setting-container">
       <i-cell-group>
+        <i-cell 
+          title="预算中心"
+          is-link url="/pages/budgets/budget">
+        </i-cell>
+
         <i-cell 
           title="资产类型分类" 
           is-link url="/pages/assets/list">
@@ -142,7 +84,7 @@
         </i-cell>
 
         <i-cell 
-          title="封面设置" 
+          title="首页封面设置"
           is-link url="/pages/settings/set_cover">
         </i-cell>
 
@@ -150,12 +92,6 @@
           title="反馈与建议" 
           is-link url="/pages/settings/feedback">
         </i-cell>
-        
-        <!-- 清除缓存放到关于里面吧 -->
-        <!-- <i-cell 
-          title="清除缓存" 
-          is-link url="/pages/index/index">
-        </i-cell> -->
 
         <i-cell 
           title="关于洁账" 
@@ -165,7 +101,7 @@
       </i-cell-group>
     </view>
 
-    <i-load-more tip="喵喵喵~" loading="{{ false }}" />
+    <i-load-more tip="powered by young" loading="{{ false }}" />
 
   </view>
 </template>
@@ -192,14 +128,42 @@
     }
     
     data = {
-      user: {},
+      user: function() {
+        return {
+          name: '访客',
+          bonus_points: 0,
+          avatar_url: '../public/images/no_login_avatar.png'
+        }
+      },
       version: '',
       alreadyLogin: this.loginStatus()
     }
 
+    computed = {
+      sayHello () {
+        const now = new Date()
+        const hour = now.getHours()
+        if(hour < 6){
+          return '凌晨好'
+        } else if (hour < 9) {
+          return '早上好'
+        } else if (hour < 12) {
+          return '上午好'
+        } else if (hour < 14) {
+          return '中午好'
+        } else if (hour < 17) {
+          return '下午好'
+        } else if (hour < 24) {
+          return '晚上好'
+        } else {
+          return '你好'
+        }
+      }
+    }
+
     onShow () {
       this.alreadyLogin = this.loginStatus()
-			this.getData()
+			this.getCurrentUser()
     }
     
     methods = {
@@ -219,7 +183,7 @@
         await wxRequest.Put('users/update_user', { user: userInfo })
         const key = Session.key.alreadyLogin
         Session.set(key, true)
-        this.getData()
+        this.getCurrentUser()
         this.alreadyLogin = true
         this.$apply()
       },
@@ -233,10 +197,10 @@
 
     loginStatus () {
       const key = Session.key.alreadyLogin
-      return Session.get(key) == null ? false : true
+      return Session.get(key) == null
     }
 
-    async getData () {
+    async getCurrentUser () {
       const cacheData = Session.get('user_load_cache')
       if (cacheData) {
         this.user = cacheData.user
@@ -246,7 +210,9 @@
 
       const data = await wxRequest.Get('settings')
       Session.set('user_load_cache', data)
-      this.user = data.user
+      if (data.user) {
+        this.user = data.user
+      }
       this.version = data.version
       this.$apply()
     }
