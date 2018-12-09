@@ -82,7 +82,7 @@ export default class Tips {
       title: title,
       icon: 'none',
       mask: false,
-      duration: 1000
+      duration: 1500
     });
   }
 

@@ -81,19 +81,18 @@ const doRequest = async (url, method, params, options = {}) => {
   }
 }
 
-const wxUpload = async (url, params = {}) => {
-  if (params.file_path == undefined) {
-    console.log('无效的文件')
-    return false
-  }
-  const uploadResult = await wepy.uploadFile({
+const wxUpload = async (url, filePath, params = {}) => {
+  return await wepy.uploadFile({
     url: url,
-    header: { 'Content-Type': 'application/json', 'X-WX-Skey': await getOpenId() },
-    filePath: params.file_path,
-    formData: params.query,
+    header: { 
+      'Content-Type': 'application/json',
+      'X-WX-Skey': await getOpenId(),
+      'X-WX-APP-ID': Host.appid
+    },
+    filePath: filePath,
+    formData: params,
     name: 'file'
   })
-  return uploadResult
 }
 
 // 获取缓存,默认缓存时长 1 天

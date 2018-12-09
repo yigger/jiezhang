@@ -3,18 +3,17 @@
     <view>
       <i-cell-group>
         <i-cell title="UID" value="{{ user.id }}"></i-cell>
-        <i-cell title="头像">
+        <i-cell title="头像" bind:click="uploadUserAvatar">
           <i-avatar slot="footer" src="{{ user.avatar_url }}" size="default" shape="square"></i-avatar>
         </i-cell>
 
-        <i-cell title="昵称" value="{{ user.nickname }}"></i-cell>
+        <i-cell title="昵称" value="{{ user.nickname }}" @tap="editNickname"></i-cell>
         <i-cell title="已坚持记账" value="{{ user.persist }}天"></i-cell>
         <i-cell title="记力值" value="{{ user.bonus_points }}"></i-cell>
         <i-cell title="总账单数" value="{{ user.sts_count }}"></i-cell>
       </i-cell-group>
     </view>
 
-    <i-load-more tip="抱歉， 暂未开放修改功能" loading="{{ false }}" />
   </view>
 </template>
 
@@ -38,20 +37,37 @@
     }
 
     methods = {
-      async uploadImage() {
-        const choseImages = await wepy.chooseImage({
-          count: 1,
-          sizeType: ['compressed'],
-          sourceType: ['album']
-        })
-        this.getUser()
-      },
       logout () {
         let key = Session.key.alreadyLogin
         Session.clear(key)
         this.alreadyLogin = false
         wx.navigateBack({
           delta: 1
+        })
+      },
+      async uploadUserAvatar () {
+        const choseImages = await wepy.chooseImage({
+          count: 1,
+          sizeType: ['compressed'],
+          sourceType: ['album']
+        })
+        if (choseImages.tempFiles.length == 0) {
+          wx.showToast({
+            title: '上传失败， 请稍后再试',
+            icon: 'none',
+            mask: false,
+            duration: 1000
+          })
+          return false
+        }
+        await wxRequest.Upload(choseImages.tempFiles[0].path, {
+          type: 'user_avatar'
+        })
+        this.getUser()
+      },
+      editNickname () {
+        wepy.navigateTo({
+          url: '/pages/settings/nickname_edit'
         })
       }
     }
@@ -68,6 +84,9 @@
   }
 </script>
 <style lang="scss">
+  page {
+    background:#f4f4f4;
+  }
   .my-avatar {
     width: 35px;
     height: 35px;
