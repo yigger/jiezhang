@@ -1,8 +1,8 @@
 <template>
   <view class="container">
     <view class="header" :class="{'no-login': !alreadyLogin}">
-      <view class="background-img" 
-            style="background: url('{{ user.avatar_url }}') no-repeat;background-size:100% 100%;">
+      <view class="background-img">
+        <image src="../public/images/user-bg.jpeg"></image>
       </view>
 
       <view class="main-container">
@@ -101,7 +101,7 @@
       </i-cell-group>
     </view>
 
-    <i-load-more tip="powered by young" loading="{{ false }}" />
+    <i-load-more i-class="bottom-text" tip="powered by young" loading="{{ false }}" />
 
   </view>
 </template>
@@ -122,8 +122,7 @@
         "i-grid": "../public/iview/grid/index",
         "i-grid-item": "../public/iview/grid-item/index",
         "i-grid-icon": "../public/iview/grid-icon/index",
-        "i-grid-label": "../public/iview/grid-label/index",
-         "i-icon": "../public/iview/icon/index",
+        "i-grid-label": "../public/iview/grid-label/index"
       }
     }
     

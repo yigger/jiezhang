@@ -1,25 +1,20 @@
 <template>
   <view class="container">
-    <view class="zan-panel">
-      <view class="zan-cell">
-        <view class="zan-cell__bd">ID</view>
-        <view class="zan-cell__ft">{{ user.id }}</view>
-      </view>
+    <view>
+      <i-cell-group>
+        <i-cell title="UID" value="{{ user.id }}"></i-cell>
+        <i-cell title="头像">
+          <i-avatar slot="footer" src="{{ user.avatar_url }}" size="default" shape="square"></i-avatar>
+        </i-cell>
+
+        <i-cell title="昵称" value="{{ user.nickname }}"></i-cell>
+        <i-cell title="已坚持记账" value="{{ user.persist }}天"></i-cell>
+        <i-cell title="记力值" value="{{ user.bonus_points }}"></i-cell>
+        <i-cell title="总账单数" value="{{ user.sts_count }}"></i-cell>
+      </i-cell-group>
     </view>
-    <view class="zan-panel">
-      <view class="zan-cell">
-        <view class="zan-cell__bd">头像</view>
-        <view class="zan-cell__ft"><image class="my-avatar" src="{{ user.avatar_url }}"></image></view>
-      </view>
-      
-      <view class="zan-cell">
-        <view class="zan-cell__bd">昵称</view>
-        <view class="zan-cell__ft">
-          {{ user.nickname }}
-        </view>
-      </view>
-    </view>
-    <view @tap="logout" class="logout">退出登录</view>
+
+    <i-load-more tip="抱歉， 暂未开放修改功能" loading="{{ false }}" />
   </view>
 </template>
 
@@ -29,7 +24,13 @@
   import Session from '@/utils/session'
   export default class UserInfo extends wepy.page {
     config = {
-      navigationBarTitleText: '个人信息'
+      navigationBarTitleText: '个人信息',
+      "usingComponents": {
+        "i-cell-group": "../../public/iview/cell-group/index",
+        "i-cell": "../../public/iview/cell/index",
+        "i-avatar": "../../public/iview/avatar/index",
+        "i-load-more": "../../public/iview/load-more/index"
+      }
     }
 
     data = {
@@ -66,24 +67,9 @@
     }
   }
 </script>
-<style lang="less">
-  page {
-    background: #f2f2f2;
-  }
+<style lang="scss">
   .my-avatar {
-    width:100rpx;
-    height:100rpx;
-  }
-  .logout {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 50px;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 16px;
-    color: red;
+    width: 35px;
+    height: 35px;
   }
 </style>
