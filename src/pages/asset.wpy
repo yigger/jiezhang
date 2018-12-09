@@ -46,10 +46,7 @@
       </view>
     </view>
 
-    <view class="zan-loadmore" hidden="{{ wallets.length > 0 }}">
-      <view class="zan-loading"></view>
-      <view class="zan-loadmore__tips">加载中...</view>
-    </view>
+    <i-spin wx:if="{{ wallets.length == 0 }}"></i-spin>
   </view>
 
 </view>
@@ -60,7 +57,10 @@
   import wxRequest from '@/utils/wxRequest'
   export default class Wallet extends wepy.page {
     config = {
-      navigationBarTitleText: '资产总览'
+      navigationBarTitleText: '资产总览',
+      "usingComponents": {
+        "i-spin": "../public/iview/spin/index"
+      }
     }
     
 		data = {
