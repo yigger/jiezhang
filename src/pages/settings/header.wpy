@@ -1,33 +1,50 @@
 <template>
   <view class="container">
     <view class="header">
-      <image class="bg" src="../../public/images/covers/default-5.jpeg"></image>
+      <image class="bg" src="{{ user.bg_avatar_url }}"></image>
       <view class="level-2">
         <view class="fs14">
-          <text>今日支出</text>
-          <text>5</text>
-          <text>笔，共</text>
+          <text>{{ user.position_1_human_name }}</text>
         </view>
-        <view class="fs21 today-expend">0.00</view>
+        <view class="fs21 today-expend">{{ user.position_1_amount }}</view>
         <view class="overflow-hide">
-          <view class="pull-left fs14">本月支出 3000</view>
-          <navigator url="/pages/budgets/budget"><view class="pull-right fs14">预算剩余 4888</view></navigator>
+          <view class="pull-left fs14">{{ user.position_2_human_name }} {{ user.position_2_amount }}</view>
+          <view class="pull-right fs14">{{ user.position_3_human_name }} {{ user.position_3_amount }}</view>
         </view>
       </view>
     </view>
 
     <view class="select-section">
-      <view>
-        <view>
-          <text>封面设置</text>
+      <i-panel title="面板数据展示">
+        <i-cell title="位置一" @tap="showActionSheet(0)">
+          <view slot="footer" @tap="showActionSheet(0)">{{ user.position_1_human_name }}</view>
+        </i-cell>
+        <i-cell title="位置二" @tap="showActionSheet(1)">
+          <view slot="footer" @tap="showActionSheet(1)">{{ user.position_2_human_name }}</view>
+        </i-cell>
+        <i-cell title="位置三" @tap="showActionSheet(2)">
+          <view slot="footer" @tap="showActionSheet(2)">{{ user.position_3_human_name }}</view>
+        </i-cell>
+      </i-panel>
+
+      <i-panel title="面板背景图片">
+        <view class="cover-setting">
+          <view class="item" wx:for="{{ avatars }}" @tap="setAvatar('{{ item.val }}')">
+            <image src="{{ item.path }}"></image>
+          </view>
+          <view class="item upload" @tap="uploadUserAvatar">
+            <image src="../../public/images/upload.png"></image>
+          </view>
         </view>
-        <view class="zan-icon zan-icon-arrow"></view>
-      </view>
+      </i-panel>
 
-      <view class="select-mode">
-        
-      </view>
-
+      <i-action-sheet 
+        visible="{{ dataVisible }}"
+        actions="{{ actions }}"
+        show-cancel
+        bind:cancel="handleCancel"
+        bind:click="handleClickItem" 
+      />
     </view>
   </view>
 </template>
@@ -41,23 +58,96 @@
 
   export default class SettingHeader extends wepy.page {
     config = {
-      navigationBarTitleText: '首页看板设置'
+      navigationBarTitleText: '首页看板设置',
+      "usingComponents": {
+        "i-panel": "../../public/iview/panel/index",
+        "i-cell": "../../public/iview/cell/index",
+        "i-action-sheet": "../../public/iview/action-sheet/index"
+      }
     }
 
     data = {
+      dataVisible: false,
+      currentPosition: 1,
+      actionsList: [],
       user: {},
       avatars: []
     }
 
+    computed = {
+      actions () {
+        return this.actionsList[this.currentPosition]
+      }
+    }
+
     methods = {
-      
+      handleCancel () {
+        this.dataVisible = false
+      },
+      handleClickItem (e) {
+        const action = this.actionsList[this.currentPosition][e.detail.index]
+        this.updatePosition(action.value, this.currentPosition)
+        this.dataVisible = false
+      },
+      showActionSheet (position) {
+        this.currentPosition = position
+        this.dataVisible = true
+      }
     }
 
     onShow () {
-
+      this.getUser()
+      this.getAvatars()
+      this.getPositions()
     }
     
-   
+    async getAvatars () {
+      const data = await wxRequest.Get('settings/covers')
+      this.avatars = data.data
+      this.$apply()
+    }
+
+    async getUser () {
+      const data = await wxRequest.Get('users')
+      this.user = data
+      this.$apply()
+    }
+
+    async getPositions () {
+      const data = await wxRequest.Get('settings/positions')
+      this.actionsList = data.data
+    }
+
+    async updatePosition (value, position) {
+      await wxRequest.Put('users/update_position', {
+        value: value,
+        position: Number.parseInt(position) + 1
+      })
+      this.getUser()
+    }
+
+    async uploadUserAvatar () {
+      const choseImages = await wepy.chooseImage({
+        count: 1,
+        sizeType: ['compressed'],
+        sourceType: ['album']
+      })
+      if (choseImages.tempFiles.length == 0) {
+        wx.showToast({
+          title: '上传失败， 请稍后再试',
+          icon: 'none',
+          mask: false,
+          duration: 1000
+        })
+        return false
+      }
+
+      await wxRequest.Upload(choseImages.tempFiles[0].path, {
+        type: 'index_header_bg'
+      })
+      // this.getUser()
+    }
+    
   }
 </script>
 <style lang="scss" src="@/public/styles/settings/header.scss"></style>

@@ -84,7 +84,7 @@
         </i-cell>
 
         <i-cell 
-          title="首页封面设置"
+          title="首页看板设置"
           is-link url="/pages/settings/set_cover">
         </i-cell>
 

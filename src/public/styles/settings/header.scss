@@ -25,3 +25,14 @@
     }
   }
 }
+
+.cover-setting {
+  .item {
+    width: 25%;
+    display: inline-block;
+  }
+  image {
+    width: 95%;
+    height: 80px;
+  }
+}
