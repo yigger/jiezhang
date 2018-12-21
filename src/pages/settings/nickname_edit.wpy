@@ -40,7 +40,7 @@
           tip.error('随便输点东西也行呀~')
           return false
         }
-        await wxRequest.Put('users/update_nickname', { nickname: nickname })
+        await wxRequest.Put('users/update_user', { user: {nickName: nickname }})
         wepy.navigateBack({
           delta: 1
         })

@@ -92,13 +92,19 @@
       showActionSheet (position) {
         this.currentPosition = position
         this.dataVisible = true
+      },
+      async setAvatar (val) {
+        await wxRequest.Put('users/update_user', {
+          user: { bg_avatar: val }
+        })
+        this.getUser()
       }
     }
 
     onShow () {
       this.getUser()
-      this.getAvatars()
-      this.getPositions()
+      // this.getAvatars()
+      // this.getPositions()
     }
     
     async getAvatars () {
