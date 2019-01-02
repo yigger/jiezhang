@@ -95,7 +95,7 @@
       },
       async setAvatar (val) {
         await wxRequest.Put('users/update_user', {
-          user: { bg_avatar: val }
+          user: { bg_avatar_id: val }
         })
         this.getUser()
       }
@@ -103,8 +103,8 @@
 
     onShow () {
       this.getUser()
-      // this.getAvatars()
-      // this.getPositions()
+      this.getAvatars()
+      this.getPositions()
     }
     
     async getAvatars () {
