@@ -1,0 +1,27 @@
+<template>
+  <view class="container">
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '@/utils/wxRequest'
+  export default class SearchSetting extends wepy.page {
+    config = {
+      navigationBarTitleText: '搜索中心'
+    }
+
+    data = {
+      
+    }
+
+    components = {
+      
+		}
+
+    onShow () {
+      
+    }
+  }
+</script>

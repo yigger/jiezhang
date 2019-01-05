@@ -21,11 +21,11 @@
         </view>
 
         <view class="header-bottom">
-          <view @tap="developing()">
+          <view @tap="redirect('/pages/settings/search')">
             <view>
-              <image src="../public/images/cunqian.png"></image>
+              <image src="../public/images/search.png"></image>
             </view>
-            <view>签到</view>
+            <view>搜索</view>
           </view>
 
           <view @tap="redirect('/pages/settings/super_statement')">
