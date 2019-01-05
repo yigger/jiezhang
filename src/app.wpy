@@ -36,7 +36,6 @@ export default class extends wepy.app {
       "pages/settings/super_chart",
       "pages/settings/user_info",
       "pages/settings/nickname_edit",
-      "pages/settings/set_cover",
       "pages/settings/prepare_buy",
       "pages/settings/super_statement",
       "pages/settings/about",

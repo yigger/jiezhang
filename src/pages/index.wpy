@@ -4,14 +4,12 @@
       <image class="bg" src="{{ header.bg_avatar }}"></image>
       <view class="level-2">
         <view class="fs14">
-          <text>今日支出</text>
-          <text> {{ header.pay_num }} </text>
-          <text>笔，共</text>
+          <text>{{ header.position_1_human_name }}</text>
         </view>
-        <view class="fs21 today-expend">{{ header.today_pay }}</view>
+        <view class="fs21 today-expend">{{ header.position_1_amount }}</view>
         <view class="overflow-hide">
-          <view class="pull-left fs14">本月支出 {{ header.month_pay }}</view>
-          <navigator url="/pages/budgets/budget"><view class="pull-right fs14">预算剩余 {{ header.budget }}</view></navigator>
+          <view class="pull-left fs14">{{ header.position_2_human_name }} {{ header.position_2_amount }}</view>
+          <view class="pull-right fs14">{{ header.position_3_human_name }} {{ header.position_3_amount }}</view>
         </view>
       </view>
       <navigator url="/pages/message/message"><view class="iconfont jz-icon-xiaoxi {{ header.has_no_read ? 'no-read-msg' : '' }}"></view></navigator>
@@ -53,12 +51,7 @@
       emptyTitle: '本周还没有开始记账哦~',
       orderEmptyTitle: '无预购清单，点击下方添加一笔吧',
       list: [],
-      header: {
-        today_pay: '0.00',
-        budget: '未设置预算',
-        pay_num: 0,
-        bg_avatar: null
-      }
+      header: {}
     }
 
     components = {
@@ -70,7 +63,6 @@
     onShow () {
       this.getHeader()
       this.getList()
-      this.bgImage()
     }
 
     async getHeader () {
@@ -80,14 +72,8 @@
       }
 
       const data = await wxRequest.Get('header')
-      let bg_images_key = Session.key.bgImageKey
-      if (typeof data == undefined || data.bg_avatar == '') {
-        data.bg_avatar = this.header.bg_avatar
-      }
+      const bg_images_key = Session.key.bgImageKey
       this.header = data
-      if (typeof data != undefined) {
-        Session.set(bg_images_key, data.bg_avatar)
-      }
       Session.set('header_load_cache', this.header)
       this.$apply()
     }
@@ -104,19 +90,6 @@
       this.list = res
       Session.set('index_load_cache', res)
       this.$apply()
-    }
-
-    bgImage () {
-      let bg_images_key = Session.key.bgImageKey
-      let cacheImage = Session.get(bg_images_key)
-      if(cacheImage) {
-        this.header.bg_avatar = cacheImage
-        return false
-      }
-      let avatar = this.header.bg_avatar
-      if (avatar == null || avatar == '') {
-        this.header.bg_avatar = "../public/images/covers/default-10.jpeg"
-      }
     }
 
     computed = {

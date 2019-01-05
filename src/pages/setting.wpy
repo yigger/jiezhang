@@ -85,7 +85,7 @@
 
         <i-cell 
           title="首页看板设置"
-          is-link url="/pages/settings/set_cover">
+          is-link url="/pages/settings/header">
         </i-cell>
 
         <i-cell 

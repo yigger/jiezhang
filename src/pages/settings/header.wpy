@@ -29,7 +29,7 @@
 
       <i-panel title="面板背景图片">
         <view class="cover-setting">
-          <view class="item" wx:for="{{ avatars }}" @tap="setAvatar('{{ item.val }}')">
+          <view class="item" wx:for="{{ avatars }}" @tap="setAvatar('{{ item.id }}')">
             <image src="{{ item.path }}"></image>
           </view>
           <view class="item upload" @tap="uploadUserAvatar">
@@ -151,7 +151,7 @@
       await wxRequest.Upload(choseImages.tempFiles[0].path, {
         type: 'index_header_bg'
       })
-      // this.getUser()
+      this.getAvatars()
     }
     
   }
