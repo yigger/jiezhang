@@ -1,27 +1,119 @@
 <template>
   <view class="container">
+    <view class="input-box">
+      <input confirm-type="搜索" 
+             value="{{ keyword }}"
+             placeholder-class="input-placeholder"
+             placeholder="请输入关键字, 支持搜索金额、地址、备注"
+             bindconfirm="handleSearch" />
+    </view>
 
+    <view class="result-tip" wx:if="{{ keyword !== '' }}">共查询到 {{ result.length }} 条账单</view>
+    
+    <view class="statement-list" wx:if="{{ result.length > 0 }}">
+      <repeat for="{{ result }}" key="index" index="index" item="item">
+        <StatementItem :statement.sync="item"></StatementItem>
+      </repeat>
+
+      <view class="loading-icon" wx:if="{{ bottomLoading }}">
+        <i-spin></i-spin>
+      </view>
+      <i-load-more wx:if="{{ searchNone }}" loading="{{ false }}" />
+    </view>
+
+    <view wx:if="{{ result.length == 0 }}">
+      <empty :title.sync="emptyTitle"></empty>
+    </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
+  import Empty from '@/components/empty'
+  import StatementItem from '@/components/index/statement'
   export default class SearchSetting extends wepy.page {
     config = {
-      navigationBarTitleText: '搜索中心'
+      navigationBarTitleText: '搜索中心',
+      "usingComponents": {
+        "i-load-more": "../../public/iview/load-more/index",
+        "i-spin": "../../public/iview/spin/index"
+      }
     }
 
     data = {
-      
+      emptyTitle: '暂未查询到相关数据',
+      keyword: '',
+      page: 1,
+      result: [],
+      bottomLoading: false,
+      searchNone: false
     }
 
     components = {
-      
+      empty: Empty,
+      StatementItem
 		}
 
+    methods = {
+      handleSearch (e) {
+        this.result = []
+        this.keyword = e.detail.value
+        this.bottomLoading = false
+        this.searchNone = false
+        this.page = 1
+        this.doSearch()
+      }
+    }
+
+    onReachBottom () {
+      this.bottomLoading = true
+      this.page += 1
+      this.doSearch()
+    }
+
     onShow () {
-      
+      this.doSearch()
+    }
+
+    async doSearch () {
+      const data = await wxRequest.Get('search', {
+        keyword: this.keyword,
+        page: this.page
+      })
+      if (data.status != 404) {
+        if (data.length == 0) {
+          this.searchNone = true
+        }
+        this.result = [...this.result, ...data]
+      } else {
+        this.result = []
+      }
+      this.bottomLoading = false
+      this.$apply()
     }
   }
 </script>
+<style lang="scss">
+  .input-box {
+    padding: 12px;
+    background:#f4f4f4;
+    input {
+      background:white;
+      padding:6px;
+    }
+  }
+  .result-tip {
+    font-size: 12px;
+    color: #212121;
+    margin: 12px;
+  }
+  .input-placeholder {
+    font-size: 14px;
+  }
+  .loading-icon {
+    display:flex;
+    justify-content:center;
+    margin: 12px;
+  }
+</style>
