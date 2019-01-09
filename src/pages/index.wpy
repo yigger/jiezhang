@@ -16,7 +16,7 @@
     </view>
     
     <view class="zan-btns new-record">
-      <navigator url="/pages/statements/statement">
+      <navigator url="/pages/statements/create">
         <button class="zan-btn jz-btn btn-shadow">记一笔</button>
       </navigator>
     </view>

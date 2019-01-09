@@ -1,0 +1,46 @@
+<template lang="wxml">
+  <view class="container">    
+    <view class="comonent-list">
+      <Expend wx:if="{{ current == 'expend' }}"/>
+      <Income wx:if="{{ current == 'income' }}"/>
+      <Transfer wx:if="{{ current == 'transfer' }}"/>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '@/utils/wxRequest'
+  import Expend from '@/components/statement/expend'
+  import Income from '@/components/statement/income'
+  import Transfer from '@/components/statement/transfer'
+  export default class StatementEdit extends wepy.page {
+    config = {
+      navigationBarTitleText: '编辑账单',
+      "usingComponents": {
+        "i-tabs": "../../public/iview/tabs/index",
+        "i-tab": "../../public/iview/tab/index"
+      }
+    }
+
+    data = {
+      current: 'expend',
+    }
+
+    onLoad (options) {
+
+    }
+
+    methods = {
+      handleChange ({ detail }) {
+        this.current = detail.key
+      }
+    }
+    components = {
+      Expend,
+      Income,
+      Transfer
+    }
+
+  }
+</script>

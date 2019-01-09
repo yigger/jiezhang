@@ -5,16 +5,15 @@ page {
 }
 .container {
   > .money {
-    height:130rpx !important;
-    line-height: 130rpx !important;
+    height:100rpx !important;
+    line-height: 100rpx !important;
   }
   > .column {
-    min-height: 120rpx;
-    height: 120rpx;
-    line-height: 120rpx;
+    height: 100rpx;
+    line-height: 100rpx;
     padding:0 24rpx;
     border-bottom: 1px solid #efefef;
-    font-size: 32rpx;
+    font-size: 28rpx;
     background: white;
     display: flex;
     justify-content: space-between;
@@ -40,9 +39,12 @@ page {
       padding-right:6px;
     }
   }
+  .align-right {
+    text-align: right;
+  }
   .money-input {
-    height: 130rpx;
-    font-size: 56rpx;
+    height: 100rpx;
+    font-size: 48rpx;
     text-align: right;
   }
   .frequent-use {
@@ -70,26 +72,14 @@ page {
       height:60rpx;
     }
   }
-  .zan-btns > button{
-    &:last-child {
-      margin-top: 8px;
-    }
-  }
   .input-hidden {
     display: none !important;
   }
-}
-.tab {
-  height: 80rpx;
-  line-height: 80rpx;
-  background: white;
-  display: flex;
-  > view {
-    flex: 1;
-    text-align: center;
-  }
-  .active {
-    color: $primaryColor;
-    border-bottom: 1px solid $primaryColor;
+  .btn-save {
+    margin:12px;
+    button {
+      color: white;
+      background-color: $primaryColor;
+    }
   }
 }

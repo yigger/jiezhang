@@ -32,13 +32,18 @@
     data = {
       frequent: [],
       last: null,
-      list: []
+      list: [],
+      type: 'expend'
     }
 
     components = {
 			category: Category
     };
 
+    onLoad (options) {
+      this.type = options.type
+    }
+    
     onShow () {
       this.getAsset()
     }
@@ -47,7 +52,13 @@
       setAsset (asset) {
         const pages = getCurrentPages()
         const prevPage = pages[pages.length - 2]
-        prevPage.setAsset(asset)
+        if (this.type == 'expend') {
+          prevPage.$Expend$setAsset(asset)
+        } else if (this.type == 'income') {
+          prevPage.$Income$setAsset(asset)
+        } else {
+          prevPage.$Transfer$setAsset(asset)
+        }
         wepy.navigateBack({
           delta: 1
         })
@@ -55,8 +66,7 @@
     }
 
     async getAsset () {
-      const data = await wxRequest.Get('statements/assets', {}, {cacheKey: ['asset', 'statementAssets']})
-      // const data = await wxRequest.Get('statements/assets')
+      const data = await wxRequest.Get('statements/assets')
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories

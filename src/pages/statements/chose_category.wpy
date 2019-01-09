@@ -40,7 +40,7 @@
 			category: Category
     };
 
-    async onLoad (options) {
+    onLoad (options) {
       this.type = options.type
     }
     
@@ -52,7 +52,11 @@
       setCategory (category) {
         const pages = getCurrentPages()
         const prevPage = pages[pages.length - 2]
-        prevPage.setCategory(category)
+        if (this.type == 'expend') {
+          prevPage.$Expend$setCategory(category)
+        } else {
+          prevPage.$Income$setCategory(category)
+        }
         wepy.navigateBack({
           delta: 1
         })
@@ -60,10 +64,7 @@
     }
 
     async getCategory () {
-      const data = await wxRequest.Get(
-        'statements/categories', 
-        { type: this.type }, 
-        { cacheKey: ['category', this.type == 'expend' ? 'statementExpendList' : 'statementIncomeList']})
+      const data = await wxRequest.Get('statements/categories', { type: this.type })
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories

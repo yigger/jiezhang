@@ -1,0 +1,228 @@
+<template lang="wxml">
+  <form bindsubmit="formSubmit">
+    <view class="container">
+      <view class="column money">
+        <text>金额</text>
+        <input class="money-input {{ statement.type }}" placeholder="0.00" placeholder-class="{{ statement.type }}" name="amount" type="digit" value="{{ amount }}"/>
+      </view>
+
+      <view class="column" @tap="redirectChoseCategory">
+        <text>分类</text>
+        <text type="digit" class="align-right">{{ category_name }}</text>
+        <input hidden name="category_id" value="{{ statement.category_id }}"/>
+      </view>
+
+      <view class="frequent-use" wx:if="{{ categories_labels.length > 0 }}">
+        <text>猜你想用：</text>
+        <text class="label" wx:for="{{ categories_labels }}" @tap="setCategory({{item}})">{{ item.name }}</text>
+      </view>
+
+      <view class="column" @tap="redirectChoseAsset">
+        <text>账户</text>
+        <text class="align-right">{{ asset_name }}</text>
+        <input hidden name="asset_id" value="{{ statement.asset_id }}"/>
+      </view>
+
+      <view class="frequent-use" wx:if="{{ assets_labels.length > 0 }}">
+        <text>猜你想用：</text>
+        <text class="label" wx:for="{{ assets_labels }}" @tap="setAsset({{ item }})">{{ item.name }}</text>
+      </view>
+      
+      <view class="column">
+        <text>日期</text>
+        <picker mode="date" start="2017-01-01" bindchange="dateChange">
+          <text>{{ statement.date }}</text>
+        </picker>
+        <input hidden name="date" value="{{ statement.date }}"/>
+        <input hidden name="time" value="{{ statement.time }}"/>
+      </view>
+
+      <view class="column location-column">
+        <text style="flex: 1">地理位置</text>
+        <view>
+          <input name="location" type="text" value="{{ statement.address }}"/>
+          <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
+
+          <input class="input-hidden" name="nation" value="{{ nation }}"/>
+          <input class="input-hidden" name="province" value="{{ province }}"/>
+          <input class="input-hidden" name="city" value="{{ city }}"/>
+          <input class="input-hidden" name="district" value="{{ district }}"/>
+          <input class="input-hidden" name="street" value="{{ street }}"/>
+        </view>
+      </view>
+      
+      <view class="column">
+        <text>备注</text>
+        <input class="remark" type="text" name="description"  value="{{ statement.description }}" placeholder="本笔账单的简单说明"/>
+      </view>
+
+      <view class="btn-save">
+        <button disabled="{{ submiting }}" formType="submit">保存</button>
+        <input hidden name="type" value="{{ statement.type }}"/>
+      </view>
+    </view>
+  </form>
+</template>
+
+<script>
+import wepy from 'wepy'
+import wxRequest from '@/utils/wxRequest'
+import { mapKey } from '@/utils/host'
+import Session from '@/utils/session'
+import tip from '@/utils/tip'
+import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
+import { getStore } from 'wepy-redux'
+import { addStatement, modifyStatement } from '@/store/actions'
+
+export default class StatementExpendComponent extends wepy.component {
+  data = {
+    statement: {
+      type: 'expend',
+      category_id: 0,
+      asset_id: 0,
+      amount: '',
+      description: '',
+      date: '',
+      address: '',
+      time: ''
+    },
+    nation: '',
+    province: '',
+    city: '',
+    district: '',
+    street: '',
+    category_name: '请选择分类',
+    asset_name: '请选择账户',
+    assets_labels: [],
+    categories_labels: [],
+    switchCheck: Session.get('getLocationSwitch') || false,
+    submiting: false
+  }
+
+  onLoad () {
+    this.initTodayDate()
+    if (this.switchCheck) this.setLocation()
+    this.guessCategory()
+    this.guessAsset()
+  }
+
+  initTodayDate () {
+    const myDate = new Date()
+    let year = myDate.getFullYear()
+    let month = myDate.getMonth() + 1
+    let day = myDate.getDate()
+    if (month < 10) month = `0${month}`
+    if (day < 10) day = `0${day}`
+    this.statement.date = [year, month, day].join('-')
+    this.statement.time = [myDate.getHours(), myDate.getMinutes(), myDate.getSeconds()].join(':')
+  }
+
+  async guessCategory () {
+    const data = await wxRequest.Get('statements/category_frequent', { type: this.statement.type })
+    this.categories_labels = data
+    this.$apply()
+  }
+
+  async guessAsset () {
+    const data = await wxRequest.Get('statements/asset_frequent', { type: this.statement.type })
+    this.assets_labels = data
+    this.$apply()
+  }
+
+  setLocation () {
+    this.qqmapSDK = new QQMapWX({
+      key: mapKey
+    });
+    try {
+      wx.getLocation({
+        type: 'gcj02',
+        success: (result) => {
+          this.qqmapSDK.reverseGeocoder({
+            location: {
+              latitude: result.latitude,
+              longitude: result.longitude
+            },
+            success: (addressRes) => {
+              let address_component = addressRes.result.address_component
+              this.nation = address_component.nation
+              this.province = address_component.province
+              this.city = address_component.city
+              this.district = address_component.district
+              this.street = address_component.street
+              this.statement.address = addressRes.result.address
+              this.$apply()
+            }
+          })
+        }
+      })
+    } catch (e) {
+      console.log('errorMsg', e)
+      Session.set('getLocationSwitch', false)
+      this.switchCheck = false
+      this.$apply()
+    }
+  }
+
+  methods = {
+    dateChange({ detail }) {
+      this.statement.date = detail.value
+    },
+    redirectChoseAsset () {
+      wx.navigateTo({ url: `/pages/statements/chose_asset?type=${this.statement.type}` })
+    },
+    redirectChoseCategory () {
+      wx.navigateTo({ url: `/pages/statements/chose_category?type=${this.statement.type}` })
+    },
+    setAsset (asset) {
+      this.statement.asset_id = asset.id
+      this.asset_name = asset.name
+    },
+    setCategory (category) {
+      this.statement.category_id = category.id
+      this.category_name = category.name
+    },
+    getLocation (e) {
+      const locationSwitch = e.detail.value
+      Session.set('getLocationSwitch', locationSwitch)
+      if(locationSwitch) {
+        this.setLocation()
+      } else {
+        // 关闭获取地理位置
+        this.statement.address = ''
+        this.$apply()
+      }
+    },
+    async formSubmit ({ detail }) {
+      const statement = detail.value
+      if (statement.amount == 0 || statement.amount == '') {
+        tip.error('金额不能为零')
+        return false
+      }
+
+      if (statement.category_id == 0) {
+        tip.error('未选择分类')
+        return false
+      }
+
+      if (statement.asset_id == 0) {
+        tip.error('未选择账户')
+        return false
+      }
+
+      this.submiting = true
+      const result = await wxRequest.Post(`statements`, {statement: statement})
+      if (result.status == 200) {
+        const store = getStore()
+        store.dispatch(addStatement(result.data))
+        wepy.navigateBack({
+          delta: 1
+        })
+      } else {
+        tip.error(result.msg)
+      }
+      this.submiting = false
+    },
+  }
+}
+</script>
+<style lang="scss" src="../../public/styles/statement/statement.scss"></style>

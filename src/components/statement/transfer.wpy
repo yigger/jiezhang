@@ -1,0 +1,217 @@
+<template lang="wxml">
+  <form bindsubmit="formSubmit">
+    <view class="container">
+      <view class="column money">
+        <text>金额</text>
+        <input class="money-input {{ statement.type }}" placeholder="0.00" placeholder-class="{{ statement.type }}" name="amount" type="digit" value="{{ amount }}"/>
+      </view>
+
+      <view class="column transfer-type">
+        <view @tap="assetFrom">{{ source }}</view>
+        <image @tap="exchangeAsset" class="transfer-icon" src="/public/images/transfer.png"></image>
+        <view @tap="assetTo">{{ target }}</view>
+      </view>
+
+      <view class="column location-column">
+        <text style="flex: 1">地理位置</text>
+        <view>
+          <input name="location" type="text" value="{{ statement.address }}"/>
+          <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
+
+          <input class="input-hidden" name="nation" value="{{ nation }}"/>
+          <input class="input-hidden" name="province" value="{{ province }}"/>
+          <input class="input-hidden" name="city" value="{{ city }}"/>
+          <input class="input-hidden" name="district" value="{{ district }}"/>
+          <input class="input-hidden" name="street" value="{{ street }}"/>
+        </view>
+      </view>
+
+      <view class="column">
+        <text>日期</text>
+        <picker mode="date" start="2017-01-01" bindchange="dateChange">
+          <text>{{ statement.date }}</text>
+        </picker>
+        <input hidden name="date" value="{{ statement.date }}"/>
+        <input hidden name="time" value="{{ statement.time }}"/>
+      </view>
+
+      <view class="column">
+        <text>备注</text>
+        <input class="pull-right remark" type="text" name="description"  value="{{ description }}" placeholder="本笔账单的简单说明"/>
+      </view>
+
+      <view class="btn-save">
+        <button disabled="{{ submiting }}" formType="submit">保存</button>
+        <input hidden name="type" value="{{ statement.type }}"/>
+      </view>
+    </view>
+  </form>
+</template>
+
+<script>
+import wepy from 'wepy'
+import wxRequest from '@/utils/wxRequest'
+import { mapKey } from '@/utils/host'
+import Session from '@/utils/session'
+import tip from '@/utils/tip'
+import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
+import { getStore } from 'wepy-redux'
+import { addStatement, modifyStatement } from '@/store/actions'
+
+export default class StatementTransferComponent extends wepy.component {
+  data = {
+    statement: {
+      type: 'transfer',
+      category_id: 0,
+      asset_id: 0,
+      amount: '',
+      description: '',
+      date: '',
+      address: '',
+      time: ''
+    },
+    nation: '',
+    province: '',
+    city: '',
+    district: '',
+    street: '',
+    transferType: 0,
+    source: '请选择账户',
+    target: '请选择账户',
+    from: 0,
+    to: 0,
+    switchCheck: Session.get('getLocationSwitch') || false,
+    submiting: false
+  }
+
+  onLoad () {
+    this.initTodayDate()
+    if (this.switchCheck) this.setLocation()
+  }
+
+  initTodayDate () {
+    const myDate = new Date()
+    let year = myDate.getFullYear()
+    let month = myDate.getMonth() + 1
+    let day = myDate.getDate()
+    if (month < 10) month = `0${month}`
+    if (day < 10) day = `0${day}`
+    this.statement.date = [year, month, day].join('-')
+    this.statement.time = [myDate.getHours(), myDate.getMinutes(), myDate.getSeconds()].join(':')
+  }
+
+  setLocation () {
+    this.qqmapSDK = new QQMapWX({
+      key: mapKey
+    });
+    try {
+      wx.getLocation({
+        type: 'gcj02',
+        success: (result) => {
+          this.qqmapSDK.reverseGeocoder({
+            location: {
+              latitude: result.latitude,
+              longitude: result.longitude
+            },
+            success: (addressRes) => {
+              let address_component = addressRes.result.address_component
+              this.nation = address_component.nation
+              this.province = address_component.province
+              this.city = address_component.city
+              this.district = address_component.district
+              this.street = address_component.street
+              this.statement.address = addressRes.result.address
+              this.$apply()
+            }
+          })
+        }
+      })
+    } catch (e) {
+      console.log('errorMsg', e)
+      Session.set('getLocationSwitch', false)
+      this.switchCheck = false
+      this.$apply()
+    }
+  }
+
+  methods = {
+    dateChange({ detail }) {
+      this.statement.date = detail.value
+    },
+    setAsset (asset) {
+      if (this.transferType == 1) {
+        this.source = asset.name
+        this.from = asset.id
+      } else {
+        this.target = asset.name
+        this.to = asset.id
+      }
+    },
+    assetFrom () {
+      this.transferType = 1
+      wx.navigateTo({ url: "/pages/statements/chose_asset?type=transfer" })
+    },
+    assetTo () {
+      this.transferType = 2
+      wx.navigateTo({ url: "/pages/statements/chose_asset?type=transfer" })
+    },
+    getLocation (e) {
+      const locationSwitch = e.detail.value
+      Session.set('getLocationSwitch', locationSwitch)
+      if(locationSwitch) {
+        this.setLocation()
+      } else {
+        // 关闭获取地理位置
+        this.statement.address = ''
+        this.$apply()
+      }
+    },
+    exchangeAsset () {
+      const tmp1 = this.source
+      this.source = this.target
+      this.target = tmp1
+
+      const tmp2 = this.from
+      this.from = this.to
+      this.to = tmp2
+    },
+    async formSubmit ({ detail }) {
+      let statement = detail.value
+      if (statement.amount == 0 || statement.amount == '') {
+        tip.error('金额不能为零')
+        return false
+      }
+
+      if (statement.asset_id == 0) {
+        tip.error('未选择账户')
+        return false
+      }
+
+      if (this.from == 0 || this.to == 0) {
+        tip.error('未选择转账分类')
+        return false
+      } else if (this.from == this.to) {
+        tip.error('不能转去同一类型')
+        return false
+      } else {
+        statement.from = this.from
+        statement.to = this.to
+      }
+
+      this.submiting = true
+      const result = await wxRequest.Post(`statements`, {statement: statement})
+      if (result.status == 200) {
+        const store = getStore()
+        store.dispatch(addStatement(result.data))
+        wepy.navigateBack({
+          delta: 1
+        })
+      } else {
+        tip.error(result.msg)
+      }
+      this.submiting = false
+    },
+  }
+}
+</script>
+<style lang="scss" src="../../public/styles/statement/statement.scss"></style>

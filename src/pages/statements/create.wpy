@@ -1,0 +1,49 @@
+<template lang="wxml">
+  <view class="container">
+    <i-tabs current="{{ current }}" bindchange="handleChange">
+      <i-tab key="expend" title="支出"></i-tab>
+      <i-tab key="income" title="收入"></i-tab>
+      <i-tab key="transfer" title="转账"></i-tab>
+    </i-tabs>
+    
+    <view class="comonent-list">
+      <Expend wx:if="{{ current == 'expend' }}"/>
+      <Income wx:if="{{ current == 'income' }}"/>
+      <Transfer wx:if="{{ current == 'transfer' }}"/>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '@/utils/wxRequest'
+  import Expend from '@/components/statement/expend'
+  import Income from '@/components/statement/income'
+  import Transfer from '@/components/statement/transfer'
+  export default class StatementCreate extends wepy.page {
+    config = {
+      navigationBarTitleText: '记一笔',
+      "usingComponents": {
+        "i-tabs": "../../public/iview/tabs/index",
+        "i-tab": "../../public/iview/tab/index"
+      }
+    }
+
+    data = {
+      current: 'expend',
+    }
+
+    methods = {
+      handleChange ({ detail }) {
+        this.current = detail.key
+      }
+    }
+    components = {
+      Expend,
+      Income,
+      Transfer
+    }
+
+  }
+</script>
