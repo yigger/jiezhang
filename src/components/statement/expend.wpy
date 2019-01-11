@@ -3,12 +3,12 @@
     <view class="container">
       <view class="column money">
         <text>金额</text>
-        <input class="money-input {{ statement.type }}" placeholder="0.00" placeholder-class="{{ statement.type }}" name="amount" type="digit" value="{{ amount }}"/>
+        <input class="money-input {{ statement.type }}" placeholder="0.00" placeholder-class="{{ statement.type }}" bindinput="handleAmountInput" name="amount" type="digit" value="{{ statement.amount }}"/>
       </view>
 
       <view class="column" @tap="redirectChoseCategory">
         <text>分类</text>
-        <text type="digit" class="align-right">{{ category_name }}</text>
+        <text type="digit" class="align-right">{{ statement.category_name }}</text>
         <input hidden name="category_id" value="{{ statement.category_id }}"/>
       </view>
 
@@ -19,7 +19,7 @@
 
       <view class="column" @tap="redirectChoseAsset">
         <text>账户</text>
-        <text class="align-right">{{ asset_name }}</text>
+        <text class="align-right">{{ statement.asset_name }}</text>
         <input hidden name="asset_id" value="{{ statement.asset_id }}"/>
       </view>
 
@@ -53,7 +53,7 @@
       
       <view class="column">
         <text>备注</text>
-        <input class="remark" type="text" name="description"  value="{{ statement.description }}" placeholder="本笔账单的简单说明"/>
+        <input class="remark" type="text" name="description" bindinput="handleDescInput" value="{{ statement.description }}" placeholder="本笔账单的简单说明"/>
       </view>
 
       <view class="btn-save">
@@ -71,28 +71,35 @@ import { mapKey } from '@/utils/host'
 import Session from '@/utils/session'
 import tip from '@/utils/tip'
 import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
-import { getStore } from 'wepy-redux'
-import { addStatement, modifyStatement } from '@/store/actions'
 
 export default class StatementExpendComponent extends wepy.component {
-  data = {
+  props = {
     statement: {
-      type: 'expend',
-      category_id: 0,
-      asset_id: 0,
-      amount: '',
-      description: '',
-      date: '',
-      address: '',
-      time: ''
-    },
+      type: Object,
+      default () {
+        return {
+          id: 0,
+          type: 'expend',
+          category_id: 0,
+          asset_id: 0,
+          amount: '',
+          description: '',
+          date: '',
+          address: '',
+          time: '',
+          category_name: '请选择分类',
+          asset_name: '请选择账户'
+        }
+      }
+    }
+  }
+
+  data = {
     nation: '',
     province: '',
     city: '',
     district: '',
     street: '',
-    category_name: '请选择分类',
-    asset_name: '请选择账户',
     assets_labels: [],
     categories_labels: [],
     switchCheck: Session.get('getLocationSwitch') || false,
@@ -100,8 +107,10 @@ export default class StatementExpendComponent extends wepy.component {
   }
 
   onLoad () {
-    this.initTodayDate()
-    if (this.switchCheck) this.setLocation()
+    if (this.statement.id === 0) {
+      this.initTodayDate()
+      if (this.switchCheck) this.setLocation()
+    }
     this.guessCategory()
     this.guessAsset()
   }
@@ -173,13 +182,19 @@ export default class StatementExpendComponent extends wepy.component {
     redirectChoseCategory () {
       wx.navigateTo({ url: `/pages/statements/chose_category?type=${this.statement.type}` })
     },
+    handleAmountInput ({ detail }) {
+      this.statement.amount = detail.value
+    },
+    handleDescInput ({ detail }) {
+      this.statement.description = detail.value
+    },
     setAsset (asset) {
       this.statement.asset_id = asset.id
-      this.asset_name = asset.name
+      this.statement.asset_name = asset.name
     },
     setCategory (category) {
       this.statement.category_id = category.id
-      this.category_name = category.name
+      this.statement.category_name = category.name
     },
     getLocation (e) {
       const locationSwitch = e.detail.value
@@ -210,16 +225,7 @@ export default class StatementExpendComponent extends wepy.component {
       }
 
       this.submiting = true
-      const result = await wxRequest.Post(`statements`, {statement: statement})
-      if (result.status == 200) {
-        const store = getStore()
-        store.dispatch(addStatement(result.data))
-        wepy.navigateBack({
-          delta: 1
-        })
-      } else {
-        tip.error(result.msg)
-      }
+      this.$emit('submit', statement)
       this.submiting = false
     },
   }

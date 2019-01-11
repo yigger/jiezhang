@@ -7,9 +7,9 @@
     </i-tabs>
     
     <view class="comonent-list">
-      <Expend wx:if="{{ current == 'expend' }}"/>
-      <Income wx:if="{{ current == 'income' }}"/>
-      <Transfer wx:if="{{ current == 'transfer' }}"/>
+      <Expend @submit.user="submit" wx:if="{{ current == 'expend' }}"/>
+      <Income @submit.user="submit" wx:if="{{ current == 'income' }}"/>
+      <Transfer @submit.user="submit" wx:if="{{ current == 'transfer' }}"/>
     </view>
 
   </view>
@@ -21,6 +21,10 @@
   import Expend from '@/components/statement/expend'
   import Income from '@/components/statement/income'
   import Transfer from '@/components/statement/transfer'
+  import { getStore } from 'wepy-redux'
+  import { addStatement, modifyStatement } from '@/store/actions'
+  import tip from '@/utils/tip'
+
   export default class StatementCreate extends wepy.page {
     config = {
       navigationBarTitleText: '记一笔',
@@ -37,8 +41,21 @@
     methods = {
       handleChange ({ detail }) {
         this.current = detail.key
+      },
+      async submit (statement) {
+        const result = await wxRequest.Post(`statements`, {statement: statement})
+        if (result.status == 200) {
+          const store = getStore()
+          store.dispatch(addStatement(result.data))
+          wepy.navigateBack({
+            delta: 1
+          })
+        } else {
+          tip.error(result.msg)
+        }
       }
     }
+
     components = {
       Expend,
       Income,

@@ -3,13 +3,13 @@
     <view class="container">
       <view class="column money">
         <text>金额</text>
-        <input class="money-input {{ statement.type }}" placeholder="0.00" placeholder-class="{{ statement.type }}" name="amount" type="digit" value="{{ amount }}"/>
+        <input class="money-input {{ statement.type }}" placeholder="0.00" placeholder-class="{{ statement.type }}" bindinput="handleAmountInput" name="amount" type="digit" value="{{ statement.amount }}"/>
       </view>
 
       <view class="column transfer-type">
-        <view @tap="assetFrom">{{ source }}</view>
+        <view @tap="assetFrom">{{ statement.source }}</view>
         <image @tap="exchangeAsset" class="transfer-icon" src="/public/images/transfer.png"></image>
-        <view @tap="assetTo">{{ target }}</view>
+        <view @tap="assetTo">{{ statement.target }}</view>
       </view>
 
       <view class="column location-column">
@@ -37,7 +37,7 @@
 
       <view class="column">
         <text>备注</text>
-        <input class="pull-right remark" type="text" name="description"  value="{{ description }}" placeholder="本笔账单的简单说明"/>
+        <input class="pull-right remark" type="text" name="description" bindinput="handleDescInput" value="{{ statement.description }}" placeholder="本笔账单的简单说明"/>
       </view>
 
       <view class="btn-save">
@@ -59,27 +59,34 @@ import { getStore } from 'wepy-redux'
 import { addStatement, modifyStatement } from '@/store/actions'
 
 export default class StatementTransferComponent extends wepy.component {
-  data = {
+  props = {
     statement: {
-      type: 'transfer',
-      category_id: 0,
-      asset_id: 0,
-      amount: '',
-      description: '',
-      date: '',
-      address: '',
-      time: ''
-    },
+      type: Object,
+      default () {
+        return {
+          id: 0,
+          type: 'transfer',
+          amount: '',
+          description: '',
+          date: '',
+          address: '',
+          time: '',
+          source: '请选择账户',
+          target: '请选择账户',
+          from: 0,
+          to: 0,
+        }
+      }
+    }
+  }
+
+  data = {
     nation: '',
     province: '',
     city: '',
     district: '',
     street: '',
     transferType: 0,
-    source: '请选择账户',
-    target: '请选择账户',
-    from: 0,
-    to: 0,
     switchCheck: Session.get('getLocationSwitch') || false,
     submiting: false
   }
@@ -140,12 +147,18 @@ export default class StatementTransferComponent extends wepy.component {
     },
     setAsset (asset) {
       if (this.transferType == 1) {
-        this.source = asset.name
-        this.from = asset.id
+        this.statement.source = asset.name
+        this.statement.from = asset.id
       } else {
-        this.target = asset.name
-        this.to = asset.id
+        this.statement.target = asset.name
+        this.statement.to = asset.id
       }
+    },
+    handleAmountInput ({ detail }) {
+      this.statement.amount = detail.value
+    },
+    handleDescInput ({ detail }) {
+      this.statement.description = detail.value
     },
     assetFrom () {
       this.transferType = 1
@@ -167,13 +180,13 @@ export default class StatementTransferComponent extends wepy.component {
       }
     },
     exchangeAsset () {
-      const tmp1 = this.source
-      this.source = this.target
-      this.target = tmp1
+      const tmp1 = this.statement.source
+      this.statement.source = this.statement.target
+      this.statement.target = tmp1
 
-      const tmp2 = this.from
-      this.from = this.to
-      this.to = tmp2
+      const tmp2 = this.statement.from
+      this.statement.from = this.statement.to
+      this.statement.to = tmp2
     },
     async formSubmit ({ detail }) {
       let statement = detail.value
@@ -187,28 +200,19 @@ export default class StatementTransferComponent extends wepy.component {
         return false
       }
 
-      if (this.from == 0 || this.to == 0) {
+      if (this.statement.from == 0 || this.statement.to == 0) {
         tip.error('未选择转账分类')
         return false
-      } else if (this.from == this.to) {
+      } else if (this.statement.from == this.statement.to) {
         tip.error('不能转去同一类型')
         return false
       } else {
-        statement.from = this.from
-        statement.to = this.to
+        statement.from = this.statement.from
+        statement.to = this.statement.to
       }
 
       this.submiting = true
-      const result = await wxRequest.Post(`statements`, {statement: statement})
-      if (result.status == 200) {
-        const store = getStore()
-        store.dispatch(addStatement(result.data))
-        wepy.navigateBack({
-          delta: 1
-        })
-      } else {
-        tip.error(result.msg)
-      }
+      this.$emit('submit', statement)
       this.submiting = false
     },
   }
