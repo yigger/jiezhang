@@ -47,6 +47,12 @@
         if (result.status == 200) {
           const store = getStore()
           store.dispatch(addStatement(result.data))
+          for (let file of statement.upload_files) {
+            await wxRequest.Upload(file, {
+              type: 'statement_upload',
+              statement_id: result.data.id
+            })
+          }
           wepy.navigateBack({
             delta: 1
           })

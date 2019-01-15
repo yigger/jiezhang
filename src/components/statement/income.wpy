@@ -56,6 +56,19 @@
         <input class="remark" type="text" name="description" bindinput="handleDescInput" value="{{ statement.description }}" placeholder="本笔账单的简单说明"/>
       </view>
 
+      <view class="upload-picture">
+        <view class="title">上传图片</view>
+        <view class="img-list">
+          <view class="image-item" @tap="uploadImage">
+            <image src="../../public/images/add-2.png"  lazy-load="false"></image>
+          </view>
+          <view class="image-item user-upload-item" wx:for="{{ statement.upload_files }}">
+            <image src="{{ item }}" @tap="showPicture('{{ item }}')" lazy-load="false"></image>
+            <view class="close" @tap="deleteImage('{{ item }}')">X</view>
+          </view>
+        </view>
+      </view>
+
       <view class="btn-save">
         <button disabled="{{ submiting }}" formType="submit">保存</button>
         <input hidden name="type" value="{{ statement.type }}"/>
@@ -88,7 +101,8 @@ export default class StatementIncomeComponent extends wepy.component {
           address: '',
           time: '',
           category_name: '请选择分类',
-          asset_name: '请选择账户'
+          asset_name: '请选择账户',
+          upload_files: []
         }
       }
     }
@@ -224,10 +238,27 @@ export default class StatementIncomeComponent extends wepy.component {
         return false
       }
 
+      statement.upload_files = this.statement.upload_files
       this.submiting = true
       this.$emit('submit', statement)
       this.submiting = false
     },
+    showPicture (item) {
+      // TODO: 点击显示大图
+    },
+    deleteImage (item) {
+      const index = this.statement.upload_files.indexOf(item)
+      this.statement.upload_files.splice(index, 1)
+    },
+    async uploadImage () {
+      const choseImages = await wepy.chooseImage({
+        count: 5,
+        sizeType: ['compressed'],
+        sourceType: ['album']
+      })
+      this.statement.upload_files = [...this.statement.upload_files, ...choseImages.tempFilePaths]
+      this.$apply()
+    }
   }
 }
 </script>
