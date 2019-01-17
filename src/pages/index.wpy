@@ -12,7 +12,13 @@
           <view class="pull-right fs14">{{ header.position_3_human_name }} {{ header.position_3_amount }}</view>
         </view>
       </view>
-      <navigator url="/pages/message/message"><view class="iconfont jz-icon-xiaoxi {{ header.has_no_read ? 'no-read-msg' : '' }}"></view></navigator>
+      
+      <i-notice-bar icon="systemprompt" wx:if="{{ header.show_notice_bar }}" closable>
+        <navigator wx:if="{{ header.notice_bar_path }}" url="{{ header.notice_bar_path }}">
+          <text>{{ header.notice_text }}</text>
+        </navigator>
+        <text wx:else>{{ header.notice_text }}</text>
+      </i-notice-bar>
     </view>
     
     <view class="zan-btns new-record">
@@ -44,7 +50,10 @@
   import { asyncList } from '@/store/actions'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '首页'
+      navigationBarTitleText: '首页',
+      "usingComponents": {
+        "i-notice-bar": "../public/iview/notice-bar/index"
+      }
     }
 
     data = {

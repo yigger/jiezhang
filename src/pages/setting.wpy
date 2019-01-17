@@ -64,27 +64,32 @@
     <view class="setting-container">
       <i-cell-group>
         <i-cell 
-          title="预算中心"
+          title="消息通知"
+          is-link url="/pages/message/message">
+        </i-cell>
+
+        <i-cell 
+          title="设置预算"
           is-link url="/pages/budgets/budget">
         </i-cell>
 
         <i-cell 
-          title="资产类型分类" 
+          title="设置资产分类" 
           is-link url="/pages/assets/list">
         </i-cell>
         
         <i-cell 
-          title="支出分类管理" 
+          title="设置支出分类" 
           is-link url="/pages/categories/list?type=expend">
         </i-cell>
         
         <i-cell 
-          title="收入分类管理" 
+          title="设置收入分类" 
           is-link url="/pages/categories/list?type=income">
         </i-cell>
 
         <i-cell 
-          title="首页看板设置"
+          title="设置首页看板"
           is-link url="/pages/settings/header">
         </i-cell>
 
@@ -101,7 +106,7 @@
       </i-cell-group>
     </view>
 
-    <i-load-more i-class="bottom-text" tip="powered by young" loading="{{ false }}" />
+    <i-load-more i-class="bottom-text" tip="洁账" loading="{{ false }}" />
 
   </view>
 </template>
