@@ -29,7 +29,8 @@
 
     data = {
       current: 'expend',
-      statement: {}
+      statement: {},
+      statement_avatar: []
     }
 
     onLoad (options) {
@@ -41,10 +42,25 @@
         this.current = detail.key
       },
       async submit (statement) {
+        // 查找需要删除的图片
+        const statement_paths = this.statement_avatar.map((f) => f.path )
+        const del_obj = this.statement_avatar.filter((f) => statement.upload_files.indexOf(f.path) === -1)
+        const del_ids = del_obj.map((f) => f.id)
+        statement.del_avatar_ids = del_ids
+
         const result = await wxRequest.Put(`statements/${this.statement.id}`, {statement: statement})
         if (result.status == 200) {
           const store = getStore()
           store.dispatch(modifyStatement(result.data))
+          // 更新上传图片
+          for (let file of statement.upload_files) {
+            if (statement_paths.indexOf(file) === -1) {
+              await wxRequest.Upload(file, {
+                type: 'statement_upload',
+                statement_id: result.data.id
+              })
+            }
+          }
           wepy.navigateBack({
             delta: 1
           })
@@ -64,6 +80,8 @@
       }
       this.current = statement.type
       this.statement = statement
+      this.statement_avatar = statement.upload_files
+      this.statement.upload_files = statement.upload_files.map((f) => f.path)
       this.$apply()
     }
 
