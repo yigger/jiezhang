@@ -56,6 +56,17 @@
         </view>
         <text>{{ statement.description }}</text>
       </view>
+
+      <view class="statement-files" v-if="statement.upload_files.length > 0">
+        <view>
+          <text>关联图片</text>
+        </view>
+        <view class="image-list">
+          <view class="image-item" wx:for="{{ statement.upload_files }}">
+            <image src="{{ item }}" @tap="showPicture('{{ item }}')" lazy-load="false"></image>
+          </view>
+        </view>
+      </view>
     </view>
 
     <view class="button-groups">
@@ -114,6 +125,12 @@
         store.dispatch(delStatement(this.id))
         wepy.navigateBack({
           delta: 1
+        })
+      },
+      showPicture (item) {
+        wx.previewImage({
+          current: item,
+          urls: this.statement.upload_files
         })
       }
     }

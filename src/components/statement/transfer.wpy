@@ -231,7 +231,10 @@ export default class StatementTransferComponent extends wepy.component {
       this.submiting = false
     },
     showPicture (item) {
-      // TODO: 点击显示大图
+      wx.previewImage({
+        current: item,
+        urls: this.statement.upload_files
+      })
     },
     deleteImage (item) {
       const index = this.statement.upload_files.indexOf(item)
