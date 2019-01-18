@@ -69,8 +69,13 @@
         </i-cell>
 
         <i-cell 
-          title="设置预算"
+          title="预算管理"
           is-link url="/pages/budgets/budget">
+        </i-cell>
+
+        <i-cell 
+          title="首页看板设置"
+          is-link url="/pages/settings/header">
         </i-cell>
 
         <i-cell 
@@ -86,11 +91,6 @@
         <i-cell 
           title="设置收入分类" 
           is-link url="/pages/categories/list?type=income">
-        </i-cell>
-
-        <i-cell 
-          title="设置首页看板"
-          is-link url="/pages/settings/header">
         </i-cell>
 
         <i-cell 

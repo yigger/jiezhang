@@ -13,7 +13,7 @@
         </view>
       </view>
       
-      <i-notice-bar icon="systemprompt" wx:if="{{ header.show_notice_bar }}" closable>
+      <i-notice-bar icon="systemprompt" wx:if="{{ header.show_notice_bar }}">
         <navigator wx:if="{{ header.notice_bar_path }}" url="{{ header.notice_bar_path }}">
           <text>{{ header.notice_text }}</text>
         </navigator>

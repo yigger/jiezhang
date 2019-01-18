@@ -51,7 +51,6 @@
 
   }
 </script>
-<style lang="scss" src="@/public/styles/months/index.scss"></style>
 <style lang="less">
   .container {
     // background: #f8f8f8;

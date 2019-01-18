@@ -43,7 +43,6 @@
 
     methods = {
       htmlParserNotice () {
-        console.warn('www')
         this.htmlParse()
       }
     }

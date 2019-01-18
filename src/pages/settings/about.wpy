@@ -5,24 +5,18 @@
     </view>
 
     <view class="app-info">
-      <view>洁账 {{ version }}</view>
+      <view>洁账 {{ about.version }}</view>
     </view>
 
     <view class="description">
       <view>
-        大家好，我是 young，是一名程序员，这款作品是鄙人的第一款作品，由 18 年 2 月建立，最初是因女友的记账需求而开始，后来慢慢发现这是一种编码的乐趣，所以一直以来都是我自己在业余时间进行开发与维护，开发过程中其实也遇到了很多问题，非常感谢身边朋友提供的技术支持。当然，这并不是三分钟热度的项目，我肯定会以一己之力认真的维护下去，虽说市面上已经有很多此类型的产品，但是我只是想做“我心中的产品”。存储的数据会严格保密不会泄露，请大家放心，最后非常感谢大家的使用与支持！
+        {{ about.content }}
       </view>
     </view>
 
     <view class="bottom">
-      <view>
-        <view>小程序源代码</view>
-        <view>https://github.com/yigger/jiezhang</view>
-      </view>
-
-      <view>
-        <view>联系我</view>
-        <view>邮箱： yigger@163.com</view>
+      <view wx:for="{{ about.others }}">
+        <view wx:for="{{ item }}">{{ item }}</view>
       </view>
     </view>
   </view>
@@ -32,6 +26,7 @@
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
   import tip from '../../utils/tip'
+  import Session from '@/utils/session'
 
   export default class About extends wepy.page {
     config = {
@@ -39,16 +34,22 @@
     }
     
     data = {
-      version: ''
+      about: {}
     }
 
     onShow () {
-      this.getVersion()
+      this.getAbout()
     }
 
-    async getVersion () {
-      const data = await wxRequest.Get('settings')
-      this.version = data.version
+    async getAbout () {
+      if (Session.get('settings_about_data')) {
+        this.header = Session.get('settings_about_data')
+        this.$apply()
+      }
+
+      const data = await wxRequest.Get('settings/about')
+      this.about = data
+      Session.set('settings_about_data', this.about)
       this.$apply()
     }
     
