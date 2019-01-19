@@ -13,7 +13,6 @@
         <i-cell title="总账单数" value="{{ user.sts_count }}"></i-cell>
       </i-cell-group>
     </view>
-
   </view>
 </template>
 

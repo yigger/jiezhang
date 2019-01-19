@@ -19,6 +19,8 @@
         <view wx:for="{{ item }}">{{ item }}</view>
       </view>
     </view>
+
+    <i-button bind:click="cleanSession">清空缓存</i-button>
   </view>
 </template>
 
@@ -30,7 +32,10 @@
 
   export default class About extends wepy.page {
     config = {
-      navigationBarTitleText: '关于洁账'
+      navigationBarTitleText: '关于洁账',
+      "usingComponents": {
+        "i-button": "../../public/iview/button/index"
+      }
     }
     
     data = {
@@ -39,6 +44,13 @@
 
     onShow () {
       this.getAbout()
+    }
+
+    methods = {
+      cleanSession () {
+        wx.clearStorage()
+        tip.toast('清理成功')
+      }
     }
 
     async getAbout () {
