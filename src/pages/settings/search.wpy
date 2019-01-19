@@ -5,7 +5,7 @@
              value="{{ keyword }}"
              placeholder-class="input-placeholder"
              placeholder="请输入关键字, 支持搜索金额、地址、备注"
-             bindconfirm="handleSearch" />
+             bindinput="handleSearch" />
     </view>
 
     <view class="result-tip" wx:if="{{ keyword !== '' }}">共查询到 {{ result.length }} 条账单</view>
