@@ -73,6 +73,9 @@
     }
 
     onShow () {
+      // 这是为了返回时初始化数据
+      this.result = []
+      this.page = 1
       this.doSearch()
     }
 

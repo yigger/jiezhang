@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <view class="header" :class="{'no-login': !alreadyLogin}">
+    <view class="header" :class="{'no-login': !user.already_login}">
       <view class="background-img">
         <image src="../public/images/user-bg.jpeg"></image>
       </view>
@@ -52,7 +52,7 @@
       </view>
     </view>
 
-    <view class="login-message" wx:if="{{ !alreadyLogin }}">
+    <view class="login-message" wx:if="{{ !user.already_login }}">
       <view>
         <button class="get-user-btn" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击登录</button>
         <view class="continue" style="font-size: 14px; margin-top: 6px">
@@ -136,11 +136,11 @@
         return {
           name: '访客',
           bonus_points: 0,
-          avatar_url: '../public/images/no_login_avatar.png'
+          avatar_url: '../public/images/no_login_avatar.png',
+          already_login: false
         }
       },
-      version: '',
-      alreadyLogin: this.loginStatus()
+      version: ''
     }
 
     computed = {
@@ -166,7 +166,6 @@
     }
 
     onShow () {
-      this.alreadyLogin = this.loginStatus()
 			this.getCurrentUser()
     }
     
@@ -182,13 +181,9 @@
       },
       async getUserInfo (e) {
         if(e.detail.errMsg != 'getUserInfo:ok') return false
-        
         const userInfo = e.detail.userInfo
         await wxRequest.Put('users/update_user', { user: userInfo })
-        const key = Session.key.alreadyLogin
-        Session.set(key, true)
         this.getCurrentUser()
-        this.alreadyLogin = true
         this.$apply()
       },
       developing () {
@@ -197,11 +192,6 @@
           icon: 'none'
         });
       }
-    }
-
-    loginStatus () {
-      const key = Session.key.alreadyLogin
-      return Session.get(key) == null
     }
 
     async getCurrentUser () {

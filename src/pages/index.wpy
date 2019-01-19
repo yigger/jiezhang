@@ -81,7 +81,6 @@
       }
 
       const data = await wxRequest.Get('header')
-      const bg_images_key = Session.key.bgImageKey
       this.header = data
       Session.set('header_load_cache', this.header)
       this.$apply()
