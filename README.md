@@ -1,8 +1,8 @@
 # 记账小程序
 > 基于 wepy 开发的一款记账小程序
 
-### 演示地址
-![演示地址](https://github.com/yigger/jiezhang/raw/master/screenshots/qrcode.jpg)
+### 体验二维码
+![二维码](https://github.com/yigger/jiezhang/raw/master/screenshots/qrcode.jpg)
 
 ### 功能
 + 日常记账，目前只支持基本的收入、支出、转账
