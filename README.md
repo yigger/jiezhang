@@ -50,6 +50,7 @@ https://github.com/TalkingData/iview-weapp
 
 ### 打赏
 如果你喜欢我的作品，可以请我喝杯咖啡支持下，谢谢你。
+
 ![](https://github.com/yigger/jiezhang/raw/master/screenshots/my_qrcode.png)
 
 ### License
