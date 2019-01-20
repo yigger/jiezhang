@@ -46,6 +46,11 @@ npm run build
 https://tencent.github.io/wepy/  
 https://github.com/dyq086/wepy-mall  
 https://github.com/czcaiwj/calendar  
+https://github.com/TalkingData/iview-weapp
+
+### 打赏
+如果你喜欢我的作品，可以请我喝杯咖啡支持下，谢谢你。
+![](https://github.com/yigger/jiezhang/raw/master/screenshots/my_qrcode.jpg)
 
 ### License
 JieZhang is licensed under [The MIT License](LICENSE)
