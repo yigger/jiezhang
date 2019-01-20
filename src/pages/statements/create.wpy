@@ -7,9 +7,9 @@
     </i-tabs>
     
     <view class="comonent-list">
-      <Expend @submit.user="submit" wx:if="{{ current == 'expend' }}"/>
-      <Income @submit.user="submit" wx:if="{{ current == 'income' }}"/>
-      <Transfer @submit.user="submit" wx:if="{{ current == 'transfer' }}"/>
+      <Expend @submit.user="submit" :submiting.sync="submiting" wx:if="{{ current == 'expend' }}"/>
+      <Income @submit.user="submit" :submiting.sync="submiting" wx:if="{{ current == 'income' }}"/>
+      <Transfer @submit.user="submit" :submiting.sync="submiting" wx:if="{{ current == 'transfer' }}"/>
     </view>
 
   </view>
@@ -36,6 +36,7 @@
 
     data = {
       current: 'expend',
+      submiting: false
     }
 
     methods = {
@@ -43,22 +44,26 @@
         this.current = detail.key
       },
       async submit (statement) {
+        this.submiting = true
         const result = await wxRequest.Post(`statements`, {statement: statement})
-        if (result.status == 200) {
-          const store = getStore()
-          store.dispatch(addStatement(result.data))
-          for (let file of statement.upload_files) {
-            await wxRequest.Upload(file, {
-              type: 'statement_upload',
-              statement_id: result.data.id
+        try {
+          if (result.status == 200) {
+            const store = getStore()
+            store.dispatch(addStatement(result.data))
+            for (let file of statement.upload_files) {
+              await wxRequest.Upload(file, {
+                type: 'statement_upload',
+                statement_id: result.data.id
+              })
+            }
+            wepy.navigateBack({
+              delta: 1
             })
+          } else {
+            tip.error(result.msg)
           }
-          wepy.navigateBack({
-            delta: 1
-          })
-        } else {
-          tip.error(result.msg)
-        }
+        } catch (e) {}
+        this.submiting = false
       }
     }
 

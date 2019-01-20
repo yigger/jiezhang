@@ -54,7 +54,8 @@
       </view>
 
       <view class="btn-save">
-        <button disabled="{{ submiting }}" formType="submit">保存</button>
+         <button wx:if="{{ !submiting }}" formType="submit">保存</button>
+        <button wx:else>保存中...</button>
         <input hidden name="type" value="{{ statement.type }}"/>
       </view>
     </view>
@@ -92,6 +93,10 @@ export default class StatementTransferComponent extends wepy.component {
           upload_files: []
         }
       }
+    },
+    submiting: {
+      type: Boolean,
+      default: false
     }
   }
 
@@ -102,8 +107,7 @@ export default class StatementTransferComponent extends wepy.component {
     district: '',
     street: '',
     transferType: 0,
-    switchCheck: Session.get('getLocationSwitch') || false,
-    submiting: false
+    switchCheck: Session.get('getLocationSwitch') || false
   }
 
   onLoad () {
@@ -215,9 +219,7 @@ export default class StatementTransferComponent extends wepy.component {
       }
 
       statement.upload_files = this.statement.upload_files
-      this.submiting = true
       this.$emit('submit', statement)
-      this.submiting = false
     },
     showPicture (item) {
       wx.previewImage({
@@ -233,7 +235,7 @@ export default class StatementTransferComponent extends wepy.component {
       const choseImages = await wepy.chooseImage({
         count: 5,
         sizeType: ['compressed'],
-        sourceType: ['album']
+        sourceType: ['album', 'camera']
       })
       this.statement.upload_files = [...this.statement.upload_files, ...choseImages.tempFilePaths]
       this.$apply()

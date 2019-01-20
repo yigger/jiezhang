@@ -48,7 +48,7 @@
         const choseImages = await wepy.chooseImage({
           count: 1,
           sizeType: ['compressed'],
-          sourceType: ['album']
+          sourceType: ['album', 'camera']
         })
         if (choseImages.tempFiles.length == 0) {
           wx.showToast({

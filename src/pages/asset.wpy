@@ -45,15 +45,14 @@
         <view class="title">{{ item.name }}</view>
       </view>
     </view>
-
-    <i-spin wx:if="{{ wallets.length == 0 }}"></i-spin>
   </view>
 
 </view>
 </template>
 
 <script>
-	import wepy from 'wepy'
+  import wepy from 'wepy'
+  import Session from '@/utils/session'
   import wxRequest from '@/utils/wxRequest'
   export default class Wallet extends wepy.page {
     config = {
@@ -80,6 +79,11 @@
     }
 
 		onShow () {
+      if (Session.get('@asset_list_load_cache@')) {
+        this.wallets = Session.get('@asset_list_load_cache@')
+        this.$apply()
+      }
+
 			this.getAssets()
 		}
     
@@ -94,6 +98,7 @@
       this.seventAmount = header.sevent_day_consumption,
       this.monthAmount = header.last_month_consumption,
       this.wallets = list
+      Session.set('@asset_list_load_cache@', this.wallets)
       this.$apply()
 		}
   }
