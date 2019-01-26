@@ -103,7 +103,12 @@ export default class extends wepy.app {
       request: 10000,
       downloadFile: 10000
     },
-    debug: true,
+    permission: {
+      "scope.userLocation": {
+        "desc": "您的位置信息将用于记录账单的地理位置"
+      }
+    },
+    debug: false,
     "plugins": {
       "calendar": {
         "version": "1.1.3",
