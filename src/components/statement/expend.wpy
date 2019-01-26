@@ -211,7 +211,7 @@ export default class StatementExpendComponent extends wepy.component {
     },
     getLocation (e) {
       const locationSwitch = e.detail.value
-      // Session.set('getLocationSwitch', locationSwitch)
+      Session.set('getLocationSwitch', locationSwitch)
       if (locationSwitch) {
         this.setLocation()
       } else {
