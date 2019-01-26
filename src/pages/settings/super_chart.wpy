@@ -2,56 +2,73 @@
   <view class="container">
     <view class="time-filter">
       <view class="month-filter">
+        <!-- <view>2019 年 01 月</view> -->
         <view class="iconfont jz-icon-arrow-left" @tap="setParams('prev')"></view>
-        <view class="month" wx:if="{{ type == 'month' }}">{{ year }} - {{ month }}</view>
-        <view class="month" wx:if="{{ type == 'year' }}">{{ year }}</view>
-        <view class="month" wx:if="{{ type == 'all' }}">所有</view>
+        <view class="month">{{ year }} 年 {{ month }} 月</view>
         <view class="iconfont jz-icon-arrow-right-copy" @tap="setParams('next')"></view>
       </view>
-
-      <view class="chart-filter">
-        <view @tap="setType('month')">按月</view>
-        <view @tap="setType('year')">按年</view>
-        <view @tap="setType('all')">全部</view>
-      </view>
     </view>
 
-    <view class="chart-amount">
-      <view>
-        <view class="amount">{{ header.expend_count }}</view>
-        <view class="small-text">总支出</view>
-        <view class="percent-rise {{ header.expend_rise }}">同期{{ header.expend_rise == 'income' ? '增长' : '下降' }} {{ header.expend_percent }}%</view>
-      </view>
-
-      <view>
-        <view class="amount">{{ header.income_count }}</view>
-        <view class="small-text">总收入</view>
-        <view class="percent-rise {{ header.income_rise }}">同期{{ header.income_rise == 'income' ? '增长' : '下降' }} {{ header.income_percent }}%</view>
-      </view>
-
-      <view>
-        <view class="amount">{{ header.surplus }}</view>
-        <view class="small-text">结余</view>
-        <view class="percent-rise {{ header.surplus_rise }}">同期{{ header.surplus_rise == 'income' ? '增长' : '下降' }} {{ header.surplus_percent }}%</view>
-      </view>
-    </view>
-
-    <canvas canvas-id="pieCanvas" disable-scroll="true" class="piecanvas" style="width: 100%; height: 280px;"></canvas>
-
-    <canvas canvas-id="lineCanvas" disable-scroll="true" class="lineCanvas" style="width: 100%; height: 280px;"></canvas>
-
-    <view class="expend-bars" wx:if="{{ chartData.length > 0 }}">
-      <view class="item" wx:for="{{ chartData }}" style="background-size: {{ item.percent * 2 }}% 100%;" @tap="redirectTo('{{ item.category_id }}')">
+    <view class="chart-container">
+      <view class="title">当月资产状况</view>
+      <view class="chart-amount">
         <view>
-          <view class="title">{{ item.name }}<text class="percent">{{ item.percent }}%</text></view>
-          <view class="amount">{{ item.format_amount }}</view>
+          <view class="amount">{{ header.expend_count }}</view>
+          <view class="small-text">总支出</view>
+          <view class="percent-rise {{ header.expend_rise }}">同期{{ header.expend_rise == 'income' ? '增长' : '下降' }} {{ header.expend_percent }}%</view>
         </view>
-        <view class="zan-icon zan-icon-arrow"></view>
+
+        <view>
+          <view class="amount">{{ header.income_count }}</view>
+          <view class="small-text">总收入</view>
+          <view class="percent-rise {{ header.income_rise }}">同期{{ header.income_rise == 'income' ? '增长' : '下降' }} {{ header.income_percent }}%</view>
+        </view>
+
+        <view>
+          <view class="amount">{{ header.surplus }}</view>
+          <view class="small-text">结余</view>
+          <view class="percent-rise {{ header.surplus_rise }}">同期{{ header.surplus_rise == 'income' ? '增长' : '下降' }} {{ header.surplus_percent }}%</view>
+        </view>
       </view>
     </view>
+    
+    <view class="chart-container">
+      <view class="title">分类消费</view>
+      <canvas canvas-id="pieCanvas" disable-scroll="true" style="width: 100%; height: 300px;"></canvas>
+    </view>
 
-    <empty wx:if="{{ chartData.length == 0 }}" :title.sync="emptyTitle"></empty>
+    <view class="chart-container">
+      <view class="title">周消费曲线</view>
+      <canvas canvas-id="weekExpendCanvas" disable-scroll="true" style="width: 100%; height: 210px;"></canvas>
+    </view>
 
+    <view class="chart-container">
+      <view class="title">近 6 月支出趋势</view>
+      <canvas canvas-id="expendLineCanvas" disable-scroll="true" style="width: 100%; height: 300px;"></canvas>
+    </view>
+
+    <view class="chart-container">
+      <view class="title">近 6 月收入趋势</view>
+      <canvas canvas-id="incomeLineCanvas" disable-scroll="true" style="width: 100%; height: 300px;"></canvas>
+    </view>
+
+    <view class="chart-container">
+      <view class="title">近 6 月结余趋势</view>
+      <canvas canvas-id="surplusLineCanvas" disable-scroll="true" style="width: 100%; height: 300px;"></canvas>
+    </view>
+
+    <view class="chart-container">
+      <view class="title">当月消费分类排行</view>
+      <view class="expend-bars" wx:if="{{ categories.length > 0 }}">
+        <view class="item" wx:for="{{ categories }}" style="background-size: {{ item.percent }}% 100%;" @tap="redirectTo('{{ item.category_id }}')">
+          <view>
+            <view class="title">{{ item.name }}<text class="percent">{{ item.percent }}%</text></view>
+            <view class="amount">{{ item.format_amount }}</view>
+          </view>
+          <view class="zan-icon zan-icon-arrow"></view>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -70,10 +87,11 @@
       chartData: [],
       header: {},
       info: {},
-      type: 'month',
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
-      emptyTitle: '找不到数据呢~试试其它'
+      categories: [],
+      emptyTitle: '找不到数据呢~试试其它',
+      showFilter: false
     }
 
     components = {
@@ -82,32 +100,27 @@
 
     methods = {
       setParams (type) {
-        if (type == 'all') return false
-        if (type == 'next') {
-          if(this.type == 'month') this.nextMonth()
-          if(this.type == 'year') this.year += 1
-        } else {
-          if(this.type == 'month') this.prevMonth()
-          if(this.type == 'year') this.year -= 1
-        }
-        this.getChartData()
-        this.getLineChartData()
+        type == 'next' ? this.nextMonth() : this.prevMonth()
+        this.initChart()
       },
       redirectTo (category_id) {
         wepy.navigateTo({
           url: `/pages/statements/filter_statements?year=${this.year}&month=${this.month}&category_id=${category_id}`
         })
-      },
-      setType (type) {
-        this.type = type
-        this.getChartData()
       }
     }
 
     async onShow() {
       this.info = await wepy.getSystemInfo()
-      this.getChartData()
+      this.initChart()
+    }
+
+    initChart () {
+      this.getHeader()
+      this.getWeekChartData()
+      this.getPieData()
       this.getLineChartData()
+      this.getCategoriesData()
     }
 
     nextMonth () {
@@ -128,7 +141,69 @@
       }
     }
 
-    async initChart (data) {
+    async getHeader () {
+      const data = await wxRequest.Get('super_chart/header', {
+        year: this.year,
+        month: this.month
+      })
+      this.header = data.data
+      this.$apply()
+    }
+
+    async getWeekChartData () {
+      const data = await wxRequest.Get('super_chart/week_data',{
+        year: this.year,
+        month: this.month
+      })
+      if (data.weeks.length > 0) {
+        new wxCharts({
+          canvasId: 'weekExpendCanvas',
+          type: 'line',
+          categories: data.weeks,
+          series: [{
+            name: '每周消费',
+            data: data.data,
+          }],
+          yAxis: {
+            title: '消费金额 (元)',
+            min: 0
+          },
+          extra: {
+            lineStyle: 'curve'
+          },
+          width: 320,
+          height: 200
+        });
+      }
+    }
+
+    async getPieData () {
+      const data = await wxRequest.Get('super_chart/get_pie_data', {
+        year: this.year,
+        month: this.month
+      })
+      if (data.data.length > 0) this.initPieChart(data.data)
+      this.$apply()
+    }
+
+    async getLineChartData () {
+      const data = await wxRequest.Get('super_chart/line_chart', {year: this.year})
+      try {
+        if(data.months.length > 0) {
+          this.initLineChart(data)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    async getCategoriesData () {
+      const data = await wxRequest.Get('super_chart/categories_list', {year: this.year})
+      this.categories = data.data
+      this.$apply()
+    }
+
+    async initPieChart (data) {
       new wxCharts({
         canvasId: 'pieCanvas',
         type: 'pie',
@@ -140,55 +215,71 @@
       });
     }
 
-    async getChartData () {
-      const data = await wxRequest.Get('super_chart', {
-          type: this.type,
-          year: this.year,
-          month: this.month
-        })
-      this.header = data.header
-      this.chartData = data.charts
-      if (data.wx_charts.length > 0) this.initChart(data.wx_charts)
-      this.$apply()
-    }
-
-    async getLineChartData () {
-      const data = await wxRequest.Get('super_chart/line_chart', {year: this.year})
-      try {
-        if(data.months.length > 0) this.initLineChart(data)
-      } catch (e) {
-        console.log(e)
-      }
-    }
-
     async initLineChart (data) {
       new wxCharts({
-        canvasId: 'lineCanvas',
+        canvasId: 'expendLineCanvas',
+        type: 'line',
+        categories: data.months,
+        series: [{
+            name: '支出',
+            data:  data.expends,
+            color: '#008000'
+        }],
+        yAxis: {
+            title: '金额',
+            min: 0
+        },
+        extra: {
+          lineStyle: 'curve'
+        },
+        width: this.info.screenWidth,
+        height: 280
+      });
+
+      new wxCharts({
+        canvasId: 'incomeLineCanvas',
         type: 'line',
         categories: data.months,
         series: [{
             name: '收入',
             data: data.incomes,
             color: '#FF0000'
-        }, {
-            name: '支出',
-            data:  data.expends,
-            color: '#008000'
-        },
-        {
-            name: '结余',
-            data:  data.surplus,
-            color: '#cccccc'
         }],
         yAxis: {
             title: '金额',
             min: 0
+        },
+        extra: {
+          lineStyle: 'curve'
+        },
+        width: this.info.screenWidth,
+        height: 280
+      });
+
+      new wxCharts({
+        canvasId: 'surplusLineCanvas',
+        type: 'line',
+        categories: data.months,
+        series: [{
+          name: '结余',
+          data:  data.surplus,
+          color: '#cccccc'
+        }],
+        yAxis: {
+            title: '金额',
+            min: 0
+        },
+        extra: {
+          lineStyle: 'curve'
         },
         width: this.info.screenWidth,
         height: 280
       });
     }
 
+    toggleFilter () {
+      this.showFilter = !this.showFilter
+    }
   }
 </script>
 <style lang="scss" src="@/public/styles/super_chart.scss"></style>

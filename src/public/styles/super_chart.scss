@@ -1,10 +1,8 @@
 @import './_variable.scss';
 .time-filter {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  // background: $secondaryBackgroundColor;
-  padding: 4px 12px;
+  justify-content: center;
+  padding: 8px 0;
   font-size: 14px;
   .month-filter {
     display: flex;
@@ -61,7 +59,7 @@ swiper {
     justify-content: space-between;
     align-items:center;
     color: $primaryText;
-    margin:12px 20px;
+    margin:12px 0;
     padding: 8px;
     background-repeat: no-repeat;
     background-image: linear-gradient(#c1f5e7, #c1f5e7);
@@ -94,5 +92,70 @@ swiper {
     height: auto;
     margin-right: 23rpx;
     display: inline-block;
+  }
+}
+.drawer-container {
+  width:65vw;
+	height: 100vh;
+  background:#f2f2f2;
+  font-size: 14px;
+  .box-container {
+    padding: 0 8px;
+    .title {
+      font-size: 14px;
+      padding-top: 4px;
+    }
+    .item-list {
+      overflow: hidden;
+      font-size: 16px;
+      > view {
+        float: left;
+        width: 50px;
+        border: 1px solid #ccc;
+        margin-right:8px;
+        margin-top:8px;
+        padding:2px 6px;
+        text-align:center;
+
+      }
+    }
+  }
+  .footer-btns {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    width: 100%;
+    > view {
+      flex: 1;
+      text-align: center;
+      color: $secondaryText;
+      padding: 12px 0;
+      border: 1px solid $secondaryText;
+    }
+  }
+}
+.chart-container {
+  margin: 14px;
+  > .title {
+    position: relative;
+    z-index: 998;
+    display: inline-block;
+    padding-bottom: 4px;
+    margin-bottom:12px;
+    font-size: 18px;
+    color: #40485B;
+    font-weight: bolder;
+    border-bottom: 2px dashed #f4f4f4;
+    &:before {
+      content: '';
+      position: absolute;
+      background: #FFF3AC;
+      width: calc(100% + 16px);
+      height: 12px;
+      bottom: 0;
+      left: 0;
+      border-radius: 12px;
+      z-index: -1;
+    }
   }
 }

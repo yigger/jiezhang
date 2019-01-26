@@ -132,13 +132,11 @@
     }
     
     data = {
-      user: function() {
-        return {
-          name: '访客',
-          bonus_points: 0,
-          avatar_url: '../public/images/no_login_avatar.png',
-          already_login: false
-        }
+      user: {
+        name: '访客',
+        bonus_points: 0,
+        avatar_url: '../public/images/no_login_avatar.png',
+        already_login: true
       },
       version: ''
     }
