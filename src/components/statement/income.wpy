@@ -81,10 +81,10 @@
 <script>
 import wepy from 'wepy'
 import wxRequest from '@/utils/wxRequest'
-import { amapKey } from '@/utils/host'
+import { mapKey } from '@/utils/host'
 import Session from '@/utils/session'
 import tip from '@/utils/tip'
-import amapFile from '@/utils/amap-wx.js'
+import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
 
 export default class StatementIncomeComponent extends wepy.component {
   props = {
@@ -157,22 +157,30 @@ export default class StatementIncomeComponent extends wepy.component {
   }
 
   setLocation () {
-    const myAmapFun = new amapFile.AMapWX({key: amapKey})
-    const that = this
-    myAmapFun.getRegeo({
-      success: function(data){
-        if (data.length == 0) return false
-        const address = data[0]
-        const regeData = address.regeocodeData
-        if (typeof address === 'undefined') return false
-        const detail = regeData.addressComponent
-        if (typeof detail === 'undefined') return false
-        that.province = detail.province
-        that.city = detail.city
-        that.district = detail.district
-        that.street = detail.township
-        that.statement.address = regeData.formatted_address
-        that.$apply()
+    this.qqmapSDK = new QQMapWX({
+      key: mapKey
+    });
+    wx.getLocation({
+      type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+      success: (result) => {
+        console.warn(result)
+        this.qqmapSDK.reverseGeocoder({
+          location: {
+            latitude: result.latitude,
+            longitude: result.longitude
+          },
+          success: (addressRes) => {
+            console.warn(addressRes)
+            const address_component = addressRes.result.address_component
+            this.nation = address_component.nation
+            this.province = address_component.province
+            this.city = address_component.city
+            this.district = address_component.district
+            this.street = address_component.street
+            this.statement.address = addressRes.result.address
+            this.$apply()
+          }
+        })
       }
     })
   }
