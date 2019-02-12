@@ -2,16 +2,24 @@
   <view class="category-component">
     <view wx:if="{{ frequent.length > 0 }}">
       <view class="header fs14">常用</view>
-      <repeat for="{{frequent}}" key="index" index="index" item="child">
-        <category :category.sync="child" @choseItem.user="setAsset"></category>
-      </repeat>
+      <view class="column" wx:for="{{ frequent }}" @tap="setAsset('{{ item }}')">
+        <view class="category">
+          <image class='ljt-icon' src="{{ item.icon_path }}"></image>
+          <text class="category-name fs16">{{ item.name }}</text>
+          <text class="money">（¥{{ item.amount }}）</text>
+        </view>
+      </view>
     </view>
 
     <view wx:for="{{ list }}">
       <view class="header fs14">{{ item.name }}</view>
-      <repeat for="{{item.childs}}" key="index" index="index" item="child">
-        <category :category.sync="child" @choseItem.user="setAsset"></category>
-      </repeat>
+      <view class="column" wx:for="{{ item.childs }}" @tap="setAsset('{{ item }}')">
+        <view class="category">
+          <image class='ljt-icon' src="{{ item.icon_path }}"></image>
+          <text class="category-name fs16">{{ item.name }}</text>
+          <text class="money">（¥{{ item.amount }}）</text>
+        </view>
+      </view>
     </view>
 
     <navigator url="/pages/assets/asset_form">
@@ -29,13 +37,17 @@
   import wxRequest from '@/utils/wxRequest'
   import Category from '../../components/category_item'
   export default class choseAsset extends wepy.page {
+    config = {
+      navigationBarTitleText: '选择资产'
+    }
+
     data = {
       frequent: [],
       last: null,
       list: [],
       type: 'expend'
     }
-
+    
     components = {
 			category: Category
     };

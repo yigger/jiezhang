@@ -106,6 +106,10 @@
       </i-cell-group>
     </view>
 
+    <view class="recommend-container">
+      <button class="recommend-button" open-type="share">推荐给朋友使用</button>
+    </view>
+
     <i-load-more i-class="bottom-text" tip="洁账" loading="{{ false }}" />
 
   </view>
@@ -163,6 +167,12 @@
       }
     }
 
+    onLoad () {
+      wx.showShareMenu({
+        withShareTicket: true
+      }); 
+    }
+
     onShow () {
 			this.getCurrentUser()
     }
@@ -189,6 +199,19 @@
           title: '开发中，敬请期待',
           icon: 'none'
         });
+      }
+    }
+
+    onShareAppMessage (ops) {
+      return {
+        title: '推荐你使用洁账',
+        path: '/pages/index',
+        imageUrl: 'https://xiaoyounger.com/covers/default-11.jpeg',
+        success: async function (res) {
+          console.log(res)
+          tip.toast('感谢支持')
+          await wxRequest.Post('settings/recommend', { ticket: res['shareTickets'][0] })
+        }
       }
     }
 

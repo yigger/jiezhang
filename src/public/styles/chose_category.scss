@@ -1,6 +1,5 @@
 @import './_variable.scss';
 .header {
-  // background: #fafafa;
   color: $primaryText;
   border-bottom: 1px solid $borderColor;
   height: 64rpx;
@@ -23,6 +22,10 @@
       padding: 8rpx 0;
       color: $secondaryText;
     }
+  }
+  .category .money {
+    font-size: 20rpx;
+    color: $secondaryText;
   }
   .ljt-icon {
     width: 60rpx;
