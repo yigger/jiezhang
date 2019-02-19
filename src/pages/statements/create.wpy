@@ -43,9 +43,9 @@
       handleChange ({ detail }) {
         this.current = detail.key
       },
-      async submit (statement) {
+      async submit (statement, detail) {
         this.submiting = true
-        const result = await wxRequest.Post(`statements`, {statement: statement})
+        const result = await wxRequest.Post(`statements`, {statement: statement, formId: detail.formId})
         try {
           if (result.status == 200) {
             const store = getStore()

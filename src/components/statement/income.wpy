@@ -1,5 +1,5 @@
 <template lang="wxml">
-  <form bindsubmit="formSubmit">
+  <form bindsubmit="formSubmit" report-submit="true">
     <view class="container">
       <view class="column money">
         <text>金额</text>
@@ -238,7 +238,7 @@ export default class StatementIncomeComponent extends wepy.component {
       }
 
       statement.upload_files = this.statement.upload_files
-      this.$emit('submit', statement)
+      this.$emit('submit', statement, detail)
     },
     showPicture (item) {
       wx.previewImage({
