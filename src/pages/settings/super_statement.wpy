@@ -21,8 +21,8 @@
               <text>{{ item.year }}年</text>
             </view>
             <view class="amount">
-              <text class="income">流入： {{ item.income_amount }}</text>
-              <text class="expend">流出： {{ item.expend_amount }}</text>
+              <text class="income">收入： {{ item.income_amount }}</text>
+              <text class="expend">支出： {{ item.expend_amount }}</text>
             </view>
           </view>
           <view class="left-amount align-right">
