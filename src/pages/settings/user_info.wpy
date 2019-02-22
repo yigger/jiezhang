@@ -12,6 +12,15 @@
         <i-cell title="记力值" value="{{ user.bonus_points }}"></i-cell>
         <i-cell title="总账单数" value="{{ user.sts_count }}"></i-cell>
       </i-cell-group>
+      <view class="notice-remind">
+        <view>
+          <text class="notice-title">记账提醒</text>
+          <text class="notice-time">每天 22:00</text>
+        </view>
+        <view>
+          <i-switch value="{{ user.remind }}" bind:change="changeRemind" slot="footer"></i-switch>
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -27,7 +36,8 @@
         "i-cell-group": "../../public/iview/cell-group/index",
         "i-cell": "../../public/iview/cell/index",
         "i-avatar": "../../public/iview/avatar/index",
-        "i-load-more": "../../public/iview/load-more/index"
+        "i-load-more": "../../public/iview/load-more/index",
+        "i-switch": "../../public/iview/switch/index"
       }
     }
 
@@ -68,6 +78,10 @@
         wepy.navigateTo({
           url: '/pages/settings/nickname_edit'
         })
+      },
+      async changeRemind ({detail}) {
+        this.user.remind = detail.value
+        await wxRequest.Put('users/update_remind', { remind: detail.value ? 1 : 0 })
       }
     }
 
@@ -89,5 +103,19 @@
   .my-avatar {
     width: 35px;
     height: 35px;
+  }
+  .notice-remind {
+    display: flex;
+    justify-content: space-between;
+    padding:12px 15px;
+    background: white;
+    .notice-title {
+      font-size: 14px;
+    }
+    .notice-time {
+      font-size: 12px;
+      padding-left: 6px;
+      color: #ccc;
+    }
   }
 </style>
