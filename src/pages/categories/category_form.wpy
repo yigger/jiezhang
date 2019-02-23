@@ -80,7 +80,7 @@
         this.category.name = e.detail.value
       },
       redirect_url () {
-         wx.navigateTo({ url: `/pages/forms/icons_chose?url=categories` })
+        wx.navigateTo({ url: `/pages/forms/icons_chose?url=categories` })
       }
     }
 

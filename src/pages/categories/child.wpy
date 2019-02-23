@@ -21,7 +21,7 @@
     </view>
 
     <view class="list">
-      <view class="item" wx:for="{{ categories }}" @tap="redirect_url('{{ item.id }}')">
+      <view class="item" wx:for="{{ categories }}">
         <view class="icon-name">
           <image class='ljt-icon' src="{{ host }}{{ item.icon_path }}"></image>
           <text class="category-name">{{ item.name }}</text>
@@ -37,7 +37,7 @@
   import wxRequest from '@/utils/wxRequest'
   import List from '@/components/category_list'
   import Host from '@/utils/host'
-  export default class CategoryList extends wepy.page {
+  export default class CategoryChild extends wepy.page {
     config = {
       navigationBarTitleText: '分类管理'
     }
@@ -48,6 +48,7 @@
 
     data = {
       categories: [],
+      parent_id: 0,
       header: {
         month: '0.00',
         year: '0.00',
@@ -57,10 +58,7 @@
     }
 
     onLoad (options) {
-      if(options.type != undefined) this.type = options.type
-    }
-    
-    onShow () {
+      this.parent_id = options.id
       this.getList()
     }
 
@@ -70,14 +68,8 @@
       }
     }
 
-    methods = {
-      redirect_url (id) {
-        wx.navigateTo({ url: `/pages/categories/child?id=${id}` })
-      }
-    }
-
     async getList() {
-      const data = await wxRequest.Get('categories/category_list',  { type: this.type })
+      const data = await wxRequest.Get('categories/category_childs',  { parent_id: this.parent_id })
       this.categories = data.categories
       this.header = data.header
       this.$apply()

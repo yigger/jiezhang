@@ -44,6 +44,7 @@ export default class extends wepy.app {
       
       // 编辑账单类型分类/资产分类
       "pages/categories/list",
+      "pages/categories/child",
       "pages/categories/category_form",
       "pages/assets/list",
       "pages/assets/asset_form",
