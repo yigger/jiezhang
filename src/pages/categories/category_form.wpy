@@ -4,7 +4,7 @@
       <view class="container">
         <view class="column">
           <text>分类名称</text>
-          <input class="remark" type="text" name="name" placeholder="请输入分类名称"/>
+          <input class="remark" type="text" name="name" value="{{ category.name }}" placeholder="请输入分类名称"/>
         </view>
         
 
@@ -17,7 +17,7 @@
           <text>所属分类</text>
           <picker range="{{ parentCategories }}" value="{{ curIndex }}" range-key="name" bindchange="changeCategory">
             <input hidden name="parent_id" value="{{ category.parent_id }}"/>
-            <text>{{ parentCategories[curIndex]['name'] }}</text>
+            <text>{{ parentName }}</text>
           </picker>
         </view>
 
@@ -57,7 +57,41 @@
       parentCategories: [],
       curIndex: 0,
       isParentLevel: false,
-      submiting: false
+      submiting: false,
+      isEditMold: false
+    }
+
+    onLoad (options) {
+      this.category.type = options.type
+      this.getParentCategories()
+      if (typeof options.id !== 'undefined') {
+        this.isEditMold = true
+        this.category.id = options.id
+        this.getCategory()
+      }
+      if (typeof options.parent_id !== 'undefined') {
+        if (options.parent_id === 0) {
+          this.isParentLevel = true
+        } else {
+          this.isParentLevel = false
+          this.category.parent_id = options.parent_id
+        }
+      }
+      
+    }
+
+    computed = {
+      host () {
+        return Host.host;
+      },
+      parentName () {
+        if (typeof this.category.parent_name !== 'undefined') {
+          return this.category.parent_name
+        } else {
+          if (this.parentCategories.length === 0) return ;
+          return this.parentCategories[this.curIndex]['name']
+        }
+      }
     }
 
     methods = {
@@ -84,18 +118,33 @@
       }
     }
 
-    onLoad (options) {
-      this.category.type = options.type
-      this.getParentCategories()
-    }
-
     async formSubmit ({ detail }) {
       if (detail.value.name == '') {
         tip.error('请填写分类名称')
         return false
       }
 
-      const res = await wxRequest.Post(`categories`, {category: detail.value})
+      if (this.isEditMold) {
+        this.updateCategory(detail.value)
+      } else {
+        this.createCategory(detail.value)
+      }
+    }
+
+    async createCategory (category) {
+      const res = await wxRequest.Post(`categories`, {category: category})
+      if (res.status == 200) {
+        Session.clearByKey('category')
+        wepy.navigateBack({
+          delta: 1
+        })
+      } else {
+        tip.error(res.msg)
+      }
+    }
+    
+    async updateCategory(category) {
+      const res = await wxRequest.Put(`categories/${this.category.id}`, {category: category})
       if (res.status == 200) {
         Session.clearByKey('category')
         wepy.navigateBack({
@@ -106,17 +155,22 @@
       }
     }
 
-    computed = {
-      host () {
-        return Host.host;
+    async getCategory() {
+      const data = await wxRequest.Get(`categories/${this.category.id}`,{ type: this.category.type })
+      this.category = data
+      if (this.category.parent_id != 0) {
+        this.updateCurrentIndex()
+      } else {
+        this.isParentLevel = true
       }
+      this.$apply()
     }
 
     async getParentCategories() {
       const data = await wxRequest.Get('categories/parent', {type: this.category.type})
       this.parentCategories = data
 
-      if (this.parentCategories.length > 0 && !this.isParentLevel && this.category.id == 0) {
+      if (this.parentCategories.length > 0 && !this.isParentLevel && this.category.id === 0) {
         this.category.parent_id = this.parentCategories[0]['id']
       }
       this.$apply()
@@ -127,6 +181,14 @@
       this.$apply()
     }
 
+    updateCurrentIndex () {
+      for (let index in this.parentCategories) {
+        if (this.parentCategories[index]['id'] == this.category.parent_id) {
+          this.curIndex = index
+          return false
+        }
+      }
+    }
   }
 </script>
 <style lang="scss" src="@/public/styles/statement/statement.scss"></style>

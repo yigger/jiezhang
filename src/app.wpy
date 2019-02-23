@@ -46,6 +46,7 @@ export default class extends wepy.app {
       "pages/categories/list",
       "pages/categories/child",
       "pages/categories/category_form",
+      "pages/categories/category_statement",
       "pages/assets/list",
       "pages/assets/asset_form",
       "pages/assets/asset_detail",

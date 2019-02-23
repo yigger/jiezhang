@@ -1,32 +1,42 @@
 <template>
   <view class="container">
     <view class="header">
-      <!-- <image class="bg" src="{{ header.bg_avatar }}"></image> -->
       <view class="level-2">
         <view class="fs14">
-          <text>本月支出</text>
+          <text>本月{{ categoryText }}</text>
         </view>
         <view class="fs21 today-expend">{{ header.month }}</view>
         <view class="overflow-hide">
-          <view class="pull-left fs14">本年支出 {{ header.year }}</view>
-          <view class="pull-right fs14">全年支出 {{ header.all }}</view>
+          <view class="pull-left fs14">本年{{ categoryText }} {{ header.year }}</view>
+          <view class="pull-right fs14">全年{{ categoryText }} {{ header.all }}</view>
         </view>
       </view>
 
       <view class="btn-new">
-        <navigator url="/pages/categories/category_form?type={{ type }}">
+        <navigator url="/pages/categories/category_form?type={{ type }}&parent_id={{ parent_id }}">
           + 新增分类
         </navigator>
       </view>
     </view>
 
     <view class="list">
-      <view class="item" wx:for="{{ categories }}">
+      <view class="item" wx:for="{{ categories }}" @tap="redirect_url('{{ item.id }}')">
         <view class="icon-name">
           <image class='ljt-icon' src="{{ host }}{{ item.icon_path }}"></image>
           <text class="category-name">{{ item.name }}</text>
         </view>
-        <text class="amount">{{ item.amount }}</text>
+        <text class="{{ type }}">{{ item.amount }}</text>
+      </view>
+    </view>
+
+    <view class="button-groups">
+      <view class="delete-button" @tap="del">
+        <view class="iconfont jz-icon-delete"></view>
+        <text>删除</text>
+      </view>
+      <view class="edit-button" @tap="edit">
+        <view class="iconfont jz-icon-edit"></view>
+        <text>编辑</text>
       </view>
     </view>
   </view>
@@ -37,6 +47,8 @@
   import wxRequest from '@/utils/wxRequest'
   import List from '@/components/category_list'
   import Host from '@/utils/host'
+  import tip from '@/utils/tip'
+  import Session from '@/utils/session'
   export default class CategoryChild extends wepy.page {
     config = {
       navigationBarTitleText: '分类管理'
@@ -59,12 +71,40 @@
 
     onLoad (options) {
       this.parent_id = options.id
+      if (options.type != undefined) this.type = options.type
+    }
+
+    onShow () {
       this.getList()
     }
 
     computed = {
       host () {
         return Host.host
+      },
+      categoryText () {
+        return this.type === 'expend' ? '支出' : '收入'
+      }
+    }
+
+    methods = {
+      redirect_url (id) {
+        wx.navigateTo({ url: `/pages/categories/category_statement?id=${id}&type=${this.type}` })
+      },
+      async del () {
+        await tip.confirm('删除后，该分类下的子分类及其所有账单也将一并删除！此操作无法撤回', {}, '警告')
+        const res = await wxRequest.Destroy(`categories/${this.parent_id}`)
+        if (res.status == 200) {
+          Session.clearByKey('category')
+          wepy.navigateBack({
+            delta: 1
+          })
+        } else {
+          tip.error(res.msg)	
+        }
+      },
+      edit () {
+        wx.navigateTo({ url: `/pages/categories/category_form?id=${this.parent_id}&type=${this.type}` })
       }
     }
 

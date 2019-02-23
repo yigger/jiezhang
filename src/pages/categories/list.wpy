@@ -4,17 +4,17 @@
       <!-- <image class="bg" src="{{ header.bg_avatar }}"></image> -->
       <view class="level-2">
         <view class="fs14">
-          <text>本月支出</text>
+          <text>本月{{ categoryText }}</text>
         </view>
         <view class="fs21 today-expend">{{ header.month }}</view>
         <view class="overflow-hide">
-          <view class="pull-left fs14">本年支出 {{ header.year }}</view>
-          <view class="pull-right fs14">全年支出 {{ header.all }}</view>
+          <view class="pull-left fs14">本年{{ categoryText }} {{ header.year }}</view>
+          <view class="pull-right fs14">全年{{ categoryText }} {{ header.all }}</view>
         </view>
       </view>
 
       <view class="btn-new">
-        <navigator url="/pages/categories/category_form?type={{ type }}">
+        <navigator url="/pages/categories/category_form?type={{ type }}&parent_id=0">
           + 新增分类
         </navigator>
       </view>
@@ -26,7 +26,7 @@
           <image class='ljt-icon' src="{{ host }}{{ item.icon_path }}"></image>
           <text class="category-name">{{ item.name }}</text>
         </view>
-        <text class="amount">{{ item.amount }}</text>
+        <text class="{{ type }}">{{ item.amount }}</text>
       </view>
     </view>
   </view>
@@ -67,12 +67,15 @@
     computed = {
       host () {
         return Host.host
+      },
+      categoryText () {
+        return this.type === 'expend' ? '支出' : '收入'
       }
     }
 
     methods = {
       redirect_url (id) {
-        wx.navigateTo({ url: `/pages/categories/child?id=${id}` })
+        wx.navigateTo({ url: `/pages/categories/child?id=${id}&type=${this.type}` })
       }
     }
 
