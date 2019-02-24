@@ -1,42 +1,76 @@
 <template>
-  <form bindsubmit="formSubmit">
-    <view class="container">
-      <view class="column money">
+  <view class="container">
+    <i-row i-class="row-item">
+      <i-col span="12" i-class="amount-title">
         <text>余额</text>
-        <input class="pull-right money-input expend" placeholder="0.00" value="{{amount }}" name="amount" type="digit" />
-      </view>
-      <view class="zan-btns">
-        <button class="zan-btn ljt-btn" formType="submit">保存</button>
-      </view>
+      </i-col>
+      <i-col span="12" i-class="amount-input">
+        <input class="expend" placeholder="0.00" bindinput="changeAmount" value="{{ amount }}" name="amount" type="digit" />
+      </i-col>
+    </i-row>
+
+    <i-row i-class="row-item">
+      <i-col span="12" i-class="amount-title">
+        <text>是否烂账</text>
+      </i-col>
+      <i-col span="12" i-class="amount-input">
+        <i-switch value="{{ isMess }}" size="large" bind:change="changeMess" slot="footer">
+          <view slot="open">是</view>
+          <view slot="close">否</view>
+        </i-switch>
+      </i-col>
+    </i-row>
+
+    <view class="what-mess">
+      <view>什么是烂账？</view>
+      <view>当你更改资产余额是因为记不起'这部分钱'花在哪里的时候就可以选择烂账，选择后，系统会自动把这部分资产差额记录到“烂账”的分类（若不存在，系统会自动创建）</view>
+      <view>比如：变更余额 1000 -> 800，减少了 200 元，则系统会记录"烂账使用了 200 元"</view>
+      <view>该功能是为了让每月的账单统计更加精确</view>
     </view>
-  </form>
+
+    <i-button type="primary" bind:click="updateAmount">保存</i-button>
+  </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
+  import tip from '@/utils/tip'
   export default class AssetForm extends wepy.page {
     config = {
-      navigationBarTitleText: '余额设置'
+      navigationBarTitleText: '余额设置',
+      "usingComponents": {
+        "i-button": "../../public/iview/button/index",
+        "i-row": "../../public/iview/row/index",
+        "i-col": "../../public/iview/col/index",
+        "i-switch": "../../public/iview/switch/index"
+      }
     }
 
     data = {
       amount: 0,
-      asset_id: 0
+      asset_id: 0,
+      isMess: false
     }
 
     onLoad (options) {
-      this.amount = options.amount
+      this.amount = Number.parseInt(options.amount)
       this.asset_id = options.id
     }
     
     methods = {
-      async formSubmit (e) {
-        let amount = e.detail.value.amount
+      changeAmount (e) {
+        this.amount = e.detail.value
+      },
+      changeMess (e) {
+        this.isMess = e.detail.value
+      },
+      async updateAmount () {
         await wxRequest.Put('wallet/surplus', 
         {
           asset_id: this.asset_id,
-          amount: amount
+          amount: this.amount,
+          is_mess: this.isMess ? 1 : 0
         })
         wepy.navigateBack({
           delta: 1
@@ -45,4 +79,26 @@
     }
   }
 </script>
-<style lang="scss" src="@/public/styles/statement/statement.scss"></style>
+<style lang="scss">
+  .container {
+    .row-item {
+      border-bottom: 1px solid #f4f4f4;
+      padding: 12px;
+    }
+    .amount-input {
+      text-align: right;
+    }
+    .amount-title {
+      font-size: 16px;
+      color: #757575;
+    }
+    .what-mess {
+      font-size: 12px;
+      color: #757575;
+      padding: 12px;
+      > view {
+        margin-bottom: 8px;
+      }
+    }
+  }
+</style>
