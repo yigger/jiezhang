@@ -51,7 +51,7 @@
   import Session from '@/utils/session'
   export default class CategoryChild extends wepy.page {
     config = {
-      navigationBarTitleText: '分类管理'
+      navigationBarTitleText: '子分类管理'
     }
 
     components = {
