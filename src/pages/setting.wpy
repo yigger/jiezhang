@@ -79,17 +79,17 @@
         </i-cell>
 
         <i-cell 
-          title="设置资产分类" 
+          title="设置资产分类"
           is-link url="/pages/assets/list">
         </i-cell>
         
         <i-cell 
-          title="设置支出分类" 
+          title="支出分类管理" 
           is-link url="/pages/categories/list?type=expend">
         </i-cell>
         
         <i-cell 
-          title="设置收入分类" 
+          title="收入分类管理" 
           is-link url="/pages/categories/list?type=income">
         </i-cell>
 

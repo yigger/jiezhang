@@ -122,8 +122,8 @@
     }
 
     async times () {
-      const data = (await wxRequest.Get('super_statements/time', { asset_id: this.asset_id })).data
-      this.list = data.statements
+      const data = (await wxRequest.Get('wallet/time_line', { asset_id: this.asset_id })).data
+      this.list = data
       this.$apply()
     }
 
@@ -133,7 +133,7 @@
         month: month,
         asset_id: this.asset_id
       }
-      const data = (await wxRequest.Get('super_statements/list', params)).data
+      const data = (await wxRequest.Get('wallet/statement_list', params)).data
       this.list[index].childs = data
       this.$apply()
     }
