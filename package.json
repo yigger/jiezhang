@@ -1,20 +1,19 @@
 {
   "name": "JieZhang",
-  "version": "0.0.1",
-  "description": "A WePY project",
+  "version": "3.8.2",
+  "description": "基于 wepy 开发的记账小程序",
   "main": "dist/app.js",
   "scripts": {
     "dev": "wepy build --watch",
     "build": "cross-env NODE_ENV=production wepy build --no-cache",
     "dev:web": "wepy build --output web",
-    "clean": "find ./dist -maxdepth 1 -not -name 'project.config.json' -not -name 'dist' | xargs rm -rf",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "find ./dist -maxdepth 1 -not -name 'project.config.json' -not -name 'dist' | xargs rm -rf"
   },
   "wepy": {
     "module-a": false,
     "./src/components/list": "./src/components/wepy-list.wpy"
   },
-  "author": "young <21738331@qq.com>",
+  "author": "yigger <yigger@163.com>",
   "license": "MIT",
   "dependencies": {
     "redux": "^3.7.2",
