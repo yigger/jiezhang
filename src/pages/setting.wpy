@@ -2,7 +2,7 @@
   <view class="container">
     <view class="header" :class="{'no-login': !user.already_login}">
       <view class="background-img">
-        <image src="../public/images/user-bg.jpeg"></image>
+        <image src="../public/images/doodles.png"></image>
       </view>
 
       <view class="main-container">

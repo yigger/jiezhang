@@ -13,7 +13,7 @@ page {
   }
   .background-img {
     width:100%;
-    height:140px;
+    height:180px;
     position: relative;
     box-sizing:border-box;
     z-index:1;
@@ -27,11 +27,11 @@ page {
   .main-container {
     background:white;
     padding:0 8px;
-    margin: -100px 12px 12px 12px;
+    margin: -145px 12px 12px 12px;
     border-radius:4px;
     position:relative;
     z-index:99;
-
+    box-shadow: 0 0 10px #ccc;
   }
   .user-section {
     display: flex;
