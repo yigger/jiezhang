@@ -3,30 +3,35 @@
   <view class="wallet-header">
     <view class="assets">
       <view>
-        <view class="header-text">{{ netWorth }}</view>
+        <view class="header-text">
+          <text>{{ hiddenMoney ? '****' : netWorth }}</text>
+        </view>
         <view class="desc-text">净资产</view>
       </view>
-      <view>
-        <view class="header-text">{{ totalAssets }}</view>
+      <view class="right-asset">
+        <view class="header-text">
+          {{ hiddenMoney ? '****' : totalAssets }}
+        </view>
         <view class="desc-text">总资产</view>
+        <image class="eye-item-img" @tap="eyesTab" src="{{ eyeImageSrc }}"></image>
       </view>
     </view>
     <view class="yesterday-amount">
       <view>
         <text>总负债：</text>
-        <text>{{ totalDebt }}</text>
+        <text>{{ hiddenMoney ? '****' : totalDebt }}</text>
       </view>
       <view>
         <text>昨日结余：</text>
-        <text>{{ yesterdayAmount }}</text>
+        <text>{{ hiddenMoney ? '****' : yesterdayAmount }}</text>
       </view>
       <view>
         <text>近七日日均消费：</text>
-        <text>{{ seventAmount }}</text>
+        <text>{{ hiddenMoney ? '****' : seventAmount }}</text>
       </view>
       <view>
         <text>近一月日均消费：</text>
-        <text>{{ monthAmount }}</text>
+        <text>{{ hiddenMoney ? '****' : monthAmount }}</text>
       </view>
     </view>
   </view>
@@ -35,13 +40,13 @@
     <view class="asset" wx:for="{{ wallets }}">
       <view class="asset-header">
         <text class="fs12">{{ item.name }}</text>
-        <text class="fs12">{{ item.amount }}</text>
+        <text class="fs12">{{ hiddenMoney ? '****' : item.amount }}</text>
       </view>
       <view class="column" wx:for="{{ item.childs }}" bindtap="showAsset('{{ item.id }}')">
         <view class="icon pull-left">
           <image class="ljt-icon" src="{{ item.icon_path }}"></image>
         </view>
-        <view class="money pull-right">{{ item.amount }}</view>
+        <view class="money pull-right">{{ hiddenMoney ? '****' : item.amount }}</view>
         <view class="title">{{ item.name }}</view>
       </view>
     </view>
@@ -75,6 +80,10 @@
     methods = {
       showAsset (id) {
         wx.navigateTo({ url: `/pages/assets/asset_detail?id=${id}` })
+      },
+      async eyesTab () {
+        this.$parent.globalData.user.hidden_asset_money = !this.$parent.globalData.user.hidden_asset_money
+        await wxRequest.Put('users/update_user', { user: { hidden_asset_money: this.$parent.globalData.user.hidden_asset_money ? 1 : 0 } })
       }
     }
 
@@ -83,10 +92,18 @@
         this.wallets = Session.get('@asset_list_load_cache@')
         this.$apply()
       }
-
 			this.getAssets()
 		}
     
+    computed = {
+      hiddenMoney () {
+        return this.$parent.globalData.user.hidden_asset_money
+      },
+      eyeImageSrc () {
+        return this.hiddenMoney ? '../public/images/eye-open.png' : '../public/images/eye-open.png'
+      }
+    }
+
 		async getAssets() {
       const data = await wxRequest.Get('wallet');
       let list = data.list

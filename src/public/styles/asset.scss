@@ -3,9 +3,8 @@
 .wallet-header {
   height:360rpx;
   position:relative;
-  // background:linear-gradient(to right,$darkPrimaryColor, $primaryColor);
   // background: $darkPrimaryColor;
-  background: $darkPrimaryColor;
+  background-image: linear-gradient(to top, #48c6ef 0%, #1976D2 70%);
   box-shadow:0 0 20rpx $divideText;
   .assets {
     height:220rpx;
@@ -26,6 +25,16 @@
       > text {
         margin-right:28rpx;
       }
+    }
+  }
+  .right-asset {
+    position: relative;
+    .eye-item-img {
+      position: absolute;
+      right:12px;
+      top:-12px;
+      width: 25px;
+      height: 25px;
     }
   }
   .yesterday-amount {
