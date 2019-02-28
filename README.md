@@ -1,5 +1,5 @@
-# 记账小程序
-> 基于 wepy 开发的一款记账小程序
+# 洁账小程序(持续迭代)
+> 基于 wepy 开发的一款记账微信小程序
 
 ### 体验二维码
 ![二维码](https://github.com/yigger/jiezhang/raw/master/screenshots/qrcode.jpg)
