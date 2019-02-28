@@ -20,6 +20,7 @@
       </view>
     </view>
 
+    <i-button open-type="contact">直接联系我</i-button>
     <i-button bind:click="cleanSession">清空缓存</i-button>
   </view>
 </template>

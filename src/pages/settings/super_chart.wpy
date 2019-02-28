@@ -198,7 +198,7 @@
     }
 
     async getCategoriesData () {
-      const data = await wxRequest.Get('super_chart/categories_list', {year: this.year})
+      const data = await wxRequest.Get('super_chart/categories_list', {year: this.year, month: this.month})
       this.categories = data.data
       this.$apply()
     }

@@ -31,6 +31,7 @@
         <view class="cover-setting">
           <view class="item" wx:for="{{ avatars }}" @tap="setAvatar('{{ item.id }}')">
             <image src="{{ item.path }}"></image>
+            <view wx:if="{{ item.system == 0 }}" @tap.stop="deleteItem('{{ item.id }}')" class="close-item">x</view>
           </view>
           <view class="item upload" @tap="uploadUserAvatar">
             <image src="../../public/images/upload.png"></image>
@@ -98,6 +99,10 @@
           user: { bg_avatar_id: val }
         })
         this.getUser()
+      },
+      async deleteItem(id) {
+        await wxRequest.Destroy('settings/cover_destroy', {id: id})
+        this.getAvatars()
       }
     }
 
