@@ -13,7 +13,7 @@
       </view>
 
       <view class="column location-column">
-        <text style="flex: 1">地理位置</text>
+        <text style="flex: 1">地点</text>
         <view>
           <input name="location" type="text" value="{{ statement.address }}"/>
           <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
@@ -33,6 +33,13 @@
         </picker>
         <input hidden name="date" value="{{ statement.date }}"/>
         <input hidden name="time" value="{{ statement.time }}"/>
+      </view>
+
+      <view class="frequent-use">
+        <text>快速选择：</text>
+        <text class="label" @tap="quickSetDate('-2')">前天</text>
+        <text class="label" @tap="quickSetDate('-1')">昨天</text>
+        <text class="label" @tap="quickSetDate('0')">今天</text>
       </view>
 
       <view class="column">
@@ -230,6 +237,21 @@ export default class StatementTransferComponent extends wepy.component {
         current: item,
         urls: this.statement.upload_files
       })
+    },
+    quickSetDate (between) {
+      const today = new Date()
+      let date = today
+      if (between == -1) {
+        date = new Date(today.getTime() - 24*60*60*1000)
+      } else if (between == -2) {
+        date = new Date(today.getTime() - 2*24*60*60*1000);
+      }
+      const year = date.getFullYear()
+      let month = date.getMonth() + 1
+      let day = date.getDate()
+      if (month < 10) month = '0' + month
+      if (day < 10) day = '0' + day
+      this.statement.date = [year, month, day].join('-')
     },
     deleteImage (item) {
       const index = this.statement.upload_files.indexOf(item)
