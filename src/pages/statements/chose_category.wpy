@@ -28,6 +28,7 @@
   import wxRequest from '@/utils/wxRequest'
   import Category from '@/components/category_item'
   import Tips from '@//utils/tip'
+  import Session from '@/utils/session'
   export default class choseCategory extends wepy.page {
     data = {
       frequent: [],
@@ -65,11 +66,21 @@
     }
 
     async getCategory () {
+      const sessionKey = `@statement_form_category_${this.type}@`
+      if (Session.get(sessionKey)) {
+        const cacheData = Session.get(sessionKey)
+        this.frequent = cacheData.frequent
+        this.last = cacheData.last
+        this.list = cacheData.categories
+        this.$apply()
+      }
+
       const data = await wxRequest.Get('statements/categories', { type: this.type })
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories
       this.$apply()
+      Session.set(sessionKey, data)
     } 
 
     computed = {

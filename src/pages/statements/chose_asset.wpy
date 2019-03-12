@@ -36,6 +36,7 @@
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
   import Category from '../../components/category_item'
+  import Session from '@/utils/session'
   export default class choseAsset extends wepy.page {
     config = {
       navigationBarTitleText: '选择资产'
@@ -78,11 +79,21 @@
     }
 
     async getAsset () {
+      const sessionKey = `@statement_form_asset@`
+      if (Session.get(sessionKey)) {
+        const cacheData = Session.get(sessionKey)
+        this.frequent = cacheData.frequent
+        this.last = cacheData.last
+        this.list = cacheData.categories
+        this.$apply()
+      }
+
       const data = await wxRequest.Get('statements/assets')
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories
       this.$apply()
+      Session.set(sessionKey, data)
     }
 
     computed = {
