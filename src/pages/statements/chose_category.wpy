@@ -27,6 +27,7 @@
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
   import Category from '@/components/category_item'
+  import Tips from '@//utils/tip'
   export default class choseCategory extends wepy.page {
     data = {
       frequent: [],

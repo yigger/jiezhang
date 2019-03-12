@@ -7,8 +7,8 @@
     </i-tabs>
     
     <view class="comonent-list">
-      <Expend @submit.user="submit" :submiting.sync="submiting" wx:if="{{ current == 'expend' }}"/>
-      <Income @submit.user="submit" :submiting.sync="submiting" wx:if="{{ current == 'income' }}"/>
+      <Expend @submit.user="submit" :submiting.sync="submiting" :type="expend" wx:if="{{ current == 'expend' }}"/>
+      <Income @submit.user="submit" :submiting.sync="submiting" :type="income" wx:if="{{ current == 'income' }}"/>
       <Transfer @submit.user="submit" :submiting.sync="submiting" wx:if="{{ current == 'transfer' }}"/>
     </view>
 
@@ -18,8 +18,7 @@
 <script>
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
-  import Expend from '@/components/statement/expend'
-  import Income from '@/components/statement/income'
+  import StatementForm from '@/components/statement/form'
   import Transfer from '@/components/statement/transfer'
   import { getStore } from 'wepy-redux'
   import { addStatement, modifyStatement } from '@/store/actions'
@@ -36,6 +35,8 @@
 
     data = {
       current: 'expend',
+      expend: 'expend',
+      income: 'income',
       submiting: false
     }
 
@@ -68,8 +69,8 @@
     }
 
     components = {
-      Expend,
-      Income,
+      'Expend': StatementForm,
+      'Income': StatementForm,
       Transfer
     }
 

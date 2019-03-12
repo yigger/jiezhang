@@ -12,20 +12,6 @@
         <view @tap="assetTo">{{ statement.target }}</view>
       </view>
 
-      <view class="column location-column">
-        <text style="flex: 1">地点</text>
-        <view>
-          <input name="location" type="text" value="{{ statement.address }}"/>
-          <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
-
-          <input class="input-hidden" name="nation" value="{{ nation }}"/>
-          <input class="input-hidden" name="province" value="{{ province }}"/>
-          <input class="input-hidden" name="city" value="{{ city }}"/>
-          <input class="input-hidden" name="district" value="{{ district }}"/>
-          <input class="input-hidden" name="street" value="{{ street }}"/>
-        </view>
-      </view>
-
       <view class="column">
         <text>日期</text>
         <picker mode="date" start="2017-01-01" bindchange="dateChange">
@@ -33,13 +19,6 @@
         </picker>
         <input hidden name="date" value="{{ statement.date }}"/>
         <input hidden name="time" value="{{ statement.time }}"/>
-      </view>
-
-      <view class="frequent-use">
-        <text>快速选择：</text>
-        <text class="label" @tap="quickSetDate('-2')">前天</text>
-        <text class="label" @tap="quickSetDate('-1')">昨天</text>
-        <text class="label" @tap="quickSetDate('0')">今天</text>
       </view>
 
       <view class="column">
@@ -116,7 +95,6 @@ export default class StatementTransferComponent extends wepy.component {
 
   onLoad () {
     this.initTodayDate()
-    if (this.switchCheck) this.setLocation()
   }
 
   initTodayDate () {
@@ -128,35 +106,7 @@ export default class StatementTransferComponent extends wepy.component {
     if (day < 10) day = `0${day}`
     this.statement.date = [year, month, day].join('-')
     this.statement.time = [myDate.getHours(), myDate.getMinutes(), myDate.getSeconds()].join(':')
-  }
-
-  setLocation () {
-    this.qqmapSDK = new QQMapWX({
-      key: mapKey
-    });
-    wx.getLocation({
-      type: 'gcj02', //返回可以用于wx.openLocation的经纬度
-      success: (result) => {
-        console.warn(result)
-        this.qqmapSDK.reverseGeocoder({
-          location: {
-            latitude: result.latitude,
-            longitude: result.longitude
-          },
-          success: (addressRes) => {
-            console.warn(addressRes)
-            const address_component = addressRes.result.address_component
-            this.nation = address_component.nation
-            this.province = address_component.province
-            this.city = address_component.city
-            this.district = address_component.district
-            this.street = address_component.street
-            this.statement.address = addressRes.result.address
-            this.$apply()
-          }
-        })
-      }
-    })
+    this.$apply()
   }
 
   methods = {
@@ -185,17 +135,6 @@ export default class StatementTransferComponent extends wepy.component {
     assetTo () {
       this.transferType = 2
       wx.navigateTo({ url: "/pages/statements/chose_asset?type=transfer" })
-    },
-    getLocation (e) {
-      const locationSwitch = e.detail.value
-      Session.set('getLocationSwitch', locationSwitch)
-      if(locationSwitch) {
-        this.setLocation()
-      } else {
-        // 关闭获取地理位置
-        this.statement.address = ''
-        this.$apply()
-      }
     },
     exchangeAsset () {
       const tmp1 = this.statement.source
@@ -237,21 +176,6 @@ export default class StatementTransferComponent extends wepy.component {
         current: item,
         urls: this.statement.upload_files
       })
-    },
-    quickSetDate (between) {
-      const today = new Date()
-      let date = today
-      if (between == -1) {
-        date = new Date(today.getTime() - 24*60*60*1000)
-      } else if (between == -2) {
-        date = new Date(today.getTime() - 2*24*60*60*1000);
-      }
-      const year = date.getFullYear()
-      let month = date.getMonth() + 1
-      let day = date.getDate()
-      if (month < 10) month = '0' + month
-      if (day < 10) day = '0' + day
-      this.statement.date = [year, month, day].join('-')
     },
     deleteImage (item) {
       const index = this.statement.upload_files.indexOf(item)

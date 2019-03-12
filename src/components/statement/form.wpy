@@ -43,7 +43,7 @@
         <text class="label" @tap="quickSetDate('-1')">昨天</text>
         <text class="label" @tap="quickSetDate('0')">今天</text>
       </view>
-      
+
       <view class="column location-column">
         <text style="flex: 1">地点</text>
         <view>
@@ -93,14 +93,14 @@ import Session from '@/utils/session'
 import tip from '@/utils/tip'
 import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
 
-export default class StatementIncomeComponent extends wepy.component {
+export default class StatementFormComponent extends wepy.component {
   props = {
     statement: {
       type: Object,
       default () {
         return {
           id: 0,
-          type: 'income',
+          type: 'expend',
           category_id: 0,
           asset_id: 0,
           amount: '',
@@ -117,7 +117,8 @@ export default class StatementIncomeComponent extends wepy.component {
     submiting: {
       type: Boolean,
       default: false
-    }
+    },
+    type: String
   }
 
   data = {
@@ -132,6 +133,7 @@ export default class StatementIncomeComponent extends wepy.component {
   }
 
   onLoad () {
+    this.statement.type = this.type
     if (this.statement.id === 0) {
       this.initTodayDate()
       if (this.switchCheck) this.setLocation()
@@ -219,7 +221,7 @@ export default class StatementIncomeComponent extends wepy.component {
     getLocation (e) {
       const locationSwitch = e.detail.value
       Session.set('getLocationSwitch', locationSwitch)
-      if(locationSwitch) {
+      if (locationSwitch) {
         this.setLocation()
       } else {
         // 关闭获取地理位置

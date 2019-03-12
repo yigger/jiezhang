@@ -1,8 +1,8 @@
 <template lang="wxml">
   <view class="container">    
     <view class="comonent-list">
-      <Expend :statement.sync="statement" @submit.user="submit" wx:if="{{ current == 'expend' }}"/>
-      <Income :statement.sync="statement" @submit.user="submit" wx:if="{{ current == 'income' }}"/>
+      <Expend :statement.sync="statement" @submit.user="submit" :type="expend" wx:if="{{ current == 'expend' }}"/>
+      <Income :statement.sync="statement" @submit.user="submit" :type="income" wx:if="{{ current == 'income' }}"/>
       <Transfer :statement.sync="statement" @submit.user="submit" wx:if="{{ current == 'transfer' }}"/>
     </view>
   </view>
@@ -11,8 +11,7 @@
 <script>
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
-  import Expend from '@/components/statement/expend'
-  import Income from '@/components/statement/income'
+  import StatementForm from '@/components/statement/form'
   import Transfer from '@/components/statement/transfer'
   import { getStore } from 'wepy-redux'
   import { addStatement, modifyStatement } from '@/store/actions'
@@ -30,6 +29,8 @@
     data = {
       current: 'expend',
       statement: {},
+      expend: 'expend',
+      income: 'income',
       statement_avatar: []
     }
 
@@ -86,8 +87,8 @@
     }
 
     components = {
-      Expend,
-      Income,
+      'Expend': StatementForm,
+      'Income': StatementForm,
       Transfer
     }
 
