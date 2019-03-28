@@ -64,6 +64,11 @@
     <view class="setting-container">
       <i-cell-group>
         <i-cell 
+          title="账单图库"
+          is-link url="/pages/statements/images">
+        </i-cell>
+
+        <i-cell 
           title="消息通知"
           is-link url="/pages/message/message">
         </i-cell>
