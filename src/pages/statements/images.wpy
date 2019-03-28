@@ -1,5 +1,9 @@
 <template lang="wxml">
   <view class="container statement-images">
+    <view wx:if="{{ list.length == 0 }}">
+      <empty :title.sync="emptyTitle"></empty>
+    </view>
+
     <view wx:for="{{ list }}">
       <view class="year">{{ item.year }}</view>
       <view class="each-month-images" wx:for="{{ item.data }}" wx:for-item="st">
@@ -29,6 +33,7 @@
 
 <script>
   import wepy from 'wepy'
+  import Empty from '@/components/empty'
   import wxRequest from '@/utils/wxRequest'
   export default class ImagesStatement extends wepy.page {
     config = {
@@ -38,11 +43,20 @@
     data = {
       itemWidth: 0,
       list: [],
-      avatars: []
+      avatars: [],
+      emptyTitle: '新建账单的关联图片会显示在这里~'
+    }
+
+    components = {
+      empty: Empty
     }
 
     onLoad () {
       this.itemWidth = (wepy.getSystemInfoSync().screenWidth) / 4 - 2
+      this.getStatementImages()
+    }
+
+    onShow () {
       this.getStatementImages()
     }
 
