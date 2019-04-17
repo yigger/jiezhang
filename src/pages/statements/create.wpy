@@ -7,9 +7,26 @@
     </i-tabs>
     
     <view class="comonent-list">
-      <Expend @submit.user="submit" :submiting.sync="submiting" :type="expend" wx:if="{{ current == 'expend' }}"/>
-      <Income @submit.user="submit" :submiting.sync="submiting" :type="income" wx:if="{{ current == 'income' }}"/>
-      <Transfer @submit.user="submit" :submiting.sync="submiting" wx:if="{{ current == 'transfer' }}"/>
+      <Expend
+        :submiting.sync="submiting"
+        :type="expend"
+        @submit.user="submit"
+        wx:if="{{ current == 'expend' }}"
+      />
+
+      <Income
+        :submiting.sync="submiting"
+        :type="income"
+        @submit.user="submit"
+        wx:if="{{ current == 'income' }}"
+      />
+
+      <Transfer
+        :submiting.sync="submiting"
+        :statement.sync="transferData"
+        @submit.user="submit"
+        wx:if="{{ current == 'transfer' }}"
+      />
     </view>
 
   </view>
@@ -23,6 +40,7 @@
   import { getStore } from 'wepy-redux'
   import { addStatement, modifyStatement } from '@/store/actions'
   import tip from '@/utils/tip'
+  import Util from '@/utils/util.js'
 
   export default class StatementCreate extends wepy.page {
     config = {
@@ -37,7 +55,32 @@
       current: 'expend',
       expend: 'expend',
       income: 'income',
-      submiting: false
+      submiting: false,
+      transferData: {
+        id: 0,
+        type: 'transfer',
+        amount: '',
+        description: '',
+        date: '',
+        address: '',
+        time: '',
+        source: '请选择账户',
+        target: '请选择账户',
+        from: 0,
+        to: 0,
+        date: Util.getCurrentDate(),
+        time: Util.getCurrentTime(),
+        upload_files: []
+      }
+    }
+
+    onLoad(params) {
+      // 直接显示转账的界面
+      if (typeof params.type !== 'undefined' && params.type === 'transfer') {
+        this.current = params.type
+        this.transferData.source = params.source
+        this.transferData.from = params.asset_id
+      }
     }
 
     methods = {

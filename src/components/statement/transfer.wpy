@@ -53,29 +53,13 @@ import wepy from 'wepy'
 import wxRequest from '@/utils/wxRequest'
 import { mapKey } from '@/utils/host'
 import Session from '@/utils/session'
-import tip from '@/utils/tip'
+import Tip from '@/utils/tip'
 import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
 
 export default class StatementTransferComponent extends wepy.component {
   props = {
     statement: {
-      type: Object,
-      default () {
-        return {
-          id: 0,
-          type: 'transfer',
-          amount: '',
-          description: '',
-          date: '',
-          address: '',
-          time: '',
-          source: '请选择账户',
-          target: '请选择账户',
-          from: 0,
-          to: 0,
-          upload_files: []
-        }
-      }
+      type: Object
     },
     submiting: {
       type: Boolean,
@@ -91,22 +75,6 @@ export default class StatementTransferComponent extends wepy.component {
     street: '',
     transferType: 0,
     switchCheck: Session.get('getLocationSwitch') || false
-  }
-
-  onLoad () {
-    this.initTodayDate()
-  }
-
-  initTodayDate () {
-    const myDate = new Date()
-    let year = myDate.getFullYear()
-    let month = myDate.getMonth() + 1
-    let day = myDate.getDate()
-    if (month < 10) month = `0${month}`
-    if (day < 10) day = `0${day}`
-    this.statement.date = [year, month, day].join('-')
-    this.statement.time = [myDate.getHours(), myDate.getMinutes(), myDate.getSeconds()].join(':')
-    this.$apply()
   }
 
   methods = {
@@ -148,20 +116,20 @@ export default class StatementTransferComponent extends wepy.component {
     async formSubmit ({ detail }) {
       let statement = detail.value
       if (statement.amount == 0 || statement.amount == '') {
-        tip.error('金额不能为零')
+        Tip.error('金额不能为零')
         return false
       }
 
       if (statement.asset_id == 0) {
-        tip.error('未选择账户')
+        Tip.error('未选择账户')
         return false
       }
 
       if (this.statement.from == 0 || this.statement.to == 0) {
-        tip.error('未选择转账分类')
+        Tip.error('未选择转账分类')
         return false
       } else if (this.statement.from == this.statement.to) {
-        tip.error('不能转去同一类型')
+        Tip.error('不能转去同一类型')
         return false
       } else {
         statement.from = this.statement.from

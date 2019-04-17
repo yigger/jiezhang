@@ -6,7 +6,9 @@
         <text>{{ amount }}</text>
         <text class="iconfont jz-icon-edit"></text>
       </text>
-      <navigator url="/pages/statements/statement?type=transfer&asset_id={{ asset_id }}&source={{ header.name }}" class="btn transfer-btn">
+      <navigator
+        url="/pages/statements/create?type=transfer&asset_id={{ asset_id }}&source={{ header.name }}"
+        class="btn transfer-btn">
         转账
       </navigator>
     </view>
