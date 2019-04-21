@@ -22,6 +22,8 @@
         </view>
       </view>
     </view>
+
+    <div class="cancel-login-btn" @tap="cancelLoginStatus()">退出登录</div>
   </view>
 </template>
 
@@ -46,14 +48,6 @@
     }
 
     methods = {
-      logout () {
-        let key = Session.key.alreadyLogin
-        Session.clear(key)
-        this.alreadyLogin = false
-        wx.navigateBack({
-          delta: 1
-        })
-      },
       async uploadUserAvatar () {
         const choseImages = await wepy.chooseImage({
           count: 1,
@@ -82,6 +76,12 @@
       async changeRemind ({detail}) {
         this.user.remind = detail.value
         await wxRequest.Put('users/update_remind', { remind: detail.value ? 1 : 0 })
+      },
+      async cancelLoginStatus() {
+        await wxRequest.Put('users/cancel_login_status')
+        wx.navigateBack({
+          delta: 1
+        })
       }
     }
 
@@ -117,5 +117,12 @@
       padding-left: 6px;
       color: #ccc;
     }
+  }
+  .cancel-login-btn {
+    font-size: 14px;
+    text-align: center;
+    margin: 21px;
+    display: block;
+    color: blue;
   }
 </style>

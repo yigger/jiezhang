@@ -195,7 +195,7 @@
       async getUserInfo (e) {
         if(e.detail.errMsg != 'getUserInfo:ok') return false
         const userInfo = e.detail.userInfo
-        await wxRequest.Put('users/update_user', { user: userInfo })
+        await wxRequest.Put('users/update_user', { user: userInfo, already_login: true })
         this.getCurrentUser()
         this.$apply()
       },
@@ -213,7 +213,6 @@
         path: '/pages/index',
         imageUrl: 'https://xiaoyounger.com/covers/default-11.jpeg',
         success: async function (res) {
-          console.log(res)
           tip.toast('感谢支持')
           await wxRequest.Post('settings/recommend', { ticket: res['shareTickets'][0] })
         }
@@ -221,13 +220,7 @@
     }
 
     async getCurrentUser () {
-      const cacheData = Session.get('user_load_cache')
-      if (cacheData) {
-        this.user = cacheData.user
-        this.version = cacheData.version
-        this.$apply()  
-      }
-
+      this.loadByCache()
       const data = await wxRequest.Get('settings')
       Session.set('user_load_cache', data)
       if (data.user) {
@@ -235,6 +228,15 @@
       }
       this.version = data.version
       this.$apply()
+    }
+
+    loadByCache() {
+      const cacheData = Session.get('user_load_cache')
+      if (cacheData) {
+        this.user = cacheData.user
+        this.version = cacheData.version
+        this.$apply()
+      }
     }
   }
 </script>
