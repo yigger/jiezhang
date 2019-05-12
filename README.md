@@ -1,4 +1,4 @@
-# 洁账小程序(持续迭代)
+# 洁账小程序
 > 基于 wepy 开发的一款记账微信小程序
 
 ### 体验二维码
@@ -34,10 +34,6 @@ npm run build
 
 ### 相关截图
 ![首页](https://github.com/yigger/jiezhang/raw/master/screenshots/01.png)
-
-### 如需帮助
-+ 提交 ISSUE
-+ 联系邮箱 yigger@163.com
 
 ### 更新日志
 [Change Log](CHANGELOG.md)
