@@ -70,7 +70,7 @@
 
         <i-cell 
           title="消息通知"
-          is-link url="/pages/message/message">
+          is-link url="/pages/message">
         </i-cell>
 
         <i-cell 
