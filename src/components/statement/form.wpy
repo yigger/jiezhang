@@ -91,6 +91,7 @@ import wxRequest from '@/utils/wxRequest'
 import { mapKey } from '@/utils/host'
 import Session from '@/utils/session'
 import tip from '@/utils/tip'
+import Util from '@/utils/util.js'
 import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
 
 export default class StatementFormComponent extends wepy.component {
@@ -150,7 +151,7 @@ export default class StatementFormComponent extends wepy.component {
     if (month < 10) month = `0${month}`
     if (day < 10) day = `0${day}`
     this.statement.date = [year, month, day].join('-')
-    this.statement.time = [myDate.getHours(), myDate.getMinutes(), myDate.getSeconds()].join(':')
+    this.statement.time = Util.getCurrentTime()
   }
 
   async guessCategory () {

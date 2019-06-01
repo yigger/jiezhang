@@ -10,7 +10,21 @@ function getCurrentDate() {
 
 function getCurrentTime() {
   const myDate = new Date()
-  return [myDate.getHours(), myDate.getMinutes(), myDate.getSeconds()].join(':')
+  let min = myDate.getMinutes()
+  if (parseInt(min) < 10) {
+    min = `0${min}`
+  }
+
+  let hour = myDate.getHours()
+  if (parseInt(hour) < 10) {
+    hour = `0${hour}`
+  }
+
+  let second = myDate.getSeconds()
+  if (parseInt(second) < 10) {
+    second = `0${second}`
+  }
+  return [hour, min, second].join(':')
 }
 
 module.exports = {
