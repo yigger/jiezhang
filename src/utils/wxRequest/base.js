@@ -61,13 +61,10 @@ const doRequest = async (url, method, params, options = {}, callback) => {
     },
   }).then((response) => {
     const statusCode = response.statusCode
-
-    if (url === `${Host.url}/error_upload`) {
-      console.log('error')
-      return false
-    }
-
     if (statusCode !== 200) {
+      if (url === `${Host.url}/error_upload`) {
+        return false
+      }
       let message = null
       if (statusCode != 500 && statusCode != 404) {
         message = e.errMsg

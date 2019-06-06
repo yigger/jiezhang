@@ -125,8 +125,7 @@ export default class extends wepy.app {
   }
   
   globalData = {
-    user: {},
-    timer: null
+    user: {}
   }
 
   onLaunch () {
@@ -185,7 +184,7 @@ export default class extends wepy.app {
     if (!!errs && errs.length > 0) {
       for(let index = 0, length = errs.length; index < length; ++index) {
         const err = errs[index]
-          wxRequest.PostBasic(`error_upload`, {err: err}, {}, (data) => {
+        wxRequest.PostBasic(`error_upload`, {err: err}, {}, () => {
           errs.splice(errs.indexOf(err), 1)
           Session.set(Session.key['errorKey'], errs)
         })
