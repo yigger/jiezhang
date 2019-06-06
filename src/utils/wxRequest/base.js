@@ -22,68 +22,88 @@ const getOpenId = async () => {
 
   return getAuthPromise = new Promise(async (resolve, reject) => {
     const wxLogin = await wepy.login()
-    const data = await wepy.request({
+    const res = await wepy.request({
       url: Host.check_openid,
       method: 'POST',
       header: { 'X-WX-Code': wxLogin.code, 'X-WX-APP-ID': Host.appid }
     })
-    resolve(data.session)
+    resolve(res.data.session)
   })
 }
 
-const doRequest = async (url, method, params, options = {}) => {
-  try {
-    let cacheKey = ''
-    // 是否可以命中缓存
-    if (options.cacheKey) {
-      cacheKey = Session.key[options.cacheKey[0]][options.cacheKey[1]]
-      const cache = getByCache(cacheKey)
-      if (cache) return cache
+const doRequest = async (url, method, params, options = {}, callback) => {
+  let cacheKey = ''
+  // 是否可以命中缓存
+  if (options.cacheKey) {
+    cacheKey = Session.key[options.cacheKey[0]][options.cacheKey[1]]
+    const cache = getByCache(cacheKey)
+    if (cache) return cache
+  }
+
+  let pageRoutes = []
+  const pages = getCurrentPages()
+  if (pages.length > 0) {
+    for(let p of pages) {
+      pageRoutes.push(p.route)
+    }
+  }
+  
+  const thirdSession = await getOpenId()
+  return wepy.request({
+    url: url,
+    method: method,
+    data: params,
+    header: {
+      'Content-Type': 'application/json',
+      'X-WX-Skey': thirdSession,
+      'X-WX-APP-ID': Host.appid,
+      'X-WX-PAGES': pageRoutes.join(',')
+    },
+  }).then((response) => {
+    const statusCode = response.statusCode
+
+    if (url === `${Host.url}/error_upload`) {
+      console.log('error')
+      return false
     }
 
-    let pageRoutes = []
-    const pages = getCurrentPages()
-    if (pages.length > 0) {
-      for(let p of pages) {
-        pageRoutes.push(p.route)
+    if (statusCode !== 200) {
+      let message = null
+      if (statusCode != 500 && statusCode != 404) {
+        message = e.errMsg
       }
-    }
-    
-    const thirdSession = await getOpenId()
-    const result = await wepy.request({
-      url: url,
-      method: method,
-      data: params,
-      header: { 
-        'Content-Type': 'application/json',
-        'X-WX-Skey': thirdSession,
-        'X-WX-APP-ID': Host.appid,
-        'X-WX-PAGES': pageRoutes.join(',')
-      },
-    })
+      Session.pushError({ url: url, method: method, params: params, err: message, statusCode: statusCode, time: new Date().toLocaleString()})
+      wx.showToast({
+        title: '网络请求超时..',
+        icon: 'none',
+        duration: 3000
+      })
+    } else {
+      const result = response.data
+      // key 过期尝试重连
+      if (result.status === 301 && retryCount <= 3) {
+        Session.clear(loginKey)
+        retryCount += 1
+        return doRequest(url, method, params)
+      }
 
-    // key 过期尝试重连
-    if (result.status === 301 && retryCount <= 3) {
-      Session.clear(loginKey)
-      retryCount += 1
-      return doRequest(url, method, params)
-    }
+      Session.set(loginKey, thirdSession)
+      if(cacheKey != '') setByCache(cacheKey, result)
 
-    Session.set(loginKey, thirdSession)
-    if(cacheKey != '') setByCache(cacheKey, result)
-    return result
-  } catch (e) {
-    Session.pushError({ url: url, method: method, params: params, err: e, time: new Date().toLocaleString()})
-    let message = e.errMsg
-    if (message.trim() === "request:fail") {
-      message = '网络请求失败...'
+      if (typeof callback !== 'undefined') {
+        callback(result)
+      }
+
+      return result
     }
+  }, (err) => {
+    Session.pushError({ url: url, method: method, params: params, err: err.message, time: new Date().toLocaleString()})
     wx.showToast({
-      title: message,
+      title: '请求不可达',
       icon: 'none',
       duration: 3000
     })
-  }
+  })
 }
 
 const wxUpload = async (url, filePath, params = {}) => {
@@ -118,7 +138,6 @@ const setByCache = (cacheKey, cacheVal) => {
   if(typeof cacheKey !== 'undefined') {
     if (Array.isArray(cacheVal) && cacheVal.length == 0) return false
     let localTime = new Date().getTime()
-    // console.log('localtime', localTime)
     Session.set(cacheKey, {
       createTime: localTime,
       value: cacheVal

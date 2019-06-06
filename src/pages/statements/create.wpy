@@ -100,8 +100,9 @@
           return false
         }
         
+        console.log(result)
         try {
-          if (result.status == 200) {
+          if (result.status === 200) {
             const store = getStore()
             store.dispatch(addStatement(result.data))
             for (let file of statement.upload_files) {
@@ -116,7 +117,9 @@
           } else {
             tip.error(result.msg)
           }
-        } catch (e) {}
+        } catch (e) {
+          console.log(e)
+        }
         this.submiting = false
       }
     }

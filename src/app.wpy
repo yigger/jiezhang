@@ -107,8 +107,8 @@ export default class extends wepy.app {
       ]
     },
     networkTimeout: {
-      request: 10000,
-      downloadFile: 10000
+      request: 100000,
+      downloadFile: 100000
     },
     permission: {
       "scope.userLocation": {
@@ -132,7 +132,7 @@ export default class extends wepy.app {
   onLaunch () {
     this.getUser()
     this.checkVersionUpdate()
-    this.runPoll()
+    this.uploadData()
   }
 
   // 预加载用户
@@ -143,9 +143,15 @@ export default class extends wepy.app {
     }
   }
 
-  // 热更新
+  // 检查更新
   checkVersionUpdate() {
-    if (wx.canIUse('getUpdateManager')) {
+    if (!wx.canIUse('getUpdateManager')) {
+      return false
+    }
+
+    wxRequest.WX('check_update', {}, (res) => {
+      const data = res.data
+      if (data === 0) return false
       const updateManager = wx.getUpdateManager()
       updateManager.onCheckForUpdate(function (res) {
         if (res.hasUpdate) {
@@ -170,27 +176,31 @@ export default class extends wepy.app {
           })
         }
       })
-    }
-  }
-
-  runPoll() {
-    // this.runPoll = setInterval(() => {
-    //   console.log('test')
-    // }, 2000);
-    this.uploadData()
+    })
   }
 
   uploadData() {
-    const errs = Session.getErrors()
+    // 记录请求错误的日志
+    let errs = Session.getErrors()
     if (!!errs && errs.length > 0) {
-
+      for(let index = 0, length = errs.length; index < length; ++index) {
+        const err = errs[index]
+          wxRequest.PostBasic(`error_upload`, {err: err}, {}, (data) => {
+          errs.splice(errs.indexOf(err), 1)
+          Session.set(Session.key['errorKey'], errs)
+        })
+      }
     }
 
-    const statements = Session.getStatements()
+    // 同步本地数据到远程服务端
+    let statements = Session.getStatements()
     if (!!statements && statements.length > 0) {
-      for(let statement of statements) {
-        wxRequest.PostBasic(`statements`, statement)
-        // 请求完成后需要清空 session
+      for(let index = 0, length = statements.length; index < length; ++index) {
+        const statement = statements[index]
+        wxRequest.PostBasic(`statements`, statement, {}, () => {
+          statements.splice(statements.indexOf(statement), 1)
+          Session.set(Session.key['localStatementKey'], statements)
+        })
       }
     }
   }
@@ -205,7 +215,7 @@ export default class extends wepy.app {
         return p;
       },
       success (p) {
-        return p.data;
+        return p;
       }
     });
   }

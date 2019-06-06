@@ -27,7 +27,7 @@
       </navigator>
     </view>
 
-    <view class="statement-list">
+    <view class="statement-list" wx-if="{{ list.length > 0 }}">
       <repeat for="{{ list }}" key="index" index="index" item="item">
         <StatementItem :statement.sync="item"></StatementItem>
       </repeat>
