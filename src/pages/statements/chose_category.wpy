@@ -76,6 +76,10 @@
       }
 
       const data = await wxRequest.Get('statements/categories', { type: this.type })
+      if (data === undefined) {
+        console.log(data)
+        return false
+      }
       this.frequent = data.frequent
       this.last = data.last
       this.list = data.categories

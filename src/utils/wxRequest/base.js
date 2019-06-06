@@ -73,8 +73,13 @@ const doRequest = async (url, method, params, options = {}) => {
     if(cacheKey != '') setByCache(cacheKey, result)
     return result
   } catch (e) {
+    Session.pushError({ url: url, method: method, params: params, err: e, time: new Date().toLocaleString()})
+    let message = e.errMsg
+    if (message.trim() === "request:fail") {
+      message = '网络请求失败...'
+    }
     wx.showToast({
-      title: e.errMsg,
+      title: message,
       icon: 'none',
       duration: 3000
     })

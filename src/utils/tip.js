@@ -77,12 +77,12 @@ export default class Tips {
    * 错误框
    */
 
-  static error(title) {
+  static error(title, duration = 1500) {
     wx.showToast({
       title: title,
       icon: 'none',
       mask: false,
-      duration: 1500
+      duration: duration
     });
   }
 

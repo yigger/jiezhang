@@ -41,6 +41,7 @@
   import { addStatement, modifyStatement } from '@/store/actions'
   import tip from '@/utils/tip'
   import Util from '@/utils/util.js'
+  import Session from '@/utils/session'
 
   export default class StatementCreate extends wepy.page {
     config = {
@@ -87,7 +88,18 @@
       },
       async submit (statement, detail) {
         this.submiting = true
-        const result = await wxRequest.Post(`statements`, {statement: statement, formId: detail.formId})
+        const params = {statement: statement, formId: detail.formId}
+        const result = await wxRequest.Post(`statements`, params)
+        if (result === undefined) {
+          this.submiting = false
+          await tip.confirm('由于网络原因，无法同步账单到服务器，现已临时保存在本地，下次网络正常后系统将自动同步到服务端', {}, '保存失败')
+          Session.pushFailStatement(params)
+          wepy.navigateBack({
+            delta: 1
+          })
+          return false
+        }
+        
         try {
           if (result.status == 200) {
             const store = getStore()

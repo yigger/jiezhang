@@ -48,6 +48,7 @@
   import StatementItem from '@/components/index/statement'
   import { getStore } from 'wepy-redux'
   import { asyncList } from '@/store/actions'
+  import Tip from '@/utils/tip'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '首页',
@@ -81,6 +82,10 @@
       }
 
       const data = await wxRequest.Get('header')
+      if (data === undefined) {
+        return false
+      }
+
       this.header = data
       Session.set('header_load_cache', this.header)
       this.$apply()
@@ -93,7 +98,11 @@
       }
 
       const store = getStore()
-      await store.dispatch(asyncList())
+      const result = await store.dispatch(asyncList())
+      if (typeof result.payload === 'undefined') {
+        Tip.error("可能由于网络问题，获取列表失败", 2300)
+        return false
+      }
       const res = store.getState().statement.statements
       this.list = res
       Session.set('index_load_cache', res)

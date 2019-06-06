@@ -5,6 +5,7 @@ import { setStore, getStore } from 'wepy-redux'
 import configStore from './store'
 import { asyncList } from '@/store/actions'
 import wxRequest from '@/utils/wxRequest'
+import Session from '@/utils/session'
 setStore(configStore())
 
 export default class extends wepy.app {
@@ -124,15 +125,26 @@ export default class extends wepy.app {
   }
   
   globalData = {
-    user: {}
+    user: {},
+    timer: null
   }
 
-  async onLaunch () {
+  onLaunch () {
+    this.getUser()
+    this.checkVersionUpdate()
+    this.runPoll()
+  }
+
+  // 预加载用户
+  async getUser() {
     const data = await wxRequest.Get('users')
     if (typeof data !== 'undefined') {
       this.globalData.user = data
     }
+  }
 
+  // 热更新
+  checkVersionUpdate() {
     if (wx.canIUse('getUpdateManager')) {
       const updateManager = wx.getUpdateManager()
       updateManager.onCheckForUpdate(function (res) {
@@ -158,6 +170,28 @@ export default class extends wepy.app {
           })
         }
       })
+    }
+  }
+
+  runPoll() {
+    // this.runPoll = setInterval(() => {
+    //   console.log('test')
+    // }, 2000);
+    this.uploadData()
+  }
+
+  uploadData() {
+    const errs = Session.getErrors()
+    if (!!errs && errs.length > 0) {
+
+    }
+
+    const statements = Session.getStatements()
+    if (!!statements && statements.length > 0) {
+      for(let statement of statements) {
+        wxRequest.PostBasic(`statements`, statement)
+        // 请求完成后需要清空 session
+      }
     }
   }
 
