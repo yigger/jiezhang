@@ -128,4 +128,15 @@ page {
       background-color: $primaryColor;
     }
   }
+  .frequent-remarks {
+    > view {
+      display: block;
+      font-size: 14px;
+      background-color: #efefef;
+      margin:6px 12px;
+      padding:6px 12px;
+      color: $secondaryText;
+      border-radius:4px;
+    }
+  }
 }

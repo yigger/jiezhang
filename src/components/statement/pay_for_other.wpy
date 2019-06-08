@@ -1,0 +1,153 @@
+<template lang="wxml">
+  <form bindsubmit="formSubmit" report-submit="true">
+    <view class="container">
+      <view class="column money">
+        <text>金额</text>
+        <input class="money-input {{ statement.type }}" placeholder="0.00" placeholder-class="{{ statement.type }}" bindinput="handleAmountInput" name="amount" type="digit" value="{{ statement.amount }}"/>
+      </view>
+
+      <view class="column" @tap="redirectChoseAsset">
+        <text>账户</text>
+        <text class="align-right">{{ statement.asset_name }}</text>
+        <input hidden name="asset_id" value="{{ statement.asset_id }}"/>
+      </view>
+
+      <view class="column">
+        <text>日期</text>
+        <picker mode="date" start="2017-01-01" bindchange="dateChange">
+          <text>{{ statement.date }}</text>
+        </picker>
+        <input hidden name="date" value="{{ statement.date }}"/>
+        <input hidden name="time" value="{{ statement.time }}"/>
+      </view>
+
+      <view class="column">
+        <text>借贷人</text>
+        <input class="pull-right remark" type="text" name="borrower" bindinput="handleBorrower" value="{{ statement.borrower }}" placeholder="替谁代付"/>
+      </view>
+
+      <view class="column">
+        <text>备注</text>
+        <input class="pull-right remark" type="text" name="description" bindinput="handleDescInput" value="{{ statement.description }}" placeholder="本笔账单的简单说明"/>
+      </view>
+
+      <view class="upload-picture">
+        <view class="title">上传图片</view>
+        <view class="img-list">
+          <view class="image-item" @tap="uploadImage">
+            <image src="../../public/images/add-2.png"  lazy-load="false"></image>
+          </view>
+          <view class="image-item user-upload-item" wx:for="{{ statement.upload_files }}">
+            <image src="{{ item }}" @tap="showPicture('{{ item }}')" lazy-load="false"></image>
+            <view class="close" @tap="deleteImage('{{ item }}')">X</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="btn-save">
+         <button wx:if="{{ !submiting }}" formType="submit">保存</button>
+        <button wx:else>保存中...</button>
+        <input hidden name="type" value="{{ statement.type }}"/>
+      </view>
+    </view>
+  </form>
+</template>
+
+<script>
+import wepy from 'wepy'
+import wxRequest from '@/utils/wxRequest'
+import { mapKey } from '@/utils/host'
+import Session from '@/utils/session'
+import Tip from '@/utils/tip'
+import Util from '@/utils/util.js'
+import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
+
+export default class StatementPayForOtherComponent extends wepy.component {
+  props = {
+    statement: {
+      type: Object,
+      default () {
+        return {
+          id: 0,
+          type: 'payforother',
+          category_id: 0,
+          asset_id: 0,
+          amount: '',
+          description: '',
+          date: '',
+          address: '',
+          time: '',
+          category_name: '请选择分类',
+          asset_name: '请选择账户',
+          upload_files: [],
+          borrower: "",
+          date: Util.getCurrentDate(),
+          time: Util.getCurrentTime(),
+        }
+      }
+    },
+    submiting: {
+      type: Boolean,
+      default: false
+    }
+  }
+
+  methods = {
+    dateChange({ detail }) {
+      this.statement.date = detail.value
+    },
+    redirectChoseAsset () {
+      wx.navigateTo({ url: `/pages/statements/chose_asset?type=${this.statement.type}` })
+    },
+    handleAmountInput ({ detail }) {
+      this.statement.amount = detail.value
+    },
+    handleDescInput ({ detail }) {
+      this.statement.description = detail.value
+    },
+    handleBorrower({detail}) {
+      this.statement.borrower = detail.value
+    },
+    setAsset (asset) {
+      this.statement.asset_id = asset.id
+      this.statement.asset_name = asset.name
+    },
+    async formSubmit ({ detail }) {
+      let statement = detail.value
+      if (statement.amount == 0 || statement.amount == '') {
+        Tip.error('金额不能为零')
+        return false
+      }
+
+      if (statement.asset_id == 0) {
+        Tip.error('未选择账户')
+        return false
+      }
+      statement.upload_files = this.statement.upload_files
+      console.log(statement)
+      return false
+      this.$emit('submit', statement, detail)
+    },
+    showPicture (item) {
+      wx.previewImage({
+        current: item,
+        urls: this.statement.upload_files
+      })
+    },
+    deleteImage (item) {
+      const index = this.statement.upload_files.indexOf(item)
+      this.statement.upload_files.splice(index, 1)
+    },
+    async uploadImage () {
+      const choseImages = await wepy.chooseImage({
+        count: 5,
+        sizeType: ['compressed'],
+        sourceType: ['album', 'camera']
+      })
+      this.statement.upload_files = [...this.statement.upload_files, ...choseImages.tempFilePaths]
+      this.$apply()
+    }
+  }
+}
+</script>
+<style lang="scss" src="../../public/styles/statement/statement.scss"></style>

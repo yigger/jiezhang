@@ -57,7 +57,7 @@
         <text>{{ statement.description }}</text>
       </view>
 
-      <view class="statement-files" v-if="statement.upload_files.length > 0">
+      <view class="statement-files" wx-if="{{ statement.upload_files.length > 0 }}">
         <view>
           <text>关联图片</text>
         </view>

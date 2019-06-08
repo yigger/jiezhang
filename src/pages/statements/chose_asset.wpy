@@ -1,6 +1,6 @@
 <template lang="wxml">
   <view class="category-component">
-    <view wx:if="{{ frequent.length > 0 }}">
+    <view wx:if="{{ !hide_frequent && frequent.length > 0 }}">
       <view class="header fs14">常用</view>
       <view class="column" wx:for="{{ frequent }}" @tap="setAsset('{{ item }}')">
         <view class="category">
@@ -46,7 +46,9 @@
       frequent: [],
       last: null,
       list: [],
-      type: 'expend'
+      type: 'expend',
+      asset_type: null,
+      hide_frequent: false
     }
     
     components = {
@@ -55,6 +57,12 @@
 
     onLoad (options) {
       this.type = options.type
+      if (typeof options.asset_type !== 'undefined') {
+        this.asset_type = options.asset_type
+      }
+      if (Number.parseInt(options.hide_frequent) === 1) {
+        this.hide_frequent = true
+      }
     }
     
     onShow () {
@@ -65,12 +73,22 @@
       setAsset (asset) {
         const pages = getCurrentPages()
         const prevPage = pages[pages.length - 2]
-        if (this.type == 'expend') {
-          prevPage.$Expend$setAsset(asset)
-        } else if (this.type == 'income') {
-          prevPage.$Income$setAsset(asset)
-        } else {
-          prevPage.$Transfer$setAsset(asset)
+        switch(this.type) {
+          case 'expend':
+            prevPage.$Expend$setAsset(asset)
+            break
+          case 'income':
+            prevPage.$Income$setAsset(asset)
+            break
+          case 'transfer':
+            prevPage.$Transfer$setAsset(asset)
+            break
+          case 'repayment':
+            prevPage.$Repayment$setAsset(asset)
+            break
+          case 'payforother':
+            prevPage.$PayForOther$setAsset(asset)
+            break
         }
         wepy.navigateBack({
           delta: 1
@@ -79,7 +97,7 @@
     }
 
     async getAsset () {
-      const sessionKey = `@statement_form_asset@`
+      const sessionKey = `@statement_form_asset_${this.type}_${this.asset_type}@`
       if (Session.get(sessionKey)) {
         const cacheData = Session.get(sessionKey)
         this.frequent = cacheData.frequent
@@ -88,7 +106,8 @@
         this.$apply()
       }
 
-      const data = await wxRequest.Get('statements/assets')
+      const url = !!this.asset_type ? `statements/assets?type=${this.asset_type}` : 'statements/assets'
+      const data = await wxRequest.Get(url)
       if (data === undefined) {
         return false
       }
