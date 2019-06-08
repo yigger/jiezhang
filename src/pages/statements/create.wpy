@@ -4,6 +4,9 @@
       <i-tab key="expend" title="支出"></i-tab>
       <i-tab key="income" title="收入"></i-tab>
       <i-tab key="transfer" title="转账"></i-tab>
+      <i-tab key="repayment" title="还款"></i-tab>
+      <!-- <i-tab key="payForOther" title="代付"></i-tab> -->
+      <!-- <i-tab key="receivable" title="应收"></i-tab> -->
     </i-tabs>
     
     <view class="comonent-list">
@@ -27,6 +30,17 @@
         @submit.user="submit"
         wx:if="{{ current == 'transfer' }}"
       />
+
+      <Repayment
+        :submiting.sync="submiting"
+        :statement.sync="repayData"
+        @submit.user="submit"
+        wx:if="{{ current == 'repayment' }}"
+      />
+
+      <PayForOther
+        wx:if="{{ current == 'payForOther' }}"
+      />
     </view>
 
   </view>
@@ -37,6 +51,8 @@
   import wxRequest from '@/utils/wxRequest'
   import StatementForm from '@/components/statement/form'
   import Transfer from '@/components/statement/transfer'
+  import Repayment from '@/components/statement/repayment'
+  import PayForOther from '@/components/statement/pay_for_other'
   import { getStore } from 'wepy-redux'
   import { addStatement, modifyStatement } from '@/store/actions'
   import tip from '@/utils/tip'
@@ -70,7 +86,29 @@
         date: Util.getCurrentDate(),
         time: Util.getCurrentTime(),
         upload_files: []
+      },
+      repayData: {
+        id: 0,
+        type: 'repayment',
+        amount: '',
+        description: '',
+        address: '',
+        source: '选择还款账户',
+        target: '选择负债账户',
+        from: 0,
+        to: 0,
+        date: Util.getCurrentDate(),
+        time: Util.getCurrentTime(),
+        upload_files: []
       }
+    }
+
+    components = {
+      'Expend': StatementForm,
+      'Income': StatementForm,
+      Transfer,
+      Repayment,
+      PayForOther
     }
 
     onLoad(params) {
@@ -99,8 +137,7 @@
           })
           return false
         }
-        
-        console.log(result)
+
         try {
           if (result.status === 200) {
             const store = getStore()
@@ -123,12 +160,5 @@
         this.submiting = false
       }
     }
-
-    components = {
-      'Expend': StatementForm,
-      'Income': StatementForm,
-      Transfer
-    }
-
   }
 </script>

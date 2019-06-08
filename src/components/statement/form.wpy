@@ -173,14 +173,12 @@ export default class StatementFormComponent extends wepy.component {
     wx.getLocation({
       type: 'gcj02', //返回可以用于wx.openLocation的经纬度
       success: (result) => {
-        console.warn(result)
         this.qqmapSDK.reverseGeocoder({
           location: {
             latitude: result.latitude,
             longitude: result.longitude
           },
           success: (addressRes) => {
-            console.warn(addressRes)
             const address_component = addressRes.result.address_component
             this.nation = address_component.nation
             this.province = address_component.province

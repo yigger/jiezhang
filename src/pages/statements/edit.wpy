@@ -4,6 +4,11 @@
       <Expend :statement.sync="statement" @submit.user="submit" :type="expend" wx:if="{{ current == 'expend' }}"/>
       <Income :statement.sync="statement" @submit.user="submit" :type="income" wx:if="{{ current == 'income' }}"/>
       <Transfer :statement.sync="statement" @submit.user="submit" wx:if="{{ current == 'transfer' }}"/>
+      <Repayment
+        :statement.sync="statement"
+        @submit.user="submit"
+        wx:if="{{ current == 'repayment' }}"
+      />
     </view>
   </view>
 </template>
@@ -13,6 +18,7 @@
   import wxRequest from '@/utils/wxRequest'
   import StatementForm from '@/components/statement/form'
   import Transfer from '@/components/statement/transfer'
+  import Repayment from '@/components/statement/repayment'
   import { getStore } from 'wepy-redux'
   import { addStatement, modifyStatement } from '@/store/actions'
   import tip from '@/utils/tip'
@@ -89,7 +95,8 @@
     components = {
       'Expend': StatementForm,
       'Income': StatementForm,
-      Transfer
+      Transfer,
+      Repayment
     }
 
   }
