@@ -1,6 +1,7 @@
 @import './_variable.scss';
 .header {
-  background: $darkPrimaryColor;
+  // background: $darkPrimaryColor;
+  background: linear-gradient(to right, rgb(242, 153, 74), rgb(242, 201, 76));
   height: 75px;
   color: white;
   padding: 0 14px;

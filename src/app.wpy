@@ -68,12 +68,13 @@ export default class extends wepy.app {
       "pages/friends/search"
     ],
     window: {
-      backgroundColor: "#efefef",
-      navigationBarBackgroundColor: "#1976D2",
-      backgroundTextStyle: "light",
-      navigationBarTitleText: "洁账",
-      navigationBarTextStyle: "white",
-      enablePullDownRefresh: false
+      "backgroundColor": "#efefef",
+      "navigationBarBackgroundColor": "#ffffff",
+      "navigationBarTextStyle": "black",
+      "backgroundTextStyle": "light",
+      "navigationBarTitleText": "洁账",
+      // navigationBarTextStyle: "white",
+      "enablePullDownRefresh": false
     },
     tabBar: {
       backgroundColor: "#fff",
