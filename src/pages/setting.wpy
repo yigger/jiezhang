@@ -1,9 +1,9 @@
 <template>
   <view class="container">
     <view class="header" :class="{'no-login': !user.already_login}">
-      <view class="background-img">
+      <!-- <view class="background-img">
         <image src="../public/images/doodles.png"></image>
-      </view>
+      </view> -->
 
       <view class="main-container">
         <view class="user-section" @tap="redirect('/pages/settings/user_info')">

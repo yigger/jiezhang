@@ -6,8 +6,9 @@ page {
 .header {
   position: relative;
   font-size:14px;
-  height:224px;
+  // height:224px;
   z-index: 88;
+  margin-bottom: 12px;
   &.no-login {
     filter:blur(2px);
   }
@@ -27,7 +28,7 @@ page {
   .main-container {
     background:white;
     padding:0 8px;
-    margin: -145px 12px 12px 12px;
+    // margin: -145px 12px 12px 12px;
     border-radius:4px;
     position:relative;
     z-index:99;

@@ -1,11 +1,29 @@
 @import './_variable.scss';
 
 .wallet-header {
-  height:360rpx;
-  position:relative;
-  // background: $darkPrimaryColor;
-  background-image: linear-gradient(to top, #48c6ef 0%, #1976D2 70%);
-  box-shadow:0 0 20rpx $divideText;
+  height: 200rpx;
+  position: relative;
+  background: linear-gradient(to right, rgb(242, 153, 74), rgb(242, 201, 76));
+  color: white;
+  .header-container {
+    position: absolute;
+    bottom:12px;
+    left:12px;
+  }
+  .asset-and-debt {
+    font-size: 14px;
+    > text {
+      margin-right: 8px;
+    }
+  }
+  .eye-item-img {
+    font-size: 18px;
+    margin-left: 8px;
+  }
+  .netWorth {
+    margin-bottom:12px;
+    font-size: 16px;
+  }
   .assets {
     height:220rpx;
     display: flex;
@@ -82,8 +100,8 @@
   }
 
   .column {
-    height: 110rpx;
-    line-height: 110rpx;
+    height: 80rpx;
+    line-height: 80rpx;
     border-bottom:1px solid #efefef;
     &:last-child {
       .title, .money {
@@ -91,19 +109,17 @@
       }
     }
     .icon {
-      height: 110rpx;
+      height: 80rpx;
       display: flex;
       justify-content: center;
       flex-direction:column;
     }
     .title {
-      margin-left:60rpx;
-      margin-right:180rpx;
-      padding-left:16rpx;
-      font-size:34rpx;
+      margin-left:56rpx;
+      font-size:16px;
     }
     .money {
-      font-size:34rpx;
+      font-size:16px;
       text-align:right;
       color: $secondaryText;
     }
@@ -112,5 +128,9 @@
   .zan-loadmore {
     width: 100% !important;
     background: white;
+  }
+  .icon-small-size {
+    width:34rpx;
+    height:34rpx;
   }
 }

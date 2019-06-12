@@ -1,7 +1,27 @@
 <template>
 <view class="container">
   <view class="wallet-header">
-    <view class="assets">
+    <view class="header-container">
+      <view class="netWorth">
+        <view>
+          <text>净资产</text>
+          <text
+            @tap="eyesTab"
+            class="iconfont eye-item-img {{ eyeImageClass }}"
+          >
+          </text>
+        </view>
+        <view>{{ hiddenMoney ? '****' : netWorth }}</view>
+      </view>
+
+      <view class="asset-and-debt">
+        <text>总资产 {{ hiddenMoney ? '****' : totalAssets }}</text>
+        <text>|</text>
+        <text>总负债 {{ hiddenMoney ? '****' : totalAssets }}</text>
+      </view>
+    </view>
+
+    <!-- <view class="assets">
       <view>
         <view class="header-text">
           <text>{{ hiddenMoney ? '****' : netWorth }}</text>
@@ -15,8 +35,8 @@
         <view class="desc-text">总资产</view>
         <image class="eye-item-img" @tap="eyesTab" src="{{ eyeImageSrc }}"></image>
       </view>
-    </view>
-    <view class="yesterday-amount">
+    </view> -->
+    <!-- <view class="yesterday-amount">
       <view>
         <text>总负债：</text>
         <text>{{ hiddenMoney ? '****' : totalDebt }}</text>
@@ -33,7 +53,7 @@
         <text>近一月日均消费：</text>
         <text>{{ hiddenMoney ? '****' : monthAmount }}</text>
       </view>
-    </view>
+    </view> -->
   </view>
 
   <view id="all-assets">
@@ -44,7 +64,7 @@
       </view>
       <view class="column" wx:for="{{ item.childs }}" bindtap="showAsset('{{ item.id }}')">
         <view class="icon pull-left">
-          <image class="ljt-icon" src="{{ item.icon_path }}"></image>
+          <image class="icon-small-size" src="{{ item.icon_path }}"></image>
         </view>
         <view class="money pull-right">{{ hiddenMoney ? '****' : item.amount }}</view>
         <view class="title">{{ item.name }}</view>
@@ -99,8 +119,8 @@
       hiddenMoney () {
         return this.$parent.globalData.user.hidden_asset_money
       },
-      eyeImageSrc () {
-        return this.hiddenMoney ? '../public/images/eye-open.png' : '../public/images/eye-open.png'
+      eyeImageClass () {
+        return this.hiddenMoney ? 'jz-icon-yanjing-zheng' : 'jz-icon-yanjing-bi'
       }
     }
 
