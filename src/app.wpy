@@ -131,7 +131,7 @@ export default class extends wepy.app {
 
   onLaunch () {
     this.getUser()
-    this.checkVersionUpdate()
+    // this.checkVersionUpdate()
     this.uploadData()
   }
 
