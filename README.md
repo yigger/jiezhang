@@ -38,6 +38,9 @@ npm run build
 ### 更新日志
 [Change Log](CHANGELOG.md)
 
+### 服务端地址(开发中)
+https://github.com/yigger/JZ-back 
+
 ### 感谢
 https://tencent.github.io/wepy/  
 https://github.com/dyq086/wepy-mall  
