@@ -132,6 +132,7 @@
     }
 
     async createCategory (category) {
+      category.parent_id = Number.parseInt(category.parent_id)
       const res = await wxRequest.Post(`categories`, {category: category})
       if (res.status == 200) {
         Session.clearByKey('category')
@@ -144,6 +145,7 @@
     }
     
     async updateCategory(category) {
+      category.parent_id = Number.parseInt(category.parent_id)
       const res = await wxRequest.Put(`categories/${this.category.id}`, {category: category})
       if (res.status == 200) {
         Session.clearByKey('category')
