@@ -1,0 +1,43 @@
+<template>
+  <view class="container">
+    <view wx:for="{{ accountBooks }}">
+      <i-card title="{{ item.name }}" extra="默认" thumb="https://i.loli.net/2017/08/21/599a521472424.jpg">
+        <view slot="content">
+          设为默认
+        </view>
+        <!-- <view slot="footer">设为默认</view> -->
+      </i-card>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '@/utils/wxRequest'
+  import tip from '../../utils/tip'
+  import Session from '@/utils/session'
+
+  export default class SettingsAccountBook extends wepy.page {
+    config = {
+      navigationBarTitleText: '账本列表',
+      "usingComponents": {
+        "i-card": "../../public/iview/card/index"
+      }
+    }
+    
+    data = {
+      accountBooks: []
+    }
+
+    onShow () {
+      this.getAccountBooks()
+    }
+
+    async getAccountBooks() {
+      const data = await wxRequest.Get('account_books')
+      this.accountBooks = data
+      this.$apply()
+    }
+  }
+</script>
+<style lang="scss" src="@/public/styles/about.scss"></style>

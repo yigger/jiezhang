@@ -43,6 +43,7 @@ export default class extends wepy.app {
       "pages/settings/super_statement",
       "pages/settings/about",
       "pages/settings/search",
+      "pages/settings/account_book",
 
       // 账单墙
       "pages/statements/images",
