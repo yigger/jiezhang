@@ -1,0 +1,32 @@
+<template lang="wxml">
+  <view class="category">
+    饼图
+
+    照搬消费列表那个
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import wxCharts from '@/utils/wxchart.min.js'
+import wxRequest from '@/utils/wxRequest'
+import StatementItem from '@/components/index/statement'
+export default class CategoryComponent extends wepy.component {
+  data = {
+
+  }
+
+  components = {
+    StatementItem
+  }
+
+  onLoad() {
+    
+  }
+}
+</script>
+<style lang="scss" scoped>
+.category {
+	
+}
+</style>
