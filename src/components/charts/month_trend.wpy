@@ -1,0 +1,50 @@
+<template lang="wxml">
+  <view>
+    <view style="margin-top: 50px;">
+      <canvas canvas-id="monthTrend" disable-scroll="true" style="width: 100%; height: 300px;"></canvas>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import wxCharts from '@/utils/wxchart.min.js'
+import wxRequest from '@/utils/wxRequest'
+// import StatementItem from '@/components/index/statement'
+export default class MonthTrendComponent extends wepy.component {
+  data = {
+    categories: [],
+    info: {}
+  }
+
+  components = {
+    // StatementItem
+  }
+
+  async onLoad() {
+    this.initChart()
+    this.info = await wepy.getSystemInfo()
+  }
+
+  async initChart() {
+    const data = await wxRequest.Get('chart/month_trend')
+    new wxCharts({
+      canvasId: 'monthTrend',
+      type: 'column',
+      categories: data.title,
+      series: [{
+          name: '消费总额度',
+          data: data.data
+      }],
+      yAxis: {
+        format: function (val) {
+            return val + '元';
+        }
+      },
+      width: this.info.screenWidth,
+      height: 300
+    });
+  }
+
+}
+</script>

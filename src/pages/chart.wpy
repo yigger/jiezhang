@@ -1,18 +1,28 @@
 <template>
 	<view class="container">
-		<!-- TODO: 时间选择器 -->
-
+		<picker class='time-picker' 
+			mode="date" 
+			bindchange="bindPickerChange"
+			fields="month"
+			value="{{date}}">
+				<view style="text-align: center;font-size: 28rpx;color: #757575">
+					<text style="text-decoration: underline;">{{date}}</text>
+				</view>
+		</picker>
 		<i-tabs current="{{ current }}" color="#2196F3" bindchange="handleChange">
 			<i-tab key="overview" title="总览"></i-tab>
 			<i-tab key="categories" title="分类"></i-tab>
-			<i-tab key="tab3" title="周趋势"></i-tab>
-			<i-tab key="tab4" title="月趋势"></i-tab>
-			<i-tab key="tab5" title="排行榜"></i-tab>
-			<i-tab key="tab6" title="相册集"></i-tab>
+			<i-tab key="week-trend" title="周趋势"></i-tab>
+			<i-tab key="month-trend" title="月趋势"></i-tab>
+			<i-tab key="rate" title="排行榜"></i-tab>
+			<!-- <i-tab key="photos" title="相册集"></i-tab> -->
 		</i-tabs>
 
-		<OverviewComp hidden="{{ current != 'overview' }}"></OverviewComp>
-		<CategoryComp hidden="{{ current != 'categories' }}"></CategoryComp>
+		<OverviewComp hidden="{{ current != 'overview' }}" :date.sync="date"></OverviewComp>
+		<CategoryComp hidden="{{ current != 'categories' }}" :date.sync="date"></CategoryComp>
+		<WeekTrendComp hidden="{{ current != 'week-trend' }}"></WeekTrendComp>
+		<MonthTrendComp hidden="{{ current != 'month-trend' }}"></MonthTrendComp>
+		<RateComp hidden="{{ current != 'rate' }}" :date.sync="date"></RateComp>
 	</view>
 </template>
 
@@ -26,7 +36,11 @@ import singleColumn from '@/components/chart_column'
 import IndexStatement from '@/components/index/statement'
 import OverviewComp from '@/components/charts/overview'
 import CategoryComp from '@/components/charts/category'
+import WeekTrendComp from '@/components/charts/week_trend'
+import MonthTrendComp from '@/components/charts/month_trend'
+import RateComp from '@/components/charts/rate'
 
+const nowDate = new Date()
 export default class Chart extends wepy.page {
 	config = {
 		navigationBarTitleText: '统计',
@@ -41,22 +55,26 @@ export default class Chart extends wepy.page {
 		singleColumn: singleColumn,
 		statement: IndexStatement,
 		OverviewComp: OverviewComp,
-		CategoryComp: CategoryComp
+		CategoryComp: CategoryComp,
+		WeekTrendComp: WeekTrendComp,
+		MonthTrendComp: MonthTrendComp,
+		RateComp: RateComp
 	};
 
 	data = {
-		current: 'categories',
+		current: 'overview',
+		date: `${nowDate.getFullYear()}-${nowDate.getMonth()+1}`
 	};
 
 	methods = {
 		handleChange ({ detail }) {
 			this.current = detail.key
 		},
+		bindPickerChange({ detail }) {
+			this.date = detail.value
+		} 
 	}
-	
-	onLoad () {
-		
-	}
+
 }
 </script>
 <style lang="scss" src="@/public/styles/chart.scss"></style>

@@ -46,6 +46,10 @@ import wxCharts from '@/utils/wxchart.min.js'
 import wxRequest from '@/utils/wxRequest'
 import StatementItem from '@/components/index/statement'
 export default class OverviewComponent extends wepy.component {
+  props = {
+    date: String
+  }
+
   data = {
     header: {},
     statements: [],
@@ -63,19 +67,19 @@ export default class OverviewComponent extends wepy.component {
   }
 
   async getHeader() {
-    const res = await wxRequest.Get('chart/overview_header')
+    const res = await wxRequest.Get('chart/overview_header', { date: this.date })
     this.header = res
     this.$apply()
   }
 
   async getStatementList() {
-    const res = await wxRequest.Get('chart/overview_statements')
+    const res = await wxRequest.Get('chart/overview_statements', { date: this.date })
     this.statements = res
     this.$apply()
   }
 
   async categoryChart() {
-    const res = await wxRequest.Get('chart/overview_budgets')
+    const res = await wxRequest.Get('chart/overview_budgets', { date: this.date })
     this.categories = res
     this.$apply()
     for (let item of res) {
@@ -111,7 +115,15 @@ export default class OverviewComponent extends wepy.component {
         whiteLineCount:10
       });
     }
-	}
+  }
+  
+  watch = {
+    date() {
+      this.getHeader()
+      this.getStatementList()
+      this.categoryChart()
+    }
+  };
 }
 </script>
 <style lang="scss" scoped>
@@ -138,7 +150,7 @@ export default class OverviewComponent extends wepy.component {
 	.overview__category-chart {
     margin: 12px;
     padding: 12px;
-    box-shadow: 0 0 8px #ccc;
+    box-shadow: 0 0 4px #eee;
 		.budget-chart-item {
 			display: inline-block;
 			font-size: 24rpx;
@@ -148,7 +160,7 @@ export default class OverviewComponent extends wepy.component {
   .overview__statements {
     margin: 12px;
     padding: 12px;
-    box-shadow: 0 0 8px #ccc;
+    box-shadow: 0 0 4px #eee;
   }
   .ovweview-title {
     font-size: 28rpx;
