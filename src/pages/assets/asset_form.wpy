@@ -35,9 +35,9 @@
         <image class="icon-image" src="{{ host }}{{ wallet.icon_path }}"></image>
       </navigator>
 
-      <view>
+      <!-- <view>
         <textarea placeholder-class="place-class" bindinput="bindKeyRemark" value="{{ wallet.remark }}" placeholder="备注" />
-      </view>
+      </view> -->
     </view>
 
     <view class="save-btn" wx:if="{{ wallet.id != 0 }}">

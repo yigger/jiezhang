@@ -1,8 +1,8 @@
 <template>
   <view class="container">
-    <view class="statement-category">
+    <!-- <view class="statement-category">
       生活账本
-    </view>
+    </view> -->
 
     <view class="header">
       <image class="bg" src="{{ header.bg_avatar }}"></image>

@@ -63,11 +63,11 @@
 
     <view class="setting-container">
       <i-cell-group>
-        <i-cell 
+        <!-- <i-cell 
           title="账本列表"
           label="未开启多账本"
           is-link url="/pages/settings/account_book">
-        </i-cell>
+        </i-cell> -->
 
         <i-cell 
           title="账单图库"
