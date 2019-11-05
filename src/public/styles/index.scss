@@ -11,7 +11,7 @@ page, .container{
 .header {
 	position:relative;
 	color:white;
-	height:380rpx;
+	height: 340rpx;
 	.bg {
     position:absolute;
     width:100%;
@@ -77,6 +77,38 @@ page, .container{
   }
 }
 
+.statement-category {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  color: white;
+}
+
+.statements {
+  .statement-title {
+    position: relative;
+    z-index: 998;
+    display: inline-block;
+    padding-bottom: 4px;
+    margin-bottom:12px;
+    font-size: 18px;
+    color: #40485B;
+    font-weight: bolder;
+    margin-left: 14px;
+    &:before {
+      content: '';
+      position: absolute;
+      background: #FFF3AC;
+      width: calc(100% + 16px);
+      height: 12px;
+      bottom: 0;
+      left: 0;
+      border-radius: 12px;
+      z-index: -1;
+    }
+  }
+}
+
 .statement-list {
   margin-bottom: 40rpx;
   > .surplus {
@@ -104,4 +136,48 @@ page, .container{
   height: 60rpx;
   line-height: 60rpx;
   font-size: 28rpx;
+}
+
+// 预算设置
+.budget-setting {
+  width: 100%;
+  font-size: 24rpx;
+  box-sizing: border-box;
+  padding: 24rpx;
+  margin-top: -12rpx;
+  background: white;
+  border-radius: 10rpx;
+  border-bottom: 1px dashed #f3f3f3;
+  .budget__cur-month {
+    display: flex;
+    justify-content: space-between;
+  }
+  .budget__cur-amount {
+    display: flex;
+    justify-content: space-between;
+    color: $secondaryText;
+    font-size: 24rpx;
+  }
+  .budget-progress {
+    height: 6px;
+    width: 100%;
+    margin: 6px 0;
+    position: relative;
+    .budget-progress__bg {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      background: #F0EAD7;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .budget-progress__item {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      border-radius: 10px;
+    }
+  }
 }

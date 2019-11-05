@@ -1,0 +1,96 @@
+<template lang="wxml">
+  <view class="category">
+
+    <i-tabs current="{{ current }}" color="#f759ab" bindchange="handleChange">
+      <i-tab key="expend" title="支出"></i-tab>
+      <i-tab key="income" title="收入"></i-tab>
+    </i-tabs>
+
+    <repeat for="{{ statements }}" key="index" index="index" item="item">
+      <StatementItem :statement.sync="item"></StatementItem>
+    </repeat>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import wxCharts from '@/utils/wxchart.min.js'
+import wxRequest from '@/utils/wxRequest'
+import StatementItem from '@/components/index/statement'
+export default class CategoryComponent extends wepy.component {
+  props = {
+    date: String
+  }
+
+  data = {
+    statements: [],
+    current: 'expend'
+  }
+
+  config = {
+    "usingComponents": {
+      "i-tabs": "../../public/iview/tabs/index",
+      "i-tab": "../../public/iview/tab/index"
+    }
+  }
+
+  components = {
+    StatementItem
+  }
+
+  onLoad() {
+    this.getStatements()
+  }
+
+  async getStatements() {
+    const res = await wxRequest.Get('chart/rate', { date: this.date, type: this.current })
+    this.statements = res
+    this.$apply()
+  }
+
+  methods = {
+    handleChange ({ detail }) {
+      this.current = detail.key
+      this.getStatements()
+    },
+  }
+
+  watch = {
+    date() {
+      this.getStatements()
+    }
+  };
+}
+</script>
+<style lang="scss" scoped>
+.expend-bars {
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+    color: #212121;
+    margin:12px 0;
+    padding: 8px;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(#c1f5e7, #c1f5e7);
+    border-radius:4px;
+    .title {
+      font-size: 14px;
+    }
+    .amount {
+      margin-top: 4px;
+      font-size: 14px;
+      color: green;
+    }
+    .percent {
+      font-size: 12px;
+      margin-left: 12px;
+      color: #757575;
+    }
+  }
+  .zan-icon-arrow {
+    font-size: 14px;
+    color: #ccc;
+  }
+}
+</style>

@@ -1,0 +1,169 @@
+<template lang="wxml">
+  <view class="overview">
+    <view class="overview-header">
+      <view class="overview-header__card">
+        <view class="expend amount">{{ header.expend }}</view>
+        <view class="text-small">总支出</view>
+      </view>
+      <view class="overview-header__card">
+        <view class="income amount">{{ header.income }}</view>
+        <view class="text-small">总收入</view>
+      </view>
+      <view class="overview-header__card">
+        <view class="transfer amount">{{ header.transfer }}</view>
+        <view class="text-small">转账</view>
+      </view>
+      <view class="overview-header__card">
+        <view class="expend amount">{{ header.repay }}</view>
+        <view class="text-small">还款</view>
+      </view>
+    </view>
+
+    <view class="overview__count-result">
+      总计（收入-支出-还款）：<text class="expend">{{ header.total }}</text>
+    </view>
+
+    <view class="overview__category-chart">
+      <view class="ovweview-title">预算使用情况</view>
+      <view class="budget-chart-item" wx:for="{{categories}}">
+        <canvas canvas-id="category-chart-{{ item.id }}" disable-scroll="true" style="width: 120px; height: 120px;"></canvas>
+        <view>{{ item.name }}</view>
+      </view>
+    </view>
+
+    <view class="overview__statements">
+      <view class="ovweview-title">账单列表</view>
+      <repeat for="{{ statements }}" key="index" index="index" item="item">
+        <StatementItem :statement.sync="item"></StatementItem>
+      </repeat>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import wxCharts from '@/utils/wxchart.min.js'
+import wxRequest from '@/utils/wxRequest'
+import StatementItem from '@/components/index/statement'
+export default class OverviewComponent extends wepy.component {
+  props = {
+    date: String
+  }
+
+  data = {
+    header: {},
+    statements: [],
+    categories: []
+  }
+
+  components = {
+    StatementItem
+  }
+
+  onLoad() {
+    this.getHeader()
+    this.getStatementList()
+    this.categoryChart()
+  }
+
+  async getHeader() {
+    const res = await wxRequest.Get('chart/overview_header', { date: this.date })
+    this.header = res
+    this.$apply()
+  }
+
+  async getStatementList() {
+    const res = await wxRequest.Get('chart/overview_statements', { date: this.date })
+    this.statements = res
+    this.$apply()
+  }
+
+  async categoryChart() {
+    const res = await wxRequest.Get('chart/overview_budgets', { date: this.date })
+    this.categories = res
+    this.$apply()
+    for (let item of res) {
+      new wxCharts({
+        canvasId: "category-chart-" + item.id,
+        type: 'ring',
+        series: [{
+          name: "已使用",
+          data: Number.parseInt(item.used_amount),
+          color: '#ff7e00'
+        }, {
+          name:"预算",
+          data: Number.parseInt(item.budget_amount),
+          color: '#f4f4f4'
+        }],
+        extra:{
+          pie:{
+            offsetAngle:-90
+          },
+          ringWidth:12
+        },
+        title: {
+          name: item.percentage,
+          color:'#999999',
+          fontSize: 12
+        },
+        width: 120,
+        height: 120,
+        dataLabel: false,
+        legend:false,
+        disablePieStroke:true,
+        drawWhiteLine:true,
+        whiteLineCount:10
+      });
+    }
+  }
+  
+  watch = {
+    date() {
+      this.getHeader()
+      this.getStatementList()
+      this.categoryChart()
+    }
+  };
+}
+</script>
+<style lang="scss" scoped>
+.overview {
+	.overview-header {
+		padding: 24rpx 0;
+		border-bottom: 1px solid #f4f4f4;
+		> .overview-header__card {
+			display: inline-block;
+			width: 25%;
+			text-align: center;
+			.text-small {
+				font-size: 24rpx;
+			}
+			.amount {
+				font-size: 32rpx;
+			}
+		}
+	}
+	.overview__count-result {
+		padding: 16rpx 24rpx;
+		font-size: 24rpx;
+	}
+	.overview__category-chart {
+    margin: 12px;
+    padding: 12px;
+    box-shadow: 0 0 4px #eee;
+		.budget-chart-item {
+			display: inline-block;
+			font-size: 24rpx;
+			text-align: center;
+		}
+  }
+  .overview__statements {
+    margin: 12px;
+    padding: 12px;
+    box-shadow: 0 0 4px #eee;
+  }
+  .ovweview-title {
+    font-size: 28rpx;
+  }
+}
+</style>

@@ -4,7 +4,7 @@
       <view class="container">
         <view class="column">
           <text>分类名称</text>
-          <input class="remark" type="text" name="name" value="{{ category.name }}" placeholder="请输入分类名称"/>
+          <input class="remark" type="text" name="name" value="{{ category.name }}" bindchange="textNameChange" placeholder="请输入分类名称"/>
         </view>
         
 
@@ -95,8 +95,8 @@
     }
 
     methods = {
-      changeSwitch (e) {
-        this.isParentLevel = e.detail.value
+      changeSwitch ({detail}) {
+        this.isParentLevel = detail.value
         if (this.isParentLevel) {
           this.category.parent_id = 0
         } else {
@@ -104,6 +104,9 @@
             this.category.parent_id = this.parentCategories[this.curIndex]['id']
           }
         }
+      },
+      textNameChange({detail}) {
+        this.category.name = detail.value
       },
       changeCategory(e) {
         const idx = e.detail.value

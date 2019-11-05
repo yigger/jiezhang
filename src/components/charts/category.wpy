@@ -1,0 +1,115 @@
+<template lang="wxml">
+  <view class="category">
+    <view>
+      <canvas canvas-id="pieCanvas" disable-scroll="true" style="width: 100%; height: 300px;"></canvas>
+    </view>
+
+    <view class="expend-bars" wx:if="{{ categories.length > 0 }}">
+      <view class="item" wx:for="{{ categories }}" style="background-size: {{ item.percent }}% 100%;" @tap="redirectTo({{ item }})">
+        <view>
+          <view class="title">{{ item.name }}<text class="percent">{{ item.percent }}%</text></view>
+          <view class="amount">{{ item.format_amount }}</view>
+        </view>
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import wxCharts from '@/utils/wxchart.min.js'
+import wxRequest from '@/utils/wxRequest'
+import StatementItem from '@/components/index/statement'
+export default class CategoryComponent extends wepy.component {
+  props = {
+    date: String
+  }
+
+  data = {
+    categories: [],
+    info: {}
+  }
+
+  components = {
+    StatementItem
+  }
+
+  async onLoad() {
+    this.info = await wepy.getSystemInfo()
+    this.getStatements()
+    this.getPieData()
+  }
+
+  async getStatements() {
+    const res = await wxRequest.Get('chart/category_statements', { date: this.date })
+    this.categories = res.data
+    this.$apply()
+  }
+
+  async getPieData () {
+    const data = await wxRequest.Get('super_chart/get_pie_data', { date: this.date })
+    this.$apply()
+    if (data.data.length > 0) {
+      await new wxCharts({
+        canvasId: 'pieCanvas',
+        type: 'pie',
+        series: data.data,
+        width: this.info.screenWidth,
+        height: 280,
+        legend: true,
+        dataLabel: true
+      });
+    }
+  }
+
+  methods = {
+    redirectTo (item) {
+      const dates = this.date.split('-')
+      wepy.navigateTo({
+        url: `/pages/statements/filter_statements?year=${dates[0]}&month=${dates[1]}&category_id=${item.category_id}`
+      })
+    }
+  }
+
+  watch = {
+    date() {
+      this.getStatements()
+      this.getPieData()
+    }
+  };
+}
+</script>
+<style lang="scss" scoped>
+.expend-bars {
+  margin: 12px;
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+    color: #212121;
+    margin:12px 0;
+    padding: 8px;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(#c1f5e7, #c1f5e7);
+    border-radius:4px;
+    .title {
+      font-size: 14px;
+    }
+    .amount {
+      margin-top: 4px;
+      font-size: 14px;
+      color: green;
+    }
+    .percent {
+      font-size: 12px;
+      margin-left: 12px;
+      color: #757575;
+    }
+  }
+  .zan-icon-arrow {
+    font-size: 14px;
+    color: #ccc;
+  }
+}
+</style>

@@ -1,5 +1,9 @@
 <template>
   <view class="container">
+    <!-- <view class="statement-category">
+      生活账本
+    </view> -->
+
     <view class="header">
       <image class="bg" src="{{ header.bg_avatar }}"></image>
       <view class="level-2">
@@ -20,6 +24,27 @@
         <text wx:else>{{ header.notice_text }}</text>
       </i-notice-bar>
     </view>
+
+    <view class="budget-setting">
+      <view class="budget__cur-month">
+        <view class="text-grey">本月预算目标</view>
+        <view class="text-grey" bindtap="onClickBudget">
+          <i class="iconfont jz-icon-edit"></i>
+          <text>调整</text>
+        </view>
+      </view>
+      <view class="budget-progress">
+        <view class="budget-progress__bg"></view>
+        <view
+          class="budget-progress__item"
+          style="width: {{ budgetHeader.percentage }}%;background-color: {{ budgetHeader.color }}">
+        </view>
+      </view>
+      <view class="budget__cur-amount">
+        <view>预算目标 {{ budgetHeader.budget }}</view>
+        <view>已消费 {{ budgetHeader.month_expend }}</view>
+      </view>
+    </view>
     
     <view class="zan-btns new-record">
       <navigator url="/pages/statements/create">
@@ -27,16 +52,18 @@
       </navigator>
     </view>
 
-    <view class="statement-list" wx-if="{{ list.length > 0 }}">
-      <repeat for="{{ list }}" key="index" index="index" item="item">
-        <StatementItem :statement.sync="item"></StatementItem>
-      </repeat>
+    <view class="statements">
+      <view class="statement-title">今日消费</view>
+      <view class="statement-list" wx-if="{{ list.length > 0 }}">
+        <repeat for="{{ list }}" key="index" index="index" item="item">
+          <StatementItem :statement.sync="item"></StatementItem>
+        </repeat>
+      </view>
+      
+      <view wx:if="{{ list.length == 0 }}">
+        <empty :title.sync="emptyTitle"></empty>
+      </view>
     </view>
-    
-    <view wx:if="{{ list.length == 0 }}">
-      <empty :title.sync="emptyTitle"></empty>
-    </view>
-
   </view>
 </template>
 
@@ -58,21 +85,34 @@
     }
 
     data = {
-      emptyTitle: '本周还没有开始记账哦~',
-      orderEmptyTitle: '无预购清单，点击下方添加一笔吧',
+      emptyTitle: '今天还没有记账噢~',
       list: [],
-      header: {}
+      header: {},
+      budgetHeader: {
+        budget: "0.00",
+        month_expend: "0.00",
+        percentage: "0"
+      }
     }
 
     components = {
       empty: Empty,
       orderEmpty: Empty,
       StatementItem
-		}
+    }
+    
+    methods = {
+      onClickBudget() {
+        wepy.navigateTo({
+          url: `/pages/budgets/budget`
+        })
+      }
+    }
 
     onShow () {
       this.getHeader()
       this.getList()
+      this.getBudget()
     }
 
     async getHeader () {
@@ -88,6 +128,26 @@
 
       this.header = data
       Session.set('header_load_cache', this.header)
+      this.$apply()
+    }
+
+    async getBudget() {
+      if (Session.get('header_budget_cache')) {
+        this.budgetHeader = Session.get('header_budget_cache')
+        this.$apply()
+      }
+
+      const data = await wxRequest.Get('idx_budget')
+      this.budgetHeader = data
+      // 不同预算显示不同的颜色
+      if (Number.parseInt(this.budgetHeader.percentage) > 90) {
+        this.budgetHeader.color = '#FF2929'
+      } else if (Number.parseInt(this.budgetHeader.percentage) > 50) {
+        this.budgetHeader.color = '#F7B500'
+      } else {
+        this.budgetHeader.color = '#40BE30'
+      }
+      Session.set('header_budget_cache', this.budgetHeader)
       this.$apply()
     }
 
