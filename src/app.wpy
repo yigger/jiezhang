@@ -117,13 +117,7 @@ export default class extends wepy.app {
         "desc": "您的位置信息将用于记录账单的地理位置"
       }
     },
-    debug: false,
-    "plugins": {
-      "calendar": {
-        "version": "1.1.3",
-        "provider": "wx92c68dae5a8bb046"
-      }
-    }
+    debug: false
   }
   
   globalData = {

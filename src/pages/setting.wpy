@@ -131,6 +131,7 @@
   import wxRequest from '@/utils/wxRequest'
   import tip from '@/utils/tip'
   import Session from '@/utils/session'
+  import Host from '@/utils/host'
 
   export default class Setting extends wepy.page {
     config = {
@@ -217,7 +218,7 @@
       return {
         title: '推荐你使用洁账',
         path: '/pages/index',
-        imageUrl: 'https://xiaoyounger.com/covers/default-11.jpeg',
+        imageUrl: `${Host.host}/covers/default-11.jpeg`,
         success: async function (res) {
           tip.toast('感谢支持')
           await wxRequest.Post('settings/recommend', { ticket: res['shareTickets'][0] })
