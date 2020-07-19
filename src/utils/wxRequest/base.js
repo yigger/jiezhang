@@ -27,6 +27,7 @@ const getOpenId = async () => {
       method: 'POST',
       header: { 'X-WX-Code': wxLogin.code, 'X-WX-APP-ID': Host.appid }
     })
+    Session.set(loginKey, res.data.session)
     resolve(res.data.session)
   })
 }
@@ -49,6 +50,7 @@ const doRequest = async (url, method, params, options = {}, callback) => {
   }
   
   const thirdSession = await getOpenId()
+  getAuthPromise = null
   return wepy.request({
     url: url,
     method: method,
@@ -61,38 +63,25 @@ const doRequest = async (url, method, params, options = {}, callback) => {
     },
   }).then((response) => {
     const statusCode = response.statusCode
-    if (statusCode !== 200) {
-      if (url === `${Host.url}/error_upload`) {
-        return false
-      }
-      let message = null
-      if (statusCode != 500 && statusCode != 404) {
-        message = e.errMsg
-      }
-      Session.pushError({ url: url, method: method, params: params, err: message, statusCode: statusCode, time: new Date().toLocaleString()})
-      wx.showToast({
-        title: '网络请求超时..',
-        icon: 'none',
-        duration: 3000
-      })
+    const result = response.data
+    // key 过期尝试重连
+    if ((statusCode !== 200 || result.status === 301) && retryCount <= 6) {
+      Session.clear(loginKey)
+      retryCount += 1
+      return doRequest(url, method, params)
     } else {
-      const result = response.data
-      // key 过期尝试重连
-      if (result.status === 301 && retryCount <= 3) {
-        Session.clear(loginKey)
-        retryCount += 1
-        return doRequest(url, method, params)
-      }
-
-      Session.set(loginKey, thirdSession)
-      if(cacheKey != '') setByCache(cacheKey, result)
-
-      if (typeof callback !== 'undefined') {
-        callback(result)
-      }
-
-      return result
+      retryCount = 0
     }
+
+    if(cacheKey != '') {
+      setByCache(cacheKey, result)
+    }
+
+    if (typeof callback !== 'undefined') {
+      callback(result)
+    }
+
+    return result
   }, (err) => {
     Session.pushError({ url: url, method: method, params: params, err: err.message, time: new Date().toLocaleString()})
     wx.showToast({

@@ -23,13 +23,13 @@
       总计（收入-支出-还款）：<text class="expend">{{ header.total }}</text>
     </view>
 
-    <view class="overview__category-chart">
+    <!-- <view class="overview__category-chart">
       <view class="ovweview-title">预算使用情况</view>
       <view class="budget-chart-item" wx:for="{{categories}}">
         <canvas canvas-id="category-chart-{{ item.id }}" disable-scroll="true" style="width: 120px; height: 120px;"></canvas>
         <view>{{ item.name }}</view>
       </view>
-    </view>
+    </view> -->
 
     <view class="overview__statements">
       <view class="ovweview-title">账单列表</view>
@@ -63,7 +63,7 @@ export default class OverviewComponent extends wepy.component {
   onLoad() {
     this.getHeader()
     this.getStatementList()
-    this.categoryChart()
+    // this.categoryChart()
   }
 
   async getHeader() {
@@ -121,7 +121,7 @@ export default class OverviewComponent extends wepy.component {
     date() {
       this.getHeader()
       this.getStatementList()
-      this.categoryChart()
+      // this.categoryChart()
     }
   };
 }
