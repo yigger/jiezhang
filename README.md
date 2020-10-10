@@ -1,6 +1,9 @@
 # 洁账小程序
 > 基于 wepy 开发的一款记账微信小程序
 
+### 后端也开源啦！！感谢支持
+https://github.com/yigger/jiezhang/releases
+
 ### 体验二维码
 ![二维码](https://github.com/yigger/jiezhang/raw/master/screenshots/qrcode.jpg)
 
