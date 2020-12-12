@@ -12,7 +12,7 @@
         <i-cell title="记力值" value="{{ user.bonus_points }}"></i-cell>
         <i-cell title="总账单数" value="{{ user.sts_count }}"></i-cell>
       </i-cell-group>
-      <view class="notice-remind">
+      <!-- <view class="notice-remind">
         <view>
           <text class="notice-title">记账提醒</text>
           <text class="notice-time">每天 22:00</text>
@@ -20,7 +20,7 @@
         <view>
           <i-switch value="{{ user.remind }}" bind:change="changeRemind" slot="footer"></i-switch>
         </view>
-      </view>
+      </view> -->
     </view>
 
     <div class="cancel-login-btn" @tap="cancelLoginStatus()">退出登录</div>

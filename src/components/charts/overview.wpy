@@ -121,7 +121,6 @@ export default class OverviewComponent extends wepy.component {
     date() {
       this.getHeader()
       this.getStatementList()
-      // this.categoryChart()
     }
   };
 }

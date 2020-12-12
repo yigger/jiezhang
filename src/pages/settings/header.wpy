@@ -27,17 +27,25 @@
         </i-cell>
       </i-panel>
 
-      <i-panel title="面板背景图片">
+      <view>
+        <view class="background-header">
+          <span>面板背景图片</span>
+          <span @tap="handleManage()">{{ manageImage ? '取消管理' : '管理' }}</span>
+        </view>
         <view class="cover-setting">
-          <view class="item" wx:for="{{ avatars }}" @tap="setAvatar('{{ item.id }}')">
-            <image src="{{ item.path }}"></image>
-            <view wx:if="{{ item.system == 0 }}" @tap.stop="deleteItem('{{ item.id }}')" class="close-item">x</view>
+          <view class="item" wx:for="{{ avatars }}">
+            <image wx:if="{{ manageImage }}" src="{{ item.path }}"></image>
+            <image wx:else @tap="setAvatar('{{ item.id }}')" src="{{ item.path }}"></image>
+
+            <view class="vague" wx:if="{{ manageImage }}" @tap="deleteItem('{{ item.id }}')">
+              {{ item.system == 0 ? '删除' : '' }}
+            </view>
           </view>
           <view class="item upload" @tap="uploadUserAvatar">
             <image src="../../public/images/upload.png"></image>
           </view>
         </view>
-      </i-panel>
+      </view>
 
       <i-action-sheet 
         visible="{{ dataVisible }}"
@@ -72,7 +80,8 @@
       currentPosition: 1,
       actionsList: [],
       user: {},
-      avatars: []
+      avatars: [],
+      manageImage: false
     }
 
     computed = {
@@ -101,8 +110,11 @@
         this.getUser()
       },
       async deleteItem(id) {
-        await wxRequest.Destroy('settings/cover_destroy', {id: id})
+        await wxRequest.Post('settings/cover_destroy', {id: id})
         this.getAvatars()
+      },
+      handleManage() {
+        this.manageImage = !this.manageImage
       }
     }
 
