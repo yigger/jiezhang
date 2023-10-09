@@ -1,10 +1,6 @@
 <template>
   <view class="container">
-    <view class="header" :class="{'no-login': !user.already_login}">
-      <!-- <view class="background-img">
-        <image src="../public/images/doodles.png"></image>
-      </view> -->
-
+    <view class="header">
       <view class="main-container">
         <view class="user-section" @tap="redirect('/pages/settings/user_info')">
           <view class="user">
@@ -48,15 +44,6 @@
             </view>
             <view>预购清单</view>
           </view>
-        </view>
-      </view>
-    </view>
-
-    <view class="login-message" wx:if="{{ !user.already_login }}">
-      <view>
-        <button class="get-user-btn" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击登录</button>
-        <view class="continue" style="font-size: 14px; margin-top: 6px">
-          登录后开启记账之旅
         </view>
       </view>
     </view>

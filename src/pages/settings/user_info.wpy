@@ -7,7 +7,7 @@
           <i-avatar slot="footer" src="{{ user.avatar_url }}" size="default" shape="square"></i-avatar>
         </i-cell>
 
-        <i-cell title="昵称" value="{{ user.nickname }}" @tap="editNickname"></i-cell>
+        <i-cell title="昵称" value="{{ user.nickname || '微信用户' }}" @tap="editNickname"></i-cell>
         <i-cell title="已坚持记账" value="{{ user.persist }}天"></i-cell>
         <i-cell title="记力值" value="{{ user.bonus_points }}"></i-cell>
         <i-cell title="总账单数" value="{{ user.sts_count }}"></i-cell>
@@ -23,14 +23,12 @@
       </view> -->
     </view>
 
-    <div class="cancel-login-btn" @tap="cancelLoginStatus()">退出登录</div>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
-  import Session from '@/utils/session'
   export default class UserInfo extends wepy.page {
     config = {
       navigationBarTitleText: '个人信息',
