@@ -28,9 +28,6 @@
 
 <script>
 import wepy from 'wepy'
-import wxRequest from '@/utils/wxRequest'
-import tip from '@/utils/tip'
-import wxCharts from '@/utils/wxchart.min.js'
 import Empty from '@/components/empty'
 import singleColumn from '@/components/chart_column'
 import IndexStatement from '@/components/index/statement'
