@@ -42,20 +42,6 @@
         </picker>
         <input hidden name="date" value="{{ date }}" type="number"/>
       </view>
-
-      <view class="column location-column">
-        <text style="flex: 1">地理位置</text>
-        <view style="flex: 2">
-          <input name="location" type="text" value="{{ address }}"/>
-          <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
-
-          <input class="input-hidden" name="nation" value="{{ nation }}"/>
-          <input class="input-hidden" name="province" value="{{ province }}"/>
-          <input class="input-hidden" name="city" value="{{ city }}"/>
-          <input class="input-hidden" name="district" value="{{ district }}"/>
-          <input class="input-hidden" name="street" value="{{ street }}"/>
-        </view>
-      </view>
       
       <view class="column">
         <text>备注</text>
@@ -105,10 +91,8 @@
 <script>
 	import wepy from 'wepy'
   import wxRequest from '@/utils/wxRequest'
-  import { mapKey } from '@/utils/host'
   import Session from '@/utils/session'
   import tip from '@/utils/tip'
-  import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
   import { getStore } from 'wepy-redux'
   import { addStatement, modifyStatement } from '@/store/actions'
   export default class NewStatement extends wepy.page {
@@ -138,12 +122,6 @@
       to: 0,
       transferType: 0,
       switchCheck: Session.get('getLocationSwitch') || false,
-      qqmapSDK: null,
-      nation: '',
-      province: '',
-      city: '',
-      district: '',
-      street: '',
       submiting: false
     }
 
@@ -161,11 +139,6 @@
       } else {
         // 获取上次使用的分类和账户
         this.getLastUsed()
-      }
-
-      if (this.switchCheck) {
-        // 初始化地理位置信息
-        this.setLocation()
       }
 
       if (options.type) {
@@ -280,17 +253,6 @@
       },
       redirectChoseCategory () {
         wx.navigateTo({ url: `/pages/statements/chose_category?type=${this.type}` })
-      },
-      getLocation (e) {
-        let locationSwitch = e.detail.value
-        Session.set('getLocationSwitch', locationSwitch)
-        if(locationSwitch) {
-          this.setLocation()
-        } else {
-          // 关闭获取地理位置
-          this.address = ''
-          this.$apply()
-        }
       }
     }
 
@@ -342,43 +304,6 @@
       const data = await wxRequest.Get('statements/asset_frequent', { type: this.type })
       this.assets_label = data
       this.$apply()
-    }
-
-    setLocation () {
-      this.qqmapSDK = new QQMapWX({
-        key: mapKey
-      });
-      try {
-        console.log('start get location')
-        wx.getLocation({
-          type: 'gcj02', //返回可以用于wx.openLocation的经纬度
-          success: (result) => {
-            console.log('location: ', result)
-            this.qqmapSDK.reverseGeocoder({
-              location: {
-                latitude: result.latitude,
-                longitude: result.longitude
-              },
-              success: (addressRes) => {
-                let address_component = addressRes.result.address_component
-                console.log(address_component)
-                this.nation = address_component.nation
-                this.province = address_component.province
-                this.city = address_component.city
-                this.district = address_component.district
-                this.street = address_component.street
-                this.address = addressRes.result.address
-                this.$apply()
-              }
-            })
-          }
-        })
-      } catch (e) {
-        console.log('errorMsg', e)
-        Session.set('getLocationSwitch', false)
-        this.switchCheck = false
-        this.$apply()
-      }
     }
 
     setCategory (category) {

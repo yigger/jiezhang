@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <form bindsubmit="formSubmit" report-submit="true">
+    <form bindsubmit="formSubmit">
       <view class="container">
         <view class="column">
           <text>分类名称</text>

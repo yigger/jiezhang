@@ -16,6 +16,5 @@ module.exports = {
   login: host + '/api/login',
   check_openid: host + '/api/check_openid',
   env: env,
-  mapKey: '',
   appid: ''
 }

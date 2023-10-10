@@ -1,5 +1,5 @@
 <template lang="wxml">
-  <form bindsubmit="formSubmit" report-submit="true">
+  <form bindsubmit="formSubmit">
     <view class="container">
       <view class="column money">
         <text>金额</text>
@@ -43,20 +43,6 @@
         <text class="label" @tap="quickSetDate('-1')">昨天</text>
         <text class="label" @tap="quickSetDate('0')">今天</text>
       </view>
-
-      <view class="column location-column">
-        <text style="flex: 1">地点</text>
-        <view>
-          <input name="location" type="text" value="{{ statement.address }}"/>
-          <switch checked="{{ switchCheck }}" bindchange="getLocation"/>
-
-          <input class="input-hidden" name="nation" value="{{ nation }}"/>
-          <input class="input-hidden" name="province" value="{{ province }}"/>
-          <input class="input-hidden" name="city" value="{{ city }}"/>
-          <input class="input-hidden" name="district" value="{{ district }}"/>
-          <input class="input-hidden" name="street" value="{{ street }}"/>
-        </view>
-      </view>
       
       <view class="column">
         <text>备注</text>
@@ -88,11 +74,9 @@
 <script>
 import wepy from 'wepy'
 import wxRequest from '@/utils/wxRequest'
-import { mapKey } from '@/utils/host'
 import Session from '@/utils/session'
 import tip from '@/utils/tip'
 import Util from '@/utils/util.js'
-import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
 
 export default class StatementFormComponent extends wepy.component {
   props = {
@@ -123,11 +107,6 @@ export default class StatementFormComponent extends wepy.component {
   }
 
   data = {
-    nation: '',
-    province: '',
-    city: '',
-    district: '',
-    street: '',
     assets_labels: [],
     categories_labels: [],
     switchCheck: Session.get('getLocationSwitch') || false
@@ -137,7 +116,6 @@ export default class StatementFormComponent extends wepy.component {
     this.statement.type = this.type
     if (this.statement.id === 0) {
       this.initTodayDate()
-      if (this.switchCheck) this.setLocation()
     }
     this.guessCategory()
     this.guessAsset()
@@ -166,33 +144,6 @@ export default class StatementFormComponent extends wepy.component {
     this.$apply()
   }
 
-  setLocation () {
-    this.qqmapSDK = new QQMapWX({
-      key: mapKey
-    });
-    wx.getLocation({
-      type: 'gcj02', //返回可以用于wx.openLocation的经纬度
-      success: (result) => {
-        this.qqmapSDK.reverseGeocoder({
-          location: {
-            latitude: result.latitude,
-            longitude: result.longitude
-          },
-          success: (addressRes) => {
-            const address_component = addressRes.result.address_component
-            this.nation = address_component.nation
-            this.province = address_component.province
-            this.city = address_component.city
-            this.district = address_component.district
-            this.street = address_component.street
-            this.statement.address = addressRes.result.address
-            this.$apply()
-          }
-        })
-      }
-    })
-  }
-
   methods = {
     dateChange({ detail }) {
       this.statement.date = detail.value
@@ -216,17 +167,6 @@ export default class StatementFormComponent extends wepy.component {
     setCategory (category) {
       this.statement.category_id = category.id
       this.statement.category_name = category.name
-    },
-    getLocation (e) {
-      const locationSwitch = e.detail.value
-      Session.set('getLocationSwitch', locationSwitch)
-      if (locationSwitch) {
-        this.setLocation()
-      } else {
-        // 关闭获取地理位置
-        this.statement.address = ''
-        this.$apply()
-      }
     },
     async formSubmit ({ detail }) {
       const statement = detail.value

@@ -1,5 +1,5 @@
 <template lang="wxml">
-  <form bindsubmit="formSubmit" report-submit="true">
+  <form bindsubmit="formSubmit">
     <view class="container">
       <view class="column money">
         <text>金额</text>
@@ -55,12 +55,8 @@
 
 <script>
 import wepy from 'wepy'
-import wxRequest from '@/utils/wxRequest'
-import { mapKey } from '@/utils/host'
-import Session from '@/utils/session'
 import Tip from '@/utils/tip'
 import Util from '@/utils/util.js'
-import QQMapWX from '@/utils/qqmap-wx-jssdk.js'
 
 export default class StatementPayForOtherComponent extends wepy.component {
   props = {
