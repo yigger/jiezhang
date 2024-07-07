@@ -3,7 +3,6 @@
 
 ### 因 wepy 框架停止更新，故此项目不再维护！
 - 相关链接：https://www.zhihu.com/question/266440872/answer/427446395
-- 线上项目已改用 Taro 进行重构，但目前没准备好开源~ 
 
 ### 后端也开源啦！！感谢支持
 https://github.com/yigger/jiezhang/releases
