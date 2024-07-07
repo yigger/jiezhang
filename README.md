@@ -1,6 +1,9 @@
 # 洁账小程序
 > 基于 wepy 开发的一款记账微信小程序
 
+### 因 wepy 框架停止更新（https://www.zhihu.com/question/266440872/answer/427446395），故此项目不再维护！
+线上项目已改用 Taro 进行重构，但目前没准备好开源~ 
+
 ### 后端也开源啦！！感谢支持
 https://github.com/yigger/jiezhang/releases
 
