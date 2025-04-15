@@ -58,7 +58,7 @@ export interface StatementsResponse {
 // 邀请好友的请求
 export interface FriendInviteRequest {
   account_book_id: number
-  access: string[]
+  role: string
 }
 
 // 邀请好友成功的响应
@@ -74,7 +74,7 @@ export type FriendInviteResponse = FriendInviteSuccessResponse | FailureResponse
 export interface InviteInfo {
   account_book: AccountBook
   invite_user: User
-  access: string
+  role_name: string
 }
 
 interface InviteInfoSuccessResponse {

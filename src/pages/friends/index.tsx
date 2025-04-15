@@ -16,7 +16,9 @@ interface Friend {
     nickname: string
     avatar: string
   }
-  access_name: string
+  remark: string
+  role: string
+  role_name: string
   created_at: string
 }
 
@@ -24,31 +26,51 @@ export default function FriendsPage() {
   const [friends, setFriends] = useState<Friend[]>([])
   const [owner, setOwner] = useState({})
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([])
   const [editingFriend, setEditingFriend] = useState<Friend | null>(null)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [editPermissions, setEditPermissions] = useState<string[]>([])
+  const [selectedRole, setSelectedRole] = useState<string>('member')  // 新增状态
 
-  const permissionOptions = [
-    { value: 'read', label: '查看权限' },
-    { value: 'write', label: '编辑权限' },
-    { value: 'invite', label: '邀请他人权限' }
-  ]
+  const permissionRoles = {
+    member: {
+      title: '普通成员',
+      desc: '可以查看账簿的所有内容，可编辑修改 Ta 创建的数据，但无法更改他人的数据。',
+    },
+    admin: {
+      title: '管理员',
+      desc: '可以管理账簿所有的内容（*除了删除账簿外，其他操作均不受限制。）',
+    },
+    viewer: {
+      title: '观察者',
+      desc: '仅可查看账簿内容，无法更改任何内容。',
+    }
+  }
 
   useShareAppMessage(async () => {
-    if (selectedPermissions.length === 0) {
-      jz.toastError('请选择至少一个权限')
+    if (!selectedRole) {
+      jz.toastError('请选择一个角色')
       return null
     }
+
     setIsModalOpen(false)
-    setSelectedPermissions([])
 
     if (editingFriend) {
+      const { data } = await jz.api.friends.update({
+        account_book_id: jz.storage.getCurrentAccountBook().id,
+        collaborator_id: editingFriend.id,
+        role: selectedRole
+      })
+      if (data.status === 200) {
+        jz.toastSuccess('权限更新成功')
+        fetchFriends()
+      } else {
+        jz.toastError(data.msg)
+      }
+      setEditingFriend(null)
       return null
     }
+
     const { data } = await jz.api.friends.invite({
       account_book_id: jz.storage.getCurrentAccountBook().id,
-      access: selectedPermissions
+      role: selectedRole
     })
     if (data.status === 200) {
       const token = data.data
@@ -60,6 +82,7 @@ export default function FriendsPage() {
     } else {
       jz.toastError(data.msg)
     }
+    setSelectedRole('member')
   })
 
   const fetchFriends = async () => {
@@ -73,30 +96,6 @@ export default function FriendsPage() {
   useEffect(() => {
     fetchFriends()
   }, [])
-
-  
-
-  // 添加处理函数
-  const handleEditPermissions = async () => {
-    try {
-      const { data } = await jz.api.friends.update({
-        account_book_id: jz.storage.getCurrentAccountBook().id,
-        collaborator_id: editingFriend.id,
-        access: editPermissions
-      })
-      if (data.status === 200) {
-        jz.toastSuccess('权限更新成功')
-        fetchFriends()
-      } else {
-        jz.toastError(data.msg)
-      }
-    } catch (error) {
-      jz.toastError('操作失败')
-    }
-    setIsEditModalOpen(false)
-    setEditingFriend(null)
-    setEditPermissions([])
-  }
 
   const handleRemoveFriend = async (friend: Friend) => {
     try {
@@ -155,9 +154,9 @@ export default function FriendsPage() {
               <View
                 className='friend-item'
                 onClick={() => {
+                  setSelectedRole(friend.role)
                   setEditingFriend(friend)
-                  setEditPermissions([])
-                  setIsEditModalOpen(true)
+                  setIsModalOpen(true)
                 }}
               >
                 <Image
@@ -166,9 +165,9 @@ export default function FriendsPage() {
                   mode='aspectFill'
                 />
                 <View className='friend-info'>
-                  <Text className='friend-name'>{friend.user.nickname || '未填写'}</Text>
+                  <Text className='friend-name'>{friend.remark || '未填写'}</Text>
                   <Text className='friend-permissions'>
-                    权限：{friend.access_name}
+                    角色：{friend.role_name}
                   </Text>
                 </View>
                 <View
@@ -183,37 +182,6 @@ export default function FriendsPage() {
               </View>
             </AtCard>
           ))}
-
-          {isEditModalOpen && (
-            <View className='modal-overlay'>
-              <View className='modal-wrapper'>
-                <View className='modal-header'>
-                  <Text className='modal-title'>编辑权限</Text>
-                  <Text className='modal-close' onClick={() => {
-                    setIsEditModalOpen(false)
-                    setEditingFriend(null)
-                    setEditPermissions([])
-                  }}>×</Text>
-                </View>
-                <View className='modal-body'>
-                  <View className='modal-desc'>
-                    正在编辑 {editingFriend?.user.nickname || '未填写'} 的权限：
-                  </View>
-                  <View className='permission-list'>
-                    <AtCheckbox
-                      options={permissionOptions}
-                      selectedList={editPermissions}
-                      onChange={val => setEditPermissions(val)}
-                    />
-                  </View>
-                </View>
-                <View className='modal-footer'>
-                  <Button title='取消' danger onClick={() => setIsEditModalOpen(false)} />
-                  <Button title='确认' onClick={handleEditPermissions} />
-                </View>
-              </View>
-            </View>
-          )}
         </View>
 
         <Button
@@ -223,23 +191,25 @@ export default function FriendsPage() {
 
         {isModalOpen && (
           <View className='modal-overlay'>
-            <View className='modal-wrapper'>
+            <View className='modal-wrapper p-2'>
               <View className='modal-header'>
-                <Text className='modal-title'>设置权限</Text>
-                <Text className='modal-close' onClick={() => {
+                <Text className='modal-title fs-16'>{editingFriend ? `更改${editingFriend.remark}的权限` : '选择邀请角色'}</Text>
+                <Text className='modal-close fs-21' onClick={() => {
                   setIsModalOpen(false)
-                  setSelectedPermissions([])
                 }}>×</Text>
               </View>
               <View className='modal-body'>
-                <View className='modal-desc'>请选择要赋予的权限：</View>
-                <View className='permission-list'>
-                  <AtCheckbox
-                    options={permissionOptions}
-                    selectedList={selectedPermissions}
-                    onChange={val => setSelectedPermissions(val)}
-                  />
-                </View>
+                <View className='text-align-center p-1 col-text-warn'>* 邀请链接 24 小时内有效 *</View>
+                {Object.entries(permissionRoles).map(([key, role]) => (
+                  <View 
+                    key={key} 
+                    className={`permission-role ${selectedRole === key ? 'selected' : ''}`}
+                    onClick={() => setSelectedRole(key)}
+                  >
+                    <View className='role-title'>{role.title}</View>
+                    <View className='role-desc'>{role.desc}</View>
+                  </View>
+                ))}
               </View>
               <View className='modal-footer'>
                 <Button title='取消' danger onClick={() => setIsModalOpen(false)} />

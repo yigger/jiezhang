@@ -1,12 +1,12 @@
 .friends-page {
-  padding: 16px;
+  padding: 16PX;
 
   .friends-list {
-    margin-bottom: 20px;
+    margin-bottom: 20PX;
   }
 
   .friend-card {
-    margin-bottom: 16px;
+    margin-bottom: 16PX;
   }
 
   .friend-item {
@@ -15,10 +15,10 @@
   }
 
   .friend-avatar {
-    width: 48px;
-    height: 48px;
+    width: 48PX;
+    height: 48PX;
     border-radius: 50%;
-    margin-right: 16px;
+    margin-right: 16PX;
   }
 
   .friend-info {
@@ -26,7 +26,7 @@
   }
 
   .friend-name {
-    // font-size: 16px;
+    // font-size: 16PX;
     font-weight: 500;
     margin-bottom: 4px;
     display: block;
@@ -76,38 +76,38 @@
     }
   
     .modal-header {
-      padding: 16px;
+      padding: 16PX;
       text-align: center;
-      font-size: 16px;
+      font-size: 16PX;
       font-weight: 500;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1PX solid #eee;
     }
   
     .modal-body {
-      padding: 16px;
+      padding: 16PX;
       
       .modal-desc {
-        margin-bottom: 16px;
-        font-size: 14px;
+        margin-bottom: 16PX;
+        font-size: 14PX;
       }
     }
   
     .modal-footer {
       display: flex;
-      border-top: 1px solid #eee;
+      border-top: 1PX solid #eee;
   
       .modal-btn {
         flex: 1;
-        height: 44px;
-        line-height: 44px;
+        height: 44PX;
+        line-height: 44PX;
         text-align: center;
-        font-size: 16px;
+        font-size: 16PX;
         border: none;
         background: none;
         
         &.cancel {
           color: #666;
-          border-right: 1px solid #eee;
+          border-right: 1PX solid #eee;
         }
         
         &.confirm {
@@ -132,52 +132,84 @@
 }
 
 .modal-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: #fff;
-  border-radius: 16px;
-  width: 80%;
-  max-width: 600px;
-  padding: 20px;
+  border-radius: 0 0 16PX 16PX;
+  transform: translateY(100%);
+  animation: slideDown 0.3s forwards;
+}
+
+@keyframes slideDown {
+  to {
+    transform: translateY(0);
+  }
+}
+
+.permission-role {
+  margin: 16PX 0;
+  padding: 16PX;
+  background: #f5f5f5;
+  border-radius: 8PX;
+  cursor: pointer;
+  transition: all 0.3s;
+  
+  &.selected {
+    background: #e6f3ff;
+    border: 1PX solid var(--primary-color);
+  }
+  
+  .role-title {
+    font-weight: bold;
+    margin-bottom: 8PX;
+    color: #333;
+  }
+  
+  .role-desc {
+    color: #666;
+    line-height: 1.5;
+  }
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 20PX;
 }
 
 .modal-title {
-  font-size: 32px;
   font-weight: bold;
 }
 
 .modal-close {
-  font-size: 40px;
   color: #999;
   cursor: pointer;
 }
 
 .modal-body {
-  margin-bottom: 20px;
+  margin-bottom: 20PX;
 }
 
 .modal-desc {
-  margin-bottom: 16px;
+  margin-bottom: 16PX;
   color: #666;
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 16px;
+  gap: 16PX;
 }
 
 .modal-btn {
-  min-width: 160px;
-  height: 72px;
-  line-height: 72px;
+  min-width: 160PX;
+  height: 72PX;
+  line-height: 72PX;
   text-align: center;
-  border-radius: 36px;
+  border-radius: 36PX;
   
   &.cancel {
     background: #f5f5f5;
