@@ -1,0 +1,42 @@
+.setting-chart-page {
+  .header{
+    background-color: #fbfbfb
+  }
+  .pie-echart {
+    background-color: #fbfbfb
+  }
+  canvas {
+    position: relative
+    z-index: 0
+    width: 100%
+  }
+
+  .top-rate {
+    .item {
+      border-bottom: 1PX dashed #d4d2d2;
+      background-repeat: no-repeat;
+      background-image: linear-gradient(#c1f5e7, #c1f5e7);
+    }
+  }
+
+  .title {
+    position: relative;
+    z-index: 998;
+    display: inline-block;
+    color: #40485B;
+    font-weight: bolder;
+    border-bottom: 2PX dashed #f4f4f4;
+    margin: 4PX
+    &:before {
+      content: '';
+      position: absolute;
+      background: #FFF3AC;
+      width: calc(100% + 16px);
+      height: 12PX;
+      bottom: 0;
+      left: 0;
+      border-radius: 12px;
+      z-index: -1;
+    }
+  }
+}

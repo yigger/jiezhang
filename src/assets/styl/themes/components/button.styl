@@ -1,0 +1,62 @@
+.jz-common-components__button {
+  background: var(--primary-bg-color)
+  color: var(--primary-bg-text-color)
+  margin: 12PX
+  border-radius: 8PX
+  transition: opacity 0.3s
+  box-shadow: 0 2PX 8PX rgba(0, 0, 0, 0.1)
+
+  &:active{
+    opacity: 0.85
+  }
+
+  &.primary {
+    background: #ffffff
+    color: var(--primary-color)
+    border: 1PX solid var(--primary-color)
+  }
+
+  &.dangerous {
+    background: linear-gradient(135deg, #ff4d4f, #ff7875)
+    color: #ffffff
+    border: none
+  }
+
+  &.disabled {
+    background: #f5f5f5
+    color: #999999
+    box-shadow: none
+  }
+}
+
+.jz-common-components__small-button {
+  background: var(--primary-bg-color)
+  color: var(--primary-bg-text-color)
+  display: inline
+  margin: 12PX
+  border-radius: 6PX
+  transition: opacity 0.3s
+  box-shadow: 0 2PX 4PX rgba(0, 0, 0, 0.08)
+
+  &:active {
+    opacity: 0.85
+  }
+
+  &.primary {
+    background: #ffffff
+    color: var(--primary-color)
+    border: 1PX solid var(--primary-color)
+  }
+
+  &.dangerous {
+    background: linear-gradient(135deg, #ff4d4f, #ff7875)
+    color: #ffffff
+    border: none
+  }
+
+  &.disabled {
+    background: #f5f5f5
+    color: #999999
+    box-shadow: none
+  }
+}

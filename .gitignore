@@ -1,5 +1,8 @@
-node_modules
-dist
-.DB_store
-.wepycache
-/src/utils/host.js
+dist/
+deploy_versions/
+.temp/
+.rn_temp/
+node_modules/
+.DS_Store
+.swc/
+src/config/config.ts

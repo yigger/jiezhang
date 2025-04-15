@@ -1,0 +1,138 @@
+.jz-common-components__tab {
+  background: #fff
+  white-space: nowrap
+  border-bottom: 1px solid #f4f4f4
+  padding: 8PX 0
+  position: relative
+  
+  // 添加右侧渐变遮罩
+  &::after {
+    content: ''
+    position: absolute
+    top: 0
+    right: 0
+    width: 40PX
+    height: 100%
+    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1))
+    pointer-events: none
+  }
+
+  // 添加滑动提示箭头
+  &::before {
+    content: ''
+    position: absolute
+    top: 50%
+    right: 12PX
+    width: 8PX
+    height: 8PX
+    border-right: 2PX solid #999
+    border-bottom: 2PX solid #999
+    transform: translateY(-50%) rotate(-45deg)
+    animation: scroll-hint 1.5s infinite
+    z-index: 1
+    pointer-events: none
+  }
+
+  @keyframes scroll-hint {
+    0% {
+      opacity: 0
+      transform: translateY(-50%) translateX(-4PX) rotate(-45deg)
+    }
+    50% {
+      opacity: 1
+      transform: translateY(-50%) translateX(0) rotate(-45deg)
+    }
+    100% {
+      opacity: 0
+      transform: translateY(-50%) translateX(4PX) rotate(-45deg)
+    }
+  }
+  .item {
+    display: inline-block
+    min-width: 100PX
+    text-align: center
+    position: relative
+    font-size: 15PX
+    transition: all 0.3s
+    
+    &.active {
+      font-weight: 600
+      transform: scale(1.05)
+      
+      &.expend {
+        color: #2ecc71
+      }
+      
+      &.income {
+        color: #e74c3c
+      }
+      
+      &.transfer {
+        color: #95a5a6
+      }
+      
+      &.loan_in {
+        color: #3498db
+      }
+      
+      &.loan_out {
+        color: #2980b9
+      }
+      
+      &.repayment {
+        color: #9b59b6
+      }
+
+      &.reimburse {
+        color: #f39c12
+      }
+
+      &.payment_proxy {
+        color: #1abc9c
+      }
+
+      &::after {
+        content: ''
+        position: absolute
+        bottom: -8PX
+        left: 50%
+        transform: translateX(-50%)
+        width: 24PX
+        height: 3PX
+        border-radius: 2PX
+      }
+
+      &.expend::after {
+        background: #2ecc71
+      }
+      
+      &.income::after {
+        background: #e74c3c
+      }
+      
+      &.transfer::after {
+        background: #95a5a6
+      }
+      
+      &.loan_in::after {
+        background: #3498db
+      }
+      
+      &.loan_out::after {
+        background: #2980b9
+      }
+      
+      &.repayment::after {
+        background: #9b59b6
+      }
+
+      &.reimburse::after {
+        background: #f39c12
+      }
+
+      &.payment_proxy::after {
+        background: #1abc9c
+      }
+    }
+  }
+}

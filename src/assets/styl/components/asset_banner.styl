@@ -1,0 +1,67 @@
+.asset-banner-component
+  .banner-card
+    background: var(--primary-bg-color)
+    border-radius: 20PX
+    padding: 21PX
+    color: var(--primary-bg-text-color)
+    margin-bottom: 16PX
+    box-shadow: 0 4PX 16PX rgba(0, 0, 0, 0.1)
+
+    .banner-main
+      margin-bottom: 24PX
+
+      .banner-title
+        display: flex
+        justify-content: space-between
+        align-items: center
+        margin-bottom: 16PX
+
+        .title
+          font-size: 16PX
+          font-weight: 500
+
+        .visibility-toggle
+          .toggle-btn
+            display: flex
+            align-items: center
+            opacity: 0.9
+            transition: opacity 0.3s
+            
+            &:active
+              opacity: 0.7
+            
+            .iconfont
+              font-size: 18PX
+              margin-right: 4PX
+            
+            .toggle-text
+              font-size: 14PX
+
+      .banner-amount
+        .amount-prefix
+          font-size: 20PX
+          opacity: 0.9
+          margin-right: 4PX
+          
+        .amount-value
+          font-size: 24PX
+          font-weight: 600
+
+    .banner-footer
+      display: flex
+      justify-content: space-between
+      padding-top: 16PX
+      border-top: 1PX solid rgba(255, 255, 255, 0.15)
+
+      .footer-item
+        display: flex
+        flex-direction: column
+
+        .item-label
+          font-size: 14PX
+          opacity: 0.8
+          margin-bottom: 4PX
+
+        .item-value
+          font-size: 16PX
+          font-weight: 500

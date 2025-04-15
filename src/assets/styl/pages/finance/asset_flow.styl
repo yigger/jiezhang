@@ -1,0 +1,178 @@
+.jz-pages-assets-flow {
+  background: #f8f9fa
+
+  .asset-header {
+    margin: 16PX
+    
+    .balance-section {
+      background: #ffffff
+      border: 1PX solid var(--border-color)
+      border-radius: 16PX
+      padding: 20PX
+      box-shadow: 0 4PX 12PX rgba(0, 0, 0, 0.03)
+
+      .label {
+        color: var(--secondary-text)
+        font-size: 14PX
+        margin-right: 12PX
+      }
+
+      .amount-wrapper {
+        display: flex
+        align-items: center
+        
+        .amount {
+          font-size: 24PX
+          color: var(--primary-color)
+          font-weight: 500
+          margin-right: 12PX
+        }
+
+        .edit-btn {
+          color: var(--primary-color)
+          font-size: 14PX
+        }
+      }
+
+      .edit-wrapper {
+        display: flex
+        align-items: center
+        flex: 1
+      }
+
+      .summary-section {
+        display: flex
+        justify-content: space-between
+        margin-top: 16PX
+        padding-top: 16PX
+        border-top: 1PX solid var(--border-color)
+
+        .summary-item {
+          display: flex
+          flex-direction: column
+          align-items: center
+
+          .label {
+            font-size: 12PX
+            margin-bottom: 4PX
+          }
+
+          &.income .value {
+            color: #2ecc71
+          }
+
+          &.expend .value {
+            color: #e74c3c
+          }
+        }
+      }
+    }
+  }
+
+  .timeline-list {
+    margin: 16PX
+    
+    .timeline-item {
+      margin-bottom: 12PX
+      background: #ffffff
+      border: 1PX solid var(--border-color)
+      border-radius: 12PX
+      overflow: hidden
+
+      .timeline-header {
+        display: flex
+        padding: 16PX
+        align-items: center
+        
+        &.active {
+          background: #f8f9fa
+          border-left: 3PX solid var(--primary-color)
+        }
+
+        .date-section {
+          display: flex
+          flex-direction: column
+          align-items: center
+          margin-right: 16PX
+          min-width: 60PX
+
+          .month {
+            font-size: 18PX
+            font-weight: 500
+            color: var(--primary-color)
+          }
+
+          .year {
+            font-size: 12PX
+            color: var(--secondary-text)
+          }
+        }
+
+        .amount-section {
+          flex: 1
+          
+          .amount-row {
+            display: flex
+            align-items: center
+            margin: 4PX 0
+
+            .label {
+              color: var(--secondary-text)
+              font-size: 12PX
+              margin-right: 8PX
+            }
+
+            &.income .value {
+              color: #2ecc71
+            }
+
+            &.expend .value {
+              color: #e74c3c
+            }
+          }
+        }
+
+        .balance-section {
+          display: flex
+          flex-direction: column
+          align-items: flex-end
+          min-width: 100PX
+
+          .value {
+            color: var(--primary-color)
+            font-weight: 500
+          }
+
+          .label {
+            font-size: 12PX
+            color: var(--secondary-text)
+          }
+
+          .iconfont {
+            margin-top: 4PX
+            color: var(--secondary-text)
+          }
+        }
+      }
+
+      .statement-list {
+        padding: 0 16PX 16PX
+      }
+    }
+  }
+}
+
+.adjust-balance-modal {
+  padding: 16PX
+  
+  .button-group {
+    display: flex
+    justify-content: space-between
+    margin-top: 24PX
+    gap: 16PX
+    
+    .at-button {
+      flex: 1
+    }
+  }
+}

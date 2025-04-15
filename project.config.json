@@ -1,28 +1,34 @@
 {
-  "appid": "wx414689c547b71ab0",
-  "compileType": "miniprogram",
-  "libVersion": "3.0.1",
-  "packOptions": {
-    "ignore": [],
-    "include": []
-  },
-  "setting": {
+	"miniprogramRoot": "dist/",
+	"projectname": "jz-taro",
+	"description": "jiezhang",
+	"appid": "wx414689c547b71ab0",
+	"setting": {
+    "urlCheck": false,
+    "es6": false,
+    "postcss": false,
+    "preloadBackgroundData": false,
+    "minified": false,
+    "newFeature": true,
+    "autoAudits": false,
     "coverView": true,
-    "es6": true,
-    "postcss": true,
-    "minified": true,
-    "enhance": true,
-    "showShadowRootInWxmlPanel": true,
-    "packNpmRelationList": [],
+    "showShadowRootInWxmlPanel": false,
+    "scopeDataCheck": false,
+    "useCompilerModule": false,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
     }
   },
-  "condition": {},
-  "editorSetting": {
-    "tabIndent": "insertSpaces",
-    "tabSize": 2
+	"compileType": "miniprogram",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"condition": {
+    "miniprogram": {
+      "list": [
+        
+      ]
+    }
   }
 }

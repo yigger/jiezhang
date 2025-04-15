@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@/src": ["./src/*"],
+      "@/jz": ["./src/jz.ts"],
+      "@/api": ["./src/api/*"],
+      "@/components": ["./src/components/*"],
+      "@/assets": ["./src/assets/*"],
+      "@/utils": ["./src/utils/*"]
+    }
+  }
+}

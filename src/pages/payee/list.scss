@@ -1,0 +1,53 @@
+.payee-list {
+  .payee-item {
+    border-bottom: 1px solid #eee;
+    
+    .order-buttons {
+      display: flex;
+      flex-direction: column;
+      
+      .iconfont {
+        font-size: 24px;
+        color: #666;
+        padding: 4px;
+        
+        &.disabled {
+          color: #ccc;
+          cursor: not-allowed;
+        }
+        
+        &:not(.disabled):hover {
+          color: #1890ff;
+        }
+      }
+    }
+    
+    .action-btn {
+      display: flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.3s;
+      
+      .iconfont {
+        font-size: 16px;
+      }
+      
+      &.edit-btn {
+        color: #1890ff;
+        
+        &:hover {
+          background: rgba(24, 144, 255, 0.1);
+        }
+      }
+      
+      &.delete-btn {
+        color: #ff4d4f;
+        
+        &:hover {
+          background: rgba(255, 77, 79, 0.1);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,109 @@
+.jz-pages__profile {
+  background: var(--background-color)
+  min-height: 100vh
+  padding: 24PX 0
+  font-size: 14PX
+
+  .user-info {
+    background-color: #ffffff
+    border-radius: 24PX
+    margin: 0 24PX
+    box-shadow: 0 4PX 12PX rgba(0,0,0,0.05)
+
+    .username {
+      .name {
+        font-size: 18PX
+        font-weight: 500
+        color: var(--text-color)
+      }
+
+      .edit-text {
+        font-size: 12PX
+        color: var(--primary-color)
+      }
+    }
+  }
+
+  .setting-group {
+    margin: 12PX
+    
+    .group-title {
+      // font-size: 14PX
+      color: var(--text-color-light)
+      margin-bottom: 12PX
+      padding-left: 8PX
+    }
+
+    .at-list {
+      border-radius: 16PX
+      overflow: hidden
+      background: #ffffff
+      box-shadow: 0 4PX 12PX rgba(0,0,0,0.05)
+
+      .at-list__item {
+        padding: 12PX
+        
+        &:not(:last-child) {
+          border-bottom: 1PX solid #f5f5f5
+        }
+
+        .item-content {
+          // font-size: 14PX
+        }
+
+        .item-extra {
+          // font-size: 12PX
+          color: var(--text-color-light)
+        }
+      }
+    }
+  }
+
+  .feature {
+    background-color: #ffffff
+    border-top: 1px dashed #e8e8e8
+    padding-bottom: 12PX
+
+    .iconfont {
+      color: var(--primary-color)
+      margin-bottom: 8PX
+    }
+
+    .fs-14 {
+      color: var(--text-color)
+    }
+  }
+
+  image {
+    border-radius: 50%
+    width: 50PX
+    height: 50PX
+  }
+
+  // 列表样式优化
+  .at-list {
+    margin: 12PX
+    border-radius: 16PX
+    overflow: hidden
+    background: #ffffff
+    box-shadow: 0 4PX 12PX rgba(0,0,0,0.05)
+
+    .at-list__item {
+      padding: 12PX
+      margin: 0
+      font-size: 16PX
+      
+      &:not(:last-child) {
+        border-bottom: 1PX solid #f5f5f5
+      }
+
+      .at-list__item-content {
+        color: var(--text-color)
+      }
+
+      .at-list__item-extra {
+        color: var(--text-color-light)
+      }
+    }
+  }
+}

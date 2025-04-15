@@ -1,0 +1,98 @@
+.jz-pages-assets-flow {
+  min-height: 100vh;
+  background: var(--page-bg-color);
+
+  &__header {
+    padding: 24PX;
+    margin-bottom: 12PX;
+  }
+
+  &__list {
+    padding: 0 24PX;
+
+    .flow-item {
+      background: #fff;
+      border-radius: 12PX;
+      margin-bottom: 12PX;
+      overflow: hidden;
+
+      &__header {
+        display: flex;
+        align-items: center;
+        padding: 16PX;
+        position: relative;
+
+        &.active {
+          background: var(--primary-color-light);
+        }
+
+        .time-info {
+          min-width: 80PX;
+          text-align: center;
+
+          .month {
+            font-size: 24PX;
+            font-weight: 500;
+            display: block;
+          }
+
+          .year {
+            font-size: 12PX;
+            color: var(--text-color-light);
+          }
+        }
+
+        .amount-info {
+          flex: 1;
+          margin: 0 16PX;
+
+          .income-expend {
+            display: flex;
+            flex-direction: column;
+            gap: 4PX;
+
+            .income {
+              color: var(--income-color);
+              font-size: 14PX;
+            }
+
+            .expend {
+              color: var(--expend-color);
+              font-size: 14PX;
+            }
+          }
+
+          .surplus {
+            margin-top: 4PX;
+
+            .amount {
+              font-size: 16PX;
+              font-weight: 500;
+            }
+
+            .label {
+              font-size: 12PX;
+              color: var(--text-color-light);
+              margin-left: 4PX;
+            }
+          }
+        }
+
+        .arrow {
+          font-size: 20PX;
+          color: var(--text-color-light);
+          transition: transform 0.3s;
+
+          &.jcon-arrow-down {
+            transform: rotate(90deg);
+          }
+        }
+      }
+
+      &__content {
+        border-top: 1PX solid var(--border-color);
+        padding: 16PX;
+      }
+    }
+  }
+}

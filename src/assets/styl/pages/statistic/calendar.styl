@@ -1,0 +1,122 @@
+.month-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  
+  .month-arrow {
+    padding: 0 20px;
+    color: #666;
+    font-size: 24px;
+    cursor: pointer;
+    
+    &:active {
+      opacity: 0.7;
+    }
+  }
+  
+  .month-text {
+    font-size: 32px;
+    padding: 0 20px;
+  }
+}
+
+.calendar-statistic {
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    background-color: #f5f5f5;
+    
+    .week-day {
+      padding: 10px;
+      text-align: center;
+      background-color: #fff;
+      font-size: 24px;
+    }
+    
+    .day-cell {
+      aspect-ratio: 1;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      width: 0;
+      height: 100%;
+      min-width: 100%; 
+      box-sizing: border-box; 
+
+      &.today {
+        background-color: #f0f9eb;
+        .date-number {
+          color: #67c23a;
+          font-weight: bold;
+        }
+      }
+
+      &.selected {
+        background-color: #ecf5ff;
+        .date-number {
+          color: #409eff;
+          font-weight: bold;
+        }
+      }
+      
+      .date-number {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+
+      .amount-bars {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        .amount-text {
+          color: white
+        }
+        .income-bar {
+          background-color: #f56c6c
+          text-align: center
+        }
+        
+        .expend-bar {
+          background-color: #67c23a
+          text-align: center
+        }
+      }
+    }
+  }
+}
+
+.day-summary {
+    background: #fff;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+
+    .summary-header {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .summary-content {
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .summary-item {
+      text-align: center;
+
+      .label {
+        color: #999;
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .amount {
+        font-size: 32px;
+        font-weight: bold;
+      }
+    }
+  }

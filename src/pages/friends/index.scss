@@ -1,0 +1,191 @@
+.friends-page {
+  padding: 16px;
+
+  .friends-list {
+    margin-bottom: 20px;
+  }
+
+  .friend-card {
+    margin-bottom: 16px;
+  }
+
+  .friend-item {
+    display: flex;
+    align-items: center;
+  }
+
+  .friend-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 16px;
+  }
+
+  .friend-info {
+    flex: 1;
+  }
+
+  .friend-name {
+    // font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .friend-permissions {
+    // font-size: 12px;
+    color: #999;
+  }
+
+  .invite-button {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    background-color: #07c160;
+    color: #fff;
+  }
+
+  .custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+  
+    .modal-mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+    }
+  
+    .modal-content {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+  
+    .modal-header {
+      padding: 16px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 500;
+      border-bottom: 1px solid #eee;
+    }
+  
+    .modal-body {
+      padding: 16px;
+      
+      .modal-desc {
+        margin-bottom: 16px;
+        font-size: 14px;
+      }
+    }
+  
+    .modal-footer {
+      display: flex;
+      border-top: 1px solid #eee;
+  
+      .modal-btn {
+        flex: 1;
+        height: 44px;
+        line-height: 44px;
+        text-align: center;
+        font-size: 16px;
+        border: none;
+        background: none;
+        
+        &.cancel {
+          color: #666;
+          border-right: 1px solid #eee;
+        }
+        
+        &.confirm {
+          color: #07c160;
+        }
+      }
+    }
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-wrapper {
+  background: #fff;
+  border-radius: 16px;
+  width: 80%;
+  max-width: 600px;
+  padding: 20px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.modal-close {
+  font-size: 40px;
+  color: #999;
+  cursor: pointer;
+}
+
+.modal-body {
+  margin-bottom: 20px;
+}
+
+.modal-desc {
+  margin-bottom: 16px;
+  color: #666;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.modal-btn {
+  min-width: 160px;
+  height: 72px;
+  line-height: 72px;
+  text-align: center;
+  border-radius: 36px;
+  
+  &.cancel {
+    background: #f5f5f5;
+    color: #666;
+  }
+  
+  &.confirm {
+    background: #07c160;
+    color: #fff;
+  }
+}

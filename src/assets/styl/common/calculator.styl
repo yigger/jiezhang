@@ -1,0 +1,95 @@
+// 按钮的高度
+$calculatorHeight = 60
+// 背景色
+$itemBgColor = #dee2e6
+// 边框颜色
+$itemBorderColor = #ced4da
+
+
+.jz-calculator__main {
+  position: fixed
+  top: 0
+  height: 100vh
+  width: 100%
+
+  .jz-calculator__mask {
+    position: absolute
+    height: 100vh
+    width: 100%
+    z-index: 99
+  }
+
+  .jz-calculator__bottom {
+    position: absolute
+    bottom: 0
+    width: 100%
+    z-index: 999
+    font-size: 21PX
+    animation: calculator-act 0.5s
+    -webkit-animation: calculator-act 0.5s
+    // animation-fill-mode: forwards;
+  }
+
+  .calculator-keys__collect {
+    .calculator-keys__top {
+      display: flex
+      > view {
+        width: 25%
+      }
+    }
+    
+    .calculator-keys__left {
+      display: flex
+      flex: 1
+      flex-direction: column
+    }
+
+    .calculator-keys__right {
+      width: 25%
+    }
+
+    .normal-item__key {
+      height: "%sPX" % ($calculatorHeight)
+      display: flex
+      align-items: center
+      justify-content: center
+      flex: 1
+      background: $itemBgColor
+      border: 1px solid $itemBorderColor
+    }
+
+    .double-height__normal-item {
+      height: "%sPX" % ($calculatorHeight * 2)
+      display: flex
+      align-items: center
+      justify-content: center
+      flex: 1
+      background: $itemBgColor
+      border: 1px solid $itemBorderColor
+    }
+
+    .double-width__normal-item {
+      width: 66.66%
+      display: flex
+      align-items: center
+      justify-content: center
+      background: $itemBgColor
+      border: 1px solid $itemBorderColor
+    }
+  }
+
+  .jz-calculator__process {
+    background: $itemBgColor
+    padding: 12PX;
+    text-align: right
+    // border-top: 1px solid $itemBorderColor
+    font-size: 18PX
+    font-weight: bold
+  }
+
+  @-webkit-keyframes calculator-act
+  {
+      0%   {bottom: -200PX}
+      100% {bottom: 0}
+  }
+}

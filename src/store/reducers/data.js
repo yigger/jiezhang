@@ -1,3 +1,0 @@
-export const StatementData = {
-  statements: {}
-}

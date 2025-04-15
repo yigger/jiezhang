@@ -1,0 +1,128 @@
+
+.statement-component__icon-image {
+  width: 60px
+  height: 60px
+  image {
+    width: 100%
+    height: 100%
+  }
+}
+.statement-component__item {
+  border-radius: 18PX
+  padding: 0 12PX
+  margin-bottom: 12PX
+  border-left: 3px solid transparent
+
+  .target-object {
+    font-size: 16px
+    font-weight: 600
+    color: #ffffff
+    padding: 2px 8px
+    margin-right: 4px
+    border-radius: 10px
+
+    // 报销 - 使用橙色
+    &.reimburse {
+      background: #f39c12
+    }
+    
+    // 代付 - 使用青色
+    &.payment_proxy {
+      background: #1abc9c
+    }
+    
+    // 借入 - 使用浅蓝色
+    &.loan_in {
+      background: #3498db
+    }
+    
+    // 借出 - 使用深蓝色
+    &.loan_out {
+      background: #2980b9
+    }
+  }
+
+  // 支出 - 使用温和的红色
+  &.expend {
+    background: linear-gradient(to right, rgba(46, 204, 113, 0.05), #fbfbfb)
+    border-left-color: #2ecc71
+  }
+  
+  // 收入 - 使用清新的绿色
+  &.income {
+    background: linear-gradient(to right, rgba(231, 76, 60, 0.05), #fbfbfb)
+    border-left-color: #e74c3c
+  }
+  
+  // 还款 - 使用紫色
+  &.repayment {
+    background: linear-gradient(to right, rgba(155, 89, 182, 0.05), #fbfbfb)
+    border-left-color: #9b59b6
+  }
+
+  // 转账 - 使用灰色
+  &.transfer {
+    background: linear-gradient(to right, rgba(149, 165, 166, 0.05), #fbfbfb)
+    border-left-color: #95a5a6
+  }
+  
+  // 报销 - 使用橙色
+  &.reimburse {
+    background: linear-gradient(to right, rgba(243, 156, 18, 0.05), #fbfbfb)
+    border-left-color: #f39c12
+  }
+  
+  // 代付 - 使用青色
+  &.payment_proxy {
+    background: linear-gradient(to right, rgba(26, 188, 156, 0.05), #fbfbfb)
+    border-left-color: #1abc9c
+  }
+  
+  // 借入 - 使用浅蓝色
+  &.loan_in {
+    background: linear-gradient(to right, rgba(52, 152, 219, 0.05), #fbfbfb)
+    border-left-color: #3498db
+  }
+  
+  // 借出 - 使用深蓝色
+  &.loan_out {
+    background: linear-gradient(to right, rgba(41, 128, 185, 0.05), #fbfbfb)
+    border-left-color: #2980b9
+  }
+  
+  .mood-tag {
+    border-radius: 10px
+    padding: 0 8px
+    line-height: 1.5
+    color: #ffffff
+  }
+
+  .flex-1 {
+    min-width: 0  // 让 flex-1 可以正常收缩
+    margin-right: 16PX  // 与右侧金额保持间距
+  }
+
+  .description-wrapper {
+    display: flex
+    flex-wrap: wrap
+    align-items: center
+    
+    .mood-tag {
+      flex-shrink: 0  // 防止心情标签被压缩
+      margin-right: 8PX
+    }
+
+    .col-text-mute {
+      word-break: break-all
+      white-space: normal
+      line-height: 1.4
+    }
+  }
+
+  // 右侧金额部分
+  .flex-center-center {
+    flex-shrink: 0  // 防止金额部分被压缩
+    min-width: 80PX  // 保证金额显示的最小宽度
+    text-align: right
+  }
+}

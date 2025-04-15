@@ -1,0 +1,166 @@
+.jz-pages__statement-detail {
+  min-height: 100vh
+  background: #f8f9fa
+  
+  .detail-header {
+    position: relative
+    background: #ffffff
+    padding: 32PX 24PX
+    margin-bottom: 12PX
+    text-align: center
+    transition: all 0.3s ease
+    
+    .mood-tag {
+      position: absolute
+      top: 16PX
+      right: 16PX
+      padding: 4PX 12PX
+      border-radius: 12PX
+      font-size: 14PX
+    }
+    
+    .type-label {
+      position: absolute
+      top: 16PX
+      left: 16PX
+      padding: 4PX 12PX
+      border-radius: 12PX
+      font-size: 14PX
+      background: var(--primary-color)
+      color: #ffffff
+    }
+    
+    .statement-component__icon-image {
+      width: 64PX
+      height: 64PX
+      margin: 0 auto 16PX
+      
+      image {
+        width: 100%
+        height: 100%
+        border-radius: 50%
+      }
+    }
+    
+    .amount-wrapper {
+      display: flex
+      align-items: center
+      justify-content: center
+      gap: 12PX
+      margin-top: 16PX
+      
+      .type-label {
+        padding: 4PX 12PX
+        border-radius: 12PX
+        font-size: 14PX
+        background: var(--primary-color)
+        color: #ffffff
+      }
+    }
+
+    .amount-text {
+      font-size: 32PX
+      font-weight: 600
+    }
+    
+    .time-text {
+      font-size: 14PX
+      color: var(--secondary-text)
+      margin-top: 8PX
+      opacity: 0.8
+      
+      &.clickable {
+        cursor: pointer
+        
+        .edit-icon {
+          margin-left: 4PX
+          font-size: 12PX
+        }
+      }
+    }
+    .target-object-text {
+      margin-top: 8PX
+      font-size: 14PX
+      
+      .label {
+        color: var(--secondary-text)
+        margin-right: 4PX
+      }
+      
+      .value {
+        color: var(--text-color)
+      }
+    }
+  }
+  
+  
+  .detail-footer {
+    padding: 24PX 16PX
+    
+    .at-button {
+      margin-bottom: 12PX
+      
+      &:last-child {
+        margin-bottom: 0
+      }
+    }
+  }
+}
+.detail-content {
+    background: #ffffff
+    margin-bottom: 12PX
+    
+    .detail-item {
+      padding: 16PX 24PX
+      border-bottom: 1PX solid #f0f0f0
+      
+      &:last-child {
+        border-bottom: none
+      }
+      
+      .item-label {
+        display: flex
+        align-items: center
+        gap: 8PX
+        margin-bottom: 8PX
+        color: var(--secondary-text)
+        
+        .iconfont {
+          font-size: 16PX
+        }
+      }
+      
+      .item-value {
+        color: var(--text-color)
+        font-size: 16PX
+        
+        &.clickable {
+          cursor: pointer
+          
+          .edit-icon {
+            margin-left: 8PX
+            font-size: 14PX
+          }
+        }
+      }
+      
+      &.is-description {
+        .item-value {
+          textarea {
+            width: 100%
+            min-height: 80PX
+            padding: 8PX
+            border: 1PX solid #e8e8e8
+            border-radius: 4PX
+            font-size: 14PX
+            line-height: 1.5
+            
+            &:focus {
+              border-color: var(--primary-color)
+              outline: none
+            }
+          }
+        }
+      }
+    }
+  }

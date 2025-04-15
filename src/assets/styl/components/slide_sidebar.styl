@@ -1,0 +1,61 @@
+.slide-sidebar {
+  position: fixed
+  bottom: 0
+  height: 100vh
+  width: 100%
+  z-index: 1000
+  > .slide-sidebar__mask {
+    background: rgba(0,0,0, 0.5)
+    position: absolute
+    bottom: 0
+    height: 100vh
+    width: 100%
+    z-index: 99
+  }
+  > .slide-sidebar__main {
+    background: #f8f8f8
+    display: flex
+    flex-direction: column
+    position: absolute
+    top: 0
+    left: 0
+    width: 70%
+    height: 100%
+    z-index: 100
+
+    animation: slide-animation 0.5s;
+    -webkit-animation: slide-animation 0.5s;
+    // animation-fill-mode: forwards;
+
+    .slide-sidebar__main-title {
+      padding: 12PX;
+      border-bottom: 1px solid $borderColor;
+    }
+    .slide-sidebar__main-content {
+      overflow-y: auto
+      flex: 1
+    }
+    .slide-header {
+      font-size: 21PX
+      margin: 8PX 16PX
+    }
+    .account-list {
+      .account {
+        border: 1px solid $borderColor
+        border-radius: 8PX
+        background: #ffffff
+        color: var(--text-color)
+        &.active {
+          background-color: var(--primary-color) !important
+          color: #ffffff !important
+        }
+      }
+    }
+  }
+
+  @-webkit-keyframes slide-animation
+  {
+      0%   {width: 0%}
+      100% {width: 70%}
+  }
+}

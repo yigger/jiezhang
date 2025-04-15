@@ -1,0 +1,18 @@
+.jz-common-component__loading:after {
+  content: " ";
+  display: block;
+  width: 30PX;
+  height: 30PX;
+  border-radius: 50%;
+  border: 4PX solid var(--primary-bg-color)
+  border-color: var(--primary-bg-color) transparent var(--primary-bg-color) transparent;
+  animation: jz-common-component__loading 0.8s linear infinite;
+}
+@keyframes jz-common-component__loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

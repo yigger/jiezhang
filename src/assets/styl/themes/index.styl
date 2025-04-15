@@ -1,0 +1,105 @@
+
+$default = {
+  primaryColor: #2196F3
+  primaryBgColor: linear-gradient(135deg, #2196F3, #64B5F6)
+  primaryBgTextColor: #ffffff
+  textColor: #333333
+  secondaryText: #666666
+  borderColor: #f0f0f0
+  backgroundColor: #f8fafc
+}
+
+$green = {
+  primaryColor: #4CAF50
+  primaryBgColor: linear-gradient(135deg, #4CAF50, #81C784)
+  primaryBgTextColor: #ffffff
+  textColor: #333333
+  secondaryText: #666666
+  borderColor: #f0f0f0
+  backgroundColor: #f6fbf6
+}
+
+$orange = {
+  primaryColor: #FF9800
+  primaryBgColor: linear-gradient(135deg, #FF9800, #FFB74D)
+  primaryBgTextColor: #ffffff
+  textColor: #333333
+  secondaryText: #666666
+  borderColor: #f0f0f0
+  backgroundColor: #fff9f0
+}
+
+$yellow = {
+  primaryColor: #FDD835
+  primaryBgColor: linear-gradient(135deg, #FDD835, #FFF176)
+  primaryBgTextColor: #333333
+  textColor: #333333
+  secondaryText: #666666
+  borderColor: #f0f0f0
+  backgroundColor: #fffdf5
+}
+
+$purple = {
+  primaryColor: #673AB7
+  primaryBgColor: linear-gradient(135deg, #673AB7, #9575CD)
+  primaryBgTextColor: #ffffff
+  textColor: #333333
+  secondaryText: #666666
+  borderColor: #f0f0f0
+  backgroundColor: #f8f5ff
+}
+
+$pink = {
+  primaryColor: #E91E63
+  primaryBgColor: linear-gradient(135deg, #E91E63, #F06292)
+  primaryBgTextColor: #ffffff
+  textColor: #333333
+  secondaryText: #666666
+  borderColor: #f0f0f0
+  backgroundColor: #fff5f8
+}
+
+$black = {
+  primaryColor: #3c4b82
+  primaryBgColor: linear-gradient(135deg, #3c4b82, #5c6ca8)
+  primaryBgTextColor: #ffffff
+  textColor: #333333
+  secondaryText: #666666
+  borderColor: #f0f0f0
+  backgroundColor: #f5f6fa
+}
+
+$themes = {
+  default: $default,
+  green: $green,
+  pink: $pink,
+  black: $black,
+  orange: $orange,
+  yellow: $yellow,
+  purple: $purple
+}
+
+for themeKey, _ in $themes {
+  themeData = "jz-theme-" + themeKey
+  .page-root[data-theme-name={themeData}] {
+    --primary-color: $themes[themeKey]['primaryColor']
+    --primary-bg-color: $themes[themeKey]['primaryBgColor']
+    --primary-bg-text-color: $themes[themeKey]['primaryBgTextColor']
+    --text-color: $themes[themeKey]['textColor']
+    --secondary-text: $themes[themeKey]['secondaryText']
+    --border-color: $themes[themeKey]['borderColor']
+    --background-color: $themes[themeKey]['backgroundColor']
+  }
+}
+
+.page-root {
+  display: flex
+  flex-direction: column
+  min-height: 100vh
+
+  @import "./root"
+  @import "./components/button"
+  @import "./components/tab"
+  @import "./components/loading"
+  @import "./components/form"
+}

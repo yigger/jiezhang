@@ -1,0 +1,83 @@
+.select-component {
+  position: fixed
+  bottom: 0
+  min-height: 400PX
+  max-height: 780PX 
+  width: 100%
+  z-index: 1000
+  > .select__mask {
+    background: rgba(0,0,0, 0.5)
+    position: absolute
+    bottom: 0
+    height: 100vh
+    width: 100%
+    z-index: 99
+  }
+  > .select__main {
+    background: #f9f9f9
+    border-radius: 6PX 6PX 0 0
+    display: flex
+    flex-direction: column
+    position: absolute
+    bottom: 0
+    left: 0
+    width: 100%
+    height: 80%
+    z-index: 100
+
+    animation: select-animation 0.5s;
+    -webkit-animation: select-animation 0.5s;
+    animation-fill-mode: forwards;
+
+    .select__main-title {
+      padding: 12PX;
+      border-bottom: 1px solid $borderColor;
+    }
+    .select__main-content {
+      overflow-y: auto
+      flex: 1
+    }
+    .select-item.active {
+      background-color: #e8e8e8;
+    }
+  }
+
+  .button-group {
+    .btn {
+      // border: 1px solid var(--primary-bg-color)
+      padding: 8px 28px;
+    }
+    .ok-btn {
+      background: #0ba71e;
+      color: white;
+      border-radius: 26px;
+    }
+    .cancel-btn {
+      background: #8a8e8b;
+      color: white;
+      border-radius: 26px;
+    }
+
+  }
+  
+  > .list__item {
+    display: inline-block
+    text-align: center
+    width: 20%
+    margin: 12PX 0
+    image {
+      width: 30PX
+      height: 30PX
+    }
+  }
+  > .select__header {
+    font-size: 16PX
+    margin: 12PX 
+  }
+
+  @-webkit-keyframes select-animation
+  {
+      0%   {height: 0%}
+      100% {height: 80%}
+  }
+}

@@ -1,0 +1,174 @@
+// flex 子元素，小程序不支持 * 选择符
+$flexChildSelector := '*'
+$flexJustifyContentEnums := {
+  start: flex-start,
+  end: flex-end,
+  center: center,
+  fluid: stretch,
+  around: space-around,
+  between: space-between
+}
+
+$flexColumnPercentUnits := (5 10 15 20 25 30 33 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
+
+loop-map-callback(maps, callback) {
+  for key, value in maps {
+    callback(key, value)
+  }
+}
+
+unfold-justify-content(selector, value) {
+  {selector} {
+    justify-content value
+  }
+}
+
+.d-flex {
+  display flex  !important
+}
+
+.d-iflex {
+  display inline-flex  !important
+}
+
+.d-iblock {
+  display inline-block  !important
+}
+
+.flex {
+  &-row {
+    flex-direction row
+  }
+
+  &-row-r {
+    flex-direction row-reverse
+  }
+
+  &-column {
+    flex-direction column
+  }
+
+  &-column-r {
+    flex-direction column-reverse
+  }
+
+  &-wrap {
+    flex-wrap wrap
+  }
+
+  &-nowrap {
+    flex-wrap nowrap
+  }
+
+  &-align-baseline {
+    align-items baseline
+  }
+
+  &-1 {
+    flex 1
+  }
+
+  &-auto {
+    flex auto
+  }
+
+  &-none {
+    flex none
+  }
+
+  &-start {
+    align-items flex-start
+    loop-map-callback($flexJustifyContentEnums, @(key, value) {
+      &-{key} {
+        align-items flex-start
+        justify-content value
+      }
+    });
+  }
+
+  &-end {
+    align-items flex-end
+    loop-map-callback($flexJustifyContentEnums, @(key, value) {
+      &-{key} {
+        align-items flex-end
+        justify-content value
+      }
+    });
+  }
+
+  &-stretch {
+    align-items stretch
+    loop-map-callback($flexJustifyContentEnums, @(key, value) {
+      &-{key} {
+        align-items stretch
+        justify-content value
+      }
+    });
+  }
+
+  &-center {
+    align-items center
+    loop-map-callback($flexJustifyContentEnums, @(key, value) {
+      &-{key} {
+        align-items center
+        justify-content value
+      }
+    });
+  }
+
+  &-between {
+    justify-content: space-between
+  }
+
+  loop-map-callback($flexJustifyContentEnums, @(key, value) {
+    &-jc-{key} {
+      justify-content value
+    }
+  });
+
+  &-grow {
+    flex-grow 1
+
+    &-0 {
+      flex-grow 0 !important
+    }
+    //& > {$flexChildSelector} {
+    //  flex-grow 1
+    //  &.shrink {
+    //    flex-grow 0
+    //    flex-shrink 1
+    //  }
+    //}
+  }
+
+  &-shrink {
+    flex-shrink 1
+
+    &-0 {
+      flex-shrink  0 !important
+    }
+    //& > {$flexChildSelector} {
+    //
+    //  &.grow {
+    //    flex-grow 1
+    //    flex-shrink 0
+    //  }
+    //}
+  }
+
+
+}
+
+for percentValue in $flexColumnPercentUnits {
+  .flex-col-p{percentValue} {
+    flex-basis unit(percentValue, '%')
+  }
+}
+
+.height-expand {
+  height 100%
+}
+
+.min-height-expand {
+  min-height 100%
+}

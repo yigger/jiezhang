@@ -1,0 +1,64 @@
+$header-height ?= 68PX
+$bottom-height ?= 80PX
+
+.page-root-component {
+  position relative
+  display flex
+  flex-direction column
+  min-height 100vh
+
+  > .page-root__header-component {
+    display flex
+    align-items center
+    width 100%
+
+    position fixed
+    top 0
+    left 0
+    bottom 0
+    right 0
+    z-index 999
+
+    padding-left 1em
+    padding-right 100PX
+    background var(--primary-bg-color)
+    color var(--primary-bg-text-color)
+    // border-bottom: 1px solid $borderColor
+    // transition $header-height 200ms
+
+    .header-title {
+      color: var(--primary-bg-text-color)
+    }
+  }
+
+  > .page-root__tab-bar-component {
+    position fixed
+    left 0
+    bottom 0
+    right 0
+    z-index 999
+    background #ffffff
+
+    display flex
+    align-items center
+
+    min-height $bottom-height
+    padding-bottom 12PX
+    
+    width 100%
+    border-top: 1PX solid var(--border-color)
+    > view {
+      &.active {
+        color var(--primary-color)
+      }
+    }
+  }
+
+  > .page-root__main-content {
+    flex: 1
+    background: var(--background-color)
+  }
+  .page-root__main-height-gap {
+    height: $bottom-height
+  }
+}

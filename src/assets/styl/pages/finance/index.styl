@@ -1,0 +1,72 @@
+.jz-pages__finance
+  padding: 16PX
+  min-height: 100vh
+  background: var(--background-color)
+
+  .jz-pages__finance-list
+    margin-top: 16PX
+
+    .jz-pages__finance-list__item
+      background-color: white
+      border-radius: 16PX
+      margin-bottom: 16PX
+      box-shadow: 0 2PX 12PX rgba(0, 0, 0, 0.05)
+      overflow: hidden
+
+      .jz-pages__finance__child-total
+        padding: 16PX
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06)
+        display: flex
+        justify-content: space-between
+        align-items: center
+
+        .asset-name
+          font-size: 15PX
+          color: #333
+          font-weight: 500
+
+        .asset-amount
+          font-size: 16PX
+          color: #1890ff
+          font-weight: 500
+
+      .jz-pages__finance__child-list
+        padding: 12PX 16PX
+        position: relative
+        transition: all 0.3s
+
+        &:active
+          background-color: rgba(0, 0, 0, 0.02)
+
+        &:not(:last-child)
+          border-bottom: 1px solid rgba(0, 0, 0, 0.04)
+
+        .icon-wrapper
+          margin-right: 12PX
+          width: 40PX
+          height: 40PX
+          border-radius: 50%
+          overflow: hidden
+          display: flex
+          align-items: center
+          justify-content: center
+
+          .asset-icon
+            width: 100%
+            height: 100%
+            object-fit: cover
+
+        .asset-detail
+          flex: 1
+          display: flex
+          justify-content: space-between
+          align-items: center
+
+          .asset-name
+            font-size: 14PX
+            color: #333
+
+          .asset-amount
+            font-size: 14PX
+            color: #666
+            font-weight: 500

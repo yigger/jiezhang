@@ -1,0 +1,34 @@
+.jz-mask__main {
+  position: fixed
+  bottom: 0
+  height: 100vh
+  width: 100%
+  z-index: 999
+
+  .jz-mask {
+    background: rgba(0,0,0, 0.5)
+    position: absolute
+    bottom: 0
+    height: 100vh
+    width: 100%
+    z-index: 99
+  }
+
+  .jz-mask__body {
+    background: #f9f9f9
+    border-radius: 6PX 6PX 0 0
+    display: flex
+    flex-direction: column
+    position: absolute
+    bottom: 0
+    left: 0
+    width: 100%
+    height: 80%
+    z-index: 100
+    overflow-y: scroll
+
+    animation:category-select 0.5s;
+    -webkit-animation:category-select 0.5s;
+    animation-fill-mode: forwards;
+  }
+}
