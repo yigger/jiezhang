@@ -54,6 +54,7 @@ npm run build:weapp
 ```
 
 ## 项目结构
+```
 src/
 ├── api/          # API 接口
 ├── assets/       # 静态资源
@@ -66,6 +67,7 @@ src/
 └── app.tsx       # 应用入口
 └── app.config.ts # 小程序配置文件
 └── jz.ts         # 全局变量
+```
 
 ## 贡献
 欢迎贡献代码，提交 issue，或者提供反馈。
