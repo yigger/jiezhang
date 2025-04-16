@@ -9,6 +9,10 @@
     margin-bottom: 16PX;
   }
 
+  .current-user {
+    border: 1PX solid var(--primary-color)
+  }
+
   .friend-item {
     display: flex;
     align-items: center;
