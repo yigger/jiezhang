@@ -8,7 +8,7 @@
 https://github.com/yigger/jiezhang/releases
 
 ### 体验二维码
-![二维码](https://github.com/yigger/jiezhang/raw/master/screenshots/qrcode.jpg)
+![二维码](https://github.com/yigger/jiezhang/raw/old-version-wepy/screenshots/qrcode.jpg)
 
 ### 功能
 + 日常记账，目前只支持基本的收入、支出、转账
@@ -36,7 +36,7 @@ npm run build
 ```
 
 ### 相关截图
-![首页](https://github.com/yigger/jiezhang/raw/master/screenshots/01.png)
+![首页](https://github.com/yigger/jiezhang/raw/old-version-wepy/screenshots/01.png)
 
 ### 更新日志
 [Change Log](CHANGELOG.md)
