@@ -8,6 +8,9 @@
 
 新版（此版本）的后端暂未开源，敬请期待！
 
+### 体验二维码
+![二维码](https://github.com/yigger/jiezhang/raw/old-version-wepy/screenshots/qrcode.jpg)
+
 ## 功能特点
 
 - 📝 快速记账：支持收入、支出、转账等多种记账类型
