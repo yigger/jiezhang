@@ -3,35 +3,33 @@ import { View, Text } from '@tarojs/components'
 import BasePage from '@/components/BasePage'
 import jz from '@/jz'
 import Statements from '@/components/Statements'
-import { useDidShow } from '@tarojs/taro'
-// 先引入需要的组件
-import { AtFloatLayout, AtInput, AtButton } from 'taro-ui'
+import Taro from '@tarojs/taro'
 
 export default function AssetsFlow() {
   const [timelines, setTimelines] = useState([])
   const [headerData, setHeaderData] = useState({})
-  const [changeAmount, setChangeAmount] = useState(0)
-  const [editFlag, setEditFlag] = useState(false)
-  const params = jz.router.getParams()
-  const [isModalVisible, setIsModalVisible] = useState(false)
   
-
-  useDidShow(() => {
+  const getAssetDetail = async() => {
+    const params = jz.router.getParams()
     const asset_id = params.asset_id
-    const getAssetDetail = async() => {
-      const { data } = await jz.api.finances.getAssetDetail(asset_id)
-      setChangeAmount(data['source_surplus'])
-      setHeaderData(data)
-    }
-    const getAssetTimeLine = async() => {
-      const { data } = await jz.api.finances.getAssetTimeline(asset_id)
-      setTimelines(data.data)
-    }
+    const { data } = await jz.api.finances.getAssetDetail(asset_id)
+    setHeaderData(data)
+  }
+
+  const getAssetTimeLine = async() => {
+    const params = jz.router.getParams()
+    const asset_id = params.asset_id
+    const { data } = await jz.api.finances.getAssetTimeline(asset_id)
+    setTimelines(data.data)
+  }
+  
+  useEffect(() => {
     getAssetDetail()
     getAssetTimeLine()
-  })
+  }, [])
 
   const getAssetStatements = async (index: number, year: number, month: number) => {
+    const params = jz.router.getParams()
     const assetId = params.asset_id
     const { data } = await jz.api.finances.getAssetStatements({ asset_id: assetId, year: year, month: month })
     setTimelines(prevTimelines => {
@@ -53,12 +51,32 @@ export default function AssetsFlow() {
     });
   }
 
-  // 修改 doChangeAmount
-  const doChangeAmount = async () => {
+  const changeSurplus = async () => {
+    const params = jz.router.getParams()
     const asset_id = params.asset_id
-    await jz.api.assets.updateAssetAmount(asset_id, changeAmount)
-    setHeaderData(Object.assign(headerData, {source_surplus: changeAmount, surplus: changeAmount}))
-    setIsModalVisible(false)
+    const { confirm, content } = await Taro.showModal({
+      title: '调整资产金额',
+      content: headerData['surplus'],
+      editable: true,
+      placeholderText: '输入金额',
+      confirmText: '保存',
+      cancelText: '取消'
+    })
+
+    if (confirm && content) {
+      try {
+        const {data} = await jz.api.assets.updateAssetAmount(asset_id, content)
+        console.log(data)
+        if(data?.status && data?.status !== 200) {
+          jz.toastError(data.msg)
+          return
+        }
+        getAssetDetail()
+
+      } catch (error) {
+        jz.toastError(error.message)
+      }
+    }
   }
 
   return (
@@ -72,7 +90,7 @@ export default function AssetsFlow() {
                 <Text className='amount'>￥{headerData['surplus']}</Text>
                 <Text 
                   className='edit-btn'
-                  onClick={() => setIsModalVisible(true)}
+                  onClick={changeSurplus}
                 >
                   调整
                 </Text>
@@ -128,26 +146,6 @@ export default function AssetsFlow() {
         </View>
       </View>
 
-      <AtFloatLayout
-        isOpened={isModalVisible}
-        title='调整余额'
-        onClose={() => setIsModalVisible(false)}
-      >
-        <View className='adjust-balance-modal'>
-          <AtInput
-            name='value'
-            title='余额'
-            type='number'
-            placeholder='请输入新的余额'
-            value={changeAmount}
-            onChange={(value) => setChangeAmount(value)}
-          />
-          <View className='button-group'>
-            <AtButton onClick={() => setIsModalVisible(false)}>取消</AtButton>
-            <AtButton type='primary' onClick={doChangeAmount}>确定</AtButton>
-          </View>
-        </View>
-      </AtFloatLayout>
     </BasePage>
   )
 }
