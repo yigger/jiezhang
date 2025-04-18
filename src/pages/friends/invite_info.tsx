@@ -39,13 +39,26 @@ export default function FriendInvitePage() {
     fetchInviteInfo()
   }, [])
 
+
   const handdleAcceptInvite = async () => {
+    const { confirm, content } = await Taro.showModal({
+      title: '设置昵称',
+      content: '',
+      editable: true,
+      placeholderText: '请输入您的昵称',
+    })
+
+    if (!confirm || !content.trim()) {
+      jz.toastError('请输入昵称')
+      return
+    }
+
     const token = decodeURIComponent(params.token)
     const response: {
       status: number;
       message: string;
       data: any;
-    } = await jz.withLoading(jz.api.friends.accept(token))
+    } = await jz.withLoading(jz.api.friends.accept(token, content.trim()))
     const data = response.data
     if (data.status === 401) {
       Taro.showToast({
@@ -63,6 +76,7 @@ export default function FriendInvitePage() {
       jz.toastSuccess(data.msg)
       await jz.confirm('是否立即切换到新账本？')
       await jz.api.account_books.updateDefaultAccount(inviteInfo.account_book)
+      jz.router.redirectTo({ url: '/pages/home/index' })
     } else {
       jz.toastError(data.msg)
     }
@@ -88,8 +102,8 @@ export default function FriendInvitePage() {
               <Text className='value'>{inviteInfo.account_book?.name}</Text>
             </View>
             <View className='info-item'>
-              <Text className='label'>权限</Text>
-              <Text className='value'>{inviteInfo.access}</Text>
+              <Text className='label'>角色</Text>
+              <Text className='value'>{inviteInfo.role_name}</Text>
             </View>
           </View>
 

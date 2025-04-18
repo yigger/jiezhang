@@ -28,7 +28,7 @@ function UserInfo ({
   userInfo
 }) {
   return (
-    <View className='user-info m-4 p-4' onClick={() => { jz.router.navigateTo({url: '/pages/setting/user_info/index'}) }}>
+    <View className='user-info m-4 p-4'>
       <View className='d-flex flex-center'>
         <View className='jz-image-normal radius'>
           <Image src={userInfo.avatar_url}></Image>
@@ -37,7 +37,7 @@ function UserInfo ({
         <View className='username-and-desc flex-1 ml-2'>
           <View className='username d-flex flex-between'>
             <Text className='name'>{userInfo.name || '未设置昵称'}</Text>
-            <Text className='edit-text'>编辑资料</Text>
+            <Text className='edit-text' onClick={() => { jz.router.navigateTo({url: '/pages/setting/user_info/index'}) }}>编辑资料</Text>
           </View>
           <View className='fs-12 col-text-mute mt-2'>
             <View>{nowStr()}，今天是你记账的第 {differenceInDays(new Date(), new Date(userInfo.created_at))} 天</View>

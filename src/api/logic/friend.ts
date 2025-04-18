@@ -26,8 +26,8 @@ export default class Friend {
     return st
   }
   
-  public async accept(token: string) {
-    const st = await this._request.post('friends/accept_apply', { invite_token: token })
+  public async accept(token: string, nickname: string) {
+    const st = await this._request.post('friends/accept_apply', { invite_token: token, nickname: nickname  })
     return st
   }
 
@@ -37,7 +37,7 @@ export default class Friend {
   }
 
   public async update(data) {
-    const st = await this._request.put(`friends/${data.collaborator_id}`, { account_book_id: data.account_book_id, access: data.access })
+    const st = await this._request.put(`friends/${data.collaborator_id}`, data)
     return st
   }
 }
