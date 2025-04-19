@@ -4,9 +4,11 @@ import { Api } from './api'
 import Router from './router'
 import Storage from './storage'
 import config from './config'
+import { EventEmitter } from './utils/event'
 
 class Jz {
-  private static instance: Jz | null = null;
+  private static instance: Jz | null = null
+  private _event: EventEmitter
   private _appid: string
   private _baseUrl: string
   private _apiUrl: string
@@ -20,6 +22,7 @@ class Jz {
     this._appid = ''
     this._baseUrl = ''
     this._apiUrl = ''
+    this._event = new EventEmitter()
   }
 
   public static getInstance(): Jz {
@@ -133,6 +136,10 @@ class Jz {
 
   get storage(): Storage {
     return this._storage
+  }
+
+  get event(): EventEmitter {
+    return this._event
   }
 }
 

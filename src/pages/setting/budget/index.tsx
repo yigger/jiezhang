@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { View, Image, Text, Picker } from '@tarojs/components'
 import jz from '@/jz'
 import BasePage from '@/components/BasePage'
 import { AtProgress } from 'taro-ui'
 import { format, getDaysInMonth, differenceInDays, endOfMonth, startOfMonth } from 'date-fns'
-import Taro, { useDidShow } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 
 export default function BudgetPage () {
   const [headerData, setHeaderData] = useState({})
@@ -41,17 +41,28 @@ export default function BudgetPage () {
   }
 
   const getParentData = async (date) => {
-    const { data } = await jz.api.budgets.getParentList({
+    const { data } = await jz.withLoading(jz.api.budgets.getParentList({
       year: format(date, 'yyyy'),
       month: format(date, 'MM')
-    })
+    }))
     setParentList(data)
   }
 
-  useDidShow(() => {
+  useEffect(() => {
     getHeaderData(currentDate)
     getParentData(currentDate)
-  })
+
+    // 监听预算更新事件
+    jz.event.on('budget:update', () => {
+      getHeaderData(currentDate)
+      getParentData(currentDate)
+    })
+
+    // 组件卸载时移除事件监听
+    return () => {
+      jz.event.off('budget:update')
+    }
+  }, [currentDate])
 
 
   const handleDateChange = (e) => {
@@ -78,6 +89,7 @@ export default function BudgetPage () {
                   title: data.msg,
                   icon: 'none'
                 })
+                return
               }
             } else {
               const {data} = await jz.api.budgets.updateCategoryAmount({category_id: categoryId, amount: newBudget})
@@ -86,6 +98,7 @@ export default function BudgetPage () {
                   title: data.msg,
                   icon: 'none'
                 })
+                return
               }
               getParentData(currentDate)
             }

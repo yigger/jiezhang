@@ -13,7 +13,6 @@ export default {
     'pages/setting/asset/form',
     // 预算管理
     'pages/setting/budget/index',
-    'pages/setting/budget_form/index',
     'pages/setting/child_budget/index',
     // 账簿管理
     "pages/account_books/create",

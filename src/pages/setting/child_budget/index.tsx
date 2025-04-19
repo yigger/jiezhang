@@ -40,7 +40,9 @@ export default function BudgetPage () {
                 title: data.msg,
                 icon: 'none'
               })
+              return
             }
+            jz.event.emit('budget:update')
             getBudgets()
           }
         }
@@ -64,7 +66,7 @@ export default function BudgetPage () {
                     <Image src={item.icon_path} mode='aspectFill' />
                   </View>
                   <Text
-                    className='name'
+                    className='col-text-link'
                     onClick={() => jz.router.navigateTo({url: `/pages/setting/chart/category_statement?date=${format(new Date(jz.router.getParams().date), 'yyyy-MM')}&category_id=${item['id']}` })}
                   >{item['name']}</Text>
                 </View>
