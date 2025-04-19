@@ -3,16 +3,190 @@
   min-height: 100vh
   
   .header-banner {
-    background-color: var(--primary-color-light)
-    margin: 24PX
+    background: #ffffff;
+    margin: 12PX
     border-radius: 24PX
-    padding: 24PX
+    padding: 32PX 24PX
     box-shadow: 0 4PX 12PX rgba(0,0,0,0.05)
+
+    .date-picker {
+      text-align: center
+      margin-bottom: 16PX
+      
+      .picker-text {
+        font-size: 18PX
+        font-weight: bold
+        color: var(--primary-color)
+      }
+    }
+
+    .budget-amount {
+      text-align: center
+      margin: 24PX 0
+      
+      .progress-ring {
+        position: relative
+        width: 160PX
+        height: 160PX
+        margin: 0 auto
+        border-radius: 50%
+        background: #f5f5f5
+        display: flex
+        align-items: center
+        justify-content: center
+        
+        &::before {
+          content: ''
+          position: absolute
+          top: 10PX
+          left: 10PX
+          right: 10PX
+          bottom: 10PX
+          background: #fff
+          border-radius: 50%
+          z-index: 1
+        }
+        
+        .inner-content {
+          position: relative
+          z-index: 2
+          text-align: center
+          
+          .amount {
+            font-size: 16PX
+            font-weight: bold
+            color: var(--text-color)
+          }
+        }
+        
+        .progress {
+          position: absolute
+          top: 0
+          left: 0
+          width: 100%
+          height: 100%
+          border-radius: 50%
+          mask: radial-gradient(transparent 65%, #000 66%)
+          -webkit-mask: radial-gradient(transparent 65%, #000 66%)
+        }
+      }
+    }
+
+    .budget-period {
+      text-align: center
+      font-size: 14PX
+      color: var(--text-color-light)
+      margin-bottom: 24PX
+      
+      .days-left {
+        display: block
+        margin-top: 8PX
+        color: var(--primary-color)
+        font-weight: bold
+      }
+    }
+
+    .budget-metrics {
+      display: flex
+      justify-content: space-between
+      border-bottom: 1PX solid #e5e5e5
+      
+      
+      .metric-item {
+        flex: 1
+        text-align: center
+        
+        .label {
+          display: block
+          font-size: 12PX
+          margin-bottom: 8PX
+        }
+        
+        .value {
+          display: block
+          font-size: 16PX
+          font-weight: bold
+        }
+      }
+    }
   }
 }
 
 .child_budget-root {
-  background-color: var(--primary-color-light)
-  // color: #ffffff
+  background: white;
   padding: 24PX 16PX
 }
+
+.budget-item {
+    margin: 16PX
+    padding: 12PX
+    background: #fff
+    border-radius: 12PX
+    box-shadow: 0 2PX 8PX rgba(0,0,0,0.05)
+    
+    .budget-item-header {
+      display: flex
+      justify-content: space-between
+      align-items: center
+      margin-bottom: 4PX
+      
+      .left {
+        display: flex
+        align-items: center
+        
+        .icon-wrapper {
+          width: 32PX
+          height: 32PX
+          border-radius: 8PX
+          background: var(--primary-color-light)
+          display: flex
+          align-items: center
+          justify-content: center
+          margin-right: 4PX
+          
+          image {
+            width: 20PX
+            height: 20PX
+          }
+        }
+        
+        .name {
+          font-size: 16PX
+          font-weight: 500
+          color: var(--text-color)
+        }
+      }
+      
+      .right {
+        color: var(--text-color-light)
+      }
+    }
+    
+    .budget-item-content {
+      .progress-bar {
+        margin: 16PX 0
+        position: relative
+      }
+      
+      .budget-info {
+        display: flex
+        justify-content: space-between
+        margin-top: 12PX
+        
+        .info-item {
+          .label {
+            font-size: 12PX
+            color: var(--text-color-light)
+            margin-bottom: 4PX
+            display: block
+          }
+          
+          .value {
+            font-size: 16PX
+            font-weight: 500
+            color: var(--text-color)
+          }
+        }
+      }
+    }
+  }

@@ -6,16 +6,22 @@ export default class Budget {
     this._request = request
   }
 
-  getSummary() {
-    return this._request.get('budgets')
+  getSummary({
+    year: year,
+    month: month
+  }) {
+    return this._request.get('budgets', { year, month })
   }
 
-  getParentList() {
-    return this._request.get('budgets/parent')
+  getParentList({
+    year: year,
+    month: month
+  }) {
+    return this._request.get('budgets/parent', { year, month })
   }
 
-  getCtegoryBudget({category_id}) {
-    return this._request.get('budgets/' + category_id)
+  getCategoryBudget({category_id, year, month}) {
+    return this._request.get('budgets/' + category_id, { year, month })
   }
 
   updateRootAmount({amount}) {
