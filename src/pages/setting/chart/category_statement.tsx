@@ -4,6 +4,7 @@ import jz from '@/jz'
 import BasePage from '@/components/BasePage'
 import Statements from '@/components/Statements'
 import { AtTag } from 'taro-ui'
+import EmptyTips from '@/components/EmptyTips'
 
 const CategoryStatement: React.FC = () => {
   const params = jz.router.getParams()
@@ -56,6 +57,7 @@ const CategoryStatement: React.FC = () => {
             按金额排序
           </AtTag>
         </View>
+        { statements.length === 0 && <EmptyTips></EmptyTips> }
         <Statements statements={statements}></Statements>
       </View>
     </BasePage>

@@ -166,7 +166,6 @@ export default function BudgetPage () {
               <Text className='label'>日均预算</Text>
               <Text className='value'>￥{calculateBudgetMetrics().dailyBudget}</Text>
             </View>
-            
           </View>
         </View>
 
@@ -179,13 +178,16 @@ export default function BudgetPage () {
                     <View className='icon-wrapper'>
                       <Image src={item.icon_path} mode='aspectFill' />
                     </View>
-                    <Text className='name'>{item['name']}</Text>
+                    <Text 
+                      className='name col-text-link'
+                      onClick={() => jz.router.navigateTo({url: `/pages/setting/chart/category_statement?date=${format(currentDate, 'yyyy-MM')}&category_id=${item['id']}` })}
+                    >{item['name']}</Text>
                   </View>
                   <View className='right'>
                     <Text
                       className='col-text-link fs-14'
                       onClick={() => jz.router.navigateTo({url: `/pages/setting/child_budget/index?category_id=${item['id']}&date=${format(currentDate, 'yyyy-MM-dd')}` })}
-                    >设置子分类预算</Text>
+                    >查看子分类</Text>
                   </View>
                 </View>
 

@@ -9,7 +9,6 @@ import { observer } from 'mobx-react'
 import EmptyTips from '@/components/EmptyTips'
 import jz from '@/jz'
 import Taro from '@tarojs/taro';
-import { showModal } from '@tarojs/taro';
 
 export const IndexPage = observer(() => {
   const store: HomeStoreContext = useContext(HomeStoreContext)

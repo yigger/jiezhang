@@ -12,7 +12,6 @@ export default function BudgetPage () {
 
   const getBudgets = async () => {
     const params = jz.router.getParams()
-    console.log(params)
     const { data } = await jz.api.budgets.getCategoryBudget({
       category_id: params.category_id,
       year: format(new Date(params.date), 'yyyy'),
@@ -64,7 +63,10 @@ export default function BudgetPage () {
                   <View className='icon-wrapper'>
                     <Image src={item.icon_path} mode='aspectFill' />
                   </View>
-                  <Text className='name'>{item['name']}</Text>
+                  <Text
+                    className='name'
+                    onClick={() => jz.router.navigateTo({url: `/pages/setting/chart/category_statement?date=${format(new Date(jz.router.getParams().date), 'yyyy-MM')}&category_id=${item['id']}` })}
+                  >{item['name']}</Text>
                 </View>
               </View>
 
