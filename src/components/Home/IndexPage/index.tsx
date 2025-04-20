@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { useDidShow } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import Statements from '@/components/Statements'
 import { Button } from '@/src/components/UiComponents'
@@ -8,11 +8,9 @@ import { HomeStoreContext } from "@/src/stores"
 import { observer } from 'mobx-react'
 import EmptyTips from '@/components/EmptyTips'
 import jz from '@/jz'
-import Taro from '@tarojs/taro';
 
 export const IndexPage = observer(() => {
   const store: HomeStoreContext = useContext(HomeStoreContext)
-  const [shouldFetch, setShouldFetch] = useState<boolean>(true)
   const [activeRange, setActiveRange] = useState('today')
   const ranges = [
     { key: 'today', name: '今日' },
@@ -20,12 +18,22 @@ export const IndexPage = observer(() => {
     { key: 'week', name: '本周' },
     { key: 'month', name: '本月' }
   ]
+
   useEffect(() => {
-    if (shouldFetch) {
-      store.fetchHomeData()
-      setShouldFetch(false)
+    // 监听账单创建事件
+    jz.event.on('statement:updated', () => {
+      store.fetchHomeData(activeRange)
+    })
+
+    // 组件卸载时移除监听
+    return () => {
+      jz.event.off('statement:updated')
     }
-  }, [shouldFetch])
+  }, [activeRange])
+
+  useEffect(() => {
+    store.fetchHomeData()
+  }, [])
 
   useEffect(() => {
     if (store.indexHeader.message) {
@@ -43,10 +51,6 @@ export const IndexPage = observer(() => {
       })
     }
   }, [store.indexHeader])
-
-  useDidShow(() => {
-    setShouldFetch(true);
-  })
 
   return (
     <View className='jz-pages__index'>

@@ -36,6 +36,25 @@ const getMoodColor = (mood) => {
 }
 
 export default function Statement({ statement, editable = true }) {
+  const getDisplayInfo = () => {
+    const infoParts = []
+    
+    // 添加日期
+    infoParts.push(isTheYear(statement.date) ? statement.timeStr : statement.date)
+    
+    // 添加备注
+    if (statement.remark) {
+      infoParts.push(statement.remark)
+    }
+    
+    // 添加收款人
+    if (statement.payee) {
+      infoParts.push(statement.payee.name)
+    }
+    
+    return infoParts.filter(Boolean).join(' · ')
+  }
+
   return (
     <View className={`statement-component__item ${statement.type}`}>
       <View className='d-flex pb-3 pt-3 flex-between flex-center' onClick={() => { editable && jz.router.navigateTo({ url: `/pages/statement_detail/index?statement_id=${statement.id}` }) }}>
@@ -72,29 +91,16 @@ export default function Statement({ statement, editable = true }) {
             </View>
             
             <View className='d-flex flex-center fs-12 col-text-mute'>
-              <Text>{isTheYear(statement.date) ? statement.timeStr : statement.date}</Text>
-              {
-                statement.payee && (
-                  <Text className='fs-12 col-text-mute text-ellipsis'>·{statement.payee.name}</Text>
-                )
-              }
+              <Text>{getDisplayInfo()}</Text>
               {statement.has_pic && (
                 <Text className='fs-18 ml-1 iconfont jcon-pic1 col-text-mute'></Text>
               )}
-              
-              
-              {/* {statement.location && (
-                <Text className='ml-2'>📍 {statement.location}</Text>
-              )} */}
             </View>
           </View>
         </View>
 
         <View className='d-flex flex-center-center flex-column'>
           <View className={`col-${getColorClass(statement.type)}`}>{statement.money}</View>
-          {statement.tags && statement.tags.length > 0 && (
-            <View className='fs-10 col-text-mute mt-1'>{statement.tags.join(' · ')}</View>
-          )}
         </View>
       </View>
     </View>
