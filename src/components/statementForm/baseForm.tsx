@@ -246,6 +246,7 @@ export default function BaseForm({
     const { data } = await jz.api.statements.create(form)
 		Taro.hideLoading()
     if(data.status === 200) {
+      jz.event.emit('statement:updated')
       // 上传图片...
       for (let file of form.upload_files) {
         if (file.file) {

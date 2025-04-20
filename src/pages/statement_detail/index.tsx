@@ -28,7 +28,8 @@ type StatementDetail = {
     id: number;
     name: string
   },
-  can_edit: boolean
+  can_edit: boolean,
+  remark: string;
 }
 
 const initialStatement: StatementDetail = {
@@ -262,6 +263,7 @@ const StatementDetail: React.FC = () => {
         jz.toastError(res.data.msg)
       } else {
         await getStatementDetail()
+        jz.event.emit('statement:updated')
         jz.toastSuccess('修改成功')
       }
     } catch (error) {
@@ -363,6 +365,7 @@ const StatementDetail: React.FC = () => {
               { statement.amount }
             </View>
           </View>
+
           {statement.target_object && (
             <View className='target-object-text'>
               <Text className='label'>{getTargetObjectLabel(statement.type)}：</Text>
@@ -374,9 +377,9 @@ const StatementDetail: React.FC = () => {
             !isEditMode && 
             <View 
               className={`time-text ${isEditMode ? 'clickable' : ''}`}
-              onClick={isEditMode ? () => handleEdit('time') : undefined}
+              onClick={isEditMode ? () => handleEdit('date') : undefined}
             >
-              { statement.time }
+              { statement.date } { statement.time }
             </View>
           }
 
@@ -384,21 +387,32 @@ const StatementDetail: React.FC = () => {
             isEditMode &&
             <Picker
               mode='date'
-              value={statement.time}
+              value={statement.date}
               onChange={async (e) => {
-                const time = new Date(statement.time)
-                const date = new Date(e.detail.value)
-                updateStatement({ date: format(date, 'yyyy-MM-dd'), time: format(time, 'HH:mm:ss') })
+                updateStatement({ date: format(new Date(e.detail.value), 'yyyy-MM-dd'), time: new Date(statement.time) })
               }}
             >
-              <View className='picker'>{statement.time}</View>
-              
+              <View className='picker'>{statement.date}</View>
             </Picker>
           }
         </View>
 
         {/* 详情信息列表 */}
         <View className='detail-content'>
+          {
+            statement.remark && (
+              <View className='detail-item'>
+                <View className='item-label'>
+                  <View className='iconfont jcon-user'></View>
+                  <Text>记账用户</Text>
+                </View>
+                <View className='item-value'>
+                  { statement.remark }
+                </View>
+              </View>
+            )
+          }
+
           <View className='detail-item'>
             <View className='item-label'>
               <View className='iconfont jcon-category'></View>
