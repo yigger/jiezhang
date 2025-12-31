@@ -37,7 +37,7 @@
   "author": "",
   "dependencies": {
     "@babel/runtime": "^7.7.7",
-    "@tarojs/cli": "3.6.32",
+    "@tarojs/cli": "4.1.9",
     "@tarojs/components": "3.6.32",
     "@tarojs/plugin-framework-react": "3.6.32",
     "@tarojs/plugin-platform-weapp": "^3.6.32",
