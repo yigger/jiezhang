@@ -66,7 +66,7 @@ export default function EditCategory () {
     jz.api.categories.getSettingList({ type: params.type }).then((res) => {
       const data = res.data.categories.find((item) => item.id === Number.parseInt(params.parentId))
       if (data) {
-        setCategory({...category, parent_name: data.name})
+        setCategory((prev) => ({...prev, parent_name: data.name}))
       }
     })
   }, [])

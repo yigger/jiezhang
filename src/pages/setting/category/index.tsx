@@ -54,6 +54,25 @@ export default function CategorySetting () {
     }
   }
 
+  const handleSubEdit = (item: any, e: any) => {
+    e.stopPropagation()
+    jz.router.navigateTo({ url: `/pages/setting/category/form?type=${item.type}&id=${item.id}` })
+  }
+
+  const handleSubDel = async (item: any, e: any) => {
+    e.stopPropagation()
+    await jz.confirm(`是否删除子分类【${item.name}】？删除后数据无法恢复，谨慎操作！`)
+    const res = await jz.api.categories.deleteCategory(item.id)
+    if (res.data && res.data.status === 200) {
+      const deleteIndex = listData.findIndex((i) => i.id === item.id)
+      if (deleteIndex !== -1) {
+        const data = [...listData]
+        data.splice(deleteIndex, 1)
+        setListData(data)
+      }
+    }
+  }
+
   return (
     <BasePage
       headerName={`${headerData.parent_name || '账单分类管理'}`}
@@ -86,8 +105,8 @@ export default function CategorySetting () {
                     {item.icon_url ? (
                       <Image src={item.icon_url} className='asset-icon' />
                     ) : (
-                      <Avatar 
-                        text={item.name} 
+                      <Avatar
+                        text={item.name}
                         backgroundColor='#1890ff'
                         size={30}
                       />
@@ -95,7 +114,15 @@ export default function CategorySetting () {
                   </View>
                   <View className='pl-2'>{item.name}</View>
                 </View>
-                <View className={`fs-18 col-${item.type}`}>{item.amount}</View>
+                {parentId > 0 ? (
+                  <View className='d-flex flex-center'>
+                    <View className={`fs-18 col-${item.type} pr-2`}>{item.amount}</View>
+                    <View className='sub-action-btn' onClick={(e) => handleSubEdit(item, e)}>编辑</View>
+                    <View className='sub-action-btn sub-action-btn--danger' onClick={(e) => handleSubDel(item, e)}>删除</View>
+                  </View>
+                ) : (
+                  <View className={`fs-18 col-${item.type}`}>{item.amount}</View>
+                )}
               </View>
             </View>
           ))}
