@@ -1,14 +1,10 @@
 # 洁账小程序
 
-重要：基于 wepy 的老版本已经不维护了，请切换到 Taro 最新版本！！
-
 一款简单易用的记账小程序，帮助用户轻松管理个人财务。
 
-后端代码请切换到旧版本-配合 wepy 前端使用：https://github.com/yigger/jiezhang/tree/old-version-wepy
+### 后端项目地址
+https://github.com/yigger/jiezhang-backend
 
-新版（此版本）的后端暂未开源，敬请期待！
-### API 文档
-参考 [docs/API.md](/docs/API.md)
 
 ### 体验二维码
 ![二维码](https://github.com/yigger/jiezhang/raw/old-version-wepy/screenshots/qrcode.jpg)
