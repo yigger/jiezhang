@@ -1,9 +1,16 @@
-import {observable, action,computed } from 'mobx';
+import {configure, makeObservable, observable, action,computed } from 'mobx';
 import { createContext } from "react";
 import jz from '@/jz';
 
+// 保持 MobX 5 的行为：现有异步方法允许在 await 后更新状态。
+configure({ enforceActions: "never" })
+
 // 此 Store 存在的意义在于在切换底部 Tab 的时候，首页的数据不会销毁后重新获取造成闪屏的现象！
 class HomeStore {
+  constructor() {
+    makeObservable(this)
+  }
+
   @observable indexHeader = {
     month_budget: "0.00",
     month_expend: "0.00",

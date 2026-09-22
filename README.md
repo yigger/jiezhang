@@ -23,15 +23,15 @@
 - 🔍 账单搜索：快速查找历史账单
 
 ## 技术栈
-- Taro v3.6.32
-- React
+- Taro v4.2.1
+- React 18
 - TypeScript
 - Taro UI
 - 微信小程序原生能力
 
 ## 环境要求
-- Node.js 16.14.0
-- Taro CLI 3.6.32
+- Node.js >= 22（本次使用 22.23.1 验证）
+- Taro CLI 4.2.1（项目本地依赖，无需全局安装）
 
 ## 开始使用
 
@@ -42,8 +42,10 @@ cd jiezhang-miniapp
 ```
 
 2. 安装依赖
+
+统一使用 npm 和 `package-lock.json`。项目的 `.npmrc` 为 Taro UI 声明的跨平台 peer 依赖启用兼容安装，避免微信/H5 构建被拉入 React Native 依赖。
 ```bash
-npm install
+npm ci
 ```
 
 3. 配置

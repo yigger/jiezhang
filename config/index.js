@@ -23,6 +23,10 @@ const config = {
     }
   },
   framework: 'react',
+  compiler: {
+    type: 'webpack5',
+    errorLevel: 1
+  },
   mini: {
     postcss: {
       pxtransform: {

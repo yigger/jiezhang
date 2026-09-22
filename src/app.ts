@@ -1,8 +1,8 @@
-import { Component } from 'react'
+import { Component, PropsWithChildren } from 'react'
 import Taro from "@tarojs/taro"
 import jz from './jz'
 
-class App extends Component {
+class App extends Component<PropsWithChildren> {
   onLaunch () {
     const updateManager = Taro.getUpdateManager()
     updateManager.onCheckForUpdate(function () {

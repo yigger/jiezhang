@@ -1,8 +1,12 @@
-import {observable, action} from 'mobx';
+import {makeObservable, observable, action} from 'mobx';
 import jz from '@/jz'
 import { createContext } from "react";
 
 class ThemeStore {
+  constructor() {
+    makeObservable(this)
+  }
+
   themes = [
     {
       name: '默认主题',

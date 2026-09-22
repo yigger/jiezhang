@@ -5,6 +5,8 @@ export default ctx => {
     name: 'onSetupClose',
     fn(platform) {
       const template = platform.template
+      // H5 等平台没有小程序模板，无需扩展 View 模板属性。
+      if (!template) return
       template.mergeComponents(ctx, {
         View: {
           'data-theme-name': 'i.dataThemeName'
