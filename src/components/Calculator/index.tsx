@@ -1,16 +1,21 @@
-import { View, Text } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import React, { useState } from 'react'
 import './index.scss'
 
+export interface CalculatorValue {
+  value: string
+  operator: string
+  prev: string
+}
 interface CalculatorProps {
   value: string
-  onChange: (value: string) => void
+  onChange: (value: CalculatorValue) => void
   onClose: () => void
 }
 
 const Calculator: React.FC<CalculatorProps> = ({ value, onChange, onClose }) => {
   const [displayValue, setDisplayValue] = useState(value || '0')
-  const [hasDecimal, setHasDecimal] = useState(false)
+  const [hasDecimal, setHasDecimal] = useState(value.includes('.'))
   const [prevValue, setPrevValue] = useState('')
   const [operator, setOperator] = useState('')
 
@@ -56,11 +61,13 @@ const Calculator: React.FC<CalculatorProps> = ({ value, onChange, onClose }) => 
           const result = calculate()
           setPrevValue(result)
           setDisplayValue('0')
+          setHasDecimal(false)
           setOperator(op)
           onChange({ value: '0', operator: op, prev: result })
         } else {
           setPrevValue(displayValue)
           setDisplayValue('0')
+          setHasDecimal(false)
           setOperator(op)
           onChange({ value: '0', operator: op, prev: displayValue })
         }
@@ -72,14 +79,15 @@ const Calculator: React.FC<CalculatorProps> = ({ value, onChange, onClose }) => 
         }
         onClose()
         break
-      case '=':
+      case '=': {
         const result = calculate()
         setDisplayValue(result)
         setPrevValue('')
         setOperator('')
         setHasDecimal(result.includes('.'))
-        onChange(result)
+        onChange({ value: result, operator: '', prev: '' })
         break
+      }
       case 'DEL':
         if (displayValue.length > 1) {
           const newValue = displayValue.slice(0, -1)
@@ -90,6 +98,7 @@ const Calculator: React.FC<CalculatorProps> = ({ value, onChange, onClose }) => 
           }
         } else {
           setDisplayValue('0')
+          setHasDecimal(false)
           onChange({ value: '0', operator, prev: prevValue })
         }
         break
@@ -97,34 +106,64 @@ const Calculator: React.FC<CalculatorProps> = ({ value, onChange, onClose }) => 
   }
 
   return (
-    <View className='calculator'>
-      <View className='calculator__keypad'>
-        <View className='keypad-left'>
-          <View className='row'>
-            <View className='key' onClick={() => handleNumber('7')}>7</View>
-            <View className='key' onClick={() => handleNumber('8')}>8</View>
-            <View className='key' onClick={() => handleNumber('9')}>9</View>
+    <View className="calculator">
+      <View className="calculator__keypad">
+        <View className="keypad-left">
+          <View className="row">
+            <View className="key" onClick={() => handleNumber('7')}>
+              7
+            </View>
+            <View className="key" onClick={() => handleNumber('8')}>
+              8
+            </View>
+            <View className="key" onClick={() => handleNumber('9')}>
+              9
+            </View>
           </View>
-          <View className='row'>
-            <View className='key' onClick={() => handleNumber('4')}>4</View>
-            <View className='key' onClick={() => handleNumber('5')}>5</View>
-            <View className='key' onClick={() => handleNumber('6')}>6</View>
+          <View className="row">
+            <View className="key" onClick={() => handleNumber('4')}>
+              4
+            </View>
+            <View className="key" onClick={() => handleNumber('5')}>
+              5
+            </View>
+            <View className="key" onClick={() => handleNumber('6')}>
+              6
+            </View>
           </View>
-          <View className='row'>
-            <View className='key' onClick={() => handleNumber('1')}>1</View>
-            <View className='key' onClick={() => handleNumber('2')}>2</View>
-            <View className='key' onClick={() => handleNumber('3')}>3</View>
+          <View className="row">
+            <View className="key" onClick={() => handleNumber('1')}>
+              1
+            </View>
+            <View className="key" onClick={() => handleNumber('2')}>
+              2
+            </View>
+            <View className="key" onClick={() => handleNumber('3')}>
+              3
+            </View>
           </View>
-          <View className='row'>
-            <View className='key' onClick={() => handleNumber('.')}>.</View>
-            <View className='key' onClick={() => handleNumber('0')}>0</View>
-            <View className='key' onClick={() => handleOperator('DEL')}>←</View>
+          <View className="row">
+            <View className="key" onClick={() => handleNumber('.')}>
+              .
+            </View>
+            <View className="key" onClick={() => handleNumber('0')}>
+              0
+            </View>
+            <View className="key" onClick={() => handleOperator('DEL')}>
+              ←
+            </View>
           </View>
         </View>
-        <View className='keypad-right'>
-          <View className='key operator' onClick={() => handleOperator('+')}>+</View>
-          <View className='key operator' onClick={() => handleOperator('-')}>-</View>
-          <View className='key operator confirm' onClick={() => handleOperator('OK')}>确定</View>
+        <View className="keypad-right">
+          <View className="key operator" onClick={() => handleOperator('+')}>
+            +
+          </View>
+          <View className="key operator" onClick={() => handleOperator('-')}>
+            -
+          </View>
+          <View className="key operator confirm" onClick={() => handleOperator('OK')}>
+            确定
+          </View>
         </View>
       </View>
     </View>

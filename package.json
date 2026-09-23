@@ -27,7 +27,15 @@
     "dev:rn": "npm run build:rn -- --watch",
     "dev:qq": "npm run build:qq -- --watch",
     "dev:jd": "npm run build:jd -- --watch",
-    "dev:quickapp": "npm run build:quickapp -- --watch"
+    "dev:quickapp": "npm run build:quickapp -- --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx --max-warnings 0",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" tests package.json tsconfig.json .eslintrc.js .prettierrc.json commitlint.config.cjs",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" tests package.json tsconfig.json .eslintrc.js .prettierrc.json commitlint.config.cjs",
+    "test": "cross-env TARO_ENV=weapp NODE_ENV=test node --test tests/*.test.cjs",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "commit": "cz",
+    "prepare": "husky"
   },
   "browserslist": [
     "last 3 versions",
@@ -48,17 +56,21 @@
     "@tarojs/shared": "4.2.1",
     "@tarojs/taro": "4.2.1",
     "date-fns": "^2.21.3",
+    "htmlparser2": "^10.0.0",
     "lodash": "4.17.15",
     "mobx": "^6.13.5",
     "mobx-react": "^7.6.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "taro-react-echarts": "^1.2.2",
-    "taro-ui": "^3.3.0"
+    "taro-ui": "^3.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.29.7",
     "@babel/preset-react": "^7.24.1",
+    "@commitlint/cli": "21.2.3",
+    "@commitlint/config-conventional": "21.2.3",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@tarojs/webpack5-runner": "4.2.1",
     "@types/react": "^18.3.1",
@@ -68,13 +80,17 @@
     "@typescript-eslint/parser": "^5.62.0",
     "ajv": "^8.20.0",
     "babel-preset-taro": "4.2.1",
+    "commitizen": "4.3.2",
     "cross-env": "^7.0.3",
+    "cz-conventional-changelog": "3.3.0",
     "eslint": "^8.57.0",
     "eslint-config-taro": "4.2.1",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "9.1.7",
     "postcss": "^8.4.38",
+    "prettier": "^3.6.2",
     "react-refresh": "^0.14.0",
     "sass": "^1.75.0",
     "stylelint": "9.3.0",
@@ -84,5 +100,11 @@
   },
   "engines": {
     "node": ">=22"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog",
+      "maxHeaderWidth": 100
+    }
   }
 }

@@ -1,4 +1,4 @@
-type EventHandler = (...args: any[]) => void
+type EventHandler = (...args: unknown[]) => void
 
 export class EventEmitter {
   private events: Map<string, EventHandler[]>
@@ -11,7 +11,7 @@ export class EventEmitter {
     if (!this.events.has(event)) {
       this.events.set(event, [])
     }
-    this.events.get(event)!.push(handler)
+    this.events.get(event)?.push(handler)
   }
 
   off(event: string, handler?: EventHandler) {
@@ -19,7 +19,7 @@ export class EventEmitter {
       this.events.delete(event)
       return
     }
-    
+
     const handlers = this.events.get(event)
     if (handlers) {
       const index = handlers.indexOf(handler)
@@ -32,10 +32,11 @@ export class EventEmitter {
     }
   }
 
-  emit(event: string, ...args: any[]) {
+  emit(event: string, ...args: unknown[]) {
     const handlers = this.events.get(event)
     if (handlers) {
-      handlers.forEach(handler => handler(...args))
+      const snapshot = [...handlers]
+      snapshot.forEach((handler) => handler(...args))
     }
   }
 }

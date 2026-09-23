@@ -1,33 +1,25 @@
 import Taro from '@tarojs/taro'
+import { runTask } from '../utils/async'
 
 interface RouterOptions {
   url: string
   name?: string
-  params?: Record<string, any>
+  params?: Record<string, string | number | boolean | undefined>
 }
 
 export default class Router {
-  private _currentInstance: any
-  private _beforeHooks: Array<Function>
+  private _beforeHooks: Array<(to: string) => boolean | Promise<boolean>>
 
   constructor() {
     this._beforeHooks = []
-    
-    // 监听页面显示事件，同步页面栈
-    Taro.eventCenter.on('PAGE_SHOW', () => {
-      this._currentInstance = null
-    })
   }
 
   getParams() {
-    return this.getCurrentInstance().router.params || {}
+    return this.getCurrentInstance().router?.params || {}
   }
 
   getCurrentInstance() {
-    if (!this._currentInstance) {
-      this._currentInstance = Taro.getCurrentInstance()
-    }
-    return this._currentInstance
+    return Taro.getCurrentInstance()
   }
 
   // 获取当前页面栈
@@ -46,7 +38,8 @@ export default class Router {
   private buildUrl({ url, params }: RouterOptions): string {
     if (!params) return url
     const query = Object.entries(params)
-      .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+      .filter(([, value]) => value !== undefined)
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
       .join('&')
     return `${url}${url.includes('?') ? '&' : '?'}${query}`
   }
@@ -98,7 +91,7 @@ export default class Router {
   navigateBack(delta = 1) {
     const pages = this.getCurrentPages()
     if (pages.length > 1) {
-      Taro.navigateBack({ delta })
+      runTask(Taro.navigateBack({ delta }))
       return true
     } else {
       console.warn('已经是第一个页面')

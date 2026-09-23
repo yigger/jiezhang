@@ -1,40 +1,59 @@
-import Request from '../request'
+import jz from '../../jz'
+import type Request from '../request'
+import type {
+  AccountBookCreateRequest,
+  AccountBookDetailItem,
+  AccountBookListItem,
+  AccountBookPreset,
+  AccountBookTypeItem,
+  AccountBookUpdateRequest,
+  Envelope,
+  Id,
+  StatusResponse
+} from '../types'
 
 export default class AccountBook {
   private _request: Request
-  constructor (request: Request) {
+  constructor(request: Request) {
     this._request = request
   }
 
   getAccountBooks() {
-    return this._request.get('account_books')
+    return this._request.get<AccountBookListItem[]>('account_books')
   }
 
-  getAccountBook(id) {
-    return this._request.get(`account_books/${id}`)
+  getAccountBook(id: Id) {
+    return this._request.get<Envelope<AccountBookDetailItem>>(`account_books/${id}`)
   }
 
   getAccountBookTypes() {
-    return this._request.get('account_books/types')
-  }
-  
-  getCategoriesList({ accountType }) {
-    return this._request.get('account_books/preset_categories', { account_type: accountType })
+    return this._request.get<Envelope<AccountBookTypeItem[]>>('account_books/types')
   }
 
-  updateDefaultAccount(accountBook) {
-    return this._request.put(`account_books/${accountBook.id}/switch`, {})
+  getCategoriesList({ accountType }: { accountType: string }) {
+    return this._request.get<Envelope<AccountBookPreset>>('account_books/preset_categories', {
+      account_type: accountType
+    })
   }
 
-  create(data) {
-    return this._request.post('account_books', data)
+  async updateDefaultAccount(accountBook: { id: number; name: string }) {
+    const response = await this._request.put<StatusResponse>(
+      `account_books/${accountBook.id}/switch`,
+      {}
+    )
+    jz.storage.setCurrentAccountBook(accountBook)
+    return response
   }
 
-  update(id, data) {
-    return this._request.put(`account_books/${id}`, data)
+  create(data: AccountBookCreateRequest) {
+    return this._request.post<Envelope<AccountBookDetailItem>>('account_books', data)
   }
 
-  destroy(id) {
-    return this._request.delete(`account_books/${id}`)
+  update(id: Id, data: AccountBookUpdateRequest) {
+    return this._request.put<Envelope<AccountBookDetailItem>>(`account_books/${id}`, data)
+  }
+
+  destroy(id: Id) {
+    return this._request.delete<StatusResponse>(`account_books/${id}`)
   }
 }

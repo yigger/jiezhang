@@ -2,9 +2,9 @@
 import devConfig from './config'
 
 type Config = {
-  appid: string,
-  host: string,
-  api_url: string,
+  appid: string
+  host: string
+  api_url: string
   web_host: string
 }
 
@@ -14,7 +14,7 @@ const config: Config = {
   appid: devConfig.appid,
   host: host,
   api_url: `${host}/api`,
-  web_host: devConfig.web_host,
+  web_host: devConfig.web_host
 }
 
 export default config

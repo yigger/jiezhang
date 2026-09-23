@@ -1,35 +1,42 @@
-import Request from '../request'
+import type Request from '../request'
+import type {
+  CategoryListResponse,
+  CategoryShowResponse,
+  CategoryWriteRequest,
+  Id,
+  StatusResponse
+} from '../types'
 
 export default class Category {
   private _request: Request
-  constructor (request: Request) {
+  constructor(request: Request) {
     this._request = request
   }
 
-  getSettingList({ type = 'expend', parent_id = 0 }) {
-    return this._request.get('categories/category_list', {
+  getSettingList({ type = 'expend', parent_id = 0 }: { type?: string; parent_id?: Id }) {
+    return this._request.get<CategoryListResponse>('categories/category_list', {
       type: type,
       parent_id: parent_id
     })
   }
 
-  getCategoryDetail(id) {
-    return this._request.get(`categories/${id}`)
+  getCategoryDetail(id: Id) {
+    return this._request.get<CategoryShowResponse>(`categories/${id}`)
   }
 
-  deleteCategory(id) {
-    return this._request.delete(`categories/${id}`, {})
+  deleteCategory(id: Id) {
+    return this._request.delete<StatusResponse>(`categories/${id}`, {})
   }
 
   getCategoryIcon() {
-    return this._request.get('icons/categories_with_url')
+    return this._request.get<Record<string, string>[]>('icons/categories_with_url')
   }
 
-  updateCategory(id, data) {
-    return this._request.put(`categories/${id}`, data)
+  updateCategory(id: Id, data: CategoryWriteRequest) {
+    return this._request.put<StatusResponse>(`categories/${id}`, data)
   }
 
-  create(data) {
-    return this._request.post('categories', data)
+  create(data: CategoryWriteRequest) {
+    return this._request.post<StatusResponse>('categories', data)
   }
 }

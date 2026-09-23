@@ -1,31 +1,38 @@
-import React, { useEffect, useState } from 'react'
+type Operator = '+' | '-' | '*' | '/'
 import { View } from '@tarojs/components'
-
+import { useEffect, useState } from 'react'
 
 export function Calculator({
   setActive,
   submitCallback,
   processCallback,
   defaultNum = '0'
+}: {
+  setActive: (active: boolean) => void
+  submitCallback?: (value: string) => void
+  processCallback?: (value: string) => void
+  defaultNum?: string
 }) {
   const [leftValue, setLeftValue] = useState(defaultNum)
-  const [operator, setOperator] = useState(null)
+  const [operator, setOperator] = useState<Operator | null>(null)
   const [rightValue, setRightValue] = useState('0')
   // 当前操作的指向，左侧还是右侧
   const [currentPoint, setCurrentPoint] = useState('left')
   const [result, setResult] = useState(defaultNum)
   const [display, setDisplay] = useState('0')
-  
+
   useEffect(() => {
-    const displayScreen = operator ? `${leftValue}${operator}${rightValue === '0' ? '' : rightValue}` : leftValue
+    const displayScreen = operator
+      ? `${leftValue}${operator}${rightValue === '0' ? '' : rightValue}`
+      : leftValue
     setDisplay(displayScreen)
     if (typeof processCallback === 'function') {
       processCallback(displayScreen)
     }
-  }, [leftValue, operator, rightValue])
+  }, [leftValue, operator, rightValue, processCallback])
 
   // 处理数字的输入行为 1-9 含小数点
-  const handleDigitInput = (key) => {
+  const handleDigitInput = (key: string) => {
     if (currentPoint === 'left') {
       // 当已存在结果时，再次输入把当前结果置空
       if (result !== '0') {
@@ -39,9 +46,9 @@ export function Calculator({
     }
   }
 
-  const setNum = (sourceVal, key, setNumFn) => {
+  const setNum = (sourceVal: string, key: string, setNumFn: (value: string) => void) => {
     if (key === '.') {
-      // 若当前数字已经输入过 . 
+      // 若当前数字已经输入过 .
       if (sourceVal.includes('.')) {
         return
       } else {
@@ -64,9 +71,9 @@ export function Calculator({
   }
 
   // 处理运算符
-  const handleOperatorInput = (key) => {
+  const handleOperatorInput = (key: Operator) => {
     if (operator) {
-      calculateResult({calculatorStay: true})
+      calculateResult({ calculatorStay: true })
       setOperator(key)
       setCurrentPoint('right')
     } else {
@@ -76,7 +83,7 @@ export function Calculator({
   }
 
   // 计算结果
-  const calculateResult = (query={calculatorStay: false}) => {
+  const calculateResult = (query = { calculatorStay: false }) => {
     let res
 
     if (!operator) {
@@ -88,7 +95,7 @@ export function Calculator({
         '+': () => leftNum + rightNum,
         '-': () => leftNum - rightNum,
         '*': () => leftNum * rightNum,
-        '/': () => rightNum === 0 ? 0 : (leftNum / rightNum)
+        '/': () => (rightNum === 0 ? 0 : leftNum / rightNum)
       }
       res = operateResult[operator]()
     }
@@ -134,60 +141,94 @@ export function Calculator({
   }
 
   return (
-    <View className='jz-calculator__main'>
+    <View className="jz-calculator__main">
       {/* 蒙板 */}
-      <View className='jz-calculator__mask' onClick={handleMaskHide}></View>
+      <View className="jz-calculator__mask" onClick={handleMaskHide}></View>
 
       {/* 主体内容 */}
-      <View className='jz-calculator__bottom'>
-
+      <View className="jz-calculator__bottom">
         {/* 计算过程 */}
-        <View className='jz-calculator__process'>{display}</View>
+        <View className="jz-calculator__process">{display}</View>
 
-        <View className='calculator-keys__collect'>
+        <View className="calculator-keys__collect">
           {/* 顶部功能按钮 */}
-          <View className='calculator-keys__top'>
-            <View className='normal-item__key' onClick={cleanInput}>AC</View>
-            <View className='normal-item__key' onClick={() => handleOperatorInput('*')}>*</View>
-            <View className='normal-item__key' onClick={() => handleOperatorInput('/')}>/</View>
-            <View className='normal-item__key' onClick={handleBackspace}>退格</View>
+          <View className="calculator-keys__top">
+            <View className="normal-item__key" onClick={cleanInput}>
+              AC
+            </View>
+            <View className="normal-item__key" onClick={() => handleOperatorInput('*')}>
+              *
+            </View>
+            <View className="normal-item__key" onClick={() => handleOperatorInput('/')}>
+              /
+            </View>
+            <View className="normal-item__key" onClick={handleBackspace}>
+              退格
+            </View>
           </View>
 
-          <View className='d-flex'>
+          <View className="d-flex">
             {/* 左侧结构 */}
-            <View className='calculator-keys__left'>
-              <View className='d-flex flex-1'>
-                <View className='normal-item__key' onClick={() => handleDigitInput('1')}>1</View>
-                <View className='normal-item__key' onClick={() => handleDigitInput('2')}>2</View>
-                <View className='normal-item__key' onClick={() => handleDigitInput('3')}>3</View>
+            <View className="calculator-keys__left">
+              <View className="d-flex flex-1">
+                <View className="normal-item__key" onClick={() => handleDigitInput('1')}>
+                  1
+                </View>
+                <View className="normal-item__key" onClick={() => handleDigitInput('2')}>
+                  2
+                </View>
+                <View className="normal-item__key" onClick={() => handleDigitInput('3')}>
+                  3
+                </View>
               </View>
 
-              <View className='d-flex flex-1'>
-                <View className='normal-item__key' onClick={() => handleDigitInput('4')}>4</View>
-                <View className='normal-item__key' onClick={() => handleDigitInput('5')}>5</View>
-                <View className='normal-item__key' onClick={() => handleDigitInput('6')}>6</View>
+              <View className="d-flex flex-1">
+                <View className="normal-item__key" onClick={() => handleDigitInput('4')}>
+                  4
+                </View>
+                <View className="normal-item__key" onClick={() => handleDigitInput('5')}>
+                  5
+                </View>
+                <View className="normal-item__key" onClick={() => handleDigitInput('6')}>
+                  6
+                </View>
               </View>
 
-              <View className='d-flex flex-1'>
-                <View className='normal-item__key' onClick={() => handleDigitInput('7')}>7</View>
-                <View className='normal-item__key' onClick={() => handleDigitInput('8')}>8</View>
-                <View className='normal-item__key' onClick={() => handleDigitInput('9')}>9</View>
+              <View className="d-flex flex-1">
+                <View className="normal-item__key" onClick={() => handleDigitInput('7')}>
+                  7
+                </View>
+                <View className="normal-item__key" onClick={() => handleDigitInput('8')}>
+                  8
+                </View>
+                <View className="normal-item__key" onClick={() => handleDigitInput('9')}>
+                  9
+                </View>
               </View>
 
-              <View className='d-flex flex-1'>
-                <View className='double-width__normal-item' onClick={() => handleDigitInput('0')}>0</View>
-                <View className='normal-item__key' onClick={() => handleDigitInput('.')}>.</View>
+              <View className="d-flex flex-1">
+                <View className="double-width__normal-item" onClick={() => handleDigitInput('0')}>
+                  0
+                </View>
+                <View className="normal-item__key" onClick={() => handleDigitInput('.')}>
+                  .
+                </View>
               </View>
             </View>
 
             {/* 右侧结构 */}
-            <View className='calculator-keys__right'>
-              <View className='normal-item__key' onClick={() => handleOperatorInput('-')}>-</View>
-              <View className='normal-item__key' onClick={() => handleOperatorInput('+')}>+</View>
-              <View className='double-height__normal-item' onClick={() => calculateResult()}>确定</View>
+            <View className="calculator-keys__right">
+              <View className="normal-item__key" onClick={() => handleOperatorInput('-')}>
+                -
+              </View>
+              <View className="normal-item__key" onClick={() => handleOperatorInput('+')}>
+                +
+              </View>
+              <View className="double-height__normal-item" onClick={() => calculateResult()}>
+                确定
+              </View>
             </View>
           </View>
-
         </View>
       </View>
     </View>

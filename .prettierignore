@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.swc/
+package-lock.json
+src/assets/
+src/config/config.ts

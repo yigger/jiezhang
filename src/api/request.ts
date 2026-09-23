@@ -1,160 +1,140 @@
-import Taro from "@tarojs/taro"
-import HttpResult from './http-result'
+import Taro from '@tarojs/taro'
 import jz from '../jz'
+import HttpResult, { ApiError, isRecord } from './http-result'
 
-class RequestManager {
-  private static cache: { [key: string]: Promise<any> } = {};
-  
-  private static getStoredToken() {
-    const tokenData = Taro.getStorageSync('access_token_data')
-    if (!tokenData) return null
-    
-    const { token, expireTime } = JSON.parse(tokenData)
-    if (Date.now() > expireTime) {
-      Taro.removeStorageSync('access_token_data')
-      return null
-    }
-    return token
-  }
+interface StoredToken {
+  token: string
+  expireTime: number
+  scope: string
+}
+interface RequestOptions {
+  header?: Record<string, string>
+}
+type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
+type RequestData = object | string | undefined
 
-  private static setStoredToken(token: string) {
-    const expireTime = Date.now() + 2 * 60 * 60 * 1000 // 2小时过期
-    Taro.setStorageSync('access_token_data', JSON.stringify({
-      token,
-      expireTime
-    }))
-  }
+export class RequestManager {
+  private static pending = new Map<string, Promise<string>>()
 
-  static async get(url, endpoint, code): Promise<any> {
-    // 先检查本地存储的 token
-    const storedToken = this.getStoredToken()
-    if (storedToken) {
-      return {
-        statusCode: 200,
-        data: { session: storedToken }
-      }
-    }
-
-    // 如果没有有效的缓存 token，则发起请求
-    if (this.cache[url]) {
-      return this.cache[url];
-    }
-
-    const checkOpenId = Taro.request({
-      method: 'POST',
-      url: `${endpoint}/check_openid`,
-      header: {
-        'X-WX-Code': code,
-        'X-WX-APP-ID': jz.appId,
-      }
-    }).then(res => {
-      if (res.statusCode === 200 && res.data.session) {
-        this.setStoredToken(res.data.session)
-      }
-      return res
-    })
-
-    this.cache[url] = checkOpenId
-    return this.cache[url];
-  }
-
-  static async delCache() {
-    this.cache = {}
+  static clear() {
     Taro.removeStorageSync('access_token_data')
   }
-}
 
-class Request {
-  public _endpoint: string
-  constructor (endpoint: string) {
-    this._endpoint = endpoint  
-  }
-
-  get (path, data?, options = {}) {
-    return this.request('GET', path, data, options)
-  }
-
-  post (path, data, options = {}): Promise<HttpResult> {
-    return this.request('POST', path, data, options)
-  }
-
-  put (path, data, options = {}): Promise<HttpResult> {
-    return this.request('PUT', path, data, options)
-  }
-
-  delete (path, data={}, options = {}): Promise<HttpResult> {
-    return this.request('DELETE', path, data, options)
-  }
-
-  async upload (file_path, formData) {
-    const accessToken = await this.getAccessToken()
-    const header = {
-      'content-type': 'application/json',
-      'X-WX-APP-ID': jz.appId,
-      'X-WX-Skey': accessToken,
-    }
-
-    return Taro.uploadFile({
-      url: `${this._endpoint}/upload`,
-      header: header,
-      filePath: file_path,
-      formData: formData,
-      name: 'file'
-    })
-  }
-
-  async getAccessToken(): Promise<string> {
-    const loginCode = await Taro.login()
-    const res = await RequestManager.get('check_openid', this._endpoint, loginCode.code)
-    if (res.statusCode === 200) {
-      return res.data.session
-    }
-    RequestManager.delCache()
-    return ''
-  }
-
-  async request (method, path, data, options = {}): Promise<HttpResult> {
-    let retryCount = 5
-    let lastResult: HttpResult | null = null
-    // 处理路径，确保endpoint和path之间只有一个/
-    const normalizedPath = path.startsWith('/') ? path.substring(1) : path
-    const requestUrl = `${this._endpoint}/${normalizedPath}`
-    const header = Object.assign({
-      'content-type': 'application/json',
-      'X-WX-APP-ID': jz.appId
-    }, options['header'])
-
-    while (retryCount >= 0) {
-      const accessToken = await this.getAccessToken()
-      header['X-WX-Skey'] = accessToken
-      try {
-        const res = await Taro.request({
-          method: method,
-          url: requestUrl,
-          data: data,
-          header: header,
-        })
-
-        const result = new HttpResult(res);
-        if (result['data'] && result['data']['status'] === 301) {
-          RequestManager.delCache()
-          retryCount--
-          continue
-        } else {
-          lastResult = result
-          break
-        }
-      } catch (error) {
-        RequestManager.delCache()
-        retryCount--
-        if (retryCount < 0) {
-          throw error
-        }
+  static get(endpoint: string, appid: string): Promise<string> {
+    const scope = `${endpoint}|${appid}`
+    try {
+      const raw: unknown = Taro.getStorageSync('access_token_data')
+      const stored: unknown = typeof raw === 'string' ? JSON.parse(raw) : raw
+      if (
+        isRecord(stored) &&
+        stored.scope === scope &&
+        typeof stored.token === 'string' &&
+        stored.token &&
+        typeof stored.expireTime === 'number' &&
+        stored.expireTime > Date.now()
+      ) {
+        return Promise.resolve(stored.token)
       }
+    } catch {
+      /* Invalid local cache must not prevent a fresh login. */
     }
-
-    return lastResult
+    const pending = this.pending.get(scope)
+    if (pending) return pending
+    const request = (async () => {
+      const { code } = await Taro.login()
+      if (!code) throw new Error('无法获取登录凭证')
+      const response = await Taro.request<unknown>({
+        method: 'POST',
+        url: `${endpoint}/check_openid`,
+        header: { 'X-WX-Code': code, 'X-WX-APP-ID': appid }
+      })
+      const result = new HttpResult(response)
+      if (
+        !result.isSuccess ||
+        !isRecord(result.data) ||
+        typeof result.data.session !== 'string' ||
+        !result.data.session
+      ) {
+        throw new ApiError(result)
+      }
+      const stored: StoredToken = {
+        token: result.data.session,
+        expireTime: Date.now() + 2 * 60 * 60 * 1000,
+        scope
+      }
+      Taro.setStorageSync('access_token_data', JSON.stringify(stored))
+      return stored.token
+    })().finally(() => this.pending.delete(scope))
+    this.pending.set(scope, request)
+    return request
   }
 }
 
-export default Request
+export default class Request {
+  readonly _endpoint: string
+  constructor(endpoint: string) {
+    this._endpoint = endpoint.replace(/\/+$/, '')
+  }
+  get<T = unknown>(path: string, data?: RequestData, options: RequestOptions = {}) {
+    return this.request<T>('GET', path, data, options)
+  }
+  post<T = unknown>(path: string, data?: RequestData, options: RequestOptions = {}) {
+    return this.request<T>('POST', path, data, options)
+  }
+  put<T = unknown>(path: string, data?: RequestData, options: RequestOptions = {}) {
+    return this.request<T>('PUT', path, data, options)
+  }
+  delete<T = unknown>(path: string, data: RequestData = {}, options: RequestOptions = {}) {
+    return this.request<T>('DELETE', path, data, options)
+  }
+  getAccessToken(): Promise<string> {
+    return RequestManager.get(this._endpoint, jz.appId)
+  }
+
+  async upload(filePath: string, formData: Record<string, string | number>) {
+    const accessToken = await this.getAccessToken()
+    const response = await Taro.uploadFile({
+      url: `${this._endpoint}/upload`,
+      filePath,
+      formData,
+      name: 'file',
+      header: { 'X-WX-APP-ID': jz.appId, 'X-WX-Skey': accessToken }
+    })
+    const data: unknown = JSON.parse(response.data)
+    const result = new HttpResult({ ...response, data })
+    if (!result.isSuccess) throw new ApiError(result)
+    return response
+  }
+
+  async request<T>(
+    method: Method,
+    path: string,
+    data?: RequestData,
+    options: RequestOptions = {}
+  ): Promise<HttpResult<T>> {
+    // Only an explicit authentication rejection can be replayed. A lost response
+    // to a write does not mean the write was rolled back on the server.
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const token = await this.getAccessToken()
+      const response = await Taro.request<T>({
+        method,
+        url: `${this._endpoint}/${path.replace(/^\/+/, '')}`,
+        data,
+        header: {
+          'content-type': 'application/json',
+          ...options.header,
+          'X-WX-APP-ID': jz.appId,
+          'X-WX-Skey': token
+        }
+      })
+      const result = new HttpResult(response)
+      if (isRecord(result.data) && result.data.status === 301) {
+        RequestManager.clear()
+        if (attempt === 0) continue
+      }
+      if (!result.isSuccess) throw new ApiError(result)
+      return result
+    }
+    throw new Error('登录已失效，请重试')
+  }
+}

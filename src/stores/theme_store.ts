@@ -1,6 +1,5 @@
-import {makeObservable, observable, action} from 'mobx';
-import jz from '@/jz'
-import { createContext } from "react";
+import { action, makeObservable, observable } from 'mobx'
+import { createContext } from 'react'
 
 class ThemeStore {
   constructor() {
@@ -30,9 +29,9 @@ class ThemeStore {
   // value: default, pink, pure
   @observable currentTheme = this.themes[3]
 
-  @action setTheme(theme) {
+  @action setTheme(theme: { name: string; value: string }) {
     this.currentTheme = theme
   }
 }
 
-export const ThemeStoreContext = createContext(new ThemeStore());
+export const ThemeStoreContext = createContext(new ThemeStore())

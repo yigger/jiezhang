@@ -1,9 +1,10 @@
-import Taro from "@tarojs/taro"
+import Taro from '@tarojs/taro'
+import { runTask, UserCancelled } from './utils/async'
 
 import { Api } from './api'
+import config from './config'
 import Router from './router'
 import Storage from './storage'
-import config from './config'
 import { EventEmitter } from './utils/event'
 
 class Jz {
@@ -12,10 +13,10 @@ class Jz {
   private _appid: string
   private _baseUrl: string
   private _apiUrl: string
-  private _api: Api
-  private _router: Router
-  private _storage: Storage
-  systemInfo: any
+  private _api!: Api
+  private _router!: Router
+  private _storage!: Storage
+  systemInfo!: ReturnType<typeof Taro.getSystemInfoSync>
 
   private constructor() {
     // 私有构造函数，防止外部直接 new
@@ -44,54 +45,54 @@ class Jz {
   }
 
   async initialize() {
-    // 初始化用户和账簿信息
-    this._api.users.getUserInfo().then(res => {
-      const data = res.data
-      if (data?.status === 200) {
-        console.log('当前用户信息:', data.data)
-        this._storage.setCurrentUser(data.data)
-      }
-    })
+    const { data } = await this._api.users.getUserInfo()
+    this._storage.setCurrentUser(data.data)
   }
 
-  toastError(content: string, duration = 1500, icon = 'none') {
-    Taro.showToast({
-      title: content,
-      icon: icon,
-      duration: duration
-    })
+  toastError(content: string, duration = 1500, icon: Taro.showToast.Option['icon'] = 'none') {
+    runTask(
+      Taro.showToast({
+        title: content,
+        icon: icon,
+        duration: duration
+      })
+    )
   }
 
-  toastSuccess(content: string, duration = 800, icon = 'success') {
-    Taro.showToast({
-      title: content,
-      icon: icon,
-      duration: duration
-    })
+  toastSuccess(content: string, duration = 800, icon: Taro.showToast.Option['icon'] = 'success') {
+    runTask(
+      Taro.showToast({
+        title: content,
+        icon: icon,
+        duration: duration
+      })
+    )
   }
 
-  confirm(text, title='提示', payload={}) {
-    return new Promise((resolve, reject) => {
-      Taro.showModal({
-        title: title,
-        content: text,
-        showCancel: true,
-        success: res => {
-          if (res.confirm) {
-            resolve(payload);
-          } else if (res.cancel) {
-            reject(payload);
+  confirm<T = undefined>(text: string, title = '提示', payload?: T) {
+    return new Promise<T | undefined>((resolve, reject) => {
+      runTask(
+        Taro.showModal({
+          title: title,
+          content: text,
+          showCancel: true,
+          success: (res) => {
+            if (res.confirm) {
+              resolve(payload)
+            } else if (res.cancel) {
+              reject(new UserCancelled())
+            }
+          },
+          fail: () => {
+            reject(new Error('无法显示确认弹窗'))
           }
-        },
-        fail: res => {
-          reject(payload);
-        }
-      });
+        })
+      )
     })
   }
 
   showNavigatorBack(): boolean {
-    if (this._router.getCurrentInstance().router.path === '/pages/home/index') {
+    if (this._router.getCurrentInstance().router?.path === '/pages/home/index') {
       return false
     }
     return this._router.canNavigateBack()
@@ -99,11 +100,19 @@ class Jz {
 
   async withLoading<T>(promise: Promise<T>): Promise<T> {
     try {
-      Taro.showLoading({title: "加载中"})
+      runTask(Taro.showLoading({ title: '加载中' }))
       return await promise
     } finally {
       Taro.hideLoading()
     }
+  }
+
+  async ensureAccountBook() {
+    const cached = this.storage.getCurrentAccountBook()
+    if (cached?.id) return cached
+    const { data } = await this.api.users.getSettingsData()
+    this.storage.setCurrentAccountBook(data.user.account_book)
+    return data.user.account_book
   }
 
   get currentUser() {
@@ -150,8 +159,7 @@ const jz = Jz.getInstance().bootstrap({
 })
 
 if (process.env.NODE_ENV !== 'production') {
-  console.log("运行环境:", process.env.NODE_ENV)
-  console.log("配置初始化", jz)
+  console.log('运行环境:', process.env.NODE_ENV)
 }
 
 export default jz

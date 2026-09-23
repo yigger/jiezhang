@@ -1,5 +1,4 @@
 export default {
-    navigationBarTitleText: '好友列表',
-    enableShareAppMessage: true
+  navigationBarTitleText: '好友列表',
+  enableShareAppMessage: true
 }
-  

@@ -1,9 +1,12 @@
-export const getExpendLineOption = (data) => {
+export const getExpendLineOption = (data: {
+  months: number[]
+  expends: number[]
+  incomes: number[]
+}) => {
   return {
-    legend: {
-    },
+    legend: {},
     tooltip: {},
-    xAxis: { type: 'category', gridIndex: 0, data: data.months.map((item) => `${item}月`)},
+    xAxis: { type: 'category', gridIndex: 0, data: data.months.map((item) => `${item}月`) },
     yAxis: [
       {
         type: 'value'
@@ -45,10 +48,10 @@ export const getExpendLineOption = (data) => {
         data: data.incomes
       }
     ]
-  };
+  }
 }
 
-export const getPieOption = (data) => {
+export const getPieOption = (data: { name: string; value: number }[]) => {
   return {
     title: {
       text: '消费分类占比',

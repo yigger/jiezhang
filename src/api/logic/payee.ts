@@ -1,38 +1,18 @@
-import Request from '../request'
-import jz from '../../jz'
-
-export interface PayeeType {
-  id: number
-  name: string
-}
-
+import type Request from '../request'
+import type { Id, PayeeListItem } from '../types'
+export type PayeeType = PayeeListItem
 export default class Payee {
-  private _request: Request
-  constructor (request: Request) {
-    this._request = request
-  }
-
+  constructor(private readonly request: Request) {}
   async list(): Promise<PayeeType[]> {
-    const currentAccountBook = jz.storage.getCurrentAccountBook()
-    const res = await this._request.get('payees', { account_book_id: currentAccountBook.id })
-    return res.data
+    return (await this.request.get<PayeeType[]>('payees')).data
   }
-
-  async create(payee: PayeeType): Promise<PayeeType> {
-    const currentAccountBook = jz.storage.getCurrentAccountBook()
-    const res = await this._request.post('payees', { account_book_id: currentAccountBook.id, payee })
-    return res.data
+  async create(payee: Pick<PayeeType, 'name'>): Promise<PayeeType> {
+    return (await this.request.post<PayeeType>('payees', { payee })).data
   }
-
-  async update(payeeId: string, payee: PayeeType): Promise<PayeeType> {
-    const currentAccountBook = jz.storage.getCurrentAccountBook()
-    const res = await this._request.put(`payees/${payeeId}`, { account_book_id: currentAccountBook.id, payee })
-    return res.data
+  async update(payeeId: Id, payee: Pick<PayeeType, 'name'>): Promise<PayeeType> {
+    return (await this.request.put<PayeeType>(`payees/${payeeId}`, { payee })).data
   }
-
   async delete(payee: PayeeType): Promise<boolean> {
-    const currentAccountBook = jz.storage.getCurrentAccountBook()
-    const res = await this._request.delete(`payees/${payee.id}`, { account_book_id: currentAccountBook.id })
-    return res.data
+    return (await this.request.delete<{ status: 'success' }>(`payees/${payee.id}`)).isSuccess
   }
 }

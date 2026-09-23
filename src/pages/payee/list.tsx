@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text } from '@tarojs/components'
+import type * as ApiTypes from '@/api/types'
 import BasePage from '@/components/BasePage'
 import { Button } from '@/components/UiComponents'
 import jz from '@/jz'
-import Taro from '@tarojs/taro'
+import { showModal } from '@/utils/modal'
+import { Text, View } from '@tarojs/components'
+import React, { useEffect, useState } from 'react'
+import { guardEvent, runTask } from '../../utils/async'
 
 import './list.scss'
 
 const PayeeList: React.FC = () => {
-  const [payees, setPayees] = useState([])
+  const [payees, setPayees] = useState<ApiTypes.PayeeListItem[]>([])
 
   useEffect(() => {
-    loadPayees()
+    runTask(loadPayees())
   }, [])
 
   const loadPayees = async () => {
-    const data = await jz.withLoading(await jz.api.payees.list())
+    const data = await jz.withLoading(jz.api.payees.list())
     setPayees(data)
   }
 
@@ -26,14 +28,14 @@ const PayeeList: React.FC = () => {
     }
     try {
       await jz.api.payees.create({ name })
-      loadPayees()
+      runTask(loadPayees())
     } catch (error) {
-      jz.toastError(error.message)
+      jz.toastError(error instanceof Error ? error.message : '操作失败')
     }
   }
 
-  const handleDelete = async (payee) => {
-    const { confirm } = await Taro.showModal({
+  const handleDelete = async (payee: ApiTypes.PayeeListItem) => {
+    const { confirm } = await showModal({
       title: '确认删除',
       content: `确定要删除商家"${payee.name}"吗？`,
       confirmText: '删除',
@@ -43,15 +45,15 @@ const PayeeList: React.FC = () => {
     if (confirm) {
       try {
         await jz.api.payees.delete(payee)
-        loadPayees()
+        runTask(loadPayees())
       } catch (error) {
-        jz.toastError(error.message)
+        jz.toastError(error instanceof Error ? error.message : '操作失败')
       }
     }
   }
 
   const handleAdd = async () => {
-    const { confirm, content } = await Taro.showModal({
+    const { confirm, content } = await showModal({
       title: '添加商家',
       content: '',
       editable: true,
@@ -60,12 +62,12 @@ const PayeeList: React.FC = () => {
       cancelText: '取消'
     })
     if (confirm && content) {
-      handleSubmit(content)
+      runTask(handleSubmit(content))
     }
   }
 
-  const handleEdit = async (payee) => {
-    const { confirm, content } = await Taro.showModal({
+  const handleEdit = async (payee: ApiTypes.PayeeListItem) => {
+    const { confirm, content } = await showModal({
       title: '编辑商家',
       content: payee.name,
       editable: true,
@@ -77,47 +79,34 @@ const PayeeList: React.FC = () => {
     if (confirm && content) {
       try {
         await jz.api.payees.update(payee.id, { name: content })
-        loadPayees()
+        runTask(loadPayees())
       } catch (error) {
-        jz.toastError(error.message)
+        jz.toastError(error instanceof Error ? error.message : '操作失败')
       }
     }
   }
 
   return (
-    <BasePage headerName='商家管理'>
-      <View className='payee-list'>
+    <BasePage headerName="商家管理">
+      <View className="payee-list">
         {payees.map((payee, _) => (
-          <View
-            key={payee.id}
-            className={`payee-item d-flex flex-between flex-center p-4`}
-          >
-            <View className='d-flex flex-center'>
+          <View key={payee.id} className={`payee-item d-flex flex-between flex-center p-4`}>
+            <View className="d-flex flex-center">
               <Text>{payee.name}</Text>
             </View>
-            <View className='d-flex'>
-              <Text
-                className='mr-4 col-primary'
-                onClick={() => handleEdit(payee)}
-              >
+            <View className="d-flex">
+              <Text className="mr-4 col-primary" onClick={guardEvent(() => handleEdit(payee))}>
                 编辑
               </Text>
-              <Text
-                className='col-danger'
-                onClick={() => handleDelete(payee)}
-              >
+              <Text className="col-danger" onClick={guardEvent(() => handleDelete(payee))}>
                 删除
               </Text>
             </View>
           </View>
         ))}
 
-        <View className='p-4'>
-          <Button
-            type='primary'
-            title='添加商家'
-            onClick={handleAdd}
-          />
+        <View className="p-4">
+          <Button type="primary" title="添加商家" onClick={guardEvent(handleAdd)} />
         </View>
       </View>
     </BasePage>

@@ -1,16 +1,17 @@
-import Request from '../request'
+import type Request from '../request'
+import type { Envelope, Query, StatementListItem, SuperTimeResponse } from '../types'
 
 export default class SuperStatement {
   private _request: Request
-  constructor (request: Request) {
+  constructor(request: Request) {
     this._request = request
   }
 
   getTime() {
-    return this._request.get('super_statements/time')
+    return this._request.get<Envelope<SuperTimeResponse>>('super_statements/time')
   }
 
-  getStatements(params) {
-    return this._request.get('super_statements/list', params)
+  getStatements(params: Query) {
+    return this._request.get<{ data: StatementListItem[] }>('super_statements/list', params)
   }
 }

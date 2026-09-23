@@ -1,14 +1,31 @@
-import React, { useMemo } from 'react'
-import { View, Text } from '@tarojs/components'
+import { Text, View } from '@tarojs/components'
+import { useMemo } from 'react'
 
 const COLORS = [
-  '#f56a00', '#7265e6', '#ffbf00', '#00a2ae',
-  '#1890ff', '#52c41a', '#722ed1', '#eb2f96',
-  '#faad14', '#13c2c2', '#fa541c', '#a0d911'
+  '#f56a00',
+  '#7265e6',
+  '#ffbf00',
+  '#00a2ae',
+  '#1890ff',
+  '#52c41a',
+  '#722ed1',
+  '#eb2f96',
+  '#faad14',
+  '#13c2c2',
+  '#fa541c',
+  '#a0d911'
 ]
 
-export default function Avatar({ text, size = 34, backgroundColor }) {
-  const getInitials = (text) => {
+export default function Avatar({
+  text,
+  size = 34,
+  backgroundColor
+}: {
+  text?: string
+  size?: number
+  backgroundColor?: string
+}) {
+  const getInitials = (text?: string) => {
     if (!text) return '?'
     return text.charAt(0).toUpperCase()
   }
@@ -23,7 +40,7 @@ export default function Avatar({ text, size = 34, backgroundColor }) {
 
   return (
     <View
-      className='avatar-component'
+      className="avatar-component"
       style={{
         width: `${size}px`,
         height: `${size}px`,

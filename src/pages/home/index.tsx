@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
 import BasePage from '@/components/BasePage'
+import { FinancePage, IndexPage, ProfilePage, StatisticPage } from '@/components/Home'
 import { View } from '@tarojs/components'
-import { useShareAppMessage } from "@tarojs/taro"
-import { IndexPage, StatisticPage, FinancePage, ProfilePage } from '@/components/Home'
+import { useShareAppMessage } from '@tarojs/taro'
+import { useState } from 'react'
 import config from '../../config'
 
 const tabs = [
@@ -23,7 +23,7 @@ const tabs = [
   },
   {
     page: 'profile',
-    name: '我的', 
+    name: '我的',
     icon: 'jcon-user'
   }
 ]
@@ -48,10 +48,10 @@ export default function Home() {
       switchTab={(tab) => setActiveTab(tab)}
     >
       <View key={activeTab.page}>
-        { activeTab.page === 'index' && <IndexPage /> }
-        { activeTab.page === 'statistic' && <StatisticPage /> }
-        { activeTab.page === 'asset' && <FinancePage /> }
-        { activeTab.page === 'profile' && <ProfilePage /> }
+        {activeTab.page === 'index' && <IndexPage />}
+        {activeTab.page === 'statistic' && <StatisticPage />}
+        {activeTab.page === 'asset' && <FinancePage />}
+        {activeTab.page === 'profile' && <ProfilePage />}
       </View>
     </BasePage>
   )

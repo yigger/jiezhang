@@ -81,7 +81,7 @@ $themes = {
 
 for themeKey, _ in $themes {
   themeData = "jz-theme-" + themeKey
-  .page-root[data-theme-name={themeData}] {
+  .page-root.{themeData} {
     --primary-color: $themes[themeKey]['primaryColor']
     --primary-bg-color: $themes[themeKey]['primaryBgColor']
     --primary-bg-text-color: $themes[themeKey]['primaryBgTextColor']

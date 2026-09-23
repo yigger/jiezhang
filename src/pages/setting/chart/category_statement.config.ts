@@ -1,4 +1,3 @@
 export default {
-    navigationBarTitleText: '分类报表'
-  }
-  
+  navigationBarTitleText: '分类报表'
+}

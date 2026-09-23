@@ -1,4 +1,3 @@
 export default {
-    navigationBarTitleText: '账单图库'
-  }
-  
+  navigationBarTitleText: '账单图库'
+}

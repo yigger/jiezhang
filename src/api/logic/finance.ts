@@ -1,34 +1,40 @@
-import Request from '../request'
-type AssetStatementParams = {
-  asset_id: number;
-  year: number;
-  month: number;
-}
+import type Request from '../request'
+import type {
+  Id,
+  StatementListItem,
+  StatusResponse,
+  WalletInformation,
+  WalletResponse,
+  WalletTimelineResponse
+} from '../types'
 
 export default class Finance {
   private _request: Request
-  constructor (request: Request) {
+  constructor(request: Request) {
     this._request = request
   }
 
-  async index () {
-    return await this._request.get('wallet')
+  async index() {
+    return await this._request.get<WalletResponse>('wallet')
   }
 
-  async getAssetDetail(assetId: number) {
-    return await this._request.get('wallet/information', { asset_id: assetId })
+  async getAssetDetail(assetId: Id) {
+    return await this._request.get<WalletInformation>('wallet/information', { asset_id: assetId })
   }
 
-  async getAssetTimeline(assetId: number) {
-    return await this._request.get('wallet/time_line', { asset_id: assetId })
+  async getAssetTimeline(assetId: Id) {
+    return await this._request.get<WalletTimelineResponse>('wallet/time_line', {
+      asset_id: assetId
+    })
   }
 
-  async getAssetStatements(params: AssetStatementParams) {
-    return await this._request.get('wallet/statement_list', params)
+  async getAssetStatements(params: { asset_id: Id; year: number; month: number }) {
+    return await this._request.get<{ data: StatementListItem[] }>('wallet/statement_list', params)
   }
 
-  async updateAmountVisible({visible}) {
-    return await this._request.put('users/update_user', { user: { hidden_asset_money: visible } })
+  async updateAmountVisible({ visible }: { visible: boolean }) {
+    return await this._request.put<StatusResponse>('users/update_user', {
+      user: { hidden_asset_money: !visible }
+    })
   }
-
 }

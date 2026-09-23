@@ -1,76 +1,86 @@
-import { useState, useContext, useEffect } from 'react'
-import { useDidShow } from '@tarojs/taro'
-import { View, Image, Text } from '@tarojs/components'
-import jz from '@/jz'
 import AssetBanner from '@/components/AssetBanner'
-import { observer } from 'mobx-react';
-import { HomeStoreContext } from "@/src/stores"
 import Avatar from '@/components/Avatar'
+import jz from '@/jz'
+import { HomeStoreContext } from '@/src/stores'
+import { displayAmount } from '@/utils/validation'
+import { Image, Text, View } from '@tarojs/components'
+import { useDidShow } from '@tarojs/taro'
+import { observer } from 'mobx-react'
+import { useContext, useEffect, useState } from 'react'
+import { runTask } from '../../../utils/async'
 
 export const FinancePage = observer(() => {
-  const store: HomeStoreContext = useContext(HomeStoreContext)
-  const [shouldFetch, setShouldFetch] = useState(true);
+  const store = useContext(HomeStoreContext)
+  const [shouldFetch, setShouldFetch] = useState(true)
   useEffect(() => {
     if (shouldFetch) {
-      store.getFinanceData()
+      runTask(store.getFinanceData())
       setShouldFetch(false)
     }
-  }, [shouldFetch]);
+  }, [shouldFetch, store])
   useDidShow(() => {
-    setShouldFetch(true);
-  });
+    setShouldFetch(true)
+  })
 
   const updateSecretAmount = async () => {
-    store.updateFinanceAmountVisible()
+    await store.updateFinanceAmountVisible()
   }
 
   return (
-    <View className='jz-pages__finance'>
+    <View className="jz-pages__finance">
       <AssetBanner
-        firstColumn={
-          { title: '净资产', amount: store.financeData.header.net_worth }
-        }
-        secColumn={
-          { title: '总资产', amount: store.financeData.header.total_asset }
-        }
-        thirdColumn={
-          { title: '总负债', amount: store.financeData.header.total_liability }
-        }
+        firstColumn={{ title: '净资产', amount: store.financeData.header.net_worth }}
+        secColumn={{ title: '总资产', amount: store.financeData.header.total_asset }}
+        thirdColumn={{ title: '总负债', amount: store.financeData.header.total_liability }}
         amountVisible={store.financeData.amount_visible}
         updateSecretAmount={updateSecretAmount}
       />
 
-      <View className='jz-pages__finance-list'>
+      <View className="jz-pages__finance-list">
         {store.financeData.list.map((asset) => (
-          <View className='jz-pages__finance-list__item'>
-            <View className='jz-pages__finance__child-total'>
-              <Text className='asset-name'>{asset.name}</Text>
-              <Text className='asset-amount'>￥{asset.amount}</Text>
+          <View key={asset.name} className="jz-pages__finance-list__item">
+            <View className="jz-pages__finance__child-total">
+              <Text className="asset-name">{asset.name}</Text>
+              <Text className="asset-amount">
+                ￥{displayAmount(asset.amount, store.financeData.amount_visible)}
+              </Text>
             </View>
-            {asset.childs.map(item => (
-              <View 
-                className='jz-pages__finance__child-list' 
-                onClick={() => { 
-                  jz.router.navigateTo({ 
-                    url: `/pages/assets_flow/index?asset_id=${item.id}` 
-                  }) 
+            {asset.childs.map((item) => (
+              <View
+                key={item.id}
+                className="jz-pages__finance__child-list"
+                onClick={() => {
+                  runTask(
+                    jz.router.navigateTo({
+                      url: `/pages/assets_flow/index?asset_id=${item.id}`
+                    })
+                  )
                 }}
               >
-                <View className='d-flex flex-center'>
-                  <View className='icon-wrapper'>
-                    {item.icon_path ? (
-                      <Image src={item.icon_path} className='asset-icon' />
-                    ) : (
-                      <Avatar 
-                        text={item.name} 
-                        backgroundColor='#1890ff'
-                        size={40}
+                <View className="d-flex flex-center">
+                  <View className="icon-wrapper">
+                    {(
+                      'icon_path' in item && typeof item.icon_path === 'string'
+                        ? item.icon_path
+                        : ''
+                    ) ? (
+                      <Image
+                        src={
+                          'icon_path' in item && typeof item.icon_path === 'string'
+                            ? item.icon_path
+                            : ''
+                        }
+                        className="asset-icon"
                       />
+                    ) : (
+                      <Avatar text={item.name} backgroundColor="#1890ff" size={40} />
                     )}
                   </View>
-                  <View className='asset-detail'>
-                    <Text className='asset-name'>{item.name}</Text>
-                    <Text className='asset-amount'>￥{item.amount}</Text>
+                  <View className="asset-detail">
+                    <Text className="asset-name">{item.name}</Text>
+                    <Text className="asset-amount">
+                      ￥{displayAmount(item.amount, store.financeData.amount_visible)}
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -78,76 +88,112 @@ export const FinancePage = observer(() => {
           </View>
         ))}
 
-        { store.financeData.payables && store.financeData.payables.childs.length > 0 &&
-          <View className='jz-pages__finance-list__item'>
-            <View className='jz-pages__finance__child-total'>
-              <Text className='asset-name'>{store.financeData.payables.name}</Text>
-              <Text className='asset-amount'>￥{store.financeData.payables.amount}</Text>
+        {store.financeData.payables && store.financeData.payables.childs.length > 0 && (
+          <View className="jz-pages__finance-list__item">
+            <View className="jz-pages__finance__child-total">
+              <Text className="asset-name">{store.financeData.payables.name}</Text>
+              <Text className="asset-amount">
+                ￥
+                {displayAmount(store.financeData.payables.amount, store.financeData.amount_visible)}
+              </Text>
             </View>
-            {store.financeData.payables.childs.map(item => (
-              <View 
-                className='jz-pages__finance__child-list' 
+            {store.financeData.payables.childs.map((item) => (
+              <View
+                key={item.category_id}
+                className="jz-pages__finance__child-list"
                 onClick={() => {
-                  jz.router.navigateTo({ url: `/pages/setting/chart/category_statement?category_id=${item.category_id}` })
+                  runTask(
+                    jz.router.navigateTo({
+                      url: `/pages/setting/chart/category_statement?category_id=${item.category_id}`
+                    })
+                  )
                 }}
               >
-                <View className='d-flex flex-center'>
-                  <View className='icon-wrapper'>
-                    {item.icon_path ? (
-                      <Image src={item.icon_path} className='asset-icon' />
-                    ) : (
-                      <Avatar 
-                        text={item.name} 
-                        backgroundColor='#1890ff'
-                        size={40}
+                <View className="d-flex flex-center">
+                  <View className="icon-wrapper">
+                    {(
+                      'icon_path' in item && typeof item.icon_path === 'string'
+                        ? item.icon_path
+                        : ''
+                    ) ? (
+                      <Image
+                        src={
+                          'icon_path' in item && typeof item.icon_path === 'string'
+                            ? item.icon_path
+                            : ''
+                        }
+                        className="asset-icon"
                       />
+                    ) : (
+                      <Avatar text={item.name} backgroundColor="#1890ff" size={40} />
                     )}
                   </View>
-                  <View className='asset-detail'>
-                    <Text className='asset-name'>{item.name}</Text>
-                    <Text className='asset-amount'>￥{item.amount}</Text>
+                  <View className="asset-detail">
+                    <Text className="asset-name">{item.name}</Text>
+                    <Text className="asset-amount">
+                      ￥{displayAmount(item.amount, store.financeData.amount_visible)}
+                    </Text>
                   </View>
                 </View>
               </View>
             ))}
           </View>
-        }
+        )}
 
-        { store.financeData.receivables && store.financeData.receivables.childs.length > 0 &&
-          <View className='jz-pages__finance-list__item'>
-            <View className='jz-pages__finance__child-total'>
-              <Text className='asset-name'>{store.financeData.receivables.name}</Text>
-              <Text className='asset-amount'>￥{store.financeData.receivables.amount}</Text>
+        {store.financeData.receivables && store.financeData.receivables.childs.length > 0 && (
+          <View className="jz-pages__finance-list__item">
+            <View className="jz-pages__finance__child-total">
+              <Text className="asset-name">{store.financeData.receivables.name}</Text>
+              <Text className="asset-amount">
+                ￥
+                {displayAmount(
+                  store.financeData.receivables.amount,
+                  store.financeData.amount_visible
+                )}
+              </Text>
             </View>
-            {store.financeData.receivables.childs.map(item => (
-              <View 
-                className='jz-pages__finance__child-list' 
-                onClick={() => { 
-                  jz.router.navigateTo({ url: `/pages/setting/chart/category_statement?category_id=${item.category_id}` })
+            {store.financeData.receivables.childs.map((item) => (
+              <View
+                key={item.category_id}
+                className="jz-pages__finance__child-list"
+                onClick={() => {
+                  runTask(
+                    jz.router.navigateTo({
+                      url: `/pages/setting/chart/category_statement?category_id=${item.category_id}`
+                    })
+                  )
                 }}
               >
-                <View className='d-flex flex-center'>
-                  <View className='icon-wrapper'>
-                    {item.icon_path ? (
-                      <Image src={item.icon_path} className='asset-icon' />
-                    ) : (
-                      <Avatar 
-                        text={item.name} 
-                        backgroundColor='#1890ff'
-                        size={40}
+                <View className="d-flex flex-center">
+                  <View className="icon-wrapper">
+                    {(
+                      'icon_path' in item && typeof item.icon_path === 'string'
+                        ? item.icon_path
+                        : ''
+                    ) ? (
+                      <Image
+                        src={
+                          'icon_path' in item && typeof item.icon_path === 'string'
+                            ? item.icon_path
+                            : ''
+                        }
+                        className="asset-icon"
                       />
+                    ) : (
+                      <Avatar text={item.name} backgroundColor="#1890ff" size={40} />
                     )}
                   </View>
-                  <View className='asset-detail'>
-                    <Text className='asset-name'>{item.name}</Text>
-                    <Text className='asset-amount'>￥{item.amount}</Text>
+                  <View className="asset-detail">
+                    <Text className="asset-name">{item.name}</Text>
+                    <Text className="asset-amount">
+                      ￥{displayAmount(item.amount, store.financeData.amount_visible)}
+                    </Text>
                   </View>
                 </View>
               </View>
             ))}
           </View>
-        }
-
+        )}
       </View>
     </View>
   )

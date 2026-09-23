@@ -1,4 +1,3 @@
 export default {
-    navigationBarTitleText: '商家管理',
-  }
-  
+  navigationBarTitleText: '商家管理'
+}

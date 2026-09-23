@@ -1,85 +1,89 @@
-import Taro from "@tarojs/taro"
+import Taro from '@tarojs/taro'
+import { isRecord } from '../api/http-result'
+import type { HomeSettingsAccountBook, SelectionData, UserProfile } from '../api/types'
 
 export default class Storage {
   private _version = 'v1'
 
-  saveLocal(key, value, expireDays = 7) {
+  saveLocal<T>(key: string, value: T, expireDays = 7) {
     const data = {
       value,
       timestamp: Date.now(),
       expireDays
     }
-    Taro.setStorage({
-      key: key + '_' + this._version,
-      data
-    })
+    Taro.setStorageSync(key + '_' + this._version, data)
   }
 
-  getLocal(key) {
-    const data = Taro.getStorageSync(key + '_' + this._version)
-    if (!data) return null
-    
+  getLocal<T>(key: string): T | null {
+    const data: unknown = Taro.getStorageSync(key + '_' + this._version)
+    if (
+      !isRecord(data) ||
+      typeof data.timestamp !== 'number' ||
+      typeof data.expireDays !== 'number'
+    )
+      return null
+
     const { value, timestamp, expireDays } = data
     const now = Date.now()
     const days = (now - timestamp) / (1000 * 60 * 60 * 24)
-    
+
     if (days > expireDays) {
       this.delLocal(key)
       return null
     }
-    
-    return value
+
+    return value as T
   }
 
-  delLocal(key) {
+  delLocal(key: string) {
     Taro.removeStorageSync(key + '_' + this._version)
   }
 
-  setCurrentUser(user) {
+  setCurrentUser(user: UserProfile) {
     this.saveLocal('currentUser', user)
   }
 
   getCurrentUser() {
-    return this.getLocal('currentUser')
+    return this.getLocal<UserProfile>('currentUser')
   }
 
   getCurrentTheme() {
-    return this.getLocal('currentTheme')
+    return this.getLocal<string>('currentTheme')
   }
 
-  setCurrentTheme(data) {
+  setCurrentTheme(data: string) {
     this.saveLocal('currentTheme', data)
   }
 
-  setAccessToken(data) {
+  setAccessToken(data: string) {
     this.saveLocal('accessToken', data)
   }
 
   getAccessToken() {
-    return this.getLocal('accessToken')
+    return this.getLocal<string>('accessToken')
   }
 
   delAccessToken() {
     this.delLocal('accessToken')
   }
 
-  setWalletData(data) {
-    this.saveLocal('walletPageData', data)
+  setWalletData(data: string) {
+    this.saveLocal(`walletPageData_${this.getCurrentAccountBook()?.id ?? 'unknown'}`, data)
   }
 
   getWalletData() {
-    return this.getLocal('walletPageData')
+    return this.getLocal<string>(`walletPageData_${this.getCurrentAccountBook()?.id ?? 'unknown'}`)
   }
 
-  setCurrentAccountBook(data) {
+  setCurrentAccountBook(data: HomeSettingsAccountBook) {
     this.saveLocal('currentAccountBook', data)
   }
 
   getCurrentAccountBook() {
-    return this.getLocal('currentAccountBook')
+    return this.getLocal<HomeSettingsAccountBook>('currentAccountBook')
   }
 
-  setStatementCategories(type, data) {
+  setStatementCategories(type: string, data: SelectionData) {
     const cacheAB = this.getCurrentAccountBook()
     if (cacheAB) {
       this.saveLocal(`currentCategories_${type}_${cacheAB.id}`, data)
@@ -88,16 +92,16 @@ export default class Storage {
     }
   }
 
-  getStatementCategories(type) {
+  getStatementCategories(type: string) {
     const cacheAB = this.getCurrentAccountBook()
     if (cacheAB) {
-      return this.getLocal(`currentCategories_${type}_${cacheAB.id}`)
+      return this.getLocal<SelectionData>(`currentCategories_${type}_${cacheAB.id}`)
     } else {
       return null
     }
   }
 
-  setStatementAssets(data) {
+  setStatementAssets(data: SelectionData) {
     const cacheAB = this.getCurrentAccountBook()
     if (cacheAB) {
       this.saveLocal(`currentAssets_${cacheAB.id}`, data)
@@ -109,7 +113,7 @@ export default class Storage {
   getStatementAssets() {
     const cacheAB = this.getCurrentAccountBook()
     if (cacheAB) {
-      return this.getLocal(`currentAssets_${cacheAB.id}`)
+      return this.getLocal<SelectionData>(`currentAssets_${cacheAB.id}`)
     } else {
       return null
     }
@@ -134,5 +138,3 @@ export default class Storage {
     }
   }
 }
-
-

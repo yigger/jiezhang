@@ -1,24 +1,32 @@
-import { useState, useEffect } from 'react'
-import { View, Image, Text, Picker } from '@tarojs/components'
-import jz from '@/jz'
+import type * as ApiTypes from '@/api/types'
 import BasePage from '@/components/BasePage'
-import { AtProgress } from 'taro-ui'
-import { format, getDaysInMonth, differenceInDays, endOfMonth, startOfMonth } from 'date-fns'
+import jz from '@/jz'
+import { showModal } from '@/utils/modal'
+import { Image, Picker, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { differenceInDays, endOfMonth, format, getDaysInMonth, startOfMonth } from 'date-fns'
+import { useEffect, useState } from 'react'
+import { AtProgress } from 'taro-ui'
+import { guardEvent, runTask } from '../../../utils/async'
 
-export default function BudgetPage () {
-  const [headerData, setHeaderData] = useState({})
-  const [parentList, setParentList] = useState([])
+export default function BudgetPage() {
+  const [headerData, setHeaderData] = useState<ApiTypes.BudgetSummary>({
+    source_amount: 0,
+    amount: '0',
+    used: 0,
+    surplus: 0
+  })
+  const [parentList, setParentList] = useState<ApiTypes.BudgetParentItem[]>([])
   const [currentDate, setCurrentDate] = useState(new Date())
-  
+
   // 计算预算相关数据
   const calculateBudgetMetrics = () => {
     const daysInMonth = getDaysInMonth(currentDate)
     const today = new Date()
     const monthEnd = endOfMonth(currentDate)
-    const daysLeft = differenceInDays(monthEnd, today)
+    const daysLeft = Math.max(0, Math.min(daysInMonth, differenceInDays(monthEnd, today)))
     const dailyBudget = headerData.source_amount / daysInMonth
-    const dailySpent = headerData.used / (daysInMonth - daysLeft)
+    const dailySpent = headerData.used / Math.max(1, daysInMonth - daysLeft)
     const dailyRemaining = (headerData.surplus || 0) / (daysLeft || 1)
 
     return {
@@ -32,7 +40,7 @@ export default function BudgetPage () {
     }
   }
 
-  const getHeaderData = async (date) => {
+  const getHeaderData = async (date: Date) => {
     const { data } = await jz.api.budgets.getSummary({
       year: format(date, 'yyyy'),
       month: format(date, 'MM')
@@ -40,201 +48,234 @@ export default function BudgetPage () {
     setHeaderData(data)
   }
 
-  const getParentData = async (date) => {
-    const { data } = await jz.withLoading(jz.api.budgets.getParentList({
-      year: format(date, 'yyyy'),
-      month: format(date, 'MM')
-    }))
+  const getParentData = async (date: Date) => {
+    const { data } = await jz.withLoading(
+      jz.api.budgets.getParentList({
+        year: format(date, 'yyyy'),
+        month: format(date, 'MM')
+      })
+    )
     setParentList(data)
   }
 
   useEffect(() => {
-    getHeaderData(currentDate)
-    getParentData(currentDate)
+    runTask(getHeaderData(currentDate))
+    runTask(getParentData(currentDate))
 
     // 监听预算更新事件
-    jz.event.on('budget:update', () => {
-      getHeaderData(currentDate)
-      getParentData(currentDate)
-    })
+    const refresh = () => {
+      runTask(getHeaderData(currentDate))
+      runTask(getParentData(currentDate))
+    }
+    jz.event.on('budget:update', refresh)
 
     // 组件卸载时移除事件监听
     return () => {
-      jz.event.off('budget:update')
+      jz.event.off('budget:update', refresh)
     }
   }, [currentDate])
 
-
-  const handleDateChange = (e) => {
+  const handleDateChange = (e: { detail: { value: string } }) => {
     const [year, month] = e.detail.value.split('-')
-    const date = new Date(year, month - 1)
+    const date = new Date(Number(year), Number(month) - 1)
     setCurrentDate(date)
-    getHeaderData(date)
+    runTask(getHeaderData(date))
   }
 
-  const handleAccountBookBudget = (categoryId, amount) => {
-    Taro.showModal({
-      title: '修改预算',
-      content: amount.toString().replace(/\.0$/, '') || amount.toFixed(2), // 处理金额显示，如果小数位是.00则只保留整数部分，否则保留两位小数
-      inputType: 'number',
-      editable: true,
-      success: async (res) => {
-        if (res.confirm) {
-          const newBudget = parseFloat(res.content)
-          if (!isNaN(newBudget) && newBudget >= 0) {
-            if (categoryId === 0) {
-              const {data} = await jz.api.budgets.updateRootAmount({amount: newBudget})
-              if (data.status !== 200) {
-                Taro.showToast({
-                  title: data.msg,
-                  icon: 'none'
+  const handleAccountBookBudget = (categoryId: number, amount: number) => {
+    runTask(
+      showModal({
+        title: '修改预算',
+        content: amount.toString().replace(/\.0$/, '') || amount.toFixed(2), // 处理金额显示，如果小数位是.00则只保留整数部分，否则保留两位小数
+        inputType: 'number',
+        editable: true,
+        success: async (res) => {
+          if (res.confirm) {
+            const newBudget = parseFloat(res.content)
+            if (!isNaN(newBudget) && newBudget >= 0) {
+              if (categoryId === 0) {
+                const { data } = await jz.api.budgets.updateRootAmount({ amount: newBudget })
+                if (data.status !== 200) {
+                  runTask(
+                    Taro.showToast({
+                      title: data.msg || '操作失败',
+                      icon: 'none'
+                    })
+                  )
+                  return
+                }
+              } else {
+                const { data } = await jz.api.budgets.updateCategoryAmount({
+                  category_id: categoryId,
+                  amount: newBudget
                 })
-                return
+                if (data.status !== 200) {
+                  runTask(
+                    Taro.showToast({
+                      title: data.msg || '操作失败',
+                      icon: 'none'
+                    })
+                  )
+                  return
+                }
+                runTask(getParentData(currentDate))
               }
-            } else {
-              const {data} = await jz.api.budgets.updateCategoryAmount({category_id: categoryId, amount: newBudget})
-              if (data.status !== 200) {
-                Taro.showToast({
-                  title: data.msg,
-                  icon: 'none'
-                })
-                return
-              }
-              getParentData(currentDate)
+              runTask(getHeaderData(currentDate))
             }
-            getHeaderData(currentDate)
           }
         }
-      }
-    })
+      })
+    )
   }
 
   return (
-    <BasePage headerName='预算管理'>
-      <View className='jz-pages__budget'>
-        <View className='header-banner'>
-          <View className='date-picker'>
+    <BasePage headerName="预算管理">
+      <View className="jz-pages__budget">
+        <View className="header-banner">
+          <View className="date-picker">
             <Picker
-              mode='date'
-              fields='month'
+              mode="date"
+              fields="month"
               value={format(currentDate, 'yyyy-MM')}
               onChange={handleDateChange}
             >
-              <View className='picker-text'>
+              <View className="picker-text">
                 {format(currentDate, 'yyyy年MM月')}
-                <Text className='iconfont jcon-arrow-down ml-1'></Text>
+                <Text className="iconfont jcon-arrow-down ml-1"></Text>
               </View>
             </Picker>
           </View>
 
-          <View className='budget-period'>
+          <View className="budget-period">
             <Text>{calculateBudgetMetrics().monthStart}</Text>
-            <Text className='mx-2'>至</Text>
+            <Text className="mx-2">至</Text>
             <Text>{calculateBudgetMetrics().monthEnd}</Text>
-            <Text className='days-left'>距离月底还剩 {calculateBudgetMetrics().daysLeft} 天</Text>
+            <Text className="days-left">距离月底还剩 {calculateBudgetMetrics().daysLeft} 天</Text>
           </View>
 
-          <View className='budget-amount'>
-            <View className='progress-ring'>
-              <View className='inner-content'>
-                <View className='fs-14'>总预算</View>
-                <Text className='amount'>￥{headerData['amount'] || 0}</Text>
-                <Text className='iconfont jcon-editor ml-2' onClick={() => {
-                  handleAccountBookBudget(0, headerData['source_amount'])
-                }}></Text>
+          <View className="budget-amount">
+            <View className="progress-ring">
+              <View className="inner-content">
+                <View className="fs-14">总预算</View>
+                <Text className="amount">￥{headerData['amount'] || 0}</Text>
+                <Text
+                  className="iconfont jcon-editor ml-2"
+                  onClick={() => {
+                    handleAccountBookBudget(0, headerData['source_amount'])
+                  }}
+                ></Text>
               </View>
-              
+
               <View
-                className='progress' 
-                style={{ 
+                className="progress"
+                style={{
                   background: `conic-gradient(var(--primary-color) ${(headerData.used / headerData.source_amount) * 100}%, transparent 0)`
-                }} 
+                }}
               />
             </View>
           </View>
 
-          <View className='budget-metrics p-4'>
-            <View className='metric-item'>
-              <Text className='label col-expend'>当月消费</Text>
-              <Text className='value col-expend'>￥{headerData.used}</Text>
+          <View className="budget-metrics p-4">
+            <View className="metric-item">
+              <Text className="label col-expend">当月消费</Text>
+              <Text className="value col-expend">￥{headerData.used}</Text>
             </View>
 
-            <View className='metric-item'>
-              <Text className='label'>剩余可用预算</Text>
-              <Text className='value'>￥{headerData.source_amount - headerData.used}</Text>
+            <View className="metric-item">
+              <Text className="label">剩余可用预算</Text>
+              <Text className="value">￥{headerData.source_amount - headerData.used}</Text>
             </View>
 
-            <View className='metric-item'>
-              <Text className='label col-text-warn'>剩余每日可用</Text>
-              <Text className='value col-text-warn'>￥{calculateBudgetMetrics().dailyRemaining}</Text>
+            <View className="metric-item">
+              <Text className="label col-text-warn">剩余每日可用</Text>
+              <Text className="value col-text-warn">
+                ￥{calculateBudgetMetrics().dailyRemaining}
+              </Text>
             </View>
           </View>
 
-          <View className='budget-metrics p-4'>
-            <View className='metric-item'>
-              <Text className='label'>当月日均消费</Text>
-              <Text className='value'>￥{calculateBudgetMetrics().dailySpent}</Text>
+          <View className="budget-metrics p-4">
+            <View className="metric-item">
+              <Text className="label">当月日均消费</Text>
+              <Text className="value">￥{calculateBudgetMetrics().dailySpent}</Text>
             </View>
-            <View className='metric-item'>
-              <Text className='label'>日均预算</Text>
-              <Text className='value'>￥{calculateBudgetMetrics().dailyBudget}</Text>
+            <View className="metric-item">
+              <Text className="label">日均预算</Text>
+              <Text className="value">￥{calculateBudgetMetrics().dailyBudget}</Text>
             </View>
           </View>
         </View>
 
-        <View className='content-box'>
-          { parentList.map((item) => {
+        <View className="content-box">
+          {parentList.map((item) => {
             return (
-              <View className='budget-item'>
-                <View className='budget-item-header'>
-                  <View className='left'>
-                    <View className='icon-wrapper'>
-                      <Image src={item.icon_path} mode='aspectFill' />
+              <View key={item.id} className="budget-item">
+                <View className="budget-item-header">
+                  <View className="left">
+                    <View className="icon-wrapper">
+                      <Image src={item.icon_path} mode="aspectFill" />
                     </View>
-                    <Text 
-                      className='name col-text-link'
-                      onClick={() => jz.router.navigateTo({url: `/pages/setting/chart/category_statement?date=${format(currentDate, 'yyyy-MM')}&category_id=${item['id']}` })}
-                    >{item['name']}</Text>
-                  </View>
-                  <View className='right'>
                     <Text
-                      className='col-text-link fs-14'
-                      onClick={() => jz.router.navigateTo({url: `/pages/setting/child_budget/index?category_id=${item['id']}&date=${format(currentDate, 'yyyy-MM-dd')}` })}
-                    >查看子分类</Text>
+                      className="name col-text-link"
+                      onClick={guardEvent(() =>
+                        jz.router.navigateTo({
+                          url: `/pages/setting/chart/category_statement?date=${format(currentDate, 'yyyy-MM')}&category_id=${item['id']}`
+                        })
+                      )}
+                    >
+                      {item['name']}
+                    </Text>
+                  </View>
+                  <View className="right">
+                    <Text
+                      className="col-text-link fs-14"
+                      onClick={guardEvent(() =>
+                        jz.router.navigateTo({
+                          url: `/pages/setting/child_budget/index?category_id=${item['id']}&date=${format(currentDate, 'yyyy-MM-dd')}`
+                        })
+                      )}
+                    >
+                      查看子分类
+                    </Text>
                   </View>
                 </View>
 
-                <View className='budget-item-content'>
-                  <View className='progress-bar'>
-                    <AtProgress percent={item.use_percent} isHidePercent color='var(--primary-color)' />
-                    <View className='d-flex flex-between fs-14'>
+                <View className="budget-item-content">
+                  <View className="progress-bar">
+                    <AtProgress
+                      percent={item.use_percent}
+                      isHidePercent
+                      color="var(--primary-color)"
+                    />
+                    <View className="d-flex flex-between fs-14">
                       <View>已用:￥{item.used_amount}</View>
                       <View>{item.use_percent}%</View>
                     </View>
                   </View>
-                  
-                  <View className='budget-info'>
-                    <View className='info-item'>
-                      <Text className='label'>预算金额</Text>
-                      <Text className='value'>￥{item['amount']}</Text>
-                      <Text className='iconfont jcon-editor col-text-link' />
+
+                  <View className="budget-info">
+                    <View className="info-item">
+                      <Text className="label">预算金额</Text>
+                      <Text className="value">￥{item['amount']}</Text>
+                      <Text className="iconfont jcon-editor col-text-link" />
                       <Text
-                        className='col-text-link fs-14'
-                        onClick={(e) => {
+                        className="col-text-link fs-14"
+                        onClick={() => {
                           handleAccountBookBudget(item['id'], item['source_amount'])
                         }}
-                      >调整预算</Text>
+                      >
+                        调整预算
+                      </Text>
                     </View>
-                    <View className='info-item'>
-                      <Text className='label'>剩余可用</Text>
-                      <Text className='value col-text-warn'>￥{item['surplus']}</Text>
+                    <View className="info-item">
+                      <Text className="label">剩余可用</Text>
+                      <Text className="value col-text-warn">￥{item['surplus']}</Text>
                     </View>
                   </View>
                 </View>
               </View>
             )
-            }) 
-          }
+          })}
         </View>
       </View>
     </BasePage>

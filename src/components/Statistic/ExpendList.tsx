@@ -1,49 +1,48 @@
-import React, { useState, useEffect } from 'react'
+import type { StatementListItem } from '@/api/types'
+import EmptyTips from '@/components/EmptyTips'
+import Statements from '@/components/Statements'
+import jz from '@/jz'
 import { Tabs } from '@/src/components/UiComponents'
 import { View } from '@tarojs/components'
-import jz from '@/jz'
-import Statements from '@/components/Statements'
-import EmptyTips from '@/components/EmptyTips'
 import { format } from 'date-fns'
+import { useEffect, useState } from 'react'
+import { runTask } from '../../utils/async'
 
 const tabs = [
   { id: 1, title: '支出' },
   { id: 2, title: '收入' }
 ]
 
-export default function ExpendList({
-  currentDate
-}) {
+export default function ExpendList({ currentDate }: { currentDate: Date }) {
   const [currentTab, setCurrentTab] = useState(1)
-  const [statements, setStatements] = useState([])
-
-  const getStatements = async (tabId) => {
-    setCurrentTab(tabId)
-    let type = 'expend'
-    if (tabId === 2) {
-      type = 'income'
-    }
-    const { data } = await jz.api.statistics.getRate(format(currentDate, 'yyyy-MM'), type)
-    if (data) {
-      setStatements(data)
-    }
-  }
+  const [statements, setStatements] = useState<StatementListItem[]>([])
 
   useEffect(() => {
-    getStatements(currentTab)
-  }, [currentDate]);
-  
+    let active = true
+    runTask(
+      jz.api.statistics
+        .getRate(format(currentDate, 'yyyy-MM'), currentTab === 2 ? 'income' : 'expend')
+        .then(({ data }) => {
+          if (active) setStatements(data)
+        })
+    )
+    return () => {
+      active = false
+    }
+  }, [currentDate, currentTab])
+
   return (
     <View>
-      <Tabs tabs={tabs}
+      <Tabs
+        tabs={tabs}
         current={currentTab}
-        onChange={(tabId) => {
-          getStatements(tabId)
+        onChange={(tabId: number) => {
+          setCurrentTab(tabId)
         }}
       />
 
       <View>
-        { statements.length === 0 && <EmptyTips></EmptyTips> }
+        {statements.length === 0 && <EmptyTips></EmptyTips>}
         <Statements statements={statements}></Statements>
       </View>
     </View>

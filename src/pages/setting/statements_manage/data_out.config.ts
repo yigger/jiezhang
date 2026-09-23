@@ -1,4 +1,3 @@
 export default {
-    navigationBarTitleText: '账单导出'
-  }
-  
+  navigationBarTitleText: '账单导出'
+}

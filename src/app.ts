@@ -1,30 +1,33 @@
-import { Component, PropsWithChildren } from 'react'
-import Taro from "@tarojs/taro"
+import Taro from '@tarojs/taro'
+import type { PropsWithChildren } from 'react'
+import { Component } from 'react'
 import jz from './jz'
+import { runTask } from './utils/async'
 
 class App extends Component<PropsWithChildren> {
-  onLaunch () {
-    const updateManager = Taro.getUpdateManager()
-    updateManager.onCheckForUpdate(function () {
-    })
+  onLaunch() {
+    if (process.env.TARO_ENV === 'weapp') {
+      const updateManager = Taro.getUpdateManager()
 
-    updateManager.onUpdateReady(function () {
-      Taro.showModal({
-        title: '洁账版本升级',
-        content: '版本已更新，请重启应用后使用',
-        success(res) {
-          if (res.confirm) {
-            updateManager.applyUpdate()
-          }
-      }
+      updateManager.onUpdateReady(function () {
+        runTask(
+          Taro.showModal({
+            title: '洁账版本升级',
+            content: '版本已更新，请重启应用后使用',
+            success(res) {
+              if (res.confirm) {
+                updateManager.applyUpdate()
+              }
+            }
+          })
+        )
       })
-    })
-
-    jz.initialize()
+    }
+    runTask(jz.initialize())
   }
 
   // this.props.children 是将要会渲染的页面
-  render () {
+  render() {
     return this.props.children
   }
 }

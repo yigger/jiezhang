@@ -1,10 +1,10 @@
-import { Component, useState, useMemo } from 'react'
-import { View, Picker } from '@tarojs/components'
-import { Tabs } from '@/src/components/UiComponents'
-import Summary from '@/components/Statistic/Summary'
-import ExpendList from '@/components/Statistic/ExpendList'
 import CalendarStatistic from '@/components/Statistic/CalendarStatistic'
+import ExpendList from '@/components/Statistic/ExpendList'
+import Summary from '@/components/Statistic/Summary'
+import { Tabs } from '@/src/components/UiComponents'
+import { Picker, View } from '@tarojs/components'
 import { format } from 'date-fns'
+import { useMemo, useState } from 'react'
 
 const tabs = [
   { id: 1, title: '日历总览' },
@@ -16,8 +16,8 @@ const tabs = [
 export const StatisticPage: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [currentTab, setCurrentTab] = useState(1)
-  
-  const handleMonthChange = (e) => {
+
+  const handleMonthChange = (e: { detail: { value: string } }) => {
     const [year, month] = e.detail.value.split('-')
     setCurrentDate(new Date(Number(year), Number(month) - 1))
   }
@@ -31,7 +31,7 @@ export const StatisticPage: React.FC = () => {
   }
 
   const currentComponent = useMemo(() => {
-    switch(currentTab) {
+    switch (currentTab) {
       case 1:
         return <CalendarStatistic currentDate={currentDate} />
       case 2:
@@ -44,32 +44,33 @@ export const StatisticPage: React.FC = () => {
   }, [currentTab, currentDate])
 
   return (
-    <View className='jz-pages__statistic'>
-      <View className='month-selector bg-color-white'>
-        <View className='month-arrow' onClick={handlePrevMonth}>◀</View>
+    <View className="jz-pages__statistic">
+      <View className="month-selector bg-color-white">
+        <View className="month-arrow" onClick={handlePrevMonth}>
+          ◀
+        </View>
         <Picker
-          mode='date'
-          fields='month'
+          mode="date"
+          fields="month"
           value={format(currentDate, 'yyyy-MM')}
           onChange={handleMonthChange}
         >
-          <View className='month-text'>
-            {format(currentDate, 'yyyy年MM月')}
-          </View>
+          <View className="month-text">{format(currentDate, 'yyyy年MM月')}</View>
         </Picker>
-        <View className='month-arrow' onClick={handleNextMonth}>▶</View>
+        <View className="month-arrow" onClick={handleNextMonth}>
+          ▶
+        </View>
       </View>
 
-      <Tabs tabs={tabs}
+      <Tabs
+        tabs={tabs}
         current={currentTab}
         onChange={(tabId) => {
-          setCurrentTab(tabId) 
+          setCurrentTab(tabId)
         }}
       />
 
-      <View>
-        {currentComponent}
-      </View>
+      <View>{currentComponent}</View>
     </View>
   )
 }

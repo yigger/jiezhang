@@ -11,9 +11,6 @@ const config = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
-  plugins: [
-    path.resolve(__dirname, '../plugins/view-data-plugin.js')
-  ],
   defineConstants: {
   },
   copy: {
