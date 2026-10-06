@@ -96,6 +96,7 @@
     }
   }
 }
+/* prettier-ignore */
 .calculator.calculator--embedded {
   position: relative;
   bottom: auto;
@@ -103,16 +104,16 @@
   right: auto;
   z-index: auto;
   border: none;
-  border-radius: 12px;
+  border-radius: 12PX;
   .calculator__keypad {
-    padding: 10px;
+    padding: 10PX;
   }
   .keypad-left {
-    margin-right: 8px;
+    margin-right: 8PX;
     .row {
-      margin-bottom: 8px;
+      margin-bottom: 8PX;
       .key {
-        margin-right: 8px;
+        margin-right: 8PX;
         &:last-child {
           margin-right: 0;
         }
@@ -123,22 +124,22 @@
     }
   }
   .keypad-right {
-    width: 64px;
+    width: 64PX;
     .key {
-      margin-bottom: 8px;
+      margin-bottom: 8PX;
       &:last-child {
         margin-bottom: 0;
       }
     }
   }
   .key {
-    height: 44px;
-    font-size: 20px;
+    height: 44PX;
+    font-size: 20PX;
     color: var(--text-color);
   }
   .key.confirm {
     background: var(--primary-bg-color);
     color: var(--primary-bg-text-color);
-    font-size: 14px;
+    font-size: 14PX;
   }
 }
