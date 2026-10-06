@@ -18,6 +18,7 @@ const tabs = [
 ]
 
 const StatementForm: React.FC = () => {
+  const [showMore, setShowMore] = useState(false)
   const [typeName, setTypeName] = useState('支出')
   const [currentTab, setCurrentTab] = useState(1)
   const [statement, setStatement] = useState<StatementFormData>({
@@ -46,9 +47,17 @@ const StatementForm: React.FC = () => {
   return (
     <BasePage headerName="记一笔">
       <Tabs
-        tabs={tabs}
-        current={currentTab}
+        tabs={[
+          ...tabs.slice(0, 3),
+          { id: 9, title: currentTab > 3 ? `更多 · ${typeName}` : '更多' }
+        ]}
+        current={showMore || currentTab > 3 ? 9 : currentTab}
         onChange={(tabId) => {
+          if (tabId === 9) {
+            setShowMore(!showMore)
+            return
+          }
+          setShowMore(false)
           setTypeName(tabs[tabId - 1].title)
           setStatement({
             ...statement,
@@ -57,6 +66,35 @@ const StatementForm: React.FC = () => {
           setCurrentTab(tabId)
         }}
       />
+      {showMore && (
+        <View className="m-3 p-3 bg-color-white">
+          {tabs.slice(3).map((tab, index) => (
+            <View
+              key={tab.id}
+              className="p-3"
+              onClick={() => {
+                setCurrentTab(tab.id)
+                setTypeName(tab.title)
+                setStatement({ ...statement, type: tab.type })
+                setShowMore(false)
+              }}
+            >
+              <View>{tab.title}</View>
+              <View className="fs-12 col-text-mute">
+                {
+                  [
+                    '从一个账户还款到另一个账户',
+                    '替别人付款，之后需要收回',
+                    '记录需要向公司或项目方报销的款项',
+                    '向别人借钱，之后需要归还',
+                    '借钱给别人，之后需要收回'
+                  ][index]
+                }
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
       <View>
         <BaseForm
           typeName={typeName}

@@ -1,5 +1,6 @@
 import { View } from '@tarojs/components'
-import React, { useState } from 'react'
+import { initialCalculator, pressCalculatorKey } from '@/utils/calculator'
+import React, { useRef } from 'react'
 import './index.scss'
 
 export interface CalculatorValue {
@@ -11,158 +12,86 @@ interface CalculatorProps {
   value: string
   onChange: (value: CalculatorValue) => void
   onClose: () => void
+  embedded?: boolean
+  replaceOnInput?: boolean
+  confirmText?: string
 }
 
-const Calculator: React.FC<CalculatorProps> = ({ value, onChange, onClose }) => {
-  const [displayValue, setDisplayValue] = useState(value || '0')
-  const [hasDecimal, setHasDecimal] = useState(value.includes('.'))
-  const [prevValue, setPrevValue] = useState('')
-  const [operator, setOperator] = useState('')
+const Calculator: React.FC<CalculatorProps> = ({
+  value,
+  onChange,
+  onClose,
+  embedded = false,
+  replaceOnInput = false,
+  confirmText = '确定'
+}) => {
+  const state = useRef(initialCalculator(value, replaceOnInput))
 
-  const handleNumber = (num: string) => {
-    let newValue = displayValue
-    if (displayValue === '0' && num !== '.') {
-      newValue = num
-    } else {
-      if (num === '.' && !hasDecimal) {
-        setHasDecimal(true)
-        newValue = displayValue + num
-      } else if (num !== '.') {
-        newValue = displayValue + num
-      }
-    }
-    setDisplayValue(newValue)
-    onChange({ value: newValue, operator: '', prev: '' })
-  }
-
-  const calculate = () => {
-    if (!prevValue || !operator) return displayValue
-    const prev = parseFloat(prevValue)
-    const current = parseFloat(displayValue)
-    let result = 0
-
-    switch (operator) {
-      case '+':
-        result = prev + current
-        break
-      case '-':
-        result = prev - current
-        break
-    }
-
-    return result.toString()
-  }
-
-  const handleOperator = (op: string) => {
-    switch (op) {
-      case '+':
-      case '-':
-        if (prevValue && operator) {
-          const result = calculate()
-          setPrevValue(result)
-          setDisplayValue('0')
-          setHasDecimal(false)
-          setOperator(op)
-          onChange({ value: '0', operator: op, prev: result })
-        } else {
-          setPrevValue(displayValue)
-          setDisplayValue('0')
-          setHasDecimal(false)
-          setOperator(op)
-          onChange({ value: '0', operator: op, prev: displayValue })
-        }
-        break
-      case 'OK':
-        if (operator) {
-          const result = calculate()
-          onChange({ value: result, operator: '', prev: '' })
-        }
-        onClose()
-        break
-      case '=': {
-        const result = calculate()
-        setDisplayValue(result)
-        setPrevValue('')
-        setOperator('')
-        setHasDecimal(result.includes('.'))
-        onChange({ value: result, operator: '', prev: '' })
-        break
-      }
-      case 'DEL':
-        if (displayValue.length > 1) {
-          const newValue = displayValue.slice(0, -1)
-          setDisplayValue(newValue)
-          onChange({ value: newValue, operator, prev: prevValue })
-          if (displayValue.slice(-1) === '.') {
-            setHasDecimal(false)
-          }
-        } else {
-          setDisplayValue('0')
-          setHasDecimal(false)
-          onChange({ value: '0', operator, prev: prevValue })
-        }
-        break
-    }
+  const handleKey = (key: string) => {
+    const next = pressCalculatorKey(state.current, key)
+    state.current = next
+    onChange({ value: next.value, operator: next.operator, prev: next.prev })
+    if (key === 'OK') onClose()
   }
 
   return (
-    <View className="calculator">
+    <View className={`calculator ${embedded ? 'calculator--embedded' : ''}`}>
       <View className="calculator__keypad">
         <View className="keypad-left">
           <View className="row">
-            <View className="key" onClick={() => handleNumber('7')}>
+            <View className="key" onClick={() => handleKey('7')}>
               7
             </View>
-            <View className="key" onClick={() => handleNumber('8')}>
+            <View className="key" onClick={() => handleKey('8')}>
               8
             </View>
-            <View className="key" onClick={() => handleNumber('9')}>
+            <View className="key" onClick={() => handleKey('9')}>
               9
             </View>
           </View>
           <View className="row">
-            <View className="key" onClick={() => handleNumber('4')}>
+            <View className="key" onClick={() => handleKey('4')}>
               4
             </View>
-            <View className="key" onClick={() => handleNumber('5')}>
+            <View className="key" onClick={() => handleKey('5')}>
               5
             </View>
-            <View className="key" onClick={() => handleNumber('6')}>
+            <View className="key" onClick={() => handleKey('6')}>
               6
             </View>
           </View>
           <View className="row">
-            <View className="key" onClick={() => handleNumber('1')}>
+            <View className="key" onClick={() => handleKey('1')}>
               1
             </View>
-            <View className="key" onClick={() => handleNumber('2')}>
+            <View className="key" onClick={() => handleKey('2')}>
               2
             </View>
-            <View className="key" onClick={() => handleNumber('3')}>
+            <View className="key" onClick={() => handleKey('3')}>
               3
             </View>
           </View>
           <View className="row">
-            <View className="key" onClick={() => handleNumber('.')}>
+            <View className="key" onClick={() => handleKey('.')}>
               .
             </View>
-            <View className="key" onClick={() => handleNumber('0')}>
+            <View className="key" onClick={() => handleKey('0')}>
               0
             </View>
-            <View className="key" onClick={() => handleOperator('DEL')}>
+            <View className="key" onClick={() => handleKey('DEL')}>
               ←
             </View>
           </View>
         </View>
         <View className="keypad-right">
-          <View className="key operator" onClick={() => handleOperator('+')}>
+          <View className="key operator" onClick={() => handleKey('+')}>
             +
           </View>
-          <View className="key operator" onClick={() => handleOperator('-')}>
+          <View className="key operator" onClick={() => handleKey('-')}>
             -
           </View>
-          <View className="key operator confirm" onClick={() => handleOperator('OK')}>
-            确定
+          <View className="key operator confirm" onClick={() => handleKey('OK')}>
+            {confirmText}
           </View>
         </View>
       </View>

@@ -638,15 +638,14 @@ export default function BaseForm({
         <View className="m-2">
           <View className="d-flex flex-between">
             <Button
-              title="再记一笔"
+              title="保存并继续"
               onClick={() => {
-                runTask(submit({ reload: true }))
+                return submit({ reload: true })
               }}
-              className="flex-shrink mr-2"
-              danger
+              className="flex-shrink mr-2 primary"
             ></Button>
             <Button
-              title="提交"
+              title="保存"
               onClick={guardEvent(() => submit())}
               className="flex-grow"
             ></Button>

@@ -1,3 +1,4 @@
+import SuggestedStatement from '@/components/SuggestedStatement'
 import EmptyTips from '@/components/EmptyTips'
 import Statements from '@/components/Statements'
 import jz from '@/jz'
@@ -67,6 +68,8 @@ export const IndexPage = observer(() => {
           runTask(jz.router.navigateTo({ url: '/pages/statement/form' }))
         }}
       />
+
+      <SuggestedStatement />
 
       <View className="m-3">
         <View className="d-flex flex-between flex-center mb-2">

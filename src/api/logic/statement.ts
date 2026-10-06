@@ -87,8 +87,9 @@ export default class Statement {
   }
 
   // 创建账单
-  create(data: Partial<StatementWritePayload>) {
-    return this._request.post<Envelope<StatementDetailItem>>('statements', { statement: data })
+  create(data: Partial<StatementWritePayload>, accountBookId?: number) {
+    const path = accountBookId ? `statements?account_book_id=${accountBookId}` : 'statements'
+    return this._request.post<Envelope<StatementDetailItem>>(path, { statement: data })
   }
 
   // 更新账单
