@@ -64,7 +64,7 @@ test('corrupt cache and failed authentication do not poison future logins', asyn
   f.taro.login = async () => {
     throw new Error('offline')
   }
-  await assert.rejects(f.request.getAccessToken(), /offline/)
+  await assert.rejects(f.request.getAccessToken(), /网络连接失败/)
   f.taro.login = login
   assert.equal(await f.request.getAccessToken(), 'token-1')
 })
@@ -77,7 +77,7 @@ test('network failure never replays a write that might already have committed', 
     writes++
     throw new Error('response lost')
   }
-  await assert.rejects(f.request.post('statements', { amount: 10 }), /response lost/)
+  await assert.rejects(f.request.post('statements', { amount: 10 }), /网络连接失败/)
   assert.equal(writes, 1)
 })
 
@@ -126,4 +126,30 @@ test('cached sessions are isolated by endpoint and app id', async () => {
   await f.RequestManager.get('https://one.test', 'one')
   await f.RequestManager.get('https://two.test', 'two')
   assert.deepEqual(f.counts(), { logins: 2, authentications: 2 })
+})
+
+test('authentication timeout releases shared login so the next attempt can recover', async () => {
+  const f = fixture()
+  const login = f.taro.login
+  f.taro.login = async (options) => {
+    assert.equal(options.timeout, 15000)
+    throw { errMsg: 'login:fail timeout' }
+  }
+  await assert.rejects(f.request.getAccessToken(), /登录超时/)
+  f.taro.login = login
+  assert.equal(await f.request.getAccessToken(), 'token-1')
+  await f.request.get('header')
+  assert.ok(f.calls.every((call) => call.timeout === 15000))
+})
+
+test('uploads have a longer timeout and are not replayed on failure', async () => {
+  const f = fixture()
+  let uploads = 0
+  f.taro.uploadFile = async (options) => {
+    uploads++
+    assert.equal(options.timeout, 30000)
+    throw { errMsg: 'uploadFile:fail timeout' }
+  }
+  await assert.rejects(f.request.upload('/tmp/image.jpg', {}), /图片上传超时/)
+  assert.equal(uploads, 1)
 })

@@ -570,6 +570,8 @@ export interface ShareKeyData {
 }
 
 export interface StatementWritePayload {
+  project_id?: number
+  consumer_id?: number
   type: string
   amount: FlexibleAmount
   description: string

@@ -1,0 +1,35 @@
+/* Physical pixels match the existing statistics typography. */
+/* prettier-ignore */
+.spending-analysis {
+  padding: 12PX;
+  color: var(--text-color);
+  font-size: 16PX;
+  line-height: 1.5;
+  &__scope { font-size: 13PX; color: var(--secondary-text); margin: 0 4PX 10PX; }
+  &__card { background: #fff; border-radius: 12PX; padding: 16PX; margin-bottom: 12PX; }
+  &__heading { display: flex; align-items: center; justify-content: space-between; gap: 12PX; font-weight: 600; font-size: 16PX; }
+  &__total { font-size: 30PX; font-weight: 600; margin: 8PX 0; word-break: break-all; }
+  &__change { font-size: 16PX; margin-bottom: 4PX; }
+  &__muted { font-size: 13PX; color: var(--secondary-text); margin-top: 4PX; }
+  &__ranges { font-size: 12PX; color: var(--secondary-text); margin-top: 12PX; padding-top: 10PX; border-top: 1PX solid var(--border-color); }
+  &__metrics { display: flex; justify-content: space-between; gap: 8PX; margin-top: 14PX; > view { flex: 1; min-width: 0; } }
+  &__category { padding: 14PX 0; border-bottom: 1PX solid var(--border-color); &:last-child { border-bottom: none; } }
+  &__reason { font-size: 14PX; margin-top: 8PX; }
+  &__increase { color: #b84732; }
+  &__decrease { color: #257453; }
+  &__footnote { font-size: 12PX; color: var(--secondary-text); margin-top: 14PX; }
+  &__bar { height: 6PX; border-radius: 4PX; background: var(--background-color); margin-top: 10PX; overflow: hidden; > view { height: 100%; background: var(--primary-bg-color); border-radius: 4PX; } }
+  &__profile { display: flex; justify-content: space-between; gap: 8PX; font-size: 13PX; color: var(--secondary-text); margin-top: 8PX; flex-wrap: wrap; }
+  &__empty { padding: 24PX 16PX; text-align: center; font-size: 14PX; color: var(--secondary-text); }
+  &__link { font-size: 14PX; font-weight: normal; padding: 8PX; color: var(--primary-color); }
+}
+/* prettier-ignore */
+.spending-details {
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 1100;
+  &__mask { position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0, 0, 0, .45); }
+  &__panel { position: absolute; bottom: 0; width: 100%; max-height: 85vh; background: #fff; padding: 16PX; padding-bottom: calc(16PX + env(safe-area-inset-bottom)); box-sizing: border-box; border-radius: 16PX 16PX 0 0; }
+  &__list { height: 52vh; }
+  &__summary { padding: 8PX 0; font-size: 16PX; font-weight: 600; }
+}

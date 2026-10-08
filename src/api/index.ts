@@ -14,8 +14,15 @@ import SuperChart from './logic/superChart'
 import SuperStatement from './logic/superStatement'
 import User from './logic/user'
 import Request from './request'
+import Insights from './logic/insights'
+import CalendarJournal from './logic/calendar-journal'
 
 export class Api extends Request {
+  private _calendarJournal?: CalendarJournal
+  get calendarJournal(): CalendarJournal {
+    return (this._calendarJournal ??= new CalendarJournal(this))
+  }
+  private _insights?: Insights
   private _main?: Main
   private _statement?: Statement
   private _user?: User
@@ -31,6 +38,10 @@ export class Api extends Request {
   private _message?: Message
   private _payee?: Payee
   private _friend?: Friend
+
+  get insights(): Insights {
+    return (this._insights ??= new Insights(this))
+  }
 
   get main(): Main {
     return (this._main ??= new Main(this))

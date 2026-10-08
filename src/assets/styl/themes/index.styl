@@ -83,6 +83,8 @@ for themeKey, _ in $themes {
   themeData = "jz-theme-" + themeKey
   .page-root.{themeData} {
     --primary-color: $themes[themeKey]['primaryColor']
+    --primary-soft-color: rgba($themes[themeKey]['primaryColor'], 0.12)
+    --primary-soft-strong-color: rgba($themes[themeKey]['primaryColor'], 0.24)
     --primary-bg-color: $themes[themeKey]['primaryBgColor']
     --primary-bg-text-color: $themes[themeKey]['primaryBgTextColor']
     --text-color: $themes[themeKey]['textColor']

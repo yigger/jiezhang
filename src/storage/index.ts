@@ -1,9 +1,28 @@
 import Taro from '@tarojs/taro'
+import { normalizeHomeTabs } from '../utils/home-tabs'
+import type { HomeTabID } from '../utils/home-tabs'
 import { isRecord } from '../api/http-result'
 import type { HomeSettingsAccountBook, SelectionData, UserProfile } from '../api/types'
 
 export default class Storage {
   private _version = 'v1'
+
+  getHomeTabs(): HomeTabID[] {
+    try {
+      return normalizeHomeTabs(
+        Taro.getStorageSync(`homeTabs_v1_${this.getCurrentUser()?.id ?? 'local'}`)
+      )
+    } catch {
+      return normalizeHomeTabs(null)
+    }
+  }
+
+  setHomeTabs(ids: HomeTabID[]) {
+    Taro.setStorageSync(
+      `homeTabs_v1_${this.getCurrentUser()?.id ?? 'local'}`,
+      normalizeHomeTabs(ids)
+    )
+  }
 
   saveLocal<T>(key: string, value: T, expireDays = 7) {
     const data = {

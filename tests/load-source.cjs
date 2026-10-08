@@ -16,6 +16,8 @@ module.exports = function createLoader(mocks = {}) {
     })
     const localRequire = (specifier) => {
       if (Object.hasOwn(mocks, specifier)) return mocks[specifier]
+      // Styles have no runtime behavior in source-level JavaScript tests.
+      if (/\.(css|scss|styl)$/.test(specifier)) return {}
       let target
       if (specifier === '@/jz') target = path.join(root, 'src/jz')
       else if (specifier.startsWith('@/src/')) target = path.join(root, specifier.slice(2))

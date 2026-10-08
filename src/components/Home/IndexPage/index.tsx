@@ -1,4 +1,7 @@
 import SuggestedStatement from '@/components/SuggestedStatement'
+import QuickStatementModal from '@/components/SuggestedStatement/QuickStatementModal'
+import type { QuickStatement } from '@/components/SuggestedStatement/QuickStatementModal'
+import './index.scss'
 import EmptyTips from '@/components/EmptyTips'
 import Statements from '@/components/Statements'
 import jz from '@/jz'
@@ -14,6 +17,14 @@ import { guardEvent, runTask } from '../../../utils/async'
 export const IndexPage = observer(() => {
   const store = useContext(HomeStoreContext)
   const [activeRange, setActiveRange] = useState('today')
+  const [quick, setQuick] = useState<QuickStatement | null>(null)
+  const privacyKey = `homeAmountsVisible_${jz.storage.getCurrentUser()?.id || 0}_${jz.storage.getCurrentAccountBook()?.id || 0}`
+  const [amountVisible, setAmountVisible] = useState(
+    () => jz.storage.getLocal<boolean>(privacyKey) !== false
+  )
+  useEffect(() => {
+    setAmountVisible(jz.storage.getLocal<boolean>(privacyKey) !== false)
+  }, [privacyKey])
   const ranges = [
     { key: 'today', name: '今日' },
     { key: 'yesterday', name: '昨日' },
@@ -61,14 +72,43 @@ export const IndexPage = observer(() => {
 
   return (
     <View className="jz-pages__index">
-      <Header header={store.indexHeader}></Header>
-      <Button
-        title="记一笔"
-        onClick={() => {
-          runTask(jz.router.navigateTo({ url: '/pages/statement/form' }))
+      <Header
+        header={store.indexHeader}
+        amountVisible={amountVisible}
+        onToggle={() => {
+          const next = !amountVisible
+          jz.storage.saveLocal(privacyKey, next, 36500)
+          setAmountVisible(next)
         }}
       />
+      <View className="home-entry-actions">
+        <Button
+          title="记一笔"
+          onClick={() => {
+            runTask(jz.router.navigateTo({ url: '/pages/statement/form' }))
+          }}
+        />
 
+        <Button
+          title="快记"
+          className="primary"
+          onClick={guardEvent(async () => {
+            const book = await jz.ensureAccountBook()
+            setQuick({ bookId: book.id, dismissalKey: 'quick-expense', expenseOnly: true })
+          })}
+        />
+      </View>
+      {quick && (
+        <QuickStatementModal
+          statement={quick}
+          onClose={() => setQuick(null)}
+          onSaved={() => {
+            setQuick(null)
+            jz.event.emit('statement:updated')
+            runTask(Taro.showToast({ title: '已记一笔', icon: 'success' }))
+          }}
+        />
+      )}
       <SuggestedStatement />
 
       <View className="m-3">
@@ -97,15 +137,28 @@ export const IndexPage = observer(() => {
   )
 })
 
-const Header = ({ header }: { header: import('@/api/types').HomeHeaderResponse }) => {
+export const Header = ({
+  header,
+  amountVisible = true,
+  onToggle
+}: {
+  header: import('@/api/types').HomeHeaderResponse
+  amountVisible?: boolean
+  onToggle?: () => void
+}) => {
+  const money = (amount: string | number) => (amountVisible ? amount : '****')
   return (
     <View className="jz-pages__index-header p-relative">
+      <View className="home-amount-toggle" onClick={onToggle}>
+        <View className={`iconfont ${amountVisible ? 'jcon-eye' : 'jcon-eye-close'}`} />
+        <Text>{amountVisible ? '隐藏金额' : '显示金额'}</Text>
+      </View>
       <View className="row-item d-flex flex-between m-4">
         <View className="row-content-block">
           <View className="block-content">
             <View className="p-2">
               <Text className="currency">￥</Text>
-              <Text className="amount-item">{header['today_expend']}</Text>
+              <Text className="amount-item">{money(header['today_expend'])}</Text>
             </View>
             <View className="fs-12 col-text-mute">今日支出</View>
           </View>
@@ -115,7 +168,7 @@ const Header = ({ header }: { header: import('@/api/types').HomeHeaderResponse }
           <View className="block-content">
             <View className="p-2">
               <Text className="currency">￥</Text>
-              <Text className="amount-item">{header['month_expend']}</Text>
+              <Text className="amount-item">{money(header['month_expend'])}</Text>
             </View>
             <View className="fs-12 col-text-mute">本月支出</View>
           </View>
@@ -131,7 +184,7 @@ const Header = ({ header }: { header: import('@/api/types').HomeHeaderResponse }
               <View
                 className={`fs-16 ${header.trends.day.trend === 'down' ? 'col-expend' : 'col-income'}`}
               >
-                <View>{header.trends.day.amount}</View>
+                <View>{money(header.trends.day.amount)}</View>
                 <View className="fs-12">
                   {header.trends.day.ratio}%{header.trends.day.trend === 'up' ? '↑' : '↓'}
                 </View>
@@ -143,7 +196,7 @@ const Header = ({ header }: { header: import('@/api/types').HomeHeaderResponse }
               <View
                 className={`fs-16 ${header.trends.week.trend === 'down' ? 'col-expend' : 'col-income'}`}
               >
-                <View>{header.trends.week.amount}</View>
+                <View>{money(header.trends.week.amount)}</View>
                 <View className="fs-12">
                   {header.trends.week.ratio}%{header.trends.week.trend === 'up' ? '↑' : '↓'}
                 </View>
@@ -155,7 +208,7 @@ const Header = ({ header }: { header: import('@/api/types').HomeHeaderResponse }
               <View
                 className={`fs-16 ${header.trends.month.trend === 'down' ? 'col-expend' : 'col-income'}`}
               >
-                <View>{header.trends.month.amount}</View>
+                <View>{money(header.trends.month.amount)}</View>
                 <View className="fs-12">
                   {header.trends.month.ratio}%{header.trends.month.trend === 'up' ? '↑' : '↓'}
                 </View>
@@ -174,8 +227,8 @@ const Header = ({ header }: { header: import('@/api/types').HomeHeaderResponse }
           <AtProgress percent={header['use_pencentage']} />
         </View>
         <View className="d-flex col-text-mute flex-between">
-          <View>已用：{header['month_expend']}</View>
-          <View>总额：{header['month_budget']}</View>
+          <View>已用：{money(header['month_expend'])}</View>
+          <View>总额：{money(header['month_budget'])}</View>
         </View>
       </View>
     </View>

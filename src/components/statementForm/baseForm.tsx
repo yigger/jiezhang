@@ -1,5 +1,7 @@
 import type * as ApiTypes from '@/api/types'
 import jz from '@/jz'
+import type { InsightWorkspace } from '@/api/logic/insights'
+import StatementProjectField from '@/components/Project/StatementProjectField'
 import Calculator from '@/src/components/Calculator'
 import { Button } from '@/src/components/UiComponents'
 import type { Setter, StatementFormData } from '@/src/types/ui'
@@ -34,6 +36,29 @@ export default function BaseForm({
   setForm: Setter<StatementFormData>
 }) {
   const submitting = useRef(false)
+  const [bookID, setBookID] = useState(jz.storage.getCurrentAccountBook()?.id || 0)
+  const [workspace, setWorkspace] = useState<InsightWorkspace | null>(null)
+  const [projectError, setProjectError] = useState(false)
+  const [projectRetry, setProjectRetry] = useState(0)
+  useEffect(() => {
+    let active = true
+    setWorkspace(null)
+    setProjectError(false)
+    if (bookID) {
+      void jz.api.insights
+        .workspace(bookID)
+        .then((response) => {
+          if (active && bookID === jz.storage.getCurrentAccountBook()?.id)
+            setWorkspace(response.data)
+        })
+        .catch(() => {
+          if (active) setProjectError(true)
+        })
+    }
+    return () => {
+      active = false
+    }
+  }, [bookID, projectRetry])
   const [categoryName, setCategoryName] = useState('请选择分类')
   const [assetName, setAssetName] = useState('请选择资产')
   const [payeeTags, setPayeeTags] = useState<ApiTypes.PayeeListItem[]>([])
@@ -151,6 +176,12 @@ export default function BaseForm({
   }, [statementType, setForm])
 
   useDidShow(() => {
+    const currentBookID = jz.storage.getCurrentAccountBook()?.id || 0
+    if (currentBookID !== bookID) {
+      setBookID(currentBookID)
+      setForm((current) => ({ ...current, project_id: 0, consumer_id: 0 }))
+    }
+    setProjectRetry((n) => n + 1)
     setSelectLoading(true)
     runTask(
       jz.api.payees.list().then((data) => {
@@ -261,6 +292,24 @@ export default function BaseForm({
       return false
     }
 
+    if (!bookID || bookID !== jz.storage.getCurrentAccountBook()?.id) {
+      jz.toastError('账簿已切换，请重新打开记账页面')
+      return false
+    }
+    if (form.project_id) {
+      const project = workspace?.projects.find((p) => p.id === form.project_id && !p.archived)
+      if (
+        !project ||
+        !workspace?.members.some(
+          (m) =>
+            m.id === form.consumer_id &&
+            (!project.participant_ids?.length || project.participant_ids.includes(m.id))
+        )
+      ) {
+        jz.toastError('请选择有效的项目和消费人')
+        return false
+      }
+    }
     if (submitting.current) return
     submitting.current = true
     try {
@@ -269,7 +318,7 @@ export default function BaseForm({
           title: 'loading'
         })
       )
-      const { data } = await jz.api.statements.create(form)
+      const { data } = await jz.api.statements.create(form, bookID)
       Taro.hideLoading()
       if (data.status === 200) {
         jz.event.emit('statement:updated')
@@ -439,6 +488,22 @@ export default function BaseForm({
             </View>
           )}
 
+          {workspace && (
+            <StatementProjectField
+              workspace={workspace}
+              projectID={form.project_id}
+              consumerID={form.consumer_id}
+              currentUserID={jz.storage.getCurrentUser()?.id}
+              onChange={(project_id, consumer_id) =>
+                setForm((current) => ({ ...current, project_id, consumer_id }))
+              }
+            />
+          )}
+          {projectError && (
+            <View className="p-4 col-text-mute" onClick={() => setProjectRetry((n) => n + 1)}>
+              项目加载失败，点击重试
+            </View>
+          )}
           {rowField.transfer_asset && (
             <View className="f-column d-flex flex-between">
               <View className="asset-select-section">

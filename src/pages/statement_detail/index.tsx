@@ -1,4 +1,5 @@
 import type * as ApiTypes from '@/api/types'
+import AnnotationEditor from '@/components/Statistic/InsightWorkspace/AnnotationEditor'
 import BasePage from '@/components/BasePage'
 import type { SelectionHandler } from '@/components/statementForm/CategorySelect'
 import CategorySelect from '@/components/statementForm/CategorySelect'
@@ -9,6 +10,8 @@ import { parsePositiveAmount } from '@/utils/validation'
 import { Image, Picker, Text, Textarea, View } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { useState } from 'react'
+import type { ReactNode } from 'react'
+import './index.scss'
 import { AtImagePicker } from 'taro-ui'
 import type { File } from 'taro-ui/types/image-picker'
 import { guardEvent, runTask } from '../../utils/async'
@@ -97,7 +100,33 @@ const getTargetObjectLabel = (type: string) => {
   }
 }
 
+function DetailRow({
+  label,
+  icon,
+  children,
+  onClick
+}: {
+  label: string
+  icon: string
+  children: ReactNode
+  onClick?: () => void
+}) {
+  return (
+    <View className={`detail-row ${onClick ? 'is-editable' : ''}`} onClick={onClick}>
+      <View className="detail-row__label">
+        <Text className={`iconfont ${icon}`} />
+        <Text>{label}</Text>
+      </View>
+      <View className="detail-row__value">
+        {children}
+        {onClick && <Text className="detail-row__arrow">›</Text>}
+      </View>
+    </View>
+  )
+}
+
 const StatementDetail: React.FC = () => {
+  const [analysisOpen, setAnalysisOpen] = useState(false)
   const params = jz.router.getParams()
   const [statement, setStatement] = useState(initialStatement)
   const [editing, setEditing] = useState({
@@ -139,7 +168,7 @@ const StatementDetail: React.FC = () => {
       Taro.previewImage({
         showmenu: true,
         current: file.url,
-        urls: [file.url]
+        urls: statement.upload_files.map((item) => item.url)
       })
     )
   }
@@ -343,197 +372,226 @@ const StatementDetail: React.FC = () => {
   }
 
   return (
-    <BasePage headerName="账单详情">
-      <View className="jz-pages__statement-detail">
-        <View className="detail-header" style={getMoodStyle(statement.mood)}>
-          <View className="d-flex flex-center-center">
-            <View className="statement-component__icon-image">
-              <Image src={statement.icon_path}></Image>
-            </View>
-          </View>
-
-          {/* 添加心情选择器 */}
-          <View className="mood-selector">
-            <Picker
-              mode="selector"
-              range={moodTags}
-              rangeKey="name"
-              onChange={guardEvent(async (e) => {
-                const mood = moodTags[Number(e.detail.value)].name
-                runTask(updateStatement({ mood }))
-              })}
-            >
-              <View className="mood-text">
-                {statement.mood || '选择心情'}
-                <Text className="iconfont jcon-arrow-down ml-1"></Text>
-              </View>
-            </Picker>
-          </View>
-
-          <View
-            className={`amount-wrapper ${isEditMode ? 'clickable' : ''}`}
-            onClick={isEditMode ? () => handleEdit('amount') : undefined}
-          >
-            <View className="type-label">{getTypeLabel(statement.type)}</View>
-            <View className={`amount-text col-${statement.type}`}>{statement.amount}</View>
-          </View>
-
-          {statement.target_object && (
-            <View className="target-object-text">
-              <Text className="label">{getTargetObjectLabel(statement.type)}：</Text>
-              <Text className="value">{statement.target_object}</Text>
-            </View>
-          )}
-
-          {!isEditMode && (
-            <View
-              className={`time-text ${isEditMode ? 'clickable' : ''}`}
-              onClick={isEditMode ? () => handleEdit('date') : undefined}
-            >
-              {statement.date} {statement.time}
-            </View>
-          )}
-
-          {isEditMode && (
-            <Picker
-              mode="date"
-              value={statement.date}
-              onChange={guardEvent(async (e) => {
-                runTask(updateStatement({ date: e.detail.value }))
-              })}
-            >
-              <View className="picker">{statement.date}</View>
-            </Picker>
-          )}
-        </View>
-
-        {/* 详情信息列表 */}
-        <View className="detail-content">
-          {statement.remark && (
-            <View className="detail-item">
-              <View className="item-label">
-                <View className="iconfont jcon-user"></View>
-                <Text>记账用户</Text>
-              </View>
-              <View className="item-value">{statement.remark}</View>
-            </View>
-          )}
-
-          <View className="detail-item">
-            <View className="item-label">
-              <View className="iconfont jcon-category"></View>
-              <Text>分类</Text>
-            </View>
-            <View
-              className={`item-value ${isEditMode ? 'clickable' : ''}`}
-              onClick={isEditMode ? () => handleEdit('category') : undefined}
-            >
-              {statement.category}
-              {isEditMode && canEdit('category') && <Text className="edit-icon">✏️</Text>}
-            </View>
-          </View>
-
-          <View className="detail-item">
-            <View className="item-label">
-              <View className="iconfont jcon-wallet"></View>
-              <Text>账户</Text>
-            </View>
-            <View
-              className={`item-value ${isEditMode ? 'clickable' : ''}`}
-              onClick={isEditMode ? () => handleEdit('asset') : undefined}
-            >
-              {statement.asset}
-              {isEditMode && canEdit('asset') && <Text className="edit-icon">✏️</Text>}
-            </View>
-          </View>
-
-          {(statement.type === 'transfer' || statement.type === 'repayment') &&
-            statement.target_asset && (
-              <View className="detail-item">
-                <View className="item-label">
-                  <View className="iconfont jcon-wallet"></View>
-                  <Text>目标账户</Text>
+    <BasePage headerName="账单详情" forceShowNavigatorBack>
+      <View className="statement-detail">
+        {statement.id === 0 ? (
+          <View className="detail-loading">正在加载账单…</View>
+        ) : (
+          <>
+            <View className={`detail-hero detail-hero--${statement.type}`}>
+              <View className="detail-hero__top">
+                <View className="detail-hero__identity">
+                  {statement.icon_path ? (
+                    <Image
+                      className="detail-hero__icon"
+                      src={statement.icon_path}
+                      mode="aspectFit"
+                    />
+                  ) : (
+                    <View className="detail-hero__icon detail-hero__fallback iconfont jcon-wallet" />
+                  )}
+                  <View>
+                    <View className="detail-hero__category">
+                      {statement.category || getTypeLabel(statement.type)}
+                    </View>
+                    <View className="detail-hero__type">{getTypeLabel(statement.type)}</View>
+                  </View>
                 </View>
-                <View className="item-value">{statement.target_asset.name}</View>
+                <Picker
+                  mode="selector"
+                  range={moodTags}
+                  rangeKey="name"
+                  disabled={!statement.can_edit}
+                  onChange={guardEvent(async (e) => {
+                    await updateStatement({ mood: moodTags[Number(e.detail.value)].name })
+                  })}
+                >
+                  <View
+                    className="detail-mood"
+                    style={statement.mood ? getMoodStyle(statement.mood) : undefined}
+                  >
+                    {statement.mood || (statement.can_edit ? '记录心情' : '未记录心情')}
+                    {statement.can_edit && <Text> ›</Text>}
+                  </View>
+                </Picker>
               </View>
-            )}
+              <View
+                className={`detail-hero__amount ${isEditMode ? 'is-editable' : ''}`}
+                onClick={isEditMode ? () => handleEdit('amount') : undefined}
+              >
+                <Text className="detail-hero__currency">¥</Text>
+                {Number(statement.amount_number).toFixed(2)}
+                {isEditMode && <Text className="detail-hero__edit">修改 ›</Text>}
+              </View>
+              <View className="detail-hero__time">
+                {statement.date}
+                <Text> · {statement.time}</Text>
+              </View>
+              {isEditMode && (
+                <Picker
+                  mode="date"
+                  value={statement.date}
+                  onChange={guardEvent(async (e) => {
+                    await updateStatement({ date: e.detail.value })
+                  })}
+                >
+                  <View className="detail-hero__date-edit">修改记账日期 ›</View>
+                </Picker>
+              )}
+              {statement.target_object && (
+                <View className="detail-hero__target">
+                  {getTargetObjectLabel(statement.type)} · {statement.target_object}
+                </View>
+              )}
+            </View>
 
-          <View className="detail-item">
-            <View className="item-label">
-              <View className="iconfont jcon-shop"></View>
-              <Text>商家</Text>
+            {isEditMode && <View className="detail-edit-hint">点击带箭头的信息即可修改</View>}
+            <View className="detail-card">
+              <View className="detail-card__heading">账单信息</View>
+              <DetailRow
+                label="分类"
+                icon="jcon-category"
+                onClick={
+                  isEditMode && canEdit('category') ? () => handleEdit('category') : undefined
+                }
+              >
+                {statement.category || '未设置'}
+              </DetailRow>
+              <DetailRow
+                label={['transfer', 'repayment'].includes(statement.type) ? '转出账户' : '资产账户'}
+                icon="jcon-wallet"
+                onClick={isEditMode && canEdit('asset') ? () => handleEdit('asset') : undefined}
+              >
+                {statement.asset || '未设置'}
+              </DetailRow>
+              {['transfer', 'repayment'].includes(statement.type) && statement.target_asset && (
+                <DetailRow label="目标账户" icon="jcon-wallet">
+                  {statement.target_asset.name}
+                </DetailRow>
+              )}
+              <DetailRow
+                label="商家"
+                icon="jcon-shop"
+                onClick={isEditMode ? () => handleEdit('payee') : undefined}
+              >
+                {statement.payee?.name || <Text className="detail-empty">未选择</Text>}
+              </DetailRow>
+              {statement.remark && (
+                <DetailRow label="记账人" icon="jcon-user">
+                  {statement.remark}
+                </DetailRow>
+              )}
+              {statement.location && (
+                <DetailRow label="位置" icon="jcon-location">
+                  {statement.location}
+                </DetailRow>
+              )}
             </View>
-            <View
-              className={`item-value ${isEditMode ? 'clickable' : ''}`}
-              onClick={isEditMode ? () => handleEdit('payee') : undefined}
-            >
-              {statement.payee?.name || '暂未选择'}
-              {isEditMode && <Text className="edit-icon">✏️</Text>}
-            </View>
-          </View>
 
-          <View className="detail-item is-description">
-            <View className="item-label">
-              <View className="iconfont jcon-edit"></View>
-              <Text>备注</Text>
-            </View>
-            <View className="item-value">
+            <View className="detail-card">
+              <View className="detail-card__heading">
+                <View>备注</View>
+                {isEditMode && !editing.description && (
+                  <View className="detail-card__link" onClick={() => handleEdit('description')}>
+                    {statement.description ? '修改' : '添加'} ›
+                  </View>
+                )}
+              </View>
               {editing.description ? (
                 <Textarea
+                  className="detail-notes__input"
                   value={tempForm.description || ''}
+                  maxlength={200}
+                  placeholder="记下这笔消费的用途…"
                   onInput={(e) => setTempForm({ ...tempForm, description: e.detail.value })}
                   onBlur={guardEvent(() => handleSave('description'))}
                   autoFocus
                 />
               ) : (
                 <View
-                  className={isEditMode ? 'clickable' : ''}
+                  className={`detail-notes ${statement.description ? '' : 'detail-empty'}`}
                   onClick={isEditMode ? () => handleEdit('description') : undefined}
                 >
                   {statement.description || '暂无备注'}
-                  {isEditMode && <Text className="edit-icon">✏️</Text>}
                 </View>
               )}
             </View>
-          </View>
 
-          <View className="detail-item is-files">
-            <View className="item-label">
-              <View className="iconfont jcon-image"></View>
-              <Text>关联图片</Text>
+            <View className="detail-card">
+              <View className="detail-card__heading">
+                <View>图片凭证</View>
+                <Text className="detail-card__count">{statement.upload_files.length} 张</Text>
+              </View>
+              {isEditMode ? (
+                <AtImagePicker
+                  showAddBtn
+                  files={statement.upload_files}
+                  onChange={guardEvent(uploadFiles)}
+                  onImageClick={showPicPreview}
+                />
+              ) : statement.upload_files.length ? (
+                <View className="detail-images">
+                  {statement.upload_files.map((file, i) => (
+                    <Image
+                      key={file.id}
+                      src={file.url}
+                      mode="aspectFill"
+                      onClick={() => showPicPreview(i, file)}
+                    />
+                  ))}
+                </View>
+              ) : (
+                <View className="detail-empty detail-images__empty">
+                  <Text className="iconfont jcon-image" />
+                  {statement.can_edit ? '编辑时可添加小票或消费凭证' : '暂无图片凭证'}
+                </View>
+              )}
             </View>
-            <View className="item-value">
-              <AtImagePicker
-                showAddBtn={isEditMode}
-                files={statement.upload_files}
-                onChange={guardEvent(uploadFiles)}
-                onImageClick={showPicPreview}
-              />
-            </View>
-          </View>
-        </View>
 
-        {/* 底部按钮 */}
-        {statement.can_edit && (
-          <View className="detail-footer">
-            <Button
-              title={isEditMode ? '完成' : '编辑'}
-              className="primary"
-              onClick={guardEvent(async () => {
-                if (isEditMode) {
-                  runTask(handleSave('description'))
-                  setCategorySelectActive(false)
-                  setAssetSelectActive(false)
-                }
-                setIsEditMode(!isEditMode)
-              })}
-            />
-            <Button
-              title="删除"
-              className="dangerous mt-3"
-              onClick={guardEvent(() => deleteStatement(statement.id))}
-            />
-          </View>
+            {['income', 'expend'].includes(statement.type) && (
+              <View className="detail-analysis" onClick={() => setAnalysisOpen(true)}>
+                <View className="detail-analysis__icon iconfont jcon-project" />
+                <View className="detail-analysis__content">
+                  <View>项目与付款分摊</View>
+                  <Text>查看所属项目、消费人和付款分摊</Text>
+                </View>
+                <Text className="detail-analysis__arrow">›</Text>
+              </View>
+            )}
+            {statement.can_edit && (
+              <View className="detail-actions">
+                <Button
+                  title={isEditMode ? '完成编辑' : '编辑账单'}
+                  className="detail-actions__edit"
+                  onClick={guardEvent(async () => {
+                    if (isEditMode) {
+                      await handleSave('description')
+                      setCategorySelectActive(false)
+                      setAssetSelectActive(false)
+                    }
+                    setIsEditMode(!isEditMode)
+                  })}
+                />
+                <View className="detail-actions__delete">
+                  <Button
+                    title="删除账单"
+                    danger
+                    onClick={guardEvent(() => deleteStatement(statement.id))}
+                  />
+                </View>
+              </View>
+            )}
+            <View className="detail-meta">账单 #{statement.id}</View>
+          </>
+        )}
+        {analysisOpen && (
+          <AnnotationEditor
+            statementID={statement.id}
+            amount={statement.amount_number}
+            type={statement.type}
+            canEdit={statement.can_edit}
+            onClose={() => setAnalysisOpen(false)}
+          />
         )}
 
         {categorySelectActive && (

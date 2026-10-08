@@ -1,0 +1,7 @@
+/* prettier-ignore */
+.annual-insights {
+  &__month { padding: 12PX 0; border-bottom: 1PX solid var(--border-color); }
+  &__track { height: 6PX; background: var(--background-color); border-radius: 3PX; margin-top: 6PX; overflow: hidden; > view { height: 100%; border-radius: 3PX; } }
+  &__income { background: #257453; }
+  &__expense { background: #c56b35; }
+}

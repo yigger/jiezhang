@@ -1,7 +1,7 @@
 import { View } from '@tarojs/components'
 import { initialCalculator, pressCalculatorKey } from '@/utils/calculator'
 import React, { useRef } from 'react'
-import './index.scss'
+import '@/src/styles'
 
 export interface CalculatorValue {
   value: string
@@ -37,62 +37,26 @@ const Calculator: React.FC<CalculatorProps> = ({
   return (
     <View className={`calculator ${embedded ? 'calculator--embedded' : ''}`}>
       <View className="calculator__keypad">
-        <View className="keypad-left">
-          <View className="row">
-            <View className="key" onClick={() => handleKey('7')}>
-              7
-            </View>
-            <View className="key" onClick={() => handleKey('8')}>
-              8
-            </View>
-            <View className="key" onClick={() => handleKey('9')}>
-              9
-            </View>
+        {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((key) => (
+          <View
+            key={key}
+            className={`key calculator__number calculator__number--${key}`}
+            onClick={() => handleKey(key)}
+          >
+            {key}
           </View>
-          <View className="row">
-            <View className="key" onClick={() => handleKey('4')}>
-              4
-            </View>
-            <View className="key" onClick={() => handleKey('5')}>
-              5
-            </View>
-            <View className="key" onClick={() => handleKey('6')}>
-              6
-            </View>
-          </View>
-          <View className="row">
-            <View className="key" onClick={() => handleKey('1')}>
-              1
-            </View>
-            <View className="key" onClick={() => handleKey('2')}>
-              2
-            </View>
-            <View className="key" onClick={() => handleKey('3')}>
-              3
-            </View>
-          </View>
-          <View className="row">
-            <View className="key" onClick={() => handleKey('.')}>
-              .
-            </View>
-            <View className="key" onClick={() => handleKey('0')}>
-              0
-            </View>
-            <View className="key" onClick={() => handleKey('DEL')}>
-              ←
-            </View>
-          </View>
+        ))}
+        <View className="key calculator__delete" aria-label="退格" onClick={() => handleKey('DEL')}>
+          <View className="calculator__delete-icon">×</View>
         </View>
-        <View className="keypad-right">
-          <View className="key operator" onClick={() => handleKey('+')}>
-            +
-          </View>
-          <View className="key operator" onClick={() => handleKey('-')}>
-            -
-          </View>
-          <View className="key operator confirm" onClick={() => handleKey('OK')}>
-            {confirmText}
-          </View>
+        <View className="key calculator__zero" onClick={() => handleKey('0')}>
+          0
+        </View>
+        <View className="key calculator__decimal" onClick={() => handleKey('.')}>
+          .
+        </View>
+        <View className="key calculator__confirm" onClick={() => handleKey('OK')}>
+          {confirmText}
         </View>
       </View>
     </View>

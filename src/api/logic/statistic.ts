@@ -6,9 +6,10 @@ export default class Statistic {
     this._request = request
   }
 
-  getCalendarData(date: string) {
+  getCalendarData(date: string, accountBookID?: number) {
     return this._request.get<Envelope<CalendarDataItem[]>>('chart/calendar_data', {
-      date: date
+      date: date,
+      account_book_id: accountBookID
     })
   }
 

@@ -1,4 +1,5 @@
 import type * as ApiTypes from '@/api/types'
+import HomeTabSettings from '@/components/HomeTabSettings'
 import Select from '@/components/Select'
 import jz from '@/jz'
 import { HomeStoreContext } from '@/src/stores'
@@ -87,6 +88,7 @@ function UserInfo({ userInfo }: { userInfo: Partial<ApiTypes.HomeSettingsUser> }
 }
 
 export const ProfilePage = observer(() => {
+  const [tabSettingsOpen, setTabSettingsOpen] = useState(false)
   const store = useContext(HomeStoreContext)
   const [shouldFetch, setShouldFetch] = useState(true)
   useEffect(() => {
@@ -217,6 +219,11 @@ export const ProfilePage = observer(() => {
               )}
             />
             <AtListItem
+              title="自定义底部导航"
+              arrow="right"
+              onClick={() => setTabSettingsOpen(true)}
+            />
+            <AtListItem
               title="主题设置"
               extraText={store.profileData.userInfo.theme?.name}
               onClick={() => setThemeSelectOpen(true)}
@@ -233,6 +240,7 @@ export const ProfilePage = observer(() => {
         </View>
       </View>
 
+      {tabSettingsOpen && <HomeTabSettings onClose={() => setTabSettingsOpen(false)} />}
       <Select
         title="主题选择"
         open={themeSelectOpen}

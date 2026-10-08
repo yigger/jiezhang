@@ -1,0 +1,373 @@
+/* Use 750-design-width pixels; Taro converts them to responsive rpx. */
+.calendar-statistic.calendar-journal {
+  padding: 16px 20px 48px;
+  color: var(--text-color);
+  font-size: 28px;
+  .journal-month-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 24px;
+    color: var(--secondary-text);
+    margin: 20px 12px 0;
+  }
+  .calendar-grid {
+    gap: 6px;
+    background: transparent;
+  }
+  .calendar-grid .week-day {
+    background: transparent;
+    color: var(--secondary-text);
+    font-size: 24px;
+    padding: 12px 0;
+  }
+  .calendar-grid .day-cell {
+    background: linear-gradient(145deg, var(--primary-soft-color), var(--background-color));
+    border-radius: 20px;
+    padding: 8px 6px;
+    min-height: 128px;
+    border: 2px solid transparent;
+    position: relative;
+  }
+  .calendar-grid .day-cell.is-blank {
+    background: transparent;
+  }
+  .calendar-grid .day-cell.today {
+    background: var(--primary-soft-strong-color);
+    .date-number {
+      color: var(--text-color);
+    }
+    .date-number > text:first-child {
+      border-bottom: 4px solid var(--primary-color);
+    }
+  }
+  .calendar-grid .day-cell.selected {
+    background: var(--primary-soft-strong-color);
+    border-color: var(--primary-color);
+    .date-number {
+      color: var(--text-color);
+    }
+  }
+  .calendar-grid .day-cell.is-future {
+    opacity: 0.5;
+  }
+  .calendar-grid .day-cell .date-number {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2px;
+    font-size: 26px;
+    margin: 0 4px 4px;
+    line-height: 34px;
+  }
+  .journal-day-mood {
+    font-size: 24px;
+  }
+  .calendar-grid .day-cell .amount-bars {
+    gap: 2px;
+    justify-content: center;
+  }
+  .calendar-grid .day-cell .amount-bars .income-bar,
+  .calendar-grid .day-cell .amount-bars .expend-bar {
+    background: transparent;
+    text-align: left;
+    padding: 0 2px;
+  }
+  .calendar-grid .day-cell .amount-bars .income-bar .amount-text {
+    color: #b95748;
+  }
+  .calendar-grid .day-cell .amount-bars .expend-bar .amount-text {
+    color: #38734c;
+  }
+  .calendar-grid .day-cell .amount-bars .amount-text {
+    font-size: 20px;
+    line-height: 28px;
+    overflow-wrap: anywhere;
+  }
+  .journal-day-marks {
+    height: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 22px;
+  }
+  .journal-note-dot {
+    color: var(--primary-color);
+    font-size: 40px;
+    line-height: 24px;
+  }
+  .journal-legend {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding: 24px 0 36px;
+    font-size: 22px;
+    color: var(--secondary-text);
+  }
+  .journal-day-card {
+    background: linear-gradient(135deg, var(--primary-soft-color), var(--background-color));
+    border: 2px solid var(--primary-soft-strong-color);
+    border-radius: 32px;
+    padding: 32px;
+    &--pressed {
+      opacity: 0.85;
+    }
+  }
+  .journal-quote {
+    margin-top: 24px;
+    font-size: 30px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .journal-current-mood {
+    display: inline-flex;
+    padding: 10px 18px;
+    border-radius: 16px;
+    background: var(--background-color);
+    margin-top: 20px;
+    font-size: 24px;
+  }
+  .day-summary {
+    background: #fff;
+    margin: 24px 0;
+    padding: 32px;
+    border-radius: 32px;
+    .summary-header {
+      font-size: 28px;
+      margin-bottom: 28px;
+    }
+    .summary-item {
+      min-width: 0;
+      flex: 1;
+      .label {
+        font-size: 24px;
+        margin-bottom: 12px;
+      }
+      .amount {
+        font-size: 38px;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+}
+.journal-eyebrow {
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: var(--secondary-text);
+  margin-bottom: 12px;
+}
+.journal-title {
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.journal-muted {
+  color: var(--secondary-text);
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+.journal-label {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 32px 0 20px;
+}
+.journal-error {
+  padding: 20px 0;
+  color: #b84732;
+  font-size: 26px;
+  line-height: 1.6;
+}
+.journal-ledger-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  .journal-title {
+    font-size: 30px;
+  }
+}
+.journal-text-button {
+  background: transparent;
+  color: var(--text-color);
+  font-size: 24px;
+  padding: 12px 0;
+  margin: 0;
+  line-height: 1.5;
+  flex-shrink: 0;
+  &::after {
+    border: none;
+  }
+  &[disabled],
+  &.is-disabled {
+    color: var(--secondary-text);
+    background: transparent;
+    opacity: 0.5;
+  }
+}
+.journal-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  color: var(--text-color);
+  font-size: 28px;
+  &__mask {
+    position: absolute;
+    inset: 0;
+    background: rgba(18, 23, 35, 0.4);
+  }
+  &__panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 48px 48px 0 0;
+    padding: 16px 40px 0;
+    box-sizing: border-box;
+  }
+  &__handle {
+    width: 64px;
+    height: 8px;
+    border-radius: 8px;
+    background: var(--border-color);
+    margin: 0 auto 32px;
+    flex-shrink: 0;
+  }
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+  }
+  &__body {
+    height: 48vh;
+  }
+  &__footer {
+    flex-shrink: 0;
+    padding: 24px 0 calc(32px + env(safe-area-inset-bottom));
+    border-top: 2px solid var(--border-color);
+  }
+  button::after {
+    border: none;
+  }
+  .journal-close {
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    margin: 0;
+    border-radius: 50%;
+    background: var(--background-color);
+    color: var(--text-color);
+    font-size: 46px;
+    line-height: 60px;
+  }
+  .journal-moods {
+    display: flex;
+    gap: 12px;
+  }
+  .journal-mood {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 20px 0 16px;
+    background: var(--background-color);
+    border: 2px solid transparent;
+    border-radius: 24px;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--text-color);
+    &__icon {
+      font-size: 46px;
+      margin-bottom: 10px;
+    }
+    &.is-active {
+      border-color: var(--primary-color);
+      box-shadow: inset 0 0 0 2px var(--primary-color);
+    }
+  }
+  .journal-paper {
+    background: var(--background-color);
+    border-radius: 28px;
+    padding: 24px;
+  }
+  .journal-note {
+    width: 100%;
+    height: 192px;
+    font-size: 28px;
+    line-height: 1.8;
+    color: var(--text-color);
+  }
+  .journal-counter {
+    text-align: right;
+    color: var(--secondary-text);
+    font-size: 20px;
+    margin-top: 12px;
+  }
+  .journal-stamp {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    padding: 28px 24px;
+    margin: 32px 0;
+    border: 2px dashed var(--border-color);
+    border-radius: 28px;
+    text-align: left;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 26px;
+    line-height: 1.5;
+    &__icon {
+      font-size: 58px;
+      flex-shrink: 0;
+    }
+    &__copy {
+      min-width: 0;
+    }
+    &.is-active {
+      border-color: var(--primary-color);
+      background: var(--background-color);
+    }
+    &[disabled] {
+      opacity: 0.7;
+    }
+  }
+  .journal-empty {
+    padding: 28px 0 40px;
+    color: var(--secondary-text);
+    font-size: 26px;
+  }
+  .journal-actions {
+    display: flex;
+    gap: 20px;
+    margin-top: 24px;
+    button {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+      padding: 22px 16px;
+      font-size: 28px;
+      line-height: 1.5;
+      border-radius: 24px;
+    }
+  }
+  .journal-secondary {
+    background: var(--background-color);
+    color: var(--text-color);
+  }
+  .journal-primary {
+    background: var(--primary-bg-color);
+    color: var(--primary-bg-text-color);
+    &[disabled] {
+      opacity: 0.5;
+    }
+  }
+}

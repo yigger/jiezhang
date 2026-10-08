@@ -2,6 +2,7 @@ export default {
   pages: [
     // 首页
     'pages/home/index',
+    'pages/project/detail',
     // 创建账单的表单
     'pages/statement/form',
     'pages/statement_detail/index',

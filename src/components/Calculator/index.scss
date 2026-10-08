@@ -1,145 +1,24 @@
+/* prettier-ignore */
 .calculator {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #f5f5f5;
-  z-index: 100;
-  border-top: 1px solid #d6d6d6;
-
-  &__display {
-    padding: 30px 20px;
-    background: #fff;
-    text-align: right;
-
-    .prev-value {
-      font-size: 24px;
-      color: #999;
-      margin-bottom: 10px;
-    }
-
-    .amount {
-      font-size: 40px;
-      color: var(--col-expend);
-    }
-  }
-
-  &__keypad {
-    display: flex;
-    padding: 15px;
-  }
-
-  .keypad-left {
-    flex: 1;
-    margin-right: 15px;
-
-    .row {
-      display: flex;
-      margin-bottom: 15px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-
-      .key {
-        flex: 1;
-        margin-right: 15px;
-
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-    }
-  }
-
-  .keypad-right {
-    width: 130px;
-    display: flex;
-    flex-direction: column;
-
-    .key {
-      margin-bottom: 12px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-
-      &.confirm {
-        flex: 1;
-        height: auto;
-      }
-    }
-  }
-
-  .key {
-    height: 130px;
-    background: #fff;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-
-    &.operator {
-      &:active {
-        background: #e8e8e8;
-      }
-
-      &.confirm:active {
-        background: #e8e8e8;
-      }
-    }
-
-    &:active {
-      background: #e0e0e0;
-      transform: scale(0.95);
-    }
-  }
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: var(--background-color); border-top: 1PX solid var(--border-color);
+  padding-bottom: calc(24PX + env(safe-area-inset-bottom));
+  &__keypad { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, 48PX); gap: 8PX; padding: 8PX; }
+  .key { display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 6PX; color: var(--text-color); font-size: 24PX; font-weight: 500; user-select: none; &:active { background: var(--border-color); } }
+  &__number--1 { grid-column: 1; grid-row: 1; }
+  &__number--2 { grid-column: 2; grid-row: 1; }
+  &__number--3 { grid-column: 3; grid-row: 1; }
+  &__number--4 { grid-column: 1; grid-row: 2; }
+  &__number--5 { grid-column: 2; grid-row: 2; }
+  &__number--6 { grid-column: 3; grid-row: 2; }
+  &__number--7 { grid-column: 1; grid-row: 3; }
+  &__number--8 { grid-column: 2; grid-row: 3; }
+  &__number--9 { grid-column: 3; grid-row: 3; }
+  &__delete { grid-column: 4; grid-row: 1; }
+  &__delete-icon { width: 21PX; height: 18PX; padding-left: 3PX; line-height: 16PX; background: var(--text-color); color: #fff; font-size: 22PX; border-radius: 2PX; clip-path: polygon(28% 0, 100% 0, 100% 100%, 28% 100%, 0 50%); text-align: center; }
+  &__zero { grid-column: 1 / span 2; grid-row: 4; }
+  &__decimal { grid-column: 3; grid-row: 4; }
+  .key.calculator__confirm { grid-column: 4; grid-row: 2 / span 3; background: var(--primary-bg-color); color: var(--primary-bg-text-color); font-size: 18PX; font-weight: 600; &:active { opacity: .8; } }
 }
 /* prettier-ignore */
-.calculator.calculator--embedded {
-  position: relative;
-  bottom: auto;
-  left: auto;
-  right: auto;
-  z-index: auto;
-  border: none;
-  border-radius: 12PX;
-  .calculator__keypad {
-    padding: 10PX;
-  }
-  .keypad-left {
-    margin-right: 8PX;
-    .row {
-      margin-bottom: 8PX;
-      .key {
-        margin-right: 8PX;
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-  .keypad-right {
-    width: 64PX;
-    .key {
-      margin-bottom: 8PX;
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-  .key {
-    height: 44PX;
-    font-size: 20PX;
-    color: var(--text-color);
-  }
-  .key.confirm {
-    background: var(--primary-bg-color);
-    color: var(--primary-bg-text-color);
-    font-size: 14PX;
-  }
-}
+.calculator.calculator--embedded { position: relative; bottom: auto; left: auto; right: auto; z-index: auto; border: none; border-radius: 12PX; padding-bottom: 8PX; }

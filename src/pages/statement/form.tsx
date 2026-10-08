@@ -4,6 +4,8 @@ import { Tabs } from '@/src/components/UiComponents'
 import type { StatementFormData } from '@/src/types/ui'
 import { View } from '@tarojs/components'
 import { format } from 'date-fns'
+import { useRouter } from '@tarojs/taro'
+import { validJournalDate } from '../../utils/calendar-journal'
 import React, { useState } from 'react'
 
 const tabs = [
@@ -18,6 +20,9 @@ const tabs = [
 ]
 
 const StatementForm: React.FC = () => {
+  const { params } = useRouter()
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const initialDate = params.date && validJournalDate(params.date, today) ? params.date : today
   const [showMore, setShowMore] = useState(false)
   const [typeName, setTypeName] = useState('支出')
   const [currentTab, setCurrentTab] = useState(1)
@@ -28,7 +33,7 @@ const StatementForm: React.FC = () => {
     category_id: 0,
     asset_id: 0,
     upload_files: [],
-    date: format(new Date(), 'yyyy-MM-dd'),
+    date: initialDate,
     time: format(new Date(), 'HH:mm'),
     description: '',
     mood: '',

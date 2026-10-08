@@ -20,9 +20,7 @@ interface BasePageProps {
   withTabBar?: boolean
 }
 
-import 'taro-ui/dist/style/index.css'
-import '../../assets/fonts/index.styl'
-import '../../assets/styl/index.styl'
+import '@/src/styles'
 
 const RootHeader: React.FC<{
   homeStore: React.ContextType<typeof HomeStoreContext>

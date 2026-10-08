@@ -1,3 +1,5 @@
+import InsightWorkspace from '@/components/Statistic/InsightWorkspace'
+import { Tabs } from '@/src/components/UiComponents'
 import AssetBanner from '@/components/AssetBanner'
 import Avatar from '@/components/Avatar'
 import jz from '@/jz'
@@ -9,7 +11,7 @@ import { observer } from 'mobx-react'
 import { useContext, useEffect, useState } from 'react'
 import { runTask } from '../../../utils/async'
 
-export const FinancePage = observer(() => {
+const FinanceOverview = observer(() => {
   const store = useContext(HomeStoreContext)
   const [shouldFetch, setShouldFetch] = useState(true)
   useEffect(() => {
@@ -198,3 +200,25 @@ export const FinancePage = observer(() => {
     </View>
   )
 })
+
+export function FinancePage() {
+  const [tab, setTab] = useState<'overview' | 'fixed' | 'portfolio'>('overview')
+  return (
+    <View>
+      <Tabs
+        tabs={[
+          { id: 'overview', title: '资产总览' },
+          { id: 'fixed', title: '固定开销' },
+          { id: 'portfolio', title: '资产历史' }
+        ]}
+        current={tab}
+        onChange={setTab}
+      />
+      {tab === 'overview' ? (
+        <FinanceOverview />
+      ) : (
+        <InsightWorkspace key={tab} mode={tab} currentDate={new Date()} />
+      )}
+    </View>
+  )
+}

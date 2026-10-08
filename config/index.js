@@ -25,6 +25,10 @@ const config = {
     errorLevel: 1
   },
   mini: {
+    // Taro UI uses deprecated Sass internally; keep warnings for our own styles.
+    sassLoaderOption: { sassOptions: { quietDeps: true } },
+    // WXSS must embed local fonts; do not emit them as package file URLs.
+    fontUrlLoaderOption: { limit: false },
     postcss: {
       pxtransform: {
         enable: true,
@@ -48,6 +52,7 @@ const config = {
     }
   },
   h5: {
+    sassLoaderOption: { sassOptions: { quietDeps: true } },
     publicPath: '/',
     staticDirectory: 'static',
     postcss: {

@@ -7,7 +7,7 @@ import { format, subDays } from 'date-fns'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import QuickStatementModal from './QuickStatementModal'
 import type { QuickStatement } from './QuickStatementModal'
-import './index.scss'
+import '@/src/styles'
 
 export default function SuggestedStatement() {
   const [history, setHistory] = useState<StatementListItem[]>([])

@@ -1,0 +1,6 @@
+// Shared component styles follow the global theme in a single, stable order.
+@use '../components/Calculator/index.scss' as calculator;
+@use '../components/Statistic/SpendingAnalysis/index.scss' as spending;
+@use '../components/Statistic/InsightWorkspace/index.scss' as insights;
+@use '../components/Project/index.scss' as projects;
+@use '../components/SuggestedStatement/index.scss' as suggestions;

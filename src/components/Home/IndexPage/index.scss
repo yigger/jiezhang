@@ -1,0 +1,4 @@
+/* prettier-ignore */
+.home-entry-actions { display: flex; align-items: center; margin: 0 12PX; gap: 10PX; > button { flex: 2; margin-left: 0; margin-right: 0; } > button:last-child { flex: 1; } }
+/* prettier-ignore */
+.home-amount-toggle { display: flex; align-items: center; justify-content: flex-end; gap: 6PX; padding: 12PX 16PX 0; color: var(--secondary-text); font-size: 13PX; }

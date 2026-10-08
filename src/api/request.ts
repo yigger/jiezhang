@@ -1,6 +1,7 @@
 import Taro from '@tarojs/taro'
 import jz from '../jz'
 import HttpResult, { ApiError, isRecord } from './http-result'
+import { networkTask, REQUEST_TIMEOUT, UPLOAD_TIMEOUT } from './network-task'
 
 interface StoredToken {
   token: string
@@ -41,13 +42,22 @@ export class RequestManager {
     const pending = this.pending.get(scope)
     if (pending) return pending
     const request = (async () => {
-      const { code } = await Taro.login()
+      const { code } = await networkTask(
+        Taro.login({ timeout: REQUEST_TIMEOUT }),
+        REQUEST_TIMEOUT,
+        '登录超时，请检查网络后重试'
+      )
       if (!code) throw new Error('无法获取登录凭证')
-      const response = await Taro.request<unknown>({
-        method: 'POST',
-        url: `${endpoint}/check_openid`,
-        header: { 'X-WX-Code': code, 'X-WX-APP-ID': appid }
-      })
+      const response = await networkTask(
+        Taro.request<unknown>({
+          timeout: REQUEST_TIMEOUT,
+          method: 'POST',
+          url: `${endpoint}/check_openid`,
+          header: { 'X-WX-Code': code, 'X-WX-APP-ID': appid }
+        }),
+        REQUEST_TIMEOUT,
+        '登录超时，请检查网络后重试'
+      )
       const result = new HttpResult(response)
       if (
         !result.isSuccess ||
@@ -93,13 +103,18 @@ export default class Request {
 
   async upload(filePath: string, formData: Record<string, string | number>) {
     const accessToken = await this.getAccessToken()
-    const response = await Taro.uploadFile({
-      url: `${this._endpoint}/upload`,
-      filePath,
-      formData,
-      name: 'file',
-      header: { 'X-WX-APP-ID': jz.appId, 'X-WX-Skey': accessToken }
-    })
+    const response = await networkTask(
+      Taro.uploadFile({
+        timeout: UPLOAD_TIMEOUT,
+        url: `${this._endpoint}/upload`,
+        filePath,
+        formData,
+        name: 'file',
+        header: { 'X-WX-APP-ID': jz.appId, 'X-WX-Skey': accessToken }
+      }),
+      UPLOAD_TIMEOUT,
+      '图片上传超时，请检查上传结果'
+    )
     const data: unknown = JSON.parse(response.data)
     const result = new HttpResult({ ...response, data })
     if (!result.isSuccess) throw new ApiError(result)
@@ -116,17 +131,22 @@ export default class Request {
     // to a write does not mean the write was rolled back on the server.
     for (let attempt = 0; attempt < 2; attempt++) {
       const token = await this.getAccessToken()
-      const response = await Taro.request<T>({
-        method,
-        url: `${this._endpoint}/${path.replace(/^\/+/, '')}`,
-        data,
-        header: {
-          'content-type': 'application/json',
-          ...options.header,
-          'X-WX-APP-ID': jz.appId,
-          'X-WX-Skey': token
-        }
-      })
+      const response = await networkTask(
+        Taro.request<T>({
+          timeout: REQUEST_TIMEOUT,
+          method,
+          url: `${this._endpoint}/${path.replace(/^\/+/, '')}`,
+          data,
+          header: {
+            'content-type': 'application/json',
+            ...options.header,
+            'X-WX-APP-ID': jz.appId,
+            'X-WX-Skey': token
+          }
+        }),
+        REQUEST_TIMEOUT,
+        method === 'GET' ? '请求超时，请稍后重试' : '请求超时，请先刷新确认操作结果'
+      )
       const result = new HttpResult(response)
       if (isRecord(result.data) && result.data.status === 301) {
         RequestManager.clear()

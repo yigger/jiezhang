@@ -1,0 +1,16 @@
+// Shared primitives used by the Taro UI components below.
+@use 'taro-ui/dist/style/components/icon.scss';
+@use 'taro-ui/dist/style/components/loading.scss';
+
+// Only include components used by this application.
+@use 'taro-ui/dist/style/components/button.scss';
+@use 'taro-ui/dist/style/components/calendar.scss';
+@use 'taro-ui/dist/style/components/card.scss';
+@use 'taro-ui/dist/style/components/image-picker.scss';
+@use 'taro-ui/dist/style/components/input.scss';
+@use 'taro-ui/dist/style/components/list.scss';
+@use 'taro-ui/dist/style/components/progress.scss';
+@use 'taro-ui/dist/style/components/steps.scss';
+@use 'taro-ui/dist/style/components/swipe-action.scss';
+@use 'taro-ui/dist/style/components/tag.scss';
+@use 'taro-ui/dist/style/components/textarea.scss';

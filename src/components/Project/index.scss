@@ -1,0 +1,65 @@
+/* prettier-ignore */
+.project-card {
+ position: relative; padding: 18PX; margin: 14PX 0; border-radius: 18PX; background: #fff; border: 1PX solid #e9eeea; box-shadow: 0 4PX 18PX rgba(35,70,49,.04); color: var(--text-color); font-size: 14PX;
+ &__head { display: flex; align-items: center; gap: 12PX; }
+ &__icon { width: 42PX; height: 42PX; border-radius: 13PX; background: #edf6f0; color: #287454; display: flex; align-items: center; justify-content: center; font-size: 22PX; }
+ &__identity { flex: 1; min-width: 0; }
+ &__name { font-size: 18PX; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+ &__date { font-size: 12PX; color: var(--secondary-text); margin-top: 5PX; }
+ &__status { font-size: 11PX; background: #edf6f0; color: #287454; padding: 4PX 8PX; border-radius: 20PX; white-space: nowrap; }
+ &__amount { display: flex; align-items: flex-end; justify-content: space-between; padding-top: 20PX; gap: 12PX; }
+ &__label { color: var(--secondary-text); font-size: 12PX; }
+ &__money { font-size: 28PX; font-weight: 600; margin-top: 3PX; letter-spacing: -.5PX; }
+ &__budget { text-align: right; color: var(--secondary-text); font-size: 12PX; line-height: 1.8; }
+ &__track { height: 5PX; background: #edf1ed; border-radius: 6PX; overflow: hidden; margin-top: 14PX; > view { background: #3b8a64; height: 100%; border-radius: 6PX; } }
+ &__foot { display: flex; justify-content: space-between; align-items: center; gap: 8PX; padding-top: 14PX; margin-top: 14PX; border-top: 1PX solid #edf1ed; font-size: 12PX; color: var(--secondary-text); }
+ &__people { display: flex; gap: 6PX; align-items: center; min-width: 0; }
+ &__avatars { display: flex; > view { width: 22PX; height: 22PX; background: #edf6f0; border: 2PX solid #fff; border-radius: 50%; text-align: center; line-height: 18PX; font-size: 10PX; color: #287454; margin-left: -5PX; &:first-child { margin-left: 0; } } }
+ &__edit { padding-top: 12PX; text-align: right; color: #287454; font-size: 12PX; }
+ .is-over { color: #b85e39; }
+ &__track > .is-over { background: #c9754c; }
+ .is-archived { background: #f1f3f1; color: #79817a; }
+}
+/* prettier-ignore */
+.project-detail {
+ padding: 14PX; padding-bottom: 30PX; font-size: 16PX;
+ &__hero { background: linear-gradient(135deg,#edf7f0,#fff); border: 1PX solid #e2eee5; border-radius: 20PX; padding: 22PX; margin-bottom: 16PX; }
+ &__title { font-size: 22PX; font-weight: 600; margin-bottom: 6PX; }
+ &__total { font-size: 34PX; font-weight: 600; margin: 10PX 0; }
+ &__metrics { display: flex; justify-content: space-between; font-size: 13PX; line-height: 1.8; gap: 8PX; }
+ &__badge { font-size: 12PX; color: #637569; padding: 10PX 8PX 0; }
+ &__group { border-radius: 16PX; background: #fff; padding: 14PX; margin-bottom: 12PX; }
+ &__filters { display: flex; justify-content: space-between; color: #287454; padding: 12PX 0; font-size: 13PX; }
+ &__quick { margin: 14PX 0; }
+}
+/* prettier-ignore */
+.project-detail__identity { display: flex; align-items: center; justify-content: center; width: 48PX; height: 48PX; border-radius: 14PX; font-size: 28PX; margin-bottom: 12PX; }
+/* prettier-ignore */
+.project-appearance {
+ margin: 18PX 0; font-size: 14PX;
+ &__preview { display: flex; align-items: center; gap: 12PX; margin-bottom: 14PX; font-size: 16PX; }
+ &__preview-icon { display: flex; align-items: center; justify-content: center; width: 46PX; height: 46PX; border-radius: 13PX; font-size: 26PX; flex-shrink: 0; }
+ &__hint { font-size: 12PX; color: var(--secondary-text); margin-top: 4PX; line-height: 1.5; }
+ &__colors { display: flex; flex-wrap: wrap; gap: 8PX; }
+ &__color { width: calc((100% - 40PX) / 6); text-align: center; font-size: 10PX; color: var(--secondary-text); > view:first-child { width: 28PX; height: 28PX; border-radius: 50%; margin: 6PX auto; color: #fff; line-height: 28PX; font-size: 17PX; } &.is-selected { color: var(--text-color); font-weight: 600; } }
+ &__custom { display: flex; align-items: center; justify-content: space-between; margin: 14PX 0; input { width: 100PX; background: var(--background-color); padding: 8PX; border-radius: 8PX; font-size: 14PX; } }
+ &__search { background: var(--background-color); padding: 10PX; border-radius: 8PX; margin: 14PX 0; font-size: 14PX; }
+ &__icons { display: flex; flex-wrap: wrap; gap: 8PX; }
+ &__icon { position: relative; width: calc((100% - 24PX) / 4); box-sizing: border-box; border: 1PX solid var(--border-color); border-radius: 10PX; padding: 10PX 4PX; text-align: center; color: var(--secondary-text); > view:first-child { font-size: 25PX; margin-bottom: 6PX; } > view:nth-child(2) { font-size: 11PX; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } }
+ &__check { position: absolute; top: 4PX; right: 5PX; font-size: 10PX; }
+ &__more { text-align: center; padding: 14PX 0; font-size: 14PX; color: var(--primary-color); }
+}
+/* prettier-ignore */
+.statement-project {
+ font-size: 14PX;
+ &__row { display: flex; align-items: center; justify-content: space-between; gap: 12PX; padding: 16PX; }
+ &__label { display: flex; align-items: center; gap: 8PX; }
+ &__members { display: flex; align-items: center; flex-wrap: wrap; gap: 8PX; padding: 0 16PX 16PX; > view:not(:first-child) { padding: 6PX 10PX; border-radius: 8PX; background: var(--background-color); } .is-selected { color: #287454; background: #edf6f0 !important; } }
+ &__overlay { position: fixed; inset: 0; z-index: 1200; }
+ &__mask { position: absolute; inset: 0; background: rgba(0,0,0,.4); }
+ &__panel { position: absolute; bottom: 0; left: 0; right: 0; background: #fff; border-radius: 18PX 18PX 0 0; padding-bottom: calc(18PX + env(safe-area-inset-bottom)); }
+ &__search { margin: 0 16PX 12PX; padding: 12PX; background: var(--background-color); border-radius: 10PX; }
+ &__list { height: 320PX; }
+ &__choice { display: flex; align-items: center; gap: 12PX; padding: 14PX 16PX; > .iconfont { width: 36PX; height: 36PX; display: flex; align-items: center; justify-content: center; font-size: 22PX; border-radius: 10PX; flex-shrink: 0; } }
+ &__empty { padding: 20PX; color: var(--secondary-text); text-align: center; }
+}
