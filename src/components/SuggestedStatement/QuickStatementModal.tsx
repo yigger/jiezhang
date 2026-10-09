@@ -430,21 +430,19 @@ export default function QuickStatementModal({
                 ))}
               </View>
             )}
-            {!statement.expenseOnly && (
-              <View className="quick-statement__notes">
-                <View>备注</View>
-                <Textarea
-                  value={draft.description}
-                  disabled={saving}
-                  maxlength={200}
-                  placeholder="可不填"
-                  onFocus={() => setCalculator(null)}
-                  onInput={({ detail }) =>
-                    setDraft((current) => ({ ...current, description: detail.value }))
-                  }
-                />
-              </View>
-            )}
+            <View className="quick-statement__notes">
+              <View>备注</View>
+              <Textarea
+                value={draft.description}
+                disabled={saving}
+                maxlength={200}
+                placeholder="可不填"
+                onFocus={() => setCalculator(null)}
+                onInput={({ detail }) =>
+                  setDraft((current) => ({ ...current, description: detail.value }))
+                }
+              />
+            </View>
             {options.status === 'loading' && (
               <View className="quick-statement__subtitle">正在加载类型和资产…</View>
             )}

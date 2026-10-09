@@ -107,7 +107,10 @@ export default function BaseForm({
 
   useEffect(() => {
     let cancelled = false
-    runTask(Taro.showLoading({ title: '数据加载中' }))
+    // Loading indicators are cosmetic; their platform failures must not report a failed read.
+    void Promise.resolve()
+      .then(() => Taro.showLoading({ title: '数据加载中' }))
+      .catch(() => undefined)
     const updateRowField = (fields: string[]) => {
       setRowField((current) =>
         Object.fromEntries(Object.keys(current).map((key) => [key, fields.includes(key)]))
@@ -168,7 +171,11 @@ export default function BaseForm({
             setForm((current) => ({ ...current, category_id: 0, asset_id: 0 }))
           }
         })
-        .finally(() => Taro.hideLoading())
+        .finally(() =>
+          Promise.resolve()
+            .then(() => Taro.hideLoading())
+            .catch(() => undefined)
+        )
     )
     return () => {
       cancelled = true

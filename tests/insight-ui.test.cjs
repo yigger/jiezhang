@@ -557,12 +557,22 @@ test('statement project selection filters archived projects, searches and defaul
 
 test('standard entry sends project and consumer with the statement in one scoped write', async () => {
   const calls = []
+  const toasts = []
+  let loadingCalls = 0
+  let hidingCalls = 0
   let bookID = 8
   const h = harness({
     '@tarojs/taro': {
       useDidShow: () => {},
-      showLoading: async () => {},
-      hideLoading: async () => {}
+      showLoading: async () => {
+        if (loadingCalls++ === 0) throw { errMsg: 'showLoading:fail' }
+      },
+      hideLoading: async () => {
+        if (hidingCalls++ === 0) throw { errMsg: 'hideLoading:fail' }
+      },
+      showToast: async (options) => {
+        toasts.push(options)
+      }
     },
     'taro-ui': { AtImagePicker: 'images', AtTextarea: 'textarea' },
     './CategorySelect': 'categories',
@@ -612,6 +622,7 @@ test('standard entry sends project and consumer with the statement in one scoped
   h.render(component, props)
   h.flush()
   await tick()
+  assert.deepEqual(toasts, [])
   let tree = h.render(component, props)
   const button = find(tree, (n) => n.type === 'button' && n.props.title === '保存')
   assert.ok(button)
@@ -661,7 +672,7 @@ test('home header hides every concrete amount while retaining trend and budget p
   assert.ok(JSON.stringify(Header({ header })).includes('123.45'))
 })
 
-test('quick expense uses only amount, category and asset and never loads income categories', async () => {
+test('quick expense saves an optional note and never loads income categories', async () => {
   const calls = []
   const categoryTypes = []
   const h = harness({
@@ -699,10 +710,7 @@ test('quick expense uses only amount, category and asset and never loads income 
   calculator.props.onChange({ value: '12.34', operator: '', prev: '' })
   calculator.props.onClose()
   tree = h.render(component, props)
-  assert.equal(
-    find(tree, (n) => n.type === 'textarea'),
-    null
-  )
+  find(tree, (n) => n.type === 'textarea').props.onInput({ detail: { value: '午餐备注' } })
   find(tree, (n) => n.props?.className === 'quick-statement__select').props.onClick()
   tree = h.render(component, props)
   const categories = find(tree, (n) => n.type === 'option-panel')
@@ -722,6 +730,7 @@ test('quick expense uses only amount, category and asset and never loads income 
   await find(tree, (n) => n.type === 'button' && n.props.title === '确定').props.onClick()
   assert.deepEqual(categoryTypes, ['expend'])
   assert.equal(calls.length, 1)
+  assert.equal(calls[0][0].description, '午餐备注')
   assert.equal(calls[0][0].type, 'expend')
   assert.equal(calls[0][0].amount, 12.34)
   assert.equal(calls[0][0].category_id, 1)

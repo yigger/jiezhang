@@ -193,12 +193,24 @@ export default observer(function CalendarStatistic({ currentDate }: { currentDat
                   <View className="amount-bars">
                     {day.income > 0 && (
                       <View className="income-bar">
-                        <Text className="amount-text">+{day.income}</Text>
+                        <Text
+                          className={
+                            String(day.income).length > 6 ? 'amount-text is-long' : 'amount-text'
+                          }
+                        >
+                          +{day.income}
+                        </Text>
                       </View>
                     )}
                     {day.expend > 0 && (
                       <View className="expend-bar">
-                        <Text className="amount-text">−{day.expend}</Text>
+                        <Text
+                          className={
+                            String(day.expend).length > 6 ? 'amount-text is-long' : 'amount-text'
+                          }
+                        >
+                          −{day.expend}
+                        </Text>
                       </View>
                     )}
                   </View>
