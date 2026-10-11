@@ -12,6 +12,11 @@ module.exports = function createLoader(mocks = {}) {
     const module = { exports: {} }
     cache.set(filename, module)
     const { code } = babel.transformFileSync(filename, {
+      configFile: false,
+      babelrc: false,
+      presets: [
+        [require.resolve('babel-preset-taro'), { framework: 'react', ts: true, hot: false }]
+      ],
       plugins: [require.resolve('@babel/plugin-transform-modules-commonjs')]
     })
     const localRequire = (specifier) => {
@@ -28,7 +33,8 @@ module.exports = function createLoader(mocks = {}) {
         target,
         target + '.ts',
         target + '.tsx',
-        path.join(target, 'index.ts')
+        path.join(target, 'index.ts'),
+        path.join(target, 'index.tsx')
       ].find((p) => fs.existsSync(p) && fs.statSync(p).isFile())
       if (!resolved) throw new Error(`Cannot resolve ${specifier}`)
       return load(resolved)

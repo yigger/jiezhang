@@ -20,7 +20,8 @@ import '@/src/styles'
 
 type Section = 'projects' | 'fixed' | 'payments' | 'portfolio'
 type Draft =
-  { type: 'project'; value: InsightProjectInput } | { type: 'fixed'; value: InsightFixedCostInput }
+  | { type: 'project'; value: InsightProjectInput }
+  | { type: 'fixed'; value: InsightFixedCostInput }
 export default function InsightWorkspace({
   currentDate,
   mode

@@ -5,6 +5,7 @@ import Taro from '@tarojs/taro'
 import { useState } from 'react'
 import { AtButton, AtList, AtListItem } from 'taro-ui'
 import { guardEvent, runTask } from '../../../utils/async'
+import { downloadBrowserFile } from '../../../utils/web'
 
 type ExportRange = '1month' | '3months' | 'all'
 
@@ -28,6 +29,11 @@ export default function ExportIndex(): JSX.Element {
       const res = await jz.withLoading(jz.api.statements.export_excel(selectedRange))
       if (res.statusCode === 200) {
         const filePath = res.tempFilePath
+        if (process.env.TARO_ENV === 'h5') {
+          downloadBrowserFile(filePath, `洁账-${selectedRange}.xlsx`)
+          jz.toastSuccess('已开始下载账单')
+          return
+        }
         try {
           // 保存文件到本地
           const saveRes = await Taro.saveFile({
@@ -73,7 +79,11 @@ export default function ExportIndex(): JSX.Element {
         </AtList>
 
         <View className="col-text-warn">**每天仅能导出 5 次！</View>
-        <View className="col-text-warn">**导出后自动打开文档，请自行保存。</View>
+        <View className="col-text-warn">
+          {process.env.TARO_ENV === 'h5'
+            ? '**导出后下载 Excel 文件。'
+            : '**导出后自动打开文档，请自行保存。'}
+        </View>
         <View className="col-text-warn">**最多仅支持导出 3000 条数据</View>
 
         <View className="mt-4">

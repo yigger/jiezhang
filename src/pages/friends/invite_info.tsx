@@ -60,11 +60,13 @@ export default function FriendInvitePage() {
       await jz.withLoading(jz.api.friends.accept(token, content.trim()))
       jz.toastSuccess('已加入账簿')
     } catch (error) {
-      if (!(
-        error instanceof ApiError &&
-        isRecord(error.result.data) &&
-        error.result.data.status === 401
-      ))
+      if (
+        !(
+          error instanceof ApiError &&
+          isRecord(error.result.data) &&
+          error.result.data.status === 401
+        )
+      )
         throw error
       jz.toastSuccess('您已是该账簿的成员')
     }

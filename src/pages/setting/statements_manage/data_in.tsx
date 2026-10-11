@@ -27,9 +27,15 @@ const LoginPc: React.FC = () => {
   return (
     <BasePage headerName="登录PC端">
       <View className="p-2">
-        <View>由于小程序端限制且操作麻烦，所以请登录PC端，然后扫码登录。</View>
+        <View>
+          {process.env.TARO_ENV === 'h5'
+            ? '你已在浏览器中使用洁账。账单导入请使用后端账单导入工具。'
+            : '由于小程序端限制且操作麻烦，所以请登录PC端，然后扫码登录。'}
+        </View>
         <View>PC端地址：{config.web_host}</View>
-        <Button title="扫描网页端二维码" onClick={guardEvent(handleScan)}></Button>
+        {process.env.TARO_ENV !== 'h5' && (
+          <Button title="扫描网页端二维码" onClick={guardEvent(handleScan)}></Button>
+        )}
       </View>
     </BasePage>
   )

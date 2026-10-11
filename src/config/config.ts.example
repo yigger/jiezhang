@@ -1,6 +1,6 @@
 export default {
   appid: '填入小程序app_id',
-  dev_host: 'http://127.0.0.1:3000',
+  dev_host: 'http://127.0.0.1:10240',
   production_host: 'https://example-production.com',
-  web_host: 'http://127.0.0.1:3000'
+  web_host: 'http://127.0.0.1:10086'
 }

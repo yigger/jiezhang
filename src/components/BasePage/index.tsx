@@ -176,7 +176,7 @@ const SlideSidebar = observer(
         <View className="slide-sidebar__main">
           <View
             className="slide-sidebar__main-content"
-            style={`margin-top: ${jz.systemInfo.statusBarHeight}PX`}
+            style={`margin-top: ${jz.systemInfo.statusBarHeight ?? 0}PX`}
           >
             <View className="slide-header fs-18">账簿列表</View>
             <View className="account-list">

@@ -27,7 +27,7 @@ function fixture() {
   }
   const load = createLoader({
     '@tarojs/taro': taro,
-    [path.resolve('src/jz.ts')]: { appId: 'app' }
+    [path.resolve('src/config/index.ts')]: { appid: 'app', web_auth_mode: 'session' }
   })
   const { default: Request, RequestManager } = load('src/api/request.ts')
   return {

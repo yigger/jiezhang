@@ -1,4 +1,3 @@
-import jz from '../../jz'
 import type Request from '../request'
 import type {
   AccountBookCreateRequest,
@@ -41,7 +40,7 @@ export default class AccountBook {
       `account_books/${accountBook.id}/switch`,
       {}
     )
-    jz.storage.setCurrentAccountBook(accountBook)
+    this._request.storage.setCurrentAccountBook(accountBook)
     return response
   }
 

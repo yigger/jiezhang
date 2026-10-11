@@ -13,7 +13,8 @@ import '@/src/styles'
 import { amountCents } from '@/utils/insights'
 
 type Draft =
-  { type: 'project'; value: InsightProjectInput } | { type: 'fixed'; value: InsightFixedCostInput }
+  | { type: 'project'; value: InsightProjectInput }
+  | { type: 'fixed'; value: InsightFixedCostInput }
 export default function EditRule({
   bookID,
   draft,

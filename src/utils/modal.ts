@@ -12,6 +12,20 @@ type ModalOptions = Omit<Taro.showModal.Option, 'success'> & {
 // Taro 4.2's declaration omits WeChat's editable modal extension.
 // Keep the platform extension and response validation at this boundary.
 export async function showModal({ success, ...options }: ModalOptions): Promise<ModalResult> {
+  if (process.env.TARO_ENV === 'h5' && options.editable) {
+    const content = window.prompt(
+      options.content || options.title || '',
+      options.placeholderText || ''
+    )
+    const result = {
+      confirm: content !== null,
+      cancel: content === null,
+      content: content ?? '',
+      errMsg: 'showModal:ok'
+    }
+    await success?.(result)
+    return result
+  }
   const response = await Taro.showModal(options)
   const raw: unknown = response
   const content = isRecord(raw) && typeof raw.content === 'string' ? raw.content : ''

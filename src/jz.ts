@@ -37,10 +37,12 @@ class Jz {
     this._appid = appid
     this._baseUrl = baseUrl
     this._apiUrl = apiUrl
-    this._api = new Api(this.apiUrl)
-    this._router = new Router()
     this._storage = new Storage()
+    this._api = new Api(this.apiUrl, { appid: this.appId, storage: this._storage })
+    this._router = new Router()
     this.systemInfo = Taro.getSystemInfoSync()
+    // Taro H5 reports NaN for the native status bar, which would invalidate header CSS.
+    if (!Number.isFinite(this.systemInfo.statusBarHeight)) this.systemInfo.statusBarHeight = 0
     return this
   }
 

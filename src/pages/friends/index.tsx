@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import { AtCard } from 'taro-ui'
 import config from '../../config'
 import { guardEvent, runTask } from '../../utils/async'
+import { copyWebPage } from '../../utils/web'
 import './index.scss'
 
 type Friend = ApiTypes.FriendCollaboratorItem
@@ -50,7 +51,7 @@ export default function FriendsPage() {
     await fetchFriends()
   }
 
-  useShareAppMessage(async () => {
+  const generateInvite = async () => {
     const { data } = await jz.api.friends.invite({
       account_book_id: (await jz.ensureAccountBook()).id,
       role: selectedRole
@@ -61,7 +62,8 @@ export default function FriendsPage() {
       path: `/pages/friends/invite_info?token=${encodeURIComponent(data.data)}`,
       imageUrl: `${config.host}/logo.png`
     }
-  })
+  }
+  useShareAppMessage(generateInvite)
 
   const fetchFriends = async () => {
     const { data } = await jz.withLoading(
@@ -226,6 +228,14 @@ export default function FriendsPage() {
                 />
                 {editingFriend ? (
                   <Button title="保存角色" onClick={guardEvent(saveRole)} />
+                ) : process.env.TARO_ENV === 'h5' ? (
+                  <Button
+                    title="复制邀请链接"
+                    onClick={guardEvent(async () => {
+                      const invite = await generateInvite()
+                      await copyWebPage(invite.path)
+                    })}
+                  />
                 ) : (
                   <Button title="确认邀请" openType="share" />
                 )}

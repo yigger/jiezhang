@@ -1,6 +1,6 @@
 module.exports = {
   projectname: "jz-taro-production",
-  outputRoot: 'dist/production',
+  outputRoot: `dist/production/${process.env.TARO_ENV || 'weapp'}`,
   env: {
     NODE_ENV: '"production"'
   },

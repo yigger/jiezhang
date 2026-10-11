@@ -1,4 +1,3 @@
-import jz from '@/jz'
 import Taro from '@tarojs/taro'
 import type Request from '../request'
 import type {
@@ -28,7 +27,7 @@ export default class Statement {
 
   // 获取创建账单时的分类列表
   async categoriesWithForm(type: string) {
-    const cacheCategories = jz.storage.getStatementCategories(type)
+    const cacheCategories = this._request.storage.getStatementCategories(type)
     if (cacheCategories) {
       return cacheCategories
     }
@@ -38,7 +37,7 @@ export default class Statement {
     })
     if (st.isSuccess) {
       const data = { frequent: st.data.frequent, data: st.data.categories }
-      jz.storage.setStatementCategories(type, data)
+      this._request.storage.setStatementCategories(type, data)
       return data
     } else {
       return null
@@ -47,7 +46,7 @@ export default class Statement {
 
   // 获取创建账单时的资产列表
   async assetsWithForm(params = {}) {
-    const cache = jz.storage.getStatementAssets()
+    const cache = this._request.storage.getStatementAssets()
     if (cache) {
       return cache
     }
@@ -55,7 +54,7 @@ export default class Statement {
     const st = await this._request.get<StatementAssetsResult>('statements/assets', params)
     if (st.isSuccess) {
       const data = { frequent: st.data.frequent, data: st.data.categories }
-      jz.storage.setStatementAssets(data)
+      this._request.storage.setStatementAssets(data)
       return data
     } else {
       return null
@@ -131,7 +130,7 @@ export default class Statement {
     const accessToken = await this._request.getAccessToken()
     const header = {
       'content-type': 'application/json',
-      'X-WX-APP-ID': jz.appId,
+      'X-WX-APP-ID': this._request.appId,
       'X-WX-Skey': accessToken
     }
     return Taro.downloadFile({

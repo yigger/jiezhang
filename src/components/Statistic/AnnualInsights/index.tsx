@@ -110,10 +110,9 @@ export default function AnnualInsights({ currentDate }: { currentDate: Date }) {
   )
   const highestExpenseMonth = report.months
     .filter((m) => m.started && m.expend_cents > 0)
-    .reduce<(typeof report.months)[number] | null>(
-      (best, month) => (!best || month.expend_cents > best.expend_cents ? month : best),
-      null
-    )
+    .reduce<
+      (typeof report.months)[number] | null
+    >((best, month) => (!best || month.expend_cents > best.expend_cents ? month : best), null)
   const renderGroup = (g: InsightGroup) => (
     <View
       key={g.key}

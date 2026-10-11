@@ -1,0 +1,39 @@
+.web-session-gate {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f7fa;
+  padding: 32PX;
+  box-sizing: border-box;
+}
+
+.web-session-card {
+  width: 100%;
+  max-width: 420PX;
+  padding: 28PX;
+  box-sizing: border-box;
+  border-radius: 16PX;
+  background: #fff;
+
+  input {
+    margin: 16PX 0;
+    padding: 12PX;
+    border: 1PX solid #d8dee8;
+    border-radius: 8PX;
+    box-sizing: border-box;
+  }
+}
+
+.web-session-title {
+  display: block;
+  font-size: 28PX;
+  font-weight: 600;
+  margin-bottom: 16PX;
+}
+
+.web-session-error {
+  color: #c43d3d;
+  margin: 16PX 0;
+  overflow-wrap: anywhere;
+}

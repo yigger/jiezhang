@@ -9,6 +9,8 @@ export class UserCancelled extends Error {
 
 export function reportError(error: unknown): void {
   if (error instanceof UserCancelled) return
+  if (process.env.TARO_ENV === 'h5' && error instanceof Error && error.name === 'WebAuthRequired')
+    return
   const message = error instanceof Error ? error.message : '操作失败，请稍后重试'
   void Taro.showToast({ title: message, icon: 'none' }).catch(() => undefined)
 }

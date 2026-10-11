@@ -1,5 +1,14 @@
 const path = require('path');
 
+const webAuthMode = process.env.JZ_WEB_AUTH_MODE ||
+  (process.env.NODE_ENV === 'development' ? 'development' : 'session');
+if (!['development', 'session'].includes(webAuthMode)) {
+  throw new Error('JZ_WEB_AUTH_MODE must be development or session');
+}
+if (process.env.TARO_ENV === 'h5' && process.env.NODE_ENV !== 'development' && webAuthMode === 'development') {
+  throw new Error('Web development authentication is only available in development builds');
+}
+
 const config = {
   projectName: 'jz-taro',
   date: '2021-4-4',
@@ -12,6 +21,8 @@ const config = {
   sourceRoot: 'src',
   outputRoot: 'dist',
   defineConstants: {
+    'process.env.JZ_WEB_API_BASE': JSON.stringify(process.env.JZ_WEB_API_BASE || '/api'),
+    'process.env.JZ_WEB_AUTH_MODE': JSON.stringify(webAuthMode)
   },
   copy: {
     patterns: [
@@ -55,6 +66,7 @@ const config = {
     sassLoaderOption: { sassOptions: { quietDeps: true } },
     publicPath: '/',
     staticDirectory: 'static',
+    router: { mode: 'hash' },
     postcss: {
       autoprefixer: {
         enable: true,

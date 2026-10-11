@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro'
-import jz from '../jz'
+import config from '../config'
+import Storage from '../storage'
 import HttpResult, { ApiError, isRecord } from './http-result'
 import { networkTask, REQUEST_TIMEOUT, UPLOAD_TIMEOUT } from './network-task'
 
@@ -11,8 +12,22 @@ interface StoredToken {
 interface RequestOptions {
   header?: Record<string, string>
 }
+interface RequestContext {
+  appid?: string
+  storage?: Storage
+}
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
 type RequestData = object | string | undefined
+
+export const WEB_AUTH_REQUIRED = 'web:auth-required'
+
+export class WebAuthRequired extends Error {
+  constructor() {
+    super('请提供有效的登录 Session')
+    this.name = 'WebAuthRequired'
+    Taro.eventCenter.trigger(WEB_AUTH_REQUIRED)
+  }
+}
 
 export class RequestManager {
   private static pending = new Map<string, Promise<string>>()
@@ -21,24 +36,48 @@ export class RequestManager {
     Taro.removeStorageSync('access_token_data')
   }
 
-  static get(endpoint: string, appid: string): Promise<string> {
-    const scope = `${endpoint}|${appid}`
+  static saveSession(endpoint: string, appid: string, token: string) {
+    if (!token.trim()) throw new Error('登录 Session 不能为空')
+    const stored: StoredToken = {
+      token: token.trim(),
+      expireTime: Date.now() + 2 * 60 * 60 * 1000,
+      scope: `${endpoint.replace(/\/+$/, '')}|${appid}|${process.env.TARO_ENV === 'h5' ? 'h5' : 'weapp'}`
+    }
+    Taro.setStorageSync('access_token_data', JSON.stringify(stored))
+  }
+
+  static getStoredSession(endpoint: string, appid: string): string | null {
+    const platform = process.env.TARO_ENV === 'h5' ? 'h5' : 'weapp'
+    const normalizedEndpoint = endpoint.replace(/\/+$/, '')
+    const scope = `${normalizedEndpoint}|${appid}|${platform}`
+    const legacyScope = `${normalizedEndpoint}|${appid}`
     try {
       const raw: unknown = Taro.getStorageSync('access_token_data')
       const stored: unknown = typeof raw === 'string' ? JSON.parse(raw) : raw
       if (
         isRecord(stored) &&
-        stored.scope === scope &&
+        (stored.scope === scope || (platform === 'weapp' && stored.scope === legacyScope)) &&
         typeof stored.token === 'string' &&
         stored.token &&
         typeof stored.expireTime === 'number' &&
         stored.expireTime > Date.now()
       ) {
-        return Promise.resolve(stored.token)
+        return stored.token
       }
     } catch {
       /* Invalid local cache must not prevent a fresh login. */
     }
+    return null
+  }
+
+  static get(endpoint: string, appid: string): Promise<string> {
+    if (process.env.TARO_ENV === 'h5' && config.web_auth_mode === 'development') {
+      return Promise.resolve('')
+    }
+    const token = this.getStoredSession(endpoint, appid)
+    if (token) return Promise.resolve(token)
+    if (process.env.TARO_ENV === 'h5') return Promise.reject(new WebAuthRequired())
+    const scope = `${endpoint}|${appid}|weapp`
     const pending = this.pending.get(scope)
     if (pending) return pending
     const request = (async () => {
@@ -67,13 +106,8 @@ export class RequestManager {
       ) {
         throw new ApiError(result)
       }
-      const stored: StoredToken = {
-        token: result.data.session,
-        expireTime: Date.now() + 2 * 60 * 60 * 1000,
-        scope
-      }
-      Taro.setStorageSync('access_token_data', JSON.stringify(stored))
-      return stored.token
+      this.saveSession(endpoint, appid, result.data.session)
+      return result.data.session
     })().finally(() => this.pending.delete(scope))
     this.pending.set(scope, request)
     return request
@@ -82,8 +116,16 @@ export class RequestManager {
 
 export default class Request {
   readonly _endpoint: string
-  constructor(endpoint: string) {
+  readonly appId: string
+  readonly storage: Storage
+
+  constructor(
+    endpoint: string,
+    { appid = config.appid, storage = new Storage() }: RequestContext = {}
+  ) {
     this._endpoint = endpoint.replace(/\/+$/, '')
+    this.appId = appid
+    this.storage = storage
   }
   get<T = unknown>(path: string, data?: RequestData, options: RequestOptions = {}) {
     return this.request<T>('GET', path, data, options)
@@ -98,7 +140,7 @@ export default class Request {
     return this.request<T>('DELETE', path, data, options)
   }
   getAccessToken(): Promise<string> {
-    return RequestManager.get(this._endpoint, jz.appId)
+    return RequestManager.get(this._endpoint, this.appId)
   }
 
   async upload(filePath: string, formData: Record<string, string | number>) {
@@ -110,13 +152,20 @@ export default class Request {
         filePath,
         formData,
         name: 'file',
-        header: { 'X-WX-APP-ID': jz.appId, 'X-WX-Skey': accessToken }
+        header: { 'X-WX-APP-ID': this.appId, 'X-WX-Skey': accessToken }
       }),
       UPLOAD_TIMEOUT,
       '图片上传超时，请检查上传结果'
     )
     const data: unknown = JSON.parse(response.data)
     const result = new HttpResult({ ...response, data })
+    if (
+      process.env.TARO_ENV === 'h5' &&
+      (result.status === 401 || (isRecord(data) && data.status === 301))
+    ) {
+      RequestManager.clear()
+      throw new WebAuthRequired()
+    }
     if (!result.isSuccess) throw new ApiError(result)
     return response
   }
@@ -140,7 +189,7 @@ export default class Request {
           header: {
             'content-type': 'application/json',
             ...options.header,
-            'X-WX-APP-ID': jz.appId,
+            'X-WX-APP-ID': this.appId,
             'X-WX-Skey': token
           }
         }),
@@ -148,8 +197,9 @@ export default class Request {
         method === 'GET' ? '请求超时，请稍后重试' : '请求超时，请先刷新确认操作结果'
       )
       const result = new HttpResult(response)
-      if (isRecord(result.data) && result.data.status === 301) {
+      if (result.status === 401 || (isRecord(result.data) && result.data.status === 301)) {
         RequestManager.clear()
+        if (process.env.TARO_ENV === 'h5') throw new WebAuthRequired()
         if (attempt === 0) continue
       }
       if (!result.isSuccess) throw new ApiError(result)

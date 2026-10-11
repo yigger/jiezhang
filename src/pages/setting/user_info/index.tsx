@@ -2,6 +2,7 @@ import BasePage from '@/components/BasePage'
 import jz from '@/jz'
 import { Button as JBTN } from '@/src/components/UiComponents'
 import { Button, Image, Input, Text, View } from '@tarojs/components'
+import Taro from '@tarojs/taro'
 import { useEffect, useState } from 'react'
 import { guardEvent, runTask } from '../../../utils/async'
 
@@ -44,11 +45,21 @@ const UserInfoPage: React.FC = () => {
     }
   }
 
+  const chooseWebAvatar = async () => {
+    const { tempFilePaths } = await Taro.chooseImage({ count: 1, sizeType: ['compressed'] })
+    if (tempFilePaths[0]) onChooseAvatar({ detail: { avatarUrl: tempFilePaths[0] } })
+  }
+
   return (
     <BasePage headerName="个人信息">
       <View className="user-info-page">
         <View className="info-avatar m-4 text-align-center">
-          <Button style="background: none" open-type="chooseAvatar" onChooseAvatar={onChooseAvatar}>
+          <Button
+            style="background: none"
+            openType={process.env.TARO_ENV === 'h5' ? undefined : 'chooseAvatar'}
+            onChooseAvatar={onChooseAvatar}
+            onClick={process.env.TARO_ENV === 'h5' ? guardEvent(chooseWebAvatar) : undefined}
+          >
             <Image src={userInfo.avatar_url}></Image>
           </Button>
         </View>
@@ -59,7 +70,7 @@ const UserInfoPage: React.FC = () => {
             <Input
               className="ml-4"
               name="nickname"
-              type="nickname"
+              type={process.env.TARO_ENV === 'h5' ? 'text' : 'nickname'}
               placeholder="请输入昵称"
               value={userInfo.nickname}
               onFocus={(e) => {

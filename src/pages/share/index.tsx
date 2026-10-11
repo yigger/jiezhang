@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { AtCalendar, AtTag } from 'taro-ui'
 import config from '../../config'
 import { guardEvent, runTask } from '../../utils/async'
+import { copyWebPage } from '../../utils/web'
 
 const SharePage: React.FC = () => {
   const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0])
@@ -78,7 +79,7 @@ const SharePage: React.FC = () => {
     )
   }
 
-  useShareAppMessage(async () => {
+  const generateShare = async () => {
     const { data } = await jz.api.statements.generateShareToken({
       start_date: startDate,
       end_date: endDate,
@@ -88,18 +89,17 @@ const SharePage: React.FC = () => {
     const token = data.data['share_key']
     return {
       title: '记账账单分享',
-      path: `/pages/share/public?token=${token}`,
+      path: `/pages/share/public?token=${encodeURIComponent(token)}`,
       imageUrl: `${config.host}/logo.png`
     }
-  })
+  }
+  useShareAppMessage(generateShare)
 
   return (
     <BasePage headerName="分享账单给朋友">
       <View className="share-page">
         <View className="p-4">
-          <View>
-            此页面可分享账单列表给朋友，选择日期范围以及分类，查询账单列表后点击右上角进行分享。
-          </View>
+          <View>选择日期范围以及分类，查询账单列表后点击下方按钮分享。</View>
           <View style={{ color: 'red' }}>
             注：对方仅可看到你生成账单列表（即查询筛选出来的账单列表）
           </View>
@@ -149,7 +149,7 @@ const SharePage: React.FC = () => {
 
         {statements.length > 0 && (
           <View>
-            <View>勾选账单后，点击右上角"..."，发送给朋友</View>
+            <View>勾选需要分享的账单，然后点击下方分享按钮。</View>
             <View>
               {statements.map((statement) => {
                 return (
@@ -201,7 +201,18 @@ const SharePage: React.FC = () => {
           </View>
         )}
 
-        {statements.length > 0 && <Button title="分享给朋友" openType="share" />}
+        {statements.length > 0 &&
+          (process.env.TARO_ENV === 'h5' ? (
+            <Button
+              title="复制分享链接"
+              onClick={guardEvent(async () => {
+                const share = await generateShare()
+                await copyWebPage(share.path)
+              })}
+            />
+          ) : (
+            <Button title="分享给朋友" openType="share" />
+          ))}
       </View>
     </BasePage>
   )
